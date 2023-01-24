@@ -1,0 +1,183 @@
+<!doctype html>
+<html>
+	<head>
+		<title>Add Vehicle</title>
+
+		<link rel="stylesheet" type="text/css" href="/styles/reset.css" />
+        <link rel="stylesheet" type="text/css" href="/styles/main.css" />
+        <link rel="stylesheet" type="text/css" href="/styles/login.css">
+        <link rel="stylesheet" type="text/css" href="/styles/menubar.css">
+        <link rel="stylesheet" type="text/css" href="/styles/tables.css">
+
+        <link rel="stylesheet" type="text/css" href="/styles/smoothness/jquery-ui-1.10.2.css" />
+
+	</head>
+	<body>
+		<div id="wrapper">
+
+            <div id="heading">
+                <h1>Enterprise Routing System &nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;Customer Service: 1 (800) 778-9111</h1>
+            </div>
+            <div id="menu-wrapper">
+            	<br><br>
+            </div>
+            <div sec:authorize="isAuthenticated()" class = "navSideBar" id="mySidebar">
+                <button onclick="nav_close()" class="bar-item">...</button>
+                <div id="menu">
+                    <ul class="navbar">
+                        <li class="navitem">
+                            <a class="navlink" id="nav_home" href="/">Home</a>
+                        </li>
+                        <li sec:authorize="hasAuthority('ADMIN')" class="navitem">
+                            <a class="navlink" id="nav_users" href="/users">Users</a>
+                        </li>
+                        <li sec:authorize="hasAuthority('CARRIER')" class="navitem">
+                            <a class="navlink" id="nav_contacts" href="/contacts">Contacts</a>
+                        </li>
+                        <li sec:authorize="hasAuthority('CARRIER')" class="navitem">
+                            <a class="navlink" id="nav_locations" href="/locations">Locations</a>
+                        </li>
+                        <li sec:authorize="hasAuthority('CARRIER')" class="navitem">
+                            <a class="selected" id="nav_vehicles" href="/vehicles">Vehicles</a>
+                        </li>
+                        <li sec:authorize="hasAuthority('CARRIER')" class="navitem">
+                            <a class="navlink" id="nav_vehicletypes" href="/vehicletypes">Vehicle Types</a>
+                        </li>
+                        <li sec:authorize="hasAuthority('CARRIER')" class="navitem">
+                            <a class="navlink" id="nav_drivers" href="/drivers">Drivers</a>
+                        </li>
+                        <li sec:authorize="hasAuthority('CARRIER')" class="navitem">
+                            <a class="navlink" id="nav_technicians" href="/technicians">Technicians</a>
+                        </li>
+                        <li sec:authorize="hasAuthority('CARRIER')" class="navitem">
+                            <a class="navlink" id="nav_maintenanceorders" href="/maintenanceorders">Maintenance</a>
+                        </li>
+                        <li sec:authorize="hasAnyAuthority('CARRIER','MASTERLIST')" class="navitem">
+                            <a class="navlink" id="nav_carriers" href="/carriers">Carriers</a>
+                        </li>
+                        <li sec:authorize="hasAuthority('MASTERLIST')" class="navitem">
+                           <a class="navlink" id="nav_shipments_home_masterlist" href="/shipmentshomemaster">Shipments</a>
+                        </li>
+                        <li sec:authorize="hasAuthority('SHIPPER')" class="navitem">
+                            <a class="navlink" id="nav_shipments_home_shipper" href="/shipmentshomeshipper">Shipments</a>
+                        </li>
+                        <li sec:authorize="hasAuthority('CARRIER')" class="navitem">
+                            <a class="navlink" id="nav_shipments_home_carrier" href="/shipmentshomecarrier">Shipments</a>
+                        </li>
+                        <li sec:authorize="hasAnyAuthority('CARRIER','MASTERLIST')" class="navitem">
+                            <a class="navlink" id="nav_routes" href="/routes">Routes</a>
+                        </li>
+						<br><br><br><br><br>
+                        <li sec:authorize="isAuthenticated()" class="navitem">
+                            <form id="logoutForm" method="POST" th:action="@{/logout}">
+                                <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+                            </form>
+                            <a class="navlink" onclick="document.forms['logoutForm'].submit()">Logout</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div sec:authorize="!isAuthenticated()" class = "navSideBar" id="mySidebar">
+                <button onclick="nav_close()" class="bar-item">...</button>
+                <ul class="navbar">
+                    <li class="navitem">
+                        <a class="selected" id="nav_home" href="/">Home</a>
+                    </li>
+                    <li sec:authorize="!isAuthenticated()" class="navitem">
+                        <a class="navlink" id="nav_login" href="login">Login</a>
+                    </li>
+                    <li sec:authorize="!isAuthenticated()" class="navitem">
+                        <a class="navlink" id="nav_registration" href="/registrationhome">Register</a>
+                    </li>
+                </ul>
+            </div>
+
+            <div id="sub_heading">
+                <div id="loginDiv">
+                    <div sec:authorize="isAuthenticated()" style="float: right;">
+                        <form id="logoutForm" method="POST" th:action="@{/logout}">
+                            <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+                        </form>
+                        Hello <span sec:authentication="name"></span> | <a onclick="document.forms['logoutForm'].submit()">Logout</a>
+                    </div>
+                    <div sec:authorize="!isAuthenticated()" style="float: right;">
+                        <a id="loginLink" class="ui-button" href="/login">Login</a>
+                    </div>
+                </div>
+            </div>
+			
+			<div id="content">
+				<span class="nav-expand">
+  					<button class=""  id="hamburger" style="display:none" onclick="nav_open()">☰</button>
+				</span>
+				<br><br>
+                <h2>Add Vehicle</h2>
+                <form action="#" th:action="@{/addvehicles}" th:object="${vehicles}" method="post">
+				<hr>
+				<div class="form-group2">
+					<br>
+                    <h2> Enter Vehicle Info</h2>
+                    <br>
+                    <label for="plateNumber">Plate Number: </label>
+                    <input type="text" th:field="*{plateNumber}" name="plateNumber" id="plateNumber" placeholder="Plate Number" required minlength = "6" maxlength= "7">
+                    <span th:if="${#fields.hasErrors('plateNumber')}" th:errors="*{plateNumber}"></span>
+                 	<br>
+                    <label for="vinNumber">VIN Number: </label>
+                    <input type="text" th:field="*{vinNumber}" id="vinNumber" placeholder="VIN Number" required minlength = "5" maxlength = "17">
+                    <span th:if="${#fields.hasErrors('vinNumber')}" th:errors="*{vinNumber}"></span>
+                 	<br>
+                    <label for="manufacturedYear">Manufactured Year: </label>
+                    <input type="text" th:field="*{manufacturedYear}" id="manufacturedYear" placeholder="Manufactured Year" required minlength = "4" maxlength = "4">
+                    <span th:if="${#fields.hasErrors('manufacturedYear')}" th:errors="*{manufacturedYear}"></span>
+                	<br>
+                    <label for="vehicleType">Vehicle Type: </label>
+                    <select th:field="*{vehicleType}" required>
+                        <th:block th:each="vehicleType : ${vehicleTypes}">
+                            <option th:text="${vehicleType}" th:value="${vehicleType.id}"></option>
+                        </th:block>
+                    </select>
+                    <br>    
+				</div>
+				<div class="form-group">
+					<br>
+                    <label for="location">Location: </label>
+                    <select th:field="*{location}" required>
+                        <th:block th:each="location : ${locations}">
+                            <option th:text="${location.name}" th:value="${location.id}"></option>
+                        </th:block>
+                    </select> 
+                 	<br>
+                    <label for="carrier">Carrier: </label>
+                    <select th:field="*{carrier}" required>
+                        <th:block th:each="carrier : ${carriers}">
+                            <option th:text="${carrier.carrierName}" th:value="${carrier.id}"></option>
+                        </th:block>
+                    </select>  
+                 	<br><br>
+                 	<button class="buttons3" onclick="window.location.href='./vehicles';">Back</button>
+					<button class="buttons4" type="submit">Add Vehicle</button>
+                	<br><br>
+                </div>      
+                </form>
+			</div>
+		</div>
+
+		<div class="footer">
+            Copyright &copy; Slippery Rock University 2022
+        </div>
+		<script>
+		function nav_open() {
+			document.getElementById("content").style.marginLeft = "15%";
+			document.getElementById("mySidebar").style.width = "15%";			
+			document.getElementById("mySidebar").style.display = "block";
+			document.getElementById("hamburger").style.display = "none";
+		}
+	
+		function nav_close() {
+	  		document.getElementById("content").style.marginLeft = "0%";
+	  		document.getElementById("mySidebar").style.display = "none";
+	  		document.getElementById("hamburger").style.display = "block";
+		}
+		</script>
+	</body>
+</html>

@@ -1,0 +1,204 @@
+<!doctype html>
+<html>
+	<head>
+		<title>Shipments</title>
+
+		<link rel="stylesheet" type="text/css" href="/styles/reset.css" />
+        <link rel="stylesheet" type="text/css" href="/styles/main.css" />
+        <link rel="stylesheet" type="text/css" href="/styles/login.css">
+        <link rel="stylesheet" type="text/css" href="/styles/menubar.css">
+        <link rel="stylesheet" type="text/css" href="/styles/tables.css">
+
+        <link rel="stylesheet" type="text/css" href="/styles/smoothness/jquery-ui-1.10.2.css" />
+
+	</head>
+	<body>
+		<div id="wrapper">
+
+            <div id="heading">
+                <h1>Enterprise Routing System &nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;Customer Service: 1 (800) 778-9111</h1>
+            </div>
+            <div id="menu-wrapper">
+            	<br><br>
+            </div>
+            <div sec:authorize="isAuthenticated()" class = "navSideBar" id="mySidebar">
+                <button onclick="nav_close()" class="bar-item">...</button>
+                <div id="menu">
+                    <ul class="navbar">
+                        <li class="navitem">
+                            <a class="navlink" id="nav_home" href="/">Home</a>
+                        </li>
+                        <li sec:authorize="hasAuthority('ADMIN')" class="navitem">
+                            <a class="navlink" id="nav_users" href="/users">Users</a>
+                        </li>
+                        <li sec:authorize="hasAuthority('CARRIER')" class="navitem">
+                            <a class="navlink" id="nav_contacts" href="/contacts">Contacts</a>
+                        </li>
+                        <li sec:authorize="hasAuthority('CARRIER')" class="navitem">
+                            <a class="navlink" id="nav_locations" href="/locations">Locations</a>
+                        </li>
+                        <li sec:authorize="hasAuthority('CARRIER')" class="navitem">
+                            <a class="navlink" id="nav_vehicles" href="/vehicles">Vehicles</a>
+                        </li>
+                        <li sec:authorize="hasAuthority('CARRIER')" class="navitem">
+                            <a class="navlink" id="nav_vehicletypes" href="/vehicletypes">Vehicle Types</a>
+                        </li>
+                        <li sec:authorize="hasAuthority('CARRIER')" class="navitem">
+                            <a class="navlink" id="nav_drivers" href="/drivers">Drivers</a>
+                        </li>
+                        <li sec:authorize="hasAuthority('CARRIER')" class="navitem">
+                            <a class="navlink" id="nav_technicians" href="/technicians">Technicians</a>
+                        </li>
+                        <li sec:authorize="hasAuthority('CARRIER')" class="navitem">
+                            <a class="navlink" id="nav_maintenanceorders" href="/maintenanceorders">Maintenance</a>
+                        </li>
+                        <li sec:authorize="hasAnyAuthority('CARRIER','MASTERLIST')" class="navitem">
+                            <a class="navlink" id="nav_carriers" href="/carriers">Carriers</a>
+                        </li>
+                        <li sec:authorize="hasAuthority('MASTERLIST')" class="navitem">
+                           <a class="navlink" id="nav_shipments_home_masterlist" href="/shipmentshomemaster">Shipments</a>
+                        </li>
+                        <li sec:authorize="hasAuthority('SHIPPER')" class="navitem">
+                            <a class="selected" id="nav_shipments_home_shipper" href="/shipmentshomeshipper">Shipments</a>
+                        </li>
+                        <li sec:authorize="hasAuthority('CARRIER')" class="navitem">
+                            <a class="selected" id="nav_shipments_home_carrier" href="/shipmentshomecarrier">Shipments</a>
+                        </li>
+                        <li sec:authorize="hasAnyAuthority('CARRIER','MASTERLIST')" class="navitem">
+                            <a class="navlink" id="nav_routes" href="/routes">Routes</a>
+                        </li>
+						<br><br><br><br><br>
+                        <li sec:authorize="isAuthenticated()" class="navitem">
+                            <form id="logoutForm" method="POST" th:action="@{/logout}">
+                                <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+                            </form>
+                            <a class="navlink" onclick="document.forms['logoutForm'].submit()">Logout</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div sec:authorize="!isAuthenticated()" class = "navSideBar" id="mySidebar">
+                <button onclick="nav_close()" class="bar-item">...</button>
+                <ul class="navbar">
+                    <li class="navitem">
+                        <a class="selected" id="nav_home" href="/">Home</a>
+                    </li>
+                    <br>
+                    <li sec:authorize="!isAuthenticated()" class="navitem">
+                        <a class="navlink" id="nav_login" href="login">Login</a>
+                    </li>
+                    <br>
+                    <li sec:authorize="!isAuthenticated()" class="navitem">
+                        <a class="navlink" id="nav_registration" href="/registrationhome">Register</a>
+                    </li>
+                </ul>
+            </div>
+
+            <div id="sub_heading">
+                <div id="loginDiv">
+                    <div sec:authorize="isAuthenticated()" style="float: right;">
+                        <form id="logoutForm" method="POST" th:action="@{/logout}">
+                            <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+                        </form>
+                        Hello <span sec:authentication="name"></span> | <a onclick="document.forms['logoutForm'].submit()">Logout</a>
+                    </div>
+                    <div sec:authorize="!isAuthenticated()" style="float: right;">
+                        <a id="loginLink" class="ui-button" href="/login">Login</a>
+                    </div>
+                </div>
+            </div>
+			
+			<div id="content">
+				<span class="nav-expand">
+  					<button class=""  id="hamburger" style="display:none" onclick="nav_open()">☰</button>
+				</span>
+				<br><br>
+				<div th:switch="${shipments}">
+                    <h2 th:case="null">No shipments yet!</h2>
+                    <div th:case="*">
+                        <h2>Shipments</h2>
+                        <br>
+                        <span type="hidden" th:text="${error}" class="loginError"></span>
+                        <br>
+                        <table class="dataTable">
+                            <thead>
+                                <tr>
+                                    <th>View All Details</th>
+                                    <th>ID</th>
+                                    <th>Client</th>
+                                    <th>Carrier Name</th>
+                                    <th>Vehicle</th>
+                                    <th>Client Mode</th>
+                                    <th>Ship Date</th>
+                                    <th>Freightbill Number</th>
+                                    <th>Paid Amount</th>
+                                    <th>Full Freight Terms</th>
+                                    <th>Commodity Class</th>
+                                    <th>Commodity Pieces</th>
+                                    <th>Commodity Paid Weight</th>
+                                    <th>Shipper City</th>
+                                    <th>Shipper State</th>
+                                    <th>Shipper Zip</th>
+                                    <th>Consignee City</th>
+                                    <th>Consignee State</th>
+                                    <th>Consignee Zip</th>
+                                    <th>View Bids</th>
+                                    <th sec:authorize="hasAuthority('SHIPPER')">Edit</th>
+                                    <th sec:authorize="hasAuthority('SHIPPER')">Delete</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr th:each="shipment : ${shipments}">
+                                    <td><a th:href="@{/viewshipment/{id}(id=${shipment.id})}">View All Details</a></td>
+                                    <td th:text="${shipment.id}"></td>
+                                    <td th:text="${shipment.client}"></td>
+                                    <td><a th:text="${shipment.carrier.carrierName}"></a></td>
+                                    <td th:text="${shipment.vehicle}"></td>
+                                    <td th:text="${shipment.clientMode}"></td>
+                                    <td th:text="${shipment.shipDate}"></td>
+                                    <td th:text="${shipment.freightbillNumber}"></td>
+                                    <td th:text="${shipment.paidAmount}"></td>
+                                    <td th:text="${shipment.fullFreightTerms}"></td>
+                                    <td th:text="${shipment.commodityClass}"></td>
+                                    <td th:text="${shipment.commodityPieces}"></td>
+                                    <td th:text="${shipment.commodityPaidWeight}"></td>
+                                    <td th:text="${shipment.shipperCity}"></td>
+                                    <td th:text="${shipment.shipperState}"></td>
+                                    <td th:text="${shipment.shipperZip}"></td>
+                                    <td th:text="${shipment.consigneeCity}"></td>
+                                    <td th:text="${shipment.consigneeState}"></td>
+                                    <td th:text="${shipment.consigneeZip}"></td>
+                                    <td><a th:href="@{/viewshipmentbids/{id}(id=${shipment.id})}">View Bids</a></td>
+                                    <td sec:authorize="hasAuthority('SHIPPER')"><a th:href="@{/editshipment/{id}(id=${shipment.id})}">Edit</a></td>
+                                    <td sec:authorize="hasAuthority('SHIPPER')"><a th:href="@{/deleteshipment/{id}(id=${shipment.id})}">Delete</a></td>
+                                    
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <p sec:authorize="hasAuthority('SHIPPER')"><a href="/add-shipments">Add a Shipment</a></p>
+                    <br><br>
+                    <p sec:authorize="hasAuthority('SHIPPER')"><a href="/uploadshipments">Upload an Excel File</a></p>
+                </div>
+            </div>
+        </div>
+
+		<div class="footer">
+            Copyright &copy; Slippery Rock University 2022
+        </div>
+		<script>
+		function nav_open() {
+			document.getElementById("content").style.marginLeft = "15%";
+			document.getElementById("mySidebar").style.width = "15%";			
+			document.getElementById("mySidebar").style.display = "block";
+			document.getElementById("hamburger").style.display = "none";
+		}
+		
+		function nav_close() {
+		  	document.getElementById("content").style.marginLeft = "0%";
+		  	document.getElementById("mySidebar").style.display = "none";
+		  	document.getElementById("hamburger").style.display = "block";
+		}
+		</script>
+	</body>
+</html>   

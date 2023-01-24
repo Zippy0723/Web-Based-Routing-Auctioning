@@ -1,0 +1,109 @@
+/* @authors Mitchell Nemitz 
+		and Nicholas Bushee */
+
+.navSideBar {
+	height: 100%;
+	width: 118px;
+	min-width: 115px;
+	max-width: 118px;
+	z-index: 1;
+	position: fixed;
+	background: #484848;
+
+	box-shadow: 0 0 20px rgb(0, 0, 0);
+	border-bottom: 1px solid grey;
+}
+
+#hamburger {
+	z-index: 1;
+	position: fixed;
+	box-shadow: 0 0 10px rgb(0, 0, 0);
+}
+
+ul.navbar {
+	width: 100%;
+	margin: 0px;
+	padding: 0px;
+	
+	list-style-type: none;
+}
+
+li.navitem {
+	display: inline-block;
+}
+
+a.navlink {
+	display: inline-block;
+	
+	/* float: right; */
+	font-size: 15px;
+	min-width: 100px;
+	height: 21px;
+	line-height: 21px;
+	
+	color: black;
+	background: #ccc;
+	text-align: center;
+	text-decoration: none;
+	
+	margin-left: 4px;
+	margin-top: 6px;
+	padding-top: 2px;
+	padding-left: 2px;
+	padding-right: 2px;
+	
+	border: 1px solid grey;
+
+	box-shadow: 0 0 5px rgb(0, 0, 0);
+}
+
+a.navlink:hover{
+	background: white !important;
+	border-bottom: 1px solid white !important;
+}
+
+.selected {
+	display: inline-block;
+	
+	/* float: right; */
+	
+	min-width: 100px;
+	height: 21px;
+	line-height: 21px;
+	
+	color: black;
+	background: #ccc;
+	text-align: center;
+	text-decoration: none;
+	
+	margin-left: 4px;
+	margin-top: 6px;
+	padding-top: 2px;
+	padding-left: 2px;
+	padding-right: 2px;
+	
+	border: 1px solid grey;
+
+	box-shadow: 0 0 5px rgb(0, 0, 0);
+
+	background: white !important;
+	border-bottom: 1px solid white !important;
+
+	font-weight: bold;
+}
+
+.bar-item { 
+	float: right;
+	margin-top: 3px;
+	margin-right: 7px;
+	box-shadow: 0 0 2px black;
+}
+
+.bar-item:hover {
+	cursor: pointer;
+	background: white !important;	
+}
+
+#menu a:hover {
+	cursor: pointer;
+}

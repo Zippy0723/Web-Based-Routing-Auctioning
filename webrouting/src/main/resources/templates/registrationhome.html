@@ -1,0 +1,165 @@
+<!doctype html>
+<html>
+	<head>
+		<title>Enterprise Routing System</title>
+
+		<link rel="stylesheet" type="text/css" href="/styles/reset.css" />
+        <link rel="stylesheet" type="text/css" href="/styles/main.css" />
+        <link rel="stylesheet" type="text/css" href="/styles/login.css">
+        <link rel="stylesheet" type="text/css" href="/styles/menubar.css">
+        <link rel="stylesheet" type="text/css" href="/styles/tables.css">
+
+        <link rel="stylesheet" type="text/css" href="/styles/smoothness/jquery-ui-1.10.2.css" />
+
+	</head>
+	<body>
+		<div id="wrapper">
+
+            <div id="heading">
+                <h1>Enterprise Routing System&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;Customer Service: 1 (800) 778-9111</h1>
+            </div>
+            <div id="menu-wrapper">
+            	<br><br>
+            </div>
+            <div sec:authorize="isAuthenticated()" class = "navSideBar" id="mySidebar">
+                <button onclick="nav_close()" class="bar-item">...</button>
+                <div id="menu">
+                    <ul class="navbar">
+                        <li class="navitem">
+                            <a class="navlink" id="nav_home" href="/">Home</a>
+                        </li>
+                        <li sec:authorize="hasAuthority('ADMIN')" class="navitem">
+                            <a class="navlink" id="nav_users" href="/users">Users</a>
+                        </li>
+                        <li sec:authorize="hasAuthority('CARRIER')" class="navitem">
+                            <a class="navlink" id="nav_contacts" href="/contacts">Contacts</a>
+                        </li>
+                        <li sec:authorize="hasAuthority('CARRIER')" class="navitem">
+                            <a class="navlink" id="nav_locations" href="/locations">Locations</a>
+                        </li>
+                        <li sec:authorize="hasAuthority('CARRIER')" class="navitem">
+                            <a class="navlink" id="nav_vehicles" href="/vehicles">Vehicles</a>
+                        </li>
+                        <li sec:authorize="hasAuthority('CARRIER')" class="navitem">
+                            <a class="navlink" id="nav_vehicletypes" href="/vehicletypes">Vehicle Types</a>
+                        </li>
+                        <li sec:authorize="hasAuthority('CARRIER')" class="navitem">
+                            <a class="navlink" id="nav_drivers" href="/drivers">Drivers</a>
+                        </li>
+                        <li sec:authorize="hasAuthority('CARRIER')" class="navitem">
+                            <a class="navlink" id="nav_technicians" href="/technicians">Technicians</a>
+                        </li>
+                        <li sec:authorize="hasAuthority('CARRIER')" class="navitem">
+                            <a class="navlink" id="nav_maintenanceorders" href="/maintenanceorders">Maintenance</a>
+                        </li>
+                        <li sec:authorize="hasAnyAuthority('CARRIER','MASTERLIST')" class="navitem">
+                            <a class="navlink" id="nav_carriers" href="/carriers">Carriers</a>
+                        </li>
+                        <li sec:authorize="hasAuthority('MASTERLIST')" class="navitem">
+                            <a class="navlink" id="nav_shipments_home_masterlist" href="/shipmentshomemaster">Shipments</a>
+                        </li>
+                        <li sec:authorize="hasAuthority('SHIPPER')" class="navitem">
+                            <a class="navlink" id="nav_shipments_home_shipper" href="/shipmentshomeshipper">Shipments</a>
+                        </li>
+                        <li sec:authorize="hasAuthority('CARRIER')" class="navitem">
+                            <a class="navlink" id="nav_shipments_home_carrier" href="/shipmentshomecarrier">Shipments</a>
+                        </li>
+                        <li sec:authorize="hasAnyAuthority('CARRIER','MASTERLIST')" class="navitem">
+                            <a class="navlink" id="nav_routes" href="/routes">Routes</a>
+                        </li>
+						<br><br><br><br><br>
+                        <li sec:authorize="isAuthenticated()" class="navitem">
+                            <form id="logoutForm" method="POST" th:action="@{/logout}">
+                                <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+                            </form>
+                            <a class="navlink" onclick="document.forms['logoutForm'].submit()">Logout</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div sec:authorize="!isAuthenticated()" class = "navSideBar" id="mySidebar">
+                <button onclick="nav_close()" class="bar-item">...</button>
+                <ul class="navbar">
+                    <li class="navitem">
+                        <a class="navlink" id="nav_home" href="/">Home</a>
+                    </li>
+                    <br>
+                    <li sec:authorize="!isAuthenticated()" class="navitem">
+                        <a class="navlink" id="nav_login" href="login">Login</a>
+                    </li>
+                    <br>
+                    <li sec:authorize="!isAuthenticated()" class="navitem">
+                        <a class="selected" id="nav_registration" href="/registrationhome">Registration</a>
+                    </li>
+                </ul>
+            </div>
+			
+			<div id="content">
+				<span class="nav-expand">
+  					<button class=""  id="hamburger" style="display:none" onclick="nav_open()">☰</button>
+				</span>
+                <div id = "container-center" style="align-items: center;">
+                    <div id="regColContent">
+                        <h1>Choose the Type of Account or Cancel Registration</h1>
+                        <br>
+                        <form action="/">
+                            <input type="submit" value="Cancel Registration" />
+                        </form>
+                        <br>
+                        <hr>
+                        <br>
+                        <div id="col1" class="column">
+                            <h2>SHIPPER</h2>
+                            <p> 
+                                <ul style= list-style-type:square>
+                                    <li> Create/Update Shipments</li>
+                                    <br><br>
+                                    <li> Accept Bids</li>
+                                    <br><br>
+                                    <li> CRM & Carrier Relations</li>
+                                    <br><br>
+                                    <button class="buttons2" onclick="window.location.href='registrationshipper';">SELECT</button>
+                                </ul>
+                            </p>
+
+
+                        </div>
+                        <div id="col2" class="column">
+                            <h2>CARRIER</h2>
+                            <p> 
+                                <ul style= list-style-type:square>
+                                    <li> Manage Fleet/Personnel</li>
+                                    <br><br>
+                                    <li> Bid on Shipments</li>
+                                    <br><br>
+                                    <li> Various CRM Features</li>
+                                    <br><br>
+                                    <button class="buttons5" onclick="window.location.href='registrationcarrier';">SELECT</button>
+                                </ul>
+                            </p>
+
+                        </div>
+                    </div>
+			    </div>
+		    </div>
+		</div>
+
+		<div class="footer">
+            Copyright &copy; Slippery Rock University 2022
+        </div>
+		<script>
+		function nav_open() {
+			document.getElementById("content").style.marginLeft = "15%";
+			document.getElementById("mySidebar").style.width = "15%";			
+			document.getElementById("mySidebar").style.display = "block";
+			document.getElementById("hamburger").style.display = "none";
+		}
+		
+		function nav_close() {
+		  	document.getElementById("content").style.marginLeft = "0%";
+		  	document.getElementById("mySidebar").style.display = "none";
+		  	document.getElementById("hamburger").style.display = "block";
+		}
+		</script>
+	</body>
+</html>

@@ -1,0 +1,679 @@
+/* @authors Mitchell Nemitz 
+and Nciholas Bushee*/
+/*NB - Lines 88-104 may be deprecated*/
+@import url("menubar.css");
+@import url("buttons.css");
+@import url("tables.css");
+@import url("login.css");
+
+
+
+* {
+	margin: 0px;
+	font-family: Tahoma;
+}
+
+html, body {
+	margin: 0px;
+	padding: 0px;
+	border: none;
+	height: 100%;
+	width: 100%;
+}
+
+body {
+	background: #fff;
+	font-family: Sans-serif;
+}
+
+
+
+/* ------------------ */
+/* Container elements */
+#wrapper {
+	width: 100%;
+	min-width: 1241.99px;
+	
+	min-height: 100%;
+	height: auto !important;
+	height: 100%;
+	background: #fff;
+	
+	margin: 0px auto -24px;
+}
+
+/*Nick Bushee 10_18*/
+#menu-wrapper {
+	width: 100%;
+	min-width:1241.99px;
+	overflow: auto;
+	height: 30 px;
+	background: #134b33;
+}
+
+	#debug {
+		display: none;
+	}
+
+	#heading {
+		color: white;
+		min-width:1230px;
+		overflow: auto;
+		height: 64px;
+		line-height: 64px;
+		padding-left: 12px;
+		background: #006438;
+	}
+
+
+	#content {
+		padding: 6px;
+		padding-bottom: 30px;
+		z-index: 1;
+		margin-left: 15%;
+	}
+
+		#dataContainer {
+		clear: both;
+		
+		width: 100%;
+		overflow: auto;
+		border: 1px solid grey;
+		}
+
+		/* Secondary panel */
+		#editContainer {
+			width: 600px;
+			margin: 0 auto;
+		}
+
+		#formContainer {
+			float: left;
+			width: 440px;
+			overflow: auto;
+			margin-top: 12px;
+			margin-bottom: 12px;
+			border: 1px solid grey;
+		}
+		
+		#dualFormContainer {
+			float: left;
+			width: 440px;
+			overflow: auto;
+			margin-top: 12px;
+			margin-bottom: 12px;
+			border: 1px solid grey;
+		}
+		
+		#dualFormButtonContainer {
+			
+		}
+
+	/* ------------- */
+	/* sticky footer */
+	.push {
+		clear: both;
+		height: 24px;
+	}
+
+/* ------------- */
+/* actual footer */
+.footer {
+	clear: inline-start;
+	
+	width: 100%;
+	height: 24px;
+
+	color: white;
+	line-height: 24px;
+	background: #134b33;
+	text-align: center;
+	margin: 0px auto;
+	position: fixed;
+}
+
+/*Altered by Nick Bushee 9/17/22, 9/18/22 */
+#indexHome {
+	align-items: center;
+	display: block;
+	box-sizing: border-box;
+	text-align: center;
+	margin: auto;
+	padding: 30px; 
+	z-index: 1;
+	border: 3px solid black;
+	min-width: 364px;
+	max-width: 420px;
+}
+/* Contributed by Nick Bushee 9/17/22, 9/18/22 */
+
+#content > h1 {
+	text-align: center;
+}
+
+
+
+/* Different Styles for Buttons
+   Most are off-shoots of .buttons
+   and .buttons2.
+   .buttons6 is for smaller size reqs */
+.buttons{
+	padding: 10px 14px;
+	border-radius: 25px;
+	border: 3px solid black;
+	color: white;
+	background-color: grey;
+	font-weight: bold;
+	font-size: 23px;    
+	margin: 0 3px;
+	cursor: pointer;
+	
+	}
+	
+.buttons:hover {
+	background-color: #676767;
+}
+
+.buttons2{
+	padding: 10px 14px;
+	border-radius: 25px;
+	border: 3px solid black;
+	color: white;
+	background-color: #006438;
+	font-weight: bold;
+	font-size: 16px;    
+	margin: 0 3px;
+	cursor: pointer;
+}
+
+.buttons2:hover {
+	background-color: #005730;
+}
+
+.buttons3{
+	padding: 10px 14px;
+	border-radius: 25px;
+	border: 3px solid black;
+	color: black;
+	background-color: whitesmoke;
+	font-weight: bold;
+	font-size: 16px;    
+	margin: 12px;
+	cursor: pointer;
+}
+
+.buttons3:hover {
+	background-color: #e3e3e3;
+}
+
+.buttons4{
+	padding: 10px 14px;
+	border-radius: 25px;
+	border: 3px solid black;
+	color: white;
+	background-color: grey;
+	font-weight: bold;
+	font-size: 16px;    
+	margin: 0 3px;
+	cursor: pointer;
+	}
+	
+.buttons4:hover{
+	background-color: #676767;
+}
+
+.buttons5{
+	padding: 10px 14px;
+	border-radius: 25px;
+	border: 3px solid black;
+	color: black;
+	background-color: whitesmoke;
+	font-weight: bold;
+	font-size: 16px;    
+	margin: 0 3px;
+	cursor: pointer;
+}
+
+.buttons5:hover {
+	background-color: #e3e3e3;
+}
+
+.buttons6{
+	padding: 5px 7px;
+	border-radius: 25px;
+	border: 3px solid black;
+	color: white;
+	background-color: grey;
+	font-weight: bold;
+	font-size: 12px;   
+	margin-top: 5px;
+	margin-left: 3px;
+	margin-right: 3px;
+	cursor: pointer;
+	}
+
+.buttons6:hover {
+	background-color: #676767;
+	cursor: pointer;
+}
+
+input#routeDate {
+	width: 161.14px;
+	height: 18.13px;
+}
+.buttons7 {
+	padding: 5px 7px;
+	border-radius: 25px;
+	border: 3px solid black;
+	color: white;
+	background-color: #006438;
+	font-weight: bold;
+	font-size: 162x;    
+	margin-top: 5px;
+	margin-left: 3px;
+	margin-right: 3px;
+	cursor: pointer;
+}
+
+.buttons7:hover {
+	background-color: #005730;
+	cursor: pointer;	
+}
+
+
+
+
+/* 9 Form Styles in Total
+   All are off-shoots of .form-group
+   and .form-group2 to accommodate input
+   variations. */
+.form-group{
+	background-color: #006438;
+	text-align: center;
+	position: relative;
+	top: 40px; 
+	margin: auto;
+	border: 3px solid black;
+	margin: 0px auto;
+	min-width: 320px;
+	max-width: 500px;  
+	width: 100%;
+}
+
+.form-group > h2 {
+	color: white;
+	text-shadow: 0 0 15px black;
+}
+
+.form-group > label {
+	color: white;
+	text-shadow: 0 0 10px black;
+	text-align: right;
+}
+
+.form-group > select {
+	width: 166.14px;
+	height: 22.33;
+}
+
+select#contact {
+	width: 166.4px;
+	height: 22px;
+}
+
+select#technician {
+	width: 166.4px;
+	height: 22px;
+}
+
+input#date {
+	width: 161.4px;
+	height: 18px;
+}
+
+.form-group2{
+	background-color: white;
+	text-align: center;
+	position: relative;
+	top: 40px; 
+	bottom: 30px;
+	padding-bottom: .75em;
+
+	border: 3px solid black;
+	margin: 0px auto;
+	min-width: 320px;
+	max-width: 500px;  
+	width: 100%;
+}
+
+.form-group2 > h2 {
+	color: #006438;
+	text-shadow: 0 0 1px black;
+}
+.form-group2 > select {
+	width: 166.14px;
+	height: 22.33px;
+}
+
+.form-group2 > label {
+	text-align: right;
+	min-width: 170px;
+}
+
+input#license_expiration {
+	width: 161.4px;
+	height: 18px;
+}
+.form-group3{
+	background-color: #006438;
+	text-align: center;
+	position: relative;
+	margin: auto;
+	border: 3px solid black;
+	min-width: 320px;
+	max-width: 500px;  
+}
+
+.form-group3 > h2 {
+	color: white;
+	text-shadow: 0 0 15px black;
+}
+
+.form-group3 > label {
+	color: white;
+	text-shadow: 0 0 10px black;
+	text-align: right;
+}
+
+.form-group3 > select {
+	width: 166.14px;
+	height: 22.33;
+}
+
+.form-group3 > label {
+	display: inline-block;
+	width: 200px;
+	text-align: right;
+}
+
+.form-group3 * input {
+	height: 16px;
+	font-size: 14;
+}
+
+
+.form-group4{
+	background-color: white;
+	text-align: center;
+	position: relative;
+	bottom: 50px;
+	padding-bottom: 1em;
+	margin: auto;
+	border: 3px solid black;
+	min-width: 320px;
+	max-width: 500px;  
+}
+
+.form-group4 > select {
+	width: 166.14px;
+	height: 22.33px;
+}
+
+.form-group4 > label {
+	display: inline-block;
+	width: 200px;
+	text-align: right;
+}
+
+.form-group4 > input {
+	height: 16px;
+	font-size: 14;
+}
+
+/*For use on add/update shipments*/
+.form-group7 {
+	background-color: #006438;
+	text-align: center;
+	position: relative;
+	top: 15px; 
+	border: 3px solid black;
+	margin-right: auto;
+	margin-left: auto;
+	min-width: 320px;
+	max-width: 500px;  
+	width: 100%;
+}
+
+.form-group7 > h2 {
+	color: white;
+	text-shadow: 0 0 15px black;
+}
+
+.form-group7 > label {
+	width: 180px;
+	color: white;
+	text-shadow: 0 0 10px black;
+	text-align: right;
+}
+
+.form-group7 > select {
+	width: 166.14px;
+	height: 22.33;
+}
+
+.form-group8{
+	background-color: white;
+	text-align: center;
+	position: relative;
+	top: 15px; 
+	bottom: 30px;
+	padding-bottom: .75em;
+	border: 3px solid black;
+	margin: 0px auto;
+	min-width: 320px;
+	max-width: 500px;  
+	width: 100%;
+}
+
+.form-group8 > h2 {
+	color: #006438;
+	text-shadow: 0 0 1px black;
+}
+
+.form-group8 > select {
+	width: 166.14px;
+	height: 22.33px;
+}
+
+.form-group8 > label {
+	text-align: right;
+	min-width: 170px;
+}
+
+.form-group2 > select {
+	width: 166.14px;
+	height: 22.33px;
+}
+
+.form-group9{
+	background-color: white;
+	text-align: center;
+	position: relative; 
+	padding-bottom: .75em;
+	border: 3px solid black;
+	margin: 0px auto;
+	min-width: 320px;
+	max-width: 500px;  
+	width: 100%;
+}
+
+.form-group9 > h2 {
+	color: #676767;
+	text-shadow: 0 0 2px black;
+}
+.form-group9 > select {
+	width: 166.14px;
+	height: 22.33px;
+}
+
+.form-group9 > label {
+	text-align: right;
+	min-width: 170px;
+}
+
+input#shipDate {
+	width: 161.4px;
+	height: 18px;
+}
+label {
+	display: inline-block;
+	width: 180px;
+	text-align: right;
+}
+section h2 {
+	text-align: center;
+}
+
+
+/* Input Box styling */
+#userBox {
+	font-size: 13pt;
+	border: 2px solid black;
+
+}
+
+#passBox {
+	font-size: 13pt;
+	border: 2px solid black;
+}
+
+#emailBox {
+	font-size: 13pt;
+	border: 2px solid black;
+}
+
+
+/*Column class floated to left to make any 
+page vertically divided content sections. 
+3 Different styles applied to cols and 
+child elements*/
+.column {
+	height: 535px;
+	width: 275px;
+	text-align: center justify;
+	font-size: 14;
+	margin-left: 0.5em;
+	margin-right: 0.5em;
+	position: relative;
+	float: left;
+}
+
+/*Designed to center floated column content on Registration Home page
+  Replicate with different I.D num to alter for other pages */
+#col1 {
+	margin-left: 120px;
+	background: linear-gradient(white, #006438);
+	text-align: center justify;
+}
+
+#col1 > h2 {
+	color: white;
+	text-align: center;
+	border: 3px  double #005530;
+	background: #005530;
+
+}
+
+#col1 > ul {
+	text-align: center;
+	font-size: 24px;
+	padding: 35px;
+
+}
+
+#col2{
+	background: linear-gradient(white, black);
+}
+
+#col2 > h2 {
+	color: white;
+	text-align: center;
+	border: 3px  double black;
+	background: black;
+}
+
+#col2 > ul {
+	text-align: center;
+	font-size: 24px;
+	padding: 35px;
+}
+
+#col3{
+	background: linear-gradient(white, grey);
+
+}
+
+#col3 > h2 {
+	color: white;
+	text-align: center;
+	border: 3px  double grey;
+	background: grey;
+}
+
+#col3 > ul {
+	text-align: center;
+	font-size: 24px;
+	padding: 35px;
+}
+
+#regColContent {
+	text-align: center;
+	position: absolute;
+	margin-left: 15%
+}
+
+#container-center {
+	align-items: center;
+	position: relative;
+	min-width: 1080px;
+}
+/*End of Nick Bushee's Contribution*/
+
+
+#authenticated {
+	position: left;
+	font-size: 14pt;
+}
+
+#authenticated a {
+	font-weight: bold;
+	text-decoration: underline;
+}
+
+#authenticated a:hover {
+	color: #134b33;
+	cursor: pointer;
+}
+/*
+Author- Josh Gearhart	jjg1018@sru.edu
+Simple Class Style For Displaying the Email Message
+*/
+.emailMessage {
+    color: white;
+    text-shadow: 0 0 15px black;
+} 
+
+.captchaMessage{
+	color: white;
+    text-shadow: 0 0 15px black;
+}
+
+.loginMessage{
+	color: white;
+    text-shadow: 0 0 15px black;
+}
+
+.loginError{
+	color: white;
+    text-shadow: 0 0 15px black;
+}

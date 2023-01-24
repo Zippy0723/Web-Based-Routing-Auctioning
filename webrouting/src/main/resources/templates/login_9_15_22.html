@@ -1,0 +1,40 @@
+<!-- @author Nick Bushee-->
+<!DOCTYPE html>
+<head>
+   <meta name="viewport" content="width=device-width, initial-scale=1" />
+   <title>Sign In</title>
+   <link href="formSkeleBase.css" rel="stylesheet">
+   <link href="formSkeleStyles.css" rel="stylesheet">
+</head>
+<body>
+   <header> 
+   </header>
+      <section>
+      <h1>Sign In</h1>
+      <form method="POST" th:action="@{/login}">
+
+               <input name="username" type="text" placeholder="Username" id="userBox" autofocus="true" required>
+
+               <input name="password" type="password" placeholder="Password"/>
+
+               <label for="regList">Registration Category</label>
+               <select name="registerType" id="regList">
+                  <option value="carrier">Carrier</option>
+                  <option value="shipper">Shipper</option>
+                  <option value="technician">Technician</option>
+               </select>
+               <p>
+                  <button type="submit">Sign In</button>
+         
+               </p>
+            </form>
+            <br>
+            <form action="/">
+                <input type="button" value="Cancel Login" />
+            </form>
+   </section>
+   <footer>
+      Welcome To Enterprise Routing System
+   </footer>
+</body>
+</html>

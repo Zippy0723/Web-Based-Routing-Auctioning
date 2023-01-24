@@ -1,0 +1,328 @@
+<!doctype html>
+<html>
+	<head>
+		<title>Add Shipments</title>
+
+		<link rel="stylesheet" type="text/css" href="/styles/reset.css" />
+        <link rel="stylesheet" type="text/css" href="/styles/main.css" />
+        <link rel="stylesheet" type="text/css" href="/styles/login.css">
+        <link rel="stylesheet" type="text/css" href="/styles/menubar.css">
+        <link rel="stylesheet" type="text/css" href="/styles/tables.css">
+
+        <link rel="stylesheet" type="text/css" href="/styles/smoothness/jquery-ui-1.10.2.css" />
+
+	</head>
+	<body>
+		<div id="wrapper">
+
+            <div id="heading">
+                <h1>Enterprise Routing System &nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;Customer Service: 1 (800) 778-9111</h1>
+            </div>
+            <div id="menu-wrapper">
+            	<br><br>
+            </div>
+            <div sec:authorize="isAuthenticated()" class = "navSideBar" id="mySidebar">
+                <button onclick="nav_close()" class="bar-item">...</button>
+                <div id="menu">
+                    <ul class="navbar">
+                        <li class="navitem">
+                            <a class="navlink" id="nav_home" href="/">Home</a>
+                        </li>
+                        <li sec:authorize="hasAuthority('ADMIN')" class="navitem">
+                            <a class="navlink" id="nav_users" href="/users">Users</a>
+                        </li>
+                        <li sec:authorize="hasAuthority('CARRIER')" class="navitem">
+                            <a class="navlink" id="nav_contacts" href="/contacts">Contacts</a>
+                        </li>
+                        <li sec:authorize="hasAuthority('CARRIER')" class="navitem">
+                            <a class="navlink" id="nav_locations" href="/locations">Locations</a>
+                        </li>
+                        <li sec:authorize="hasAuthority('CARRIER')" class="navitem">
+                            <a class="navlink" id="nav_vehicles" href="/vehicles">Vehicles</a>
+                        </li>
+                        <li sec:authorize="hasAuthority('CARRIER')" class="navitem">
+                            <a class="navlink" id="nav_vehicletypes" href="/vehicletypes">Vehicle Types</a>
+                        </li>
+                        <li sec:authorize="hasAuthority('CARRIER')" class="navitem">
+                            <a class="navlink" id="nav_drivers" href="/drivers">Drivers</a>
+                        </li>
+                        <li sec:authorize="hasAuthority('CARRIER')" class="navitem">
+                            <a class="navlink" id="nav_technicians" href="/technicians">Technicians</a>
+                        </li>
+                        <li sec:authorize="hasAuthority('CARRIER')" class="navitem">
+                            <a class="navlink" id="nav_maintenanceorders" href="/maintenanceorders">Maintenance</a>
+                        </li>
+                        <li sec:authorize="hasAnyAuthority('CARRIER','MASTERLIST')" class="navitem">
+                            <a class="navlink" id="nav_carriers" href="/carriers">Carriers</a>
+                        </li>
+                        <li sec:authorize="hasAuthority('MASTERLIST')" class="navitem">
+                            <a class="navlink" id="nav_shipments_home_masterlist" href="/shipmentshomemaster">Shipments</a>
+                        </li>
+                        <li sec:authorize="hasAuthority('SHIPPER')" class="navitem">
+                            <a class="selected" id="nav_shipments_home_shipper" href="/shipmentshomeshipper">Shipments</a>
+                        </li>
+                        <li sec:authorize="hasAuthority('CARRIER')" class="navitem">
+                            <a class="selected" id="nav_shipments_home_carrier" href="/shipmentshomecarrier">Shipments</a>
+                        </li>
+                        <li sec:authorize="hasAnyAuthority('CARRIER','MASTERLIST')" class="navitem">
+                            <a class="navlink" id="nav_routes" href="/routes">Routes</a>
+                        </li>
+						<br><br><br><br><br>
+                        <li sec:authorize="isAuthenticated()" class="navitem">
+                            <form id="logoutForm" method="POST" th:action="@{/logout}">
+                                <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+                            </form>
+                            <a class="navlink" onclick="document.forms['logoutForm'].submit()">Logout</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div sec:authorize="!isAuthenticated()" class = "navSideBar" id="mySidebar">
+                <button onclick="nav_close()" class="bar-item">...</button>
+                <ul class="navbar">
+                    <li class="navitem">
+                        <a class="navlink" id="nav_home" href="/">Home</a>
+                    </li>
+                    <br>
+                    <li sec:authorize="!isAuthenticated()" class="navitem">
+                        <a class="navlink" id="nav_login" href="login">Login</a>
+                    </li>
+                    <br>
+                    <li sec:authorize="!isAuthenticated()" class="navitem">
+                        <a class="selected" id="nav_registration" href="/registrationhome">Register</a>
+                    </li>
+                </ul>
+            </div>
+
+            <div id="sub_heading">
+                <div id="loginDiv">
+                    <div sec:authorize="isAuthenticated()" style="float: right;">
+                        <form id="logoutForm" method="POST" th:action="@{/logout}">
+                            <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+                        </form>
+                        Hello <span sec:authentication="name"></span> | <a onclick="document.forms['logoutForm'].submit()">Logout</a>
+                    </div>
+                    <div sec:authorize="!isAuthenticated()" style="float: right;">
+                        <a id="loginLink" class="ui-button" href="/login">Login</a>
+                    </div>
+                </div>
+            </div>
+			
+			<div id="content">
+				<span class="nav-expand">
+  					<button class=""  id="hamburger" style="display:none" onclick="nav_open()">☰</button>
+				</span>
+				<br><br>
+                <h2>Add Shipment</h2>
+                <small>Coordinates must begin with a negative symbol or number followed by 2-3 digits, a decimal point and 7 trailing digits</small>
+                <form action="#" th:action="@{/addshipments}" th:object="${shipments}" method="post">
+				<hr>
+				<div class="form-group7">
+					<br>
+					<h2> Enter Shipment Info</h2>
+					<br>
+	                <label for="client">Client: </label> 
+	                <input type="text" th:field="*{client}" id="client" placeholder="Client" required>
+	                <span th:if="${#fields.hasErrors('client')}" th:errors="*{client}"></span>
+	            	<br>
+	                <label for="clientMode">Client Mode: </label>
+	                <select th:field="*{clientMode}" required>
+	                    <th:block>
+	                        <option th:text="FTL" th:value="FTL"></option>
+	                        <option th:text="LTL" th:value="LTL"></option>
+	                    </th:block>
+	                </select> 
+	            	<br>
+	                <label for="shipDate">Ship Date: </label>    
+	                <input type="date" th:field="*{shipDate}" id="shipDate" placeholder="Ship Date" required>
+	                <span th:if="${#fields.hasErrors('shipDate')}" th:errors="*{shipDate}"></span>
+	             	<br>
+	                <label for="commodityClass">Commodity Class: </label> 
+	                <input type="text" th:field="*{commodityClass}" id="commodityClass" placeholder="Commodity Class" required>
+	                <span th:if="${#fields.hasErrors('commodityClass')}" th:errors="*{commodityClass}"></span>
+	             	<br>
+	                <label for="commodityPieces">Commodity Pieces: </label>   
+	                <input type="text" th:field="*{commodityPieces}" id="commodityPieces" placeholder="Commodity Pieces" required>
+	                <span th:if="${#fields.hasErrors('commodityPieces')}" th:errors="*{commodityPieces}"></span>
+	             	<br>
+	                <label for="commodityPaidWeight">Commodity Paid Weight: </label>
+	                <input type="text" th:field="*{commodityPaidWeight}" id="commodityPaidWeight" placeholder="Commodity Paid Weight" required>
+	                <span th:if="${#fields.hasErrors('commodityPaidWeight')}" th:errors="*{commodityPaidWeight}"></span>
+	             	<br><br>
+             	</div>
+	             <div class="form-group8">
+	             	<br>
+	                <label for="shipperCity">Shipper City: </label> 
+	                <input type="text" th:field="*{shipperCity}" id="shipperCity" placeholder="Shipper City" required>
+	                <span th:if="${#fields.hasErrors('shipperCity')}" th:errors="*{shipperCity}"></span>
+	             	<br>
+	                <label for="shipperState">Shipper State: </label> 
+	                <select name="shipperState" th:field="*{shipperState}" id="state">
+                        <option value= ""></option>
+                        <option value="AL">Alabama</option>
+ 						<option value="AK">Alaska</option>
+  						<option value="AZ">Arizona</option>
+ 						<option value="AR">Arkansas</option>
+  						<option value="CA">California</option>
+  						<option value="CO">Colorado</option>
+  						<option value="CT">Connecticut</option>
+  						<option value="DE">Delaware</option>
+  						<option value="DC">Dist of Columbia</option>
+  						<option value="FL">Florida</option>
+  						<option value="GA">Georgia</option>
+  						<option value="HI">Hawaii</option>
+  						<option value="ID">Idaho</option>
+  						<option value="IL">Illinois</option>
+  						<option value="IN">Indiana</option>
+ 						<option value="IA">Iowa</option>
+ 						<option value="KS">Kansas</option>
+  						<option value="KY">Kentucky</option>
+  						<option value="LA">Louisiana</option>
+  						<option value="ME">Maine</option>
+  						<option value="MD">Maryland</option>
+  						<option value="MA">Massachusetts</option>
+  						<option value="MI">Michigan</option>
+  						<option value="MN">Minnesota</option>
+  						<option value="MS">Mississippi</option>
+  						<option value="MO">Missouri</option>
+  						<option value="MT">Montana</option>
+  						<option value="NE">Nebraska</option>
+  						<option value="NV">Nevada</option>
+  						<option value="NH">New Hampshire</option>
+  						<option value="NJ">New Jersey</option>
+  						<option value="NM">New Mexico</option>
+  						<option value="NY">New York</option>
+  						<option value="NC">North Carolina</option>
+  						<option value="ND">North Dakota</option>
+  						<option value="OH">Ohio</option>
+  						<option value="OK">Oklahoma</option>
+  						<option value="OR">Oregon</option>
+  						<option value="PA">Pennsylvania</option>
+  						<option value="RI">Rhode Island</option>
+  						<option value="SC">South Carolina</option>
+  						<option value="SD">South Dakota</option>
+  						<option value="TN">Tennessee</option>
+  						<option value="TX">Texas</option>
+  						<option value="UT">Utah</option>
+  						<option value="VT">Vermont</option>
+  						<option value="VA">Virginia</option>
+  						<option value="WA">Washington</option>
+  						<option value="WV">West Virginia</option>
+  						<option value="WI">Wisconsin</option>
+  						<option value="WY">Wyoming</option>
+                        </select>
+	                <span th:if="${#fields.hasErrors('shipperState')}" th:errors="*{shipperState}"></span>
+	             	<br>
+	                <label for="shipperZip">Shipper Zip: </label> 
+	                <input type="text" th:field="*{shipperZip}" id="shipperZip" placeholder="Shipper Zip(Numbers only)" required minlength = "5" maxlength = "10" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1');">
+	                <span th:if="${#fields.hasErrors('shipperZip')}" th:errors="*{shipperZip}"></span>
+	             	<br>
+	                <label for="shipperLatitude">Shipper Latitude: </label>  
+	                <input type="text" th:field="*{shipperLatitude}" id="shipperLatitude" placeholder="Shipper Latitude" required>
+	                <span th:if="${#fields.hasErrors('shipperLatitude')}" th:errors="*{shipperLatitude}"></span>
+	             	<br>
+	                <label for="shipperLongitude">Shipper Longitude: </label> 
+	                <input type="text" th:field="*{shipperLongitude}" id="shipperLongitude" placeholder="Shipper Longitude" required>
+	                <span th:if="${#fields.hasErrors('shipperLongitude')}" th:errors="*{shipperLongitude}"></span>
+	             	<br>
+	                <label for="consigneeCity">Consignee City: </label>  
+	                <input type="text" th:field="*{consigneeCity}" id="consigneeCity" placeholder="Consignee City" required>
+	                <span th:if="${#fields.hasErrors('consigneeCity')}" th:errors="*{consigneeCity}"></span>
+	             	<br>
+	                <label for="consigneeState">Consignee State: </label>   
+	                <select name="consigneeState" th:field="*{consigneeState}" id="consigneeState">
+                        <option value= ""></option>
+                        <option value="AL">Alabama</option>
+ 						<option value="AK">Alaska</option>
+  						<option value="AZ">Arizona</option>
+ 						<option value="AR">Arkansas</option>
+  						<option value="CA">California</option>
+  						<option value="CO">Colorado</option>
+  						<option value="CT">Connecticut</option>
+  						<option value="DE">Delaware</option>
+  						<option value="DC">Dist of Columbia</option>
+  						<option value="FL">Florida</option>
+  						<option value="GA">Georgia</option>
+  						<option value="HI">Hawaii</option>
+  						<option value="ID">Idaho</option>
+  						<option value="IL">Illinois</option>
+  						<option value="IN">Indiana</option>
+ 						<option value="IA">Iowa</option>
+ 						<option value="KS">Kansas</option>
+  						<option value="KY">Kentucky</option>
+  						<option value="LA">Louisiana</option>
+  						<option value="ME">Maine</option>
+  						<option value="MD">Maryland</option>
+  						<option value="MA">Massachusetts</option>
+  						<option value="MI">Michigan</option>
+  						<option value="MN">Minnesota</option>
+  						<option value="MS">Mississippi</option>
+  						<option value="MO">Missouri</option>
+  						<option value="MT">Montana</option>
+  						<option value="NE">Nebraska</option>
+  						<option value="NV">Nevada</option>
+  						<option value="NH">New Hampshire</option>
+  						<option value="NJ">New Jersey</option>
+  						<option value="NM">New Mexico</option>
+  						<option value="NY">New York</option>
+  						<option value="NC">North Carolina</option>
+  						<option value="ND">North Dakota</option>
+  						<option value="OH">Ohio</option>
+  						<option value="OK">Oklahoma</option>
+  						<option value="OR">Oregon</option>
+  						<option value="PA">Pennsylvania</option>
+  						<option value="RI">Rhode Island</option>
+  						<option value="SC">South Carolina</option>
+  						<option value="SD">South Dakota</option>
+  						<option value="TN">Tennessee</option>
+  						<option value="TX">Texas</option>
+  						<option value="UT">Utah</option>
+  						<option value="VT">Vermont</option>
+  						<option value="VA">Virginia</option>
+  						<option value="WA">Washington</option>
+  						<option value="WV">West Virginia</option>
+  						<option value="WI">Wisconsin</option>
+  						<option value="WY">Wyoming</option>
+                        </select>
+	                <span th:if="${#fields.hasErrors('consigneeState')}" th:errors="*{consigneeState}"></span>
+	             	<br>
+	                <label for="consigneeZip">Consignee Zip: </label>   
+	                <input type="text" th:field="*{consigneeZip}" id="consigneeZip" placeholder="Consignee Zip(Numbers only))" required minlength = "5" maxlength = "10" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1');">
+	                <span th:if="${#fields.hasErrors('consigneeZip')}" th:errors="*{consigneeZip}"></span>
+	             	<br>
+	                <label for="consigneeLatitude">Consignee Latitude: </label> 
+	                <input type="text" th:field="*{consigneeLatitude}" id="consigneeLatitude" placeholder="Consignee Latitude" required>
+	                <span th:if="${#fields.hasErrors('consigneeLatitude')}" th:errors="*{consigneeLatitude}"></span>
+	             	<br>
+	                <label for="consigneeLongitude">Consignee Longitude: </label>
+	                <input type="text" th:field="*{consigneeLongitude}" id="consigneeLongitude" placeholder="Consignee Longitude" required>
+	                <span th:if="${#fields.hasErrors('consigneeLongitude')}" th:errors="*{consigneeLongitude}"></span>
+	                <br><br>
+	                <p sec:authorize="hasAuthority('SHIPPER')"><button class="buttons2" onclick="window.location.href='./createdshipments';">Back</button>
+						<button class="buttons4" type="submit">Add Shipment</button>
+					</p>
+					<br>
+				</div>
+	            </form>
+			</div>
+		</div>
+
+		<div class="footer">
+            Copyright &copy; Slippery Rock University 2022
+        </div>
+		<script>
+		function nav_open() {
+			document.getElementById("content").style.marginLeft = "15%";
+			document.getElementById("mySidebar").style.width = "15%";			
+			document.getElementById("mySidebar").style.display = "block";
+			document.getElementById("hamburger").style.display = "none";
+		}
+	
+		function nav_close() {
+	  		document.getElementById("content").style.marginLeft = "0%";
+	  		document.getElementById("mySidebar").style.display = "none";
+	  		document.getElementById("hamburger").style.display = "block";
+		}
+		</script>
+	</body>
+</html>

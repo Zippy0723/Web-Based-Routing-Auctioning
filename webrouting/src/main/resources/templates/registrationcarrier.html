@@ -1,0 +1,236 @@
+<!doctype html>
+<html>
+	<head>
+		<title>Enterprise Routing System</title>
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+		<script src="https://www.google.com/recaptcha/api.js" async defer></script>
+	  <script type = "text/javascript">
+				function validateForm(){
+				if (grecaptcha.getResponse()){
+					return true;
+					}
+				else {
+					alert("Please Validate the Captcha")
+					return;
+				}
+			}
+				
+		</script>
+		<script>
+	        $(document).ready(function(){
+	            $("#submitForm").hide();
+	            $(".googleCaptcha").hide();
+	
+	            $("#showGoogle").click(function(){
+	            	$("#hideBack").hide();
+	                $("#showGoogle").hide();
+	                $("#hideForm").hide();
+	                $("#hideForm2").hide();
+	                $(".googleCaptcha").fadeIn("slow");
+	                $("#submitForm").fadeIn("slow");
+	
+	            });
+	            $("#submitForm").click(function(){
+	                $(this).hide();
+	                $("#hideForm").fadeIn("slow");
+	                $("#hideForm2").fadeIn("slow");
+	                $("#hideBack").fadeIn("slow");
+	                $(".googleCaptcha").hide();
+	                $("#showGoogle").fadeIn("slow");
+	            });
+	        });
+    </script>
+		<link rel="stylesheet" type="text/css" href="/styles/reset.css" />
+    <link rel="stylesheet" type="text/css" href="/styles/main.css" />
+    <link rel="stylesheet" type="text/css" href="/styles/login.css">
+    <link rel="stylesheet" type="text/css" href="/styles/menubar.css">
+    <link rel="stylesheet" type="text/css" href="/styles/tables.css">
+		<link rel="preconnect" href="https://www.google.com">
+		<link rel="preconnect" href="https://www.gstatic.com" crossorigin>
+    <link rel="stylesheet" type="text/css" href="/styles/jquery-ui-1.10.2.css" />
+	</head>
+	<body>
+		<div id="wrapper">
+            <div id="heading">
+                <h1>Enterprise Routing System&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;Customer Service: 1 (800) 778-9111</h1>
+            </div>
+            <div id="menu-wrapper">
+            	<br><br>
+            </div>
+            <div sec:authorize="isAuthenticated()" class = "navSideBar" id="mySidebar">
+                <button onclick="nav_close()" class="bar-item">...</button>
+                <div id="menu">
+                    <ul class="navbar">
+                        <li class="navitem">
+                            <a class="navlink" id="nav_home" href="/">Home</a>
+                        </li>
+                        <li sec:authorize="hasAuthority('ADMIN')" class="navitem">
+                            <a class="navlink" id="nav_users" href="/users">Users</a>
+                        </li>
+                        <li sec:authorize="hasAuthority('CARRIER')" class="navitem">
+                            <a class="navlink" id="nav_contacts" href="/contacts">Contacts</a>
+                        </li>
+                        <li sec:authorize="hasAuthority('CARRIER')" class="navitem">
+                            <a class="navlink" id="nav_locations" href="/locations">Locations</a>
+                        </li>
+                        <li sec:authorize="hasAuthority('CARRIER')" class="navitem">
+                            <a class="navlink" id="nav_vehicles" href="/vehicles">Vehicles</a>
+                        </li>
+                        <li sec:authorize="hasAuthority('CARRIER')" class="navitem">
+                            <a class="navlink" id="nav_vehicletypes" href="/vehicletypes">Vehicle Types</a>
+                        </li>
+                        <li sec:authorize="hasAuthority('CARRIER')" class="navitem">
+                            <a class="navlink" id="nav_drivers" href="/drivers">Drivers</a>
+                        </li>
+                        <li sec:authorize="hasAuthority('CARRIER')" class="navitem">
+                            <a class="navlink" id="nav_technicians" href="/technicians">Technicians</a>
+                        </li>
+                        <li sec:authorize="hasAuthority('CARRIER')" class="navitem">
+                            <a class="navlink" id="nav_maintenanceorders" href="/maintenanceorders">Maintenance</a>
+                        </li>
+                        <li sec:authorize="hasAnyAuthority('CARRIER','MASTERLIST')" class="navitem">
+                            <a class="navlink" id="nav_carriers" href="/carriers">Carriers</a>
+                        </li>
+                        <li sec:authorize="hasAuthority('MASTERLIST')" class="navitem">
+                            <a class="navlink" id="nav_shipments_home_masterlist" href="/shipmentshomemaster">Shipments</a>
+                        </li>
+                        <li sec:authorize="hasAuthority('SHIPPER')" class="navitem">
+                            <a class="navlink" id="nav_shipments_home_shipper" href="/shipmentshomeshipper">Shipments</a>
+                        </li>
+                        <li sec:authorize="hasAuthority('CARRIER')" class="navitem">
+                            <a class="navlink" id="nav_shipments_home_carrier" href="/shipmentshomecarrier">Shipments</a>
+                        </li>
+                        <li sec:authorize="hasAnyAuthority('CARRIER','MASTERLIST')" class="navitem">
+                            <a class="navlink" id="nav_routes" href="/routes">Routes</a>
+                        </li>
+						<br><br><br><br><br>
+                        <li sec:authorize="isAuthenticated()" class="navitem">
+                            <form id="logoutForm" method="POST" th:action="@{/logout}">
+                                <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+                            </form>
+                            <a class="navlink" onclick="document.forms['logoutForm'].submit()">Logout</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div sec:authorize="!isAuthenticated()" class = "navSideBar" id="mySidebar">
+                <button onclick="nav_close()" class="bar-item">...</button>
+                <ul class="navbar">
+                    <li class="navitem">
+                        <a class="navlink" id="nav_home" href="/">Home</a>
+                    </li>
+                    <br>
+                    <li sec:authorize="!isAuthenticated()" class="navitem">
+                        <a class="navlink" id="nav_login" href="login">Login</a>
+                    </li>
+                    <br>
+                    <li sec:authorize="!isAuthenticated()" class="navitem">
+                        <a class="selected" id="nav_registration" href="/registrationhome">Register</a>
+                    </li>
+                </ul>
+            </div>
+			
+			<div id="content">
+				<span class="nav-expand">
+  					<button class=""  id="hamburger" style="display:none" onclick="nav_open()">☰</button>
+				</span>
+                <br>
+                <h1>Carrier Account Registration</h1>
+                <br>
+                <form method="POST" th:object="${userForm}" th:action="@{/registrationcarrier}">
+                    <hr>
+                    <div class="form-group">
+                    <span id="hideForm">
+                        <span type="hidden" th:text="${message}" class="loginMessage"></span>
+                        <span type="hidden" th:text="${error}" class="loginError"></span>
+                        <br>
+
+                        <h2 class= "captchaMessage"> Enter Your User Info</h2>
+                        <br><br>
+                        <input type="text" th:field="*{username}" id="username" placeholder="Username"  autofocus="true" required>
+                        <p th:if="${#fields.hasErrors('username')}" th:errorclass="username" th:errors="*{username}"></p>
+                        <br>
+                        <input type="password" th:field="*{password}" id="password" placeholder="Password" required>
+                        <p th:if="${#fields.hasErrors('password')}" th:errorclass="password" th:errors="*{password}"></p>
+                        <br>
+                        <input type="text" th:field="*{email}" id="email" placeholder="Email"  required>
+                        <p th:if="${#fields.hasErrors('email')}" th:errorclass="email" th:errors="*{email}"></p>
+                        <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+                        <br><br>
+                    </span>
+                        
+                        <div class="googleCaptcha" style="text-align: center;">
+                        <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+                        <h2 class= "captchaMessage"> Prove You Are Not A Robot</h2>
+                        <br>
+                        <div class="g-recaptcha" th:data-sitekey="${@environment.getProperty('google.recaptcha.key.site')}" style="display:inline-block;" data-theme="light"></div>
+                        </div>
+                    </div>
+                    <div class="form-group2">
+						        <span id="hideForm2">
+                        <br>
+                        <h2> Enter Carrier Information</h2>
+                        <br>
+                        <label for="carrierName">Carrier Name: </label>
+                        <input type="text" name="carrierName" placeholder="Carrier Name" required>
+                        <br>
+                        <label for="scac">SCAC: </label>  
+                        <input type="text" maxlength="4" minlength="2" name="scac" placeholder="2-4 Characters" required>
+                        <br>
+                        <label for="pallets">Pallets: </label>  
+                        <input type="text" name="pallets" placeholder="Pallets" required>
+                        <br>
+                        <label for="weight">Weight: </label> 
+                        <input type="text" name="weight" placeholder="Weight" required>
+                        <br>
+                        <label for="ltl">LTL: </label>
+                        <select name="ltl" required>
+                            <th:block>
+                                <option th:text="Yes" th:value="Yes">Yes</option>
+                                <option th:text="No" th:value="No">No</option>
+                            </th:block>
+                        </select>   
+                        <br>
+                        <label for="ftl">FTL: </label>
+                        <select name="ftl" required>
+                            <th:block>
+                                <option th:text="Yes" th:value="Yes">Yes</option>
+                                <option th:text="No" th:value="No">No</option>
+                            </th:block>
+                        </select>   
+                        <br>
+                        <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+                        <br>
+                    </span>
+                        <br>
+                        <button class="buttons2" id = "hideBack" onclick="window.location.href='./registrationhome';">Back</button>
+                        <button class="buttons" id ="showGoogle" type="button">Submit</button>
+                        <button class="buttons" type="submit" id="submitForm" onclick= "validateForm()">Submit</button>
+                    </div>
+                </form>
+                <br>
+                <br>
+                <br>
+			</div>
+		</div>
+
+		<div class="footer">
+            Copyright &copy; Slippery Rock University 2022
+    </div>
+
+		<script>
+		function nav_open() {
+			document.getElementById("content").style.marginLeft = "15%";
+			document.getElementById("mySidebar").style.width = "15%";			
+			document.getElementById("mySidebar").style.display = "block";
+			document.getElementById("hamburger").style.display = "none";
+		}
+		
+		function nav_close() {
+		  	document.getElementById("content").style.marginLeft = "0%";
+		  	document.getElementById("mySidebar").style.display = "none";
+		  	document.getElementById("hamburger").style.display = "block";
+		}
+		</script>
+	</body>
+</html>
