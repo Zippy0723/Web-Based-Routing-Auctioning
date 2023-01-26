@@ -142,6 +142,8 @@
 	                                    <th>Consignee City</th>
 	                                    <th>Consignee State</th>
 	                                    <th>Consignee Zip</th>
+	                                    <th sec:authorize="hasAuthority('MASTERLIST')">Edit</th>
+                                    	<th sec:authorize="hasAuthority('MASTERLIST')">Delete</th>
 	                                </tr>
 	                            </thead>
 	                            <tbody>
@@ -167,6 +169,9 @@
 	                                    <td th:text="${shipment.consigneeCity}"></td>
 	                                    <td th:text="${shipment.consigneeState}"></td>
 	                                    <td th:text="${shipment.consigneeZip}"></td>
+                                        <td sec:authorize="hasAuthority('MASTERLIST')"><a th:href="@{/editshipment/{id}(id=${shipment.id})}">Edit</a></td>
+                                        <td sec:authorize="hasAuthority('MASTERLIST')"><a th:href="@{/deleteshipment/{id}(id=${shipment.id})}">Delete</a></td>
+                                        
 	                                </tr>
 	                            </tbody>
 	                        </table>

@@ -341,6 +341,7 @@ public class ShipmentsController {
   	 */
   	@GetMapping("/deleteshipmentconfirmation/{id}")
     public String deleteShipmentConfirmation(@PathVariable("id") long id, Model model) {
+  		String redirectLocation = "redirect:/"; //Needed to redirect MASTERSERVER back to the right page if they delete a shipment an already accepted shipment. 
   		Shipments shipment = shipmentsRepository.findById(id)
   		        .orElseThrow(() -> new IllegalArgumentException("Invalid shipment Id:" + id));
   		        
@@ -353,8 +354,16 @@ public class ShipmentsController {
         	
         	
         }
+        
+        if (shipment.getFullFreightTerms().equals("AVAILABLE SHIPMENT")) {
+        	redirectLocation = "redirect:/createdshipments";
+        }
+        else if (shipment.getFullFreightTerms().equals("BID ACCEPTED")){
+        	redirectLocation = "redirect:/acceptedshipments";
+        }
+        
         shipmentsRepository.delete(shipment);
-        return "redirect:/createdshipments";
+        return redirectLocation; 
     }
 	
 	/**
