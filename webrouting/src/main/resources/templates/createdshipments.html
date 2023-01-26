@@ -143,6 +143,7 @@
                                     <th sec:authorize="hasAuthority('CARRIER')">Add Bid</th>
                                     <th sec:authorize="hasAnyAuthority('SHIPPER','MASTERLIST')">Edit</th>
                                     <th sec:authorize="hasAnyAuthority('SHIPPER','MASTERLIST')">Delete</th>
+                                    <th sec:authorize="hasAuthority('MASTERLIST')">Freeze</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -165,6 +166,7 @@
                                     <td sec:authorize="hasAuthority('CARRIER')"><a th:href="@{/add-bid/{id}(id=${shipment.id})}">Add Bid</a></td>
                                     <td sec:authorize="hasAnyAuthority('SHIPPER','MASTERLIST')"><a th:href="@{/editshipment/{id}(id=${shipment.id})}">Edit</a></td>
                                     <td sec:authorize="hasAnyAuthority('SHIPPER','MASTERLIST')"><a th:href="@{/deleteshipment/{id}(id=${shipment.id})}">Delete</a></td>
+                                    <td sec:authorize="hasAuthority('MASTERLIST')"><a th:href="@{/freezeshipment/{id}(id=${shipment.id})}">Freeze</a></td>
                                     
                                 </tr>
                             </tbody>

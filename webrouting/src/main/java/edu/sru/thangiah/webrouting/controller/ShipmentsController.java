@@ -337,11 +337,11 @@ public class ShipmentsController {
   	 * Finds a shipment using the id parameter and if found, deletes the shipment and redirects to shipments page
   	 * @param id ID of the shipment being deleted
   	 * @param model Used to add data to the model
-  	 * @return "redirect:/createdshipments"
+  	 * @return "redirect:/createdshipments" or "redirect:/acceptedshipments"" 
   	 */
   	@GetMapping("/deleteshipmentconfirmation/{id}")
     public String deleteShipmentConfirmation(@PathVariable("id") long id, Model model) {
-  		String redirectLocation = "redirect:/"; //Needed to redirect MASTERSERVER back to the right page if they delete a shipment an already accepted shipment. 
+  		String redirectLocation = "redirect:/"; //Needed to redirect MASTERSERVER back to the right page if they delete an already accepted shipment. 
   		Shipments shipment = shipmentsRepository.findById(id)
   		        .orElseThrow(() -> new IllegalArgumentException("Invalid shipment Id:" + id));
   		        
@@ -355,6 +355,7 @@ public class ShipmentsController {
         	
         }
         
+        //TODO: Add correct redirect for deleting frozen shipments
         if (shipment.getFullFreightTerms().equals("AVAILABLE SHIPMENT")) {
         	redirectLocation = "redirect:/createdshipments";
         }
@@ -427,6 +428,46 @@ public class ShipmentsController {
 	    }
         
     }
+	
+	/**
+	 * Finds a shipment by ID, then Redirects to the Freeze Shipment confirmation page
+	 * @param id ID of the shipment being frozen
+  	 * @param model Used to add data to the model
+  	 * @return "/freeze/freezeshipmentconfirm"
+	 */
+	@GetMapping("/freezeshipment/{id}")
+	public String freezeShipment(@PathVariable("id") long id, Model model) {
+		Shipments shipment = shipmentsRepository.findById(id)
+		.orElseThrow(() -> new IllegalArgumentException("Invalid Shipment Id:" + id));
+		
+		model.addAttribute("shipments", shipment);
+		return "/freeze/freezeshipmentconfirm";
+	}
+	
+	/**
+	 * Finds a shipment by ID, then sets that shipments freight terms to FROZEN, disabling interaction with it for all users except master. 
+	 * @param id ID of the shipment being frozen
+  	 * @param model Used to add data to the model
+  	 * @return "redirect:/createdshipments" or "redirect:/acceptedshipments"
+	 */
+	@GetMapping("/freezeshipmentconfirmation/{id}")
+	public String freezeShipmentConfirmation(@PathVariable("id") long id, Model model) {
+		String redirectLocation = "redirect:/";
+		Shipments shipment = shipmentsRepository.findById(id)
+	     .orElseThrow(() -> new IllegalArgumentException("Invalid Shipment Id:" + id));
+		
+        if (shipment.getFullFreightTerms().equals("AVAILABLE SHIPMENT")) {
+        	redirectLocation = "redirect:/createdshipments";
+        }
+        else if (shipment.getFullFreightTerms().equals("BID ACCEPTED")){
+        	redirectLocation = "redirect:/acceptedshipments";
+        }
+		
+		shipment.setFullFreightTerms("FROZEN");
+		shipmentsRepository.save(shipment);
+		
+		return redirectLocation;
+	}
 	
 	/**
   	 * Updates a shipment to the database. Checks if there are errors in the form. <br>
