@@ -148,7 +148,7 @@ public class ShipmentsController {
 			List<Shipments> shipments = user.getShipments();
 			if (shipments.size() != 0 && shipments != null) {
 				for (int i = 0; i < shipments.size(); i++) {
-					if (shipments.get(i).getCarrier() == null) {
+					if (shipments.get(i).getFullFreightTerms().equals("AVAILABLE SHIPMENT")) {
 						shipmentsWOCarrier.add(shipments.get(i));
 					}
 				}
@@ -162,7 +162,7 @@ public class ShipmentsController {
 			List<Shipments> shipments = (List<Shipments>) shipmentsRepository.findAll();
 			if (shipments.size() != 0 && shipments != null) {
 				for (int i = 0; i < shipments.size(); i++) {
-					if (shipments.get(i).getCarrier() == null) {
+					if (shipments.get(i).getFullFreightTerms().equals("AVAILABLE SHIPMENT")) {
 						shipmentsWOCarrier.add(shipments.get(i));
 					}
 				}
@@ -189,7 +189,7 @@ public class ShipmentsController {
 			List<Shipments> shipments = user.getShipments();
 			if (shipments.size() != 0 && shipments != null) {
 				for (int i = 0; i < shipments.size(); i++) {
-					if (shipments.get(i).getCarrier() != null) {
+					if (shipments.get(i).getFullFreightTerms().equals("BID ACCEPTED")) {
 						shipmentsWCarrier.add(shipments.get(i));
 						
 					}
@@ -223,7 +223,7 @@ public class ShipmentsController {
 			List<Shipments> shipments = (List<Shipments>) shipmentsRepository.findAll();
 			if (shipments.size() != 0 && shipments != null) {
 				for (int i = 0; i < shipments.size(); i++) {
-					if (shipments.get(i).getCarrier() != null) {
+					if (shipments.get(i).getFullFreightTerms().equals("BID ACCEPTED")) {
 						shipmentsWCarrier.add(shipments.get(i));
 						
 					}
@@ -237,6 +237,41 @@ public class ShipmentsController {
 		
         return "acceptedshipments";
     }
+	
+	/**
+	 * Adds Frozen Shipments to the Shipment model, 
+	 * or, if the user attempts to access the frozen shipments page and is not MASTERSEVER, redirects them to index.
+	 * @param model Used to add data to the model
+	 * @return "frozenshipments" or "/index" if user is not MASTERSERVER
+	 */
+	@RequestMapping({"/frozenshipments"})
+	public String showFrozenShipmentsList(Model model) {
+		List<Shipments> shipmentsFrozen = new ArrayList<>();
+		User user = getLoggedInUser();
+		
+		if (!user.getRole().toString().equals("MASTERLIST")) {  //This could eventually be removed once I figure out how to protect frozenshipments.html in the same way that shipmentshomemaster.html is protected
+			return "/index"; 
+		}
+		else {
+			List<Shipments> shipments = (List<Shipments>) shipmentsRepository.findAll();
+			if (shipments.size() != 0 && shipments != null) {
+				for (int i = 0; i < shipments.size(); i++) {
+					if (shipments.get(i).getFullFreightTerms().equals("FROZEN")) {
+						shipmentsFrozen.add(shipments.get(i));
+						
+					}
+				}
+			}
+			if (shipmentsFrozen.size() != 0 && shipmentsFrozen != null) {
+				
+				model.addAttribute("shipments", shipmentsFrozen);   
+			}
+			
+		}
+		
+		return "frozenshipments";
+	}
+	
 
 	/**
 	 * Redirects user to the /add/add-shipments page <br>
@@ -355,13 +390,16 @@ public class ShipmentsController {
         	
         }
         
-        //TODO: Add correct redirect for deleting frozen shipments
         if (shipment.getFullFreightTerms().equals("AVAILABLE SHIPMENT")) {
         	redirectLocation = "redirect:/createdshipments";
         }
         else if (shipment.getFullFreightTerms().equals("BID ACCEPTED")){
         	redirectLocation = "redirect:/acceptedshipments";
         }
+        else if (shipment.getFullFreightTerms().equals("FROZEN")) {
+        	redirectLocation = "redirect:/frozenshipments";
+        }
+        
         
         shipmentsRepository.delete(shipment);
         return redirectLocation; 
@@ -467,6 +505,38 @@ public class ShipmentsController {
 		shipmentsRepository.save(shipment);
 		
 		return redirectLocation;
+	}
+	
+	/**
+	 * Finds a shipment by ID, then Redirects to the Unfreeze Shipment confirmation page
+	 * @param id ID of the shipment being frozen
+  	 * @param model Used to add data to the model
+  	 * @return "/freeze/unfreezeshipmentconfirm"
+	 */
+	@GetMapping("/unfreezeshipment/{id}")
+	public String unfreezeShipment(@PathVariable("id") long id, Model model) {
+		Shipments shipment = shipmentsRepository.findById(id)
+		.orElseThrow(() -> new IllegalArgumentException("Invalid Shipment Id:" + id));
+		
+		model.addAttribute("shipments", shipment);
+		return "/freeze/unfreezeshipmentconfirm";
+	}
+	
+	/**
+	 * Finds a shipment by ID, then sets that shipments freight terms to AVAILABLE SHIPMENT, effectively unfreezing it. 
+	 * @param id ID of the shipment being frozen
+  	 * @param model Used to add data to the model
+  	 * @return "redirect:/frozenshipments"
+	 */
+	@GetMapping("/unfreezeshipmentconfirmation/{id}")
+	public String unfreezeShipmentConfirmation(@PathVariable("id") long id, Model model) {
+		Shipments shipment = shipmentsRepository.findById(id)
+	     .orElseThrow(() -> new IllegalArgumentException("Invalid Shipment Id:" + id));
+		
+		shipment.setFullFreightTerms("AVAILABLE SHIPMENT");
+		shipmentsRepository.save(shipment);
+		
+		return "redirect:/frozenshipments";
 	}
 	
 	/**
