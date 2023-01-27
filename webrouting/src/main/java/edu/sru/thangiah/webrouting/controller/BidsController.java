@@ -152,7 +152,7 @@ public class BidsController {
         		 .orElseThrow(() -> new IllegalArgumentException("Invalid bid Id:" + id));
         User user = getLoggedInUser();
         
-        if (bid.getCarrier().equals(user.getCarrier())) {
+        if (bid.getCarrier().equals(user.getCarrier()) || user.getRole().toString().equals("MASTERLIST")) {
         	model.addAttribute("bids", bid);
         	return "/delete/deletebidconfirm";
         }
@@ -215,15 +215,17 @@ public class BidsController {
           .orElseThrow(() -> new IllegalArgumentException("Invalid Bid Id:" + id));
 		 User user = getLoggedInUser();
 		 
-		 if (!bid.getCarrier().equals(user.getCarrier())) {
-	        	return "redirect:/createdshipments";
-	        }
+		 if (bid.getCarrier().equals(user.getCarrier()) || user.getRole().toString().equals("MASTERLIST")) {
+			 model.addAttribute("bids", bid);
+			 model.addAttribute("shipments", shipmentsRepository.findAll());  
+			 model.addAttribute("carriers", carriersRepository.findAll());
+			 return "/update/update-bid";
+	    }
         
-		 model.addAttribute("bids", bid);
-		 model.addAttribute("shipments", shipmentsRepository.findAll());  
-		 model.addAttribute("carriers", carriersRepository.findAll());
+
 	     
-        return "/update/update-bid";
+        
+        return "redirect:/createdshipments";
     }
 	
 	/**
@@ -237,7 +239,7 @@ public class BidsController {
   	 * @return "redirect:/createdshipments" or "/update/update-bid"
   	 */
 	@PostMapping("/updatebid/{id}")
-    public String updateBid(@PathVariable("id") long id, @Validated Bids bid, 
+    public String updateBid(@PathVariable("id") long id, @Validated Bids bid, //TODO: rewrite this to work with MASTERLIST able to edit bids. 
       BindingResult result, Model model) {
 		userValidator.addition(bid, result);
         if (result.hasErrors()) {

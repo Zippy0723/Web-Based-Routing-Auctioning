@@ -126,6 +126,8 @@
                                     <th>Date</th>
                                     <th>Time</th>
                                     <th>Bidder</th>
+                                    <th sec:authorize="hasAuthority('MASTERLIST')">Edit</th>
+                                    <th sec:authorize="hasAuthority('MASTERLIST')">Delete</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -136,6 +138,8 @@
                                     <td th:text="${bid.date}"></td>
                                     <td th:text="${bid.time}"></td>
                                     <td><a th:text= "${bid.carrier.carrierName}" th:href="@{/viewcarrier/{id}(id=${bid.carrier.id})}">View Bidder</a></td>
+                                    <td sec:authorize="hasAuthority('MASTERLIST')"><a th:href="@{/editbid/{id}(id=${bid.id})}">Edit</a></td> <!- Carriers can not yet edit or delete their bids from this screen as they would potentially be able to delete other carriers bids if if was added in this state ->
+                                    <td sec:authorize="hasAuthority('MASTERLIST')"><a th:href="@{/deletebid/{id}(id=${bid.id})}">Delete</a></td>
                                 </tr>
                             </tbody>
                         </table>
