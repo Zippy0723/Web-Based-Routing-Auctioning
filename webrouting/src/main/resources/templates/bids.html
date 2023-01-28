@@ -132,8 +132,8 @@
                                     <th>Time</th>
                                     <th>Bidder</th>
                                     <th sec:authorize="hasAuthority('SHIPPER')">Accept Bid</th>
-                                    <th sec:authorize="hasAnyAuthority('CARRIER')">Edit</th>
-                                    <th sec:authorize="hasAnyAuthority('CARRIER')">Delete</th>
+                                    <th sec:authorize="hasAnyAuthority('CARRIER','MASTERLIST')">Edit</th>
+                                    <th sec:authorize="hasAnyAuthority('CARRIER','MASTERLIST')">Delete</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -145,8 +145,8 @@
                                     <td th:text="${bid.time}"></td>
                                     <td><a th:text= "${bid.carrier.carrierName}" th:href="@{/viewcarrier/{id}(id=${bid.carrier.id})}">View Bidder</a></td>
                                     <td sec:authorize="hasAuthority('SHIPPER')"><a th:href="@{/acceptbid/{id}(id=${bid.id})}">Accept Bid</a></td>
-                                    <td sec:authorize="hasAnyAuthority('CARRIER')"><a th:href="@{/editbid/{id}(id=${bid.id})}">Edit</a></td>
-                                    <td sec:authorize="hasAnyAuthority('CARRIER')"><a th:href="@{/deletebid/{id}(id=${bid.id})}">Delete</a></td>
+                                    <td sec:authorize="hasAnyAuthority('CARRIER','MASTERLIST')"><a th:href="@{/editbid/{id}(id=${bid.id})}">Edit</a></td>
+                                    <td sec:authorize="hasAnyAuthority('CARRIER','MASTERLIST')"><a th:href="@{/deletebid/{id}(id=${bid.id})}">Delete</a></td>
                                 </tr>
                             </tbody>
                         </table>

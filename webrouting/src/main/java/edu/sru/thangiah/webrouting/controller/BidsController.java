@@ -152,6 +152,11 @@ public class BidsController {
         		 .orElseThrow(() -> new IllegalArgumentException("Invalid bid Id:" + id));
         User user = getLoggedInUser();
         
+		 if (bid.getShipment().getFullFreightTerms().toString().equals("FROZEN") && !user.getRole().toString().equals("MASTERLIST")) {
+			 System.out.println("User attempeted to delete a bid on a frozen shipment"); //Replace this with a proper error message and redirect, for now it just dumps carriers out of the edit menu
+			 return "redirect:/createdshipments";
+		 }
+        
         if (bid.getCarrier().equals(user.getCarrier()) || user.getRole().toString().equals("MASTERLIST")) {
         	model.addAttribute("bids", bid);
         	return "/delete/deletebidconfirm";
@@ -187,6 +192,12 @@ public class BidsController {
 	public String acceptBid(@PathVariable("id") long id, Model model) {
 		Bids bid = bidsRepository.findById(id)
 		.orElseThrow(() -> new IllegalArgumentException("Invalid bid Id: " + id));
+		User user = getLoggedInUser();
+		
+		 if (bid.getShipment().getFullFreightTerms().toString().equals("FROZEN") && !user.getRole().toString().equals("MASTERLIST")) {
+			 System.out.println("User attempeted to accept a bid on a frozen shipment"); //Replace this with a proper error message and redirect, for now it just dumps shippers out of the accept menu
+			 return "redirect:/createdshipments";
+		 }
 		
 		Carriers carrier = bid.getCarrier();
 		Shipments shipment = bid.getShipment();
@@ -214,6 +225,11 @@ public class BidsController {
 		Bids bid = bidsRepository.findById(id)
           .orElseThrow(() -> new IllegalArgumentException("Invalid Bid Id:" + id));
 		 User user = getLoggedInUser();
+		 
+		 if (bid.getShipment().getFullFreightTerms().toString().equals("FROZEN") && !user.getRole().toString().equals("MASTERLIST")) {
+			 System.out.println("User attempeted to edit a bid on a frozen shipment"); //Replace this with a proper error message and redirect, for now it just dumps carriers out of the edit menu
+			 return "redirect:/createdshipments";
+		 }
 		 
 		 if (bid.getCarrier().equals(user.getCarrier()) || user.getRole().toString().equals("MASTERLIST")) {
 			 model.addAttribute("bids", bid);

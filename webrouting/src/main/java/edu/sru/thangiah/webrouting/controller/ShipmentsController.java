@@ -210,7 +210,7 @@ public class ShipmentsController {
 			
 			if (shipments.size() != 0 && shipments != null) {
 				for (int i = 0; i < shipments.size(); i++) {
-					if (shipments.get(i).getCarrier() == null) {
+					if (shipments.get(i).getCarrier() == null || shipments.get(i).getFullFreightTerms().toString().equals("FROZEN")) {
 						shipments.remove(i);
 					}
 				}
@@ -240,34 +240,39 @@ public class ShipmentsController {
 	
 	/**
 	 * Adds Frozen Shipments to the Shipment model, 
-	 * or, if the user attempts to access the frozen shipments page and is not MASTERSEVER, redirects them to index.
+	 * or, if the user attempts to access the frozen shipments page and is not MASTERSEVER or SHIPPER, redirects them to index.
 	 * @param model Used to add data to the model
-	 * @return "frozenshipments" or "/index" if user is not MASTERSERVER
+	 * @return "frozenshipments" or "/index" if user is not MASTERSERVER or SHIPPER
 	 */
 	@RequestMapping({"/frozenshipments"})
 	public String showFrozenShipmentsList(Model model) {
 		List<Shipments> shipmentsFrozen = new ArrayList<>();
 		User user = getLoggedInUser();
+		List<Shipments> shipments;
 		
-		if (!user.getRole().toString().equals("MASTERLIST")) {  //This could eventually be removed once I figure out how to protect frozenshipments.html in the same way that shipmentshomemaster.html is protected
-			return "/index"; 
+		if (user.getRole().toString().equals("SHIPPER")) {  
+			shipments = user.getShipments();
+		}
+		else if (user.getRole().toString().equals("MASTERLIST")) {
+			shipments = (List<Shipments>) shipmentsRepository.findAll();
 		}
 		else {
-			List<Shipments> shipments = (List<Shipments>) shipmentsRepository.findAll();
-			if (shipments.size() != 0 && shipments != null) {
-				for (int i = 0; i < shipments.size(); i++) {
-					if (shipments.get(i).getFullFreightTerms().equals("FROZEN")) {
-						shipmentsFrozen.add(shipments.get(i));
+			return "/index"; 
+		}
+		
+		if (shipments.size() != 0 && shipments != null) {
+			for (int i = 0; i < shipments.size(); i++) {
+				if (shipments.get(i).getFullFreightTerms().equals("FROZEN")) {
+					shipmentsFrozen.add(shipments.get(i));
 						
-					}
 				}
 			}
-			if (shipmentsFrozen.size() != 0 && shipmentsFrozen != null) {
-				
-				model.addAttribute("shipments", shipmentsFrozen);   
-			}
-			
 		}
+		
+		if (shipmentsFrozen.size() != 0 && shipmentsFrozen != null) {
+			model.addAttribute("shipments", shipmentsFrozen);   
+		}
+			
 		
 		return "frozenshipments";
 	}
@@ -363,6 +368,12 @@ public class ShipmentsController {
     	public String deleteShipment(@PathVariable("id") long id, Model model) {
         Shipments shipment = shipmentsRepository.findById(id)
         .orElseThrow(() -> new IllegalArgumentException("Invalid shipment Id:" + id));
+        User user = getLoggedInUser();
+        
+        if (shipment.getFullFreightTerms().toString().equals("FROZEN") && !user.getRole().toString().equals("MASTERLIST")) {
+        	System.out.println("Non-Master user attempted to delete a frozen shipment!");
+        	return "/index"; //TODO: Replace this with a proper message and redirect.
+        }
         
         model.addAttribute("shipments", shipment);
         return "/delete/deleteshipmentconfirm";
@@ -458,6 +469,11 @@ public class ShipmentsController {
 	    
 	    User user = getLoggedInUser();
 	    
+        if (shipment.getFullFreightTerms().toString().equals("FROZEN") && !user.getRole().toString().equals("MASTERLIST")) {
+        	System.out.println("Non-Master user attempted to edit a frozen shipment!");
+        	return "/index"; //TODO: Replace this with a proper message and redirect.
+        }
+	    
 	    if (user.getRole().toString().equals("SHIPPER")) {
 	    	return "/update/update-shipments-shipper";
 	    }
@@ -497,7 +513,7 @@ public class ShipmentsController {
         if (shipment.getFullFreightTerms().equals("AVAILABLE SHIPMENT")) {
         	redirectLocation = "redirect:/createdshipments";
         }
-        else if (shipment.getFullFreightTerms().equals("BID ACCEPTED")){
+        else if (shipment.getFullFreightTerms().equals("BID ACCEPTED")){  //master currently cannot freeze accepted shipments, this is for potential future
         	redirectLocation = "redirect:/acceptedshipments";
         }
 		
