@@ -118,7 +118,7 @@
                     <div th:case="*">
                         <h2>Bids</h2>
                         <br>
-		                <a href="/createdshipments">Back</a>
+		                <a th:href="${redirectLocation}">Back</a>
 		                <br><br>
                         <span type="hidden" th:text="${error}" class="loginError"></span>
                         <hr><br>

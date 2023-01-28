@@ -6,6 +6,9 @@ import java.text.SimpleDateFormat;
 
 import java.util.Date;
 import java.util.List;
+
+import javax.servlet.http.HttpSession;
+
 import java.util.ArrayList;
 import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
@@ -140,10 +143,11 @@ public class ShipmentsController {
 	 * @return "createdshipments"
 	 */
 	@RequestMapping({"/createdshipments"})
-	public String showCreatedShipmentsList(Model model) {
+	public String showCreatedShipmentsList(Model model, HttpSession session) {
 		
 		List<Shipments> shipmentsWOCarrier = new ArrayList<>();
 		User user = getLoggedInUser();
+		session.setAttribute("redirectLocation", "/createdshipments");
 		if (user.getRole().toString().equals("SHIPPER")) {
 			List<Shipments> shipments = user.getShipments();
 			if (shipments.size() != 0 && shipments != null) {
@@ -182,9 +186,10 @@ public class ShipmentsController {
 	 * @return "acceptedshipments"
 	 */
 	@RequestMapping({"/acceptedshipments"})
-	public String showAcceptedShipmentsList(Model model) {
+	public String showAcceptedShipmentsList(Model model, HttpSession session) {
 		List<Shipments> shipmentsWCarrier = new ArrayList<>();
 		User user = getLoggedInUser();
+		session.setAttribute("redirectLocation", "/acceptedshipments");
 		if (user.getRole().toString().equals("SHIPPER")) {
 			List<Shipments> shipments = user.getShipments();
 			if (shipments.size() != 0 && shipments != null) {
@@ -245,9 +250,10 @@ public class ShipmentsController {
 	 * @return "frozenshipments" or "/index" if user is not MASTERSERVER or SHIPPER
 	 */
 	@RequestMapping({"/frozenshipments"})
-	public String showFrozenShipmentsList(Model model) {
+	public String showFrozenShipmentsList(Model model, HttpSession session) {
 		List<Shipments> shipmentsFrozen = new ArrayList<>();
 		User user = getLoggedInUser();
+		session.setAttribute("redirectLocation", "/frozenshipments");
 		List<Shipments> shipments;
 		
 		if (user.getRole().toString().equals("SHIPPER")) {  
@@ -257,6 +263,7 @@ public class ShipmentsController {
 			shipments = (List<Shipments>) shipmentsRepository.findAll();
 		}
 		else {
+			session.setAttribute("redirectLocation", "/index");
 			return "/index"; 
 		}
 		
@@ -365,17 +372,19 @@ public class ShipmentsController {
   	 * @return "redirect:/shipments"
   	 */
 	@GetMapping("/deleteshipment/{id}")
-    	public String deleteShipment(@PathVariable("id") long id, Model model) {
+    	public String deleteShipment(@PathVariable("id") long id, Model model, HttpSession session) {
         Shipments shipment = shipmentsRepository.findById(id)
         .orElseThrow(() -> new IllegalArgumentException("Invalid shipment Id:" + id));
         User user = getLoggedInUser();
+        String redirectLocation = (String) session.getAttribute("redirectLocation");
         
         if (shipment.getFullFreightTerms().toString().equals("FROZEN") && !user.getRole().toString().equals("MASTERLIST")) {
-        	System.out.println("Non-Master user attempted to delete a frozen shipment!");
-        	return "/index"; //TODO: Replace this with a proper message and redirect.
+        	System.out.println("Non-Master user attempted to delete a frozen shipment!"); //TODO: Replace this with a proper error message
+        	return redirectLocation; 
         }
         
         model.addAttribute("shipments", shipment);
+        model.addAttribute("redirectLocation",redirectLocation); //Needed so confirmation html page can redirect to the right place if the user clicks no
         return "/delete/deleteshipmentconfirm";
     }
 	
@@ -386,8 +395,8 @@ public class ShipmentsController {
   	 * @return "redirect:/createdshipments" or "redirect:/acceptedshipments"" 
   	 */
   	@GetMapping("/deleteshipmentconfirmation/{id}")
-    public String deleteShipmentConfirmation(@PathVariable("id") long id, Model model) {
-  		String redirectLocation = "redirect:/"; //Needed to redirect MASTERSERVER back to the right page if they delete an already accepted shipment. 
+    public String deleteShipmentConfirmation(@PathVariable("id") long id, Model model, HttpSession session) {
+  		//String redirectLocation = "redirect:/"; //Needed to redirect MASTERSERVER back to the right page if they delete an already accepted shipment. 
   		Shipments shipment = shipmentsRepository.findById(id)
   		        .orElseThrow(() -> new IllegalArgumentException("Invalid shipment Id:" + id));
   		        
@@ -401,19 +410,8 @@ public class ShipmentsController {
         	
         }
         
-        if (shipment.getFullFreightTerms().equals("AVAILABLE SHIPMENT")) {
-        	redirectLocation = "redirect:/createdshipments";
-        }
-        else if (shipment.getFullFreightTerms().equals("BID ACCEPTED")){
-        	redirectLocation = "redirect:/acceptedshipments";
-        }
-        else if (shipment.getFullFreightTerms().equals("FROZEN")) {
-        	redirectLocation = "redirect:/frozenshipments";
-        }
-        
-        
         shipmentsRepository.delete(shipment);
-        return redirectLocation; 
+        return "redirect:" + session.getAttribute("redirectLocation"); 
     }
 	
 	/**
@@ -440,14 +438,15 @@ public class ShipmentsController {
   	 * @return "shipments"
   	 */
   	@GetMapping("/viewshipmentbids/{id}")
-    public String viewShipmentBids(@PathVariable("id") long id, Model model) {
+    public String viewShipmentBids(@PathVariable("id") long id, Model model, HttpSession session) {
         Shipments shipment = shipmentsRepository.findById(id)
           .orElseThrow(() -> new IllegalArgumentException("Invalid shipment Id:" + id));
         
+        model.addAttribute("redirectLocation", session.getAttribute("redirectLocation"));
         model.addAttribute("bids", shipment.getBids());
         
         if (shipment.getCarrier() != null) {
-        	return "viewbidscomplete";
+        	return "viewbidscomplete"; //TODO: rework this system, i dont like there being two separate bids.html pages, it makes things confusing. 
         }
         return "bids";
     }

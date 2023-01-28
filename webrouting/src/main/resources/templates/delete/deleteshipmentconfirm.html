@@ -121,7 +121,7 @@
                     <br>
                     <h2><a th:href="|/deleteshipmentconfirmation/${shipment.id}|">Yes</a></h2> 
                     <br>
-                    <h2><a href="/createdshipments">No</a></h2> <!-- TODO: Add code for redirecting MasterList back to correct page if they click "No" From /acceptedshipments or /frozenshipments -->
+                    <h2><a th:href="${redirectLocation}">No</a></h2>
                 </div>
             </div>
 		</div>

@@ -70,7 +70,6 @@ public class User {
     
     @Transient
     private String updateEmail;
-    
 
     /**
      * Gets the User ID
@@ -282,7 +281,4 @@ public class User {
 	public void setUpdateEmail(String updateEmail) {
 		this.updateEmail = updateEmail;
 	}
-
-
-
 }

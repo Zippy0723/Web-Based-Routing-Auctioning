@@ -121,7 +121,7 @@
                     <br>
                     <h2><a th:href="|/freezeshipmentconfirmation/${shipment.id}|">Yes</a></h2>
                     <br>
-                    <h2><a href="/frozenshipments">No</a></h2> <!-- TODO: Add code for correct redirects if master clicks no -->
+                    <h2><a href="/acceptedshipments">No</a></h2> <!-- this should only ever need to point back to acceptedshipments, but if the ability to freeze completed shipments is added, this will have to use ${redirectLocation} -->
                 </div>
             </div>
 		</div>

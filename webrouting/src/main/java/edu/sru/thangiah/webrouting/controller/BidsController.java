@@ -4,6 +4,8 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
+import javax.servlet.http.HttpSession;
+
 import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -144,40 +146,42 @@ public class BidsController {
   	 * Finds a bid using the id parameter and if found, redirects user to delete confirmation page
   	 * @param id Holds the ID of the bid to be deleted
   	 * @param model Used to add data to the model
-  	 * @return "redirect:/createdshipments" or "/delete/deletebidconfirm"
+  	 * @return "/delete/deletebidconfirm" if succesful, "redirect: + redirectLocation" otherwise
   	 */
 	@GetMapping("/deletebid/{id}")
-    public String deleteBid(@PathVariable("id") long id, Model model) {
+    public String deleteBid(@PathVariable("id") long id, Model model, HttpSession session) {
         Bids bid = bidsRepository.findById(id)
         		 .orElseThrow(() -> new IllegalArgumentException("Invalid bid Id:" + id));
         User user = getLoggedInUser();
+        String redirectLocation = (String) session.getAttribute("redirectLocation");
         
 		 if (bid.getShipment().getFullFreightTerms().toString().equals("FROZEN") && !user.getRole().toString().equals("MASTERLIST")) {
-			 System.out.println("User attempeted to delete a bid on a frozen shipment"); //Replace this with a proper error message and redirect, for now it just dumps carriers out of the edit menu
-			 return "redirect:/createdshipments";
+			 System.out.println("User attempeted to delete a bid on a frozen shipment"); //Replace this with a proper error message 
+			 return "redirect:" + redirectLocation;
 		 }
         
         if (bid.getCarrier().equals(user.getCarrier()) || user.getRole().toString().equals("MASTERLIST")) {
         	model.addAttribute("bids", bid);
+        	model.addAttribute("redirectLocation",redirectLocation);
         	return "/delete/deletebidconfirm";
         }
         
-        return "redirect:/createdshipments";
+        return "redirect:" + redirectLocation;
     }
 	
 	/**
   	 * Finds a bid using the id parameter and if found, deletes the bid and redirects to created shipments page
   	 * @param id ID of the bid being deleted
   	 * @param model Used to add data to the model
-  	 * @return "redirect:/createdshipments"
+  	 * @return "redirect: + redirectLocation" (redirectLocation is stored in the HttpSession and set during page loads for critical pages)
   	 */
   	@GetMapping("/deletebidconfirmation/{id}")
-    public String deleteUserConfirm(@PathVariable("id") long id, Model model) {
+    public String deleteUserConfirm(@PathVariable("id") long id, Model model, HttpSession session) {
   		Bids bid = bidsRepository.findById(id)
        		 .orElseThrow(() -> new IllegalArgumentException("Invalid bid Id:" + id));
         
         bidsRepository.delete(bid);
-        return "redirect:/createdshipments";
+        return "redirect:" + session.getAttribute("redirectLocation");
     }
 	
 	/**
