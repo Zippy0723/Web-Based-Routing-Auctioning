@@ -784,5 +784,16 @@ public class ShipmentsController {
     		return null;
     	}
     }
+
+	//The methods below this line should eventually be added to their own AuctioningController.java class, for some reason I could not get that to work off that bat so I put them here for now
+	/**
+	 * Handles loading auctioning homepage
+	 * @param model : used to add data to the page model
+	 * @return : returns "auctioninghome"
+	 */
+	@RequestMapping("/auctioninghome")
+	public String auctioningHome(Model model) {
+		return "auctioninghome";
+	}
 }
 
