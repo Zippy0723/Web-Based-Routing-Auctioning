@@ -141,8 +141,9 @@
                                     <th>Consignee Zip</th>
                                     <th>View Bids</th>
                                     <th sec:authorize="hasAuthority('CARRIER')">Add Bid</th>
-                                    <th sec:authorize="hasAuthority('SHIPPER')">Edit</th>
-                                    <th sec:authorize="hasAuthority('SHIPPER')">Delete</th>
+                                    <th sec:authorize="hasAnyAuthority('SHIPPER','MASTERLIST')">Edit</th>
+                                    <th sec:authorize="hasAnyAuthority('SHIPPER','MASTERLIST')">Delete</th>
+                                    <th sec:authorize="hasAuthority('MASTERLIST')">Freeze</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -163,8 +164,9 @@
                                     <td th:text="${shipment.consigneeZip}"></td>
                                     <td><a th:href="@{/viewshipmentbids/{id}(id=${shipment.id})}">View Bids</a></td>
                                     <td sec:authorize="hasAuthority('CARRIER')"><a th:href="@{/add-bid/{id}(id=${shipment.id})}">Add Bid</a></td>
-                                    <td sec:authorize="hasAuthority('SHIPPER')"><a th:href="@{/editshipment/{id}(id=${shipment.id})}">Edit</a></td>
-                                    <td sec:authorize="hasAuthority('SHIPPER')"><a th:href="@{/deleteshipment/{id}(id=${shipment.id})}">Delete</a></td>
+                                    <td sec:authorize="hasAnyAuthority('SHIPPER','MASTERLIST')"><a th:href="@{/editshipment/{id}(id=${shipment.id})}">Edit</a></td>
+                                    <td sec:authorize="hasAnyAuthority('SHIPPER','MASTERLIST')"><a th:href="@{/deleteshipment/{id}(id=${shipment.id})}">Delete</a></td>
+                                    <td sec:authorize="hasAuthority('MASTERLIST')"><a th:href="@{/freezeshipment/{id}(id=${shipment.id})}">Freeze</a></td>
                                     
                                 </tr>
                             </tbody>

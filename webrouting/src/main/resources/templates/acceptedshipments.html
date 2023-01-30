@@ -123,7 +123,6 @@
 	                                <tr>
 	                                    <th>View All Details</th>
 	                                    <th>View Bids</th>
-	                                    <th sec:authorize="hasAuthority('CARRIER')">Edit</th>
 	                                    <th>ID</th>
 	                                    <th>Client</th>
 	                                    <th>Carrier Name</th>
@@ -142,13 +141,14 @@
 	                                    <th>Consignee City</th>
 	                                    <th>Consignee State</th>
 	                                    <th>Consignee Zip</th>
+	                                    <th sec:authorize="hasAuthority('MASTERLIST')">Edit</th>
+                                    	<th sec:authorize="hasAuthority('MASTERLIST')">Delete</th>
 	                                </tr>
 	                            </thead>
 	                            <tbody>
 	                                <tr th:each="shipment : ${shipments}">
 	                                    <td><a th:href="@{/viewshipment/{id}(id=${shipment.id})}">View All Details</a></td>
 	                                    <td><a th:href="@{/viewshipmentbids/{id}(id=${shipment.id})}">View Bids</a></td>
-	                                    <td sec:authorize="hasAuthority('CARRIER')"><a th:href="@{/editshipment/{id}(id=${shipment.id})}">Edit</a></td>
 	                                    <td th:text="${shipment.id}"></td>
 	                                    <td th:text="${shipment.client}"></td>
 	                                    <td><a th:text="${shipment.carrier.carrierName}"></a></td>
@@ -167,6 +167,9 @@
 	                                    <td th:text="${shipment.consigneeCity}"></td>
 	                                    <td th:text="${shipment.consigneeState}"></td>
 	                                    <td th:text="${shipment.consigneeZip}"></td>
+                                        <td sec:authorize="hasAuthority('MASTERLIST')"><a th:href="@{/editshipment/{id}(id=${shipment.id})}">Edit</a></td>
+                                        <td sec:authorize="hasAuthority('MASTERLIST')"><a th:href="@{/deleteshipment/{id}(id=${shipment.id})}">Delete</a></td>
+                                        
 	                                </tr>
 	                            </tbody>
 	                        </table>
