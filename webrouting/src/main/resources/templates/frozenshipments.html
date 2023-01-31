@@ -146,6 +146,7 @@
                                     <th sec:authorize="hasAnyAuthority('MASTERLIST')">Edit</th>
                                     <th sec:authorize="hasAnyAuthority('MASTERLIST')">Delete</th>
                                     <th sec:authorize="hasAuthority('MASTERLIST')">Unfreeze</th>
+                                    <th sec:authorize="hasAuthority('MASTERLIST')">Reset Bids</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -168,6 +169,7 @@
                                     <td sec:authorize="hasAnyAuthority('MASTERLIST')"><a th:href="@{/editshipment/{id}(id=${shipment.id})}">Edit</a></td>
                                     <td sec:authorize="hasAnyAuthority('MASTERLIST')"><a th:href="@{/deleteshipment/{id}(id=${shipment.id})}">Delete</a></td>
                                     <td sec:authorize="hasAuthority('MASTERLIST')"><a th:href="@{/unfreezeshipment/{id}(id=${shipment.id})}">Unfreeze</a></td>
+                                    <td sec:authorize="hasAuthority('MASTERLIST')"><a th:href="@{/resetshipmentbids/{id}(id=${shipment.id})}">Reset Bids</a></td>
                                     
                                 </tr>
                             </tbody>
