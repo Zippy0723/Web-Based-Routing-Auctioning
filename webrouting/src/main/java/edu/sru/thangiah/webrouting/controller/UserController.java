@@ -1,5 +1,6 @@
 package edu.sru.thangiah.webrouting.controller;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -85,7 +86,17 @@ public class UserController {
 	 */
     @RequestMapping({"/users"})
     public String showUserList(Model model) {
-        model.addAttribute("userstable", userRepository.findAll());
+    	List<User> userList = userRepository.findAll();
+    	List<User> finalUserList = new ArrayList<User>();
+    	
+    	for (User user : userList) {
+    		if (!user.getRole().toString().equals("ADMIN") && !user.getRole().toString().equals("MASTERLIST")) {
+    			finalUserList.add(user);
+    		}
+    	}
+    	
+    	
+        model.addAttribute("userstable", finalUserList);
         return "users";
     }
     
@@ -370,6 +381,16 @@ public class UserController {
   		
   		return "/index";
   	}
+  	/*@GetMapping("/disable/{id}")
+  	public String disableUser(@PathVariable long id) {
+  		User user = userRepository.findById(id)
+  	          .orElseThrow(() -> new IllegalArgumentException("Invalid user Id:" + id));
+  		if(user != null) {
+  			user.setApproved(false);
+  			userRepository.save(user);
+  		}
+  		
+  	}*/
   	/**
 	 * Returns the user that is currently logged into the system. <br>
 	 * If there is no user logged in, null is returned.
