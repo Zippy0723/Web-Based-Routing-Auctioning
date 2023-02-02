@@ -213,8 +213,6 @@ public class BidsController {
   		Shipments shipment = shipmentsRepository.findById(id)
   	  		.orElseThrow(() -> new IllegalArgumentException("Invalid shipment Id:" + id));
   		
-  		System.out.println("test");
-  		
   		for (Bids bid : shipment.getBids()) {
   			bidsRepository.delete(bid);
   		}

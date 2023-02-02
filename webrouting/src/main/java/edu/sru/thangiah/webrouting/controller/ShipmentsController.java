@@ -372,9 +372,9 @@ public class ShipmentsController {
   	 * @return "redirect:/shipments"
   	 */
 	@GetMapping("/deleteshipment/{id}")
-    	public String deleteShipment(@PathVariable("id") long id, Model model, HttpSession session) {
+    public String deleteShipment(@PathVariable("id") long id, Model model, HttpSession session) {
         Shipments shipment = shipmentsRepository.findById(id)
-        .orElseThrow(() -> new IllegalArgumentException("Invalid shipment Id:" + id));
+        		.orElseThrow(() -> new IllegalArgumentException("Invalid shipment Id:" + id));
         User user = getLoggedInUser();
         String redirectLocation = (String) session.getAttribute("redirectLocation");
         
@@ -396,7 +396,6 @@ public class ShipmentsController {
   	 */
   	@GetMapping("/deleteshipmentconfirmation/{id}")
     public String deleteShipmentConfirmation(@PathVariable("id") long id, Model model, HttpSession session) {
-  		//String redirectLocation = "redirect:/"; //Needed to redirect MASTERSERVER back to the right page if they delete an already accepted shipment. 
   		Shipments shipment = shipmentsRepository.findById(id)
   		        .orElseThrow(() -> new IllegalArgumentException("Invalid shipment Id:" + id));
   		        
