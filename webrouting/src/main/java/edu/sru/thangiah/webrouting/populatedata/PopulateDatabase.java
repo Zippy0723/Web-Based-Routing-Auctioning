@@ -233,12 +233,12 @@ public class PopulateDatabase implements ApplicationRunner{
 	public void populateUser(Statement statement) {
 		try {
 			statement.executeUpdate("INSERT INTO user " + "VALUES"
-					+ "(1,'AdminTry@Gmail.com',1,NULL,'$2a$10$1czLv.unEEJZMLTIS2sTxe6DL7CuopPOcCCEGmKwak3H4KFfUBVOm','AdminTry',NULL,NULL,1),"
-					+ "(2,'Master@gmail.com',1,NULL,'$2a$10$kijCY6WxZXMfsJ4NcW3SkOqeB6BDiXyR3Pmk7UExr1rJAjVmECF7i','Master',NULL,NULL,4),"
-					+ "(3,'carrier@gmail.com',1,NULL,'$2a$10$EVBsfb2HGqaMlI9z443kR.zM.Tn66fT.7nbvsVhDeqAw.fc4HyXOG','Carrier',NULL,1,3),"
-					+ "(4,'shipper@gmail.com',1,NULL,'$2a$10$j4JWTe7EP6vPiptRf1WP1ujvRRNVPzvuQXkO7KH9Ot.YBY0znyKam','Shipper',NULL,NULL,2),"
-					+ "(5,'wonka@gmail.com',1,NULL,'$2a$10$xcIr8bwuPpCA5/dRvIOmMuVpmFZ.i18oFA5qnaQ8eiNgVKp/L.T9K','WillyWonka',NULL,2,3),"
-					+ "(6,'ship4u@gmail.com',1,NULL,'$2a$10$0mjUJWe24cNS.XoMLb/Ybur3EK0ps.787omMxs4y3DbGB2y6StgNC','Ship4U',NULL,3,3)");
+					+ "(1,TRUE,'AdminTry@Gmail.com',1,NULL,'$2a$10$1czLv.unEEJZMLTIS2sTxe6DL7CuopPOcCCEGmKwak3H4KFfUBVOm','AdminTry',NULL,NULL,1),"
+					+ "(2,TRUE,'Master@gmail.com',1,NULL,'$2a$10$kijCY6WxZXMfsJ4NcW3SkOqeB6BDiXyR3Pmk7UExr1rJAjVmECF7i','Master',NULL,NULL,4),"
+					+ "(3,TRUE,'carrier@gmail.com',1,NULL,'$2a$10$EVBsfb2HGqaMlI9z443kR.zM.Tn66fT.7nbvsVhDeqAw.fc4HyXOG','Carrier',NULL,1,3),"
+					+ "(4,TRUE,'shipper@gmail.com',1,NULL,'$2a$10$j4JWTe7EP6vPiptRf1WP1ujvRRNVPzvuQXkO7KH9Ot.YBY0znyKam','Shipper',NULL,NULL,2),"
+					+ "(5,TRUE,'wonka@gmail.com',1,NULL,'$2a$10$xcIr8bwuPpCA5/dRvIOmMuVpmFZ.i18oFA5qnaQ8eiNgVKp/L.T9K','WillyWonka',NULL,2,3),"
+					+ "(6,TRUE,'ship4u@gmail.com',1,NULL,'$2a$10$0mjUJWe24cNS.XoMLb/Ybur3EK0ps.787omMxs4y3DbGB2y6StgNC','Ship4U',NULL,3,3)");
 		}
 		catch(SQLException Users) {
 			System.out.println(Users + " Users have already been created");
