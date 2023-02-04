@@ -113,23 +113,19 @@ public class BidsController {
   		
   		User user = getLoggedInUser();
   		bid.setCarrier(user.getCarrier());
-  		
   		bid.setDate(date.format(now));
   		bid.setTime(time.format(now));
   		
   		boolean deny = false;
+  		Shipments shipment = bid.getShipment();
+  		List<Bids> bidsInShipment = shipment.getBids();
   		
-  		List<Bids> bids = (List<Bids>) bidsRepository.findAll();
-		
-		for (int i = 0; i < bids.size(); i++) {
-
-			Bids currentBid = bids.get(i);
-			
-			if (currentBid.getCarrier().getCarrierName().equals(bid.getCarrier().getCarrierName())
-					&& currentBid.getPrice().equals(bid.getPrice())) {
+  		for (Bids b: bidsInShipment) {
+			if (b.getCarrier().getCarrierName().equals(bid.getCarrier().getCarrierName())
+					&& b.getPrice().equals(bid.getPrice())) {
 				deny = true;
 			}
-		}
+  		}
   		
   		if (deny == true) {
   			model.addAttribute("error", "Error: Bid with the same carrier and price has already been placed.");
@@ -173,6 +169,7 @@ public class BidsController {
   	 * Finds a bid using the id parameter and if found, deletes the bid and redirects to created shipments page
   	 * @param id ID of the bid being deleted
   	 * @param model Used to add data to the model
+  	 * @param session Used to store the users HTTP session
   	 * @return "redirect: + redirectLocation" (redirectLocation is stored in the HttpSession and set during page loads for critical pages)
   	 */
   	@GetMapping("/deletebidconfirmation/{id}")
@@ -183,6 +180,43 @@ public class BidsController {
         bidsRepository.delete(bid);
         return "redirect:" + session.getAttribute("redirectLocation");
     }
+  	
+  	/**
+  	 * Finds a shipment using the id parameter and if found, redirects users to the reset shipment bids confirmation page
+  	 * @param id : Holds the ID of the shipment to be reset
+  	 * @param model Used to add data to the model
+  	 * @return /resetshipmentbidsconfirm
+  	 */
+  	@GetMapping("/resetshipmentbids/{id}")
+  	public String resetShipmentBids(@PathVariable("id") long id, Model model, HttpSession session) {
+  		Shipments shipment = shipmentsRepository.findById(id)
+  			.orElseThrow(() -> new IllegalArgumentException("Invalid shipment Id:" + id));
+  		
+  		model.addAttribute("shipment",shipment);
+  		model.addAttribute("redirectLocation",session.getAttribute("redirectLocation"));
+  		
+  		return "/reset/resetshipmentbidsconfirm";
+  	}
+  	
+  	/**
+  	 * Finds a shipment using the id parameter and if found, gets all of that shipments bids then removes then. Then, returns the user to their redirectlocation
+  	 * @param id : Holds the ID of the shipment to be reset
+  	 * @param model Used to add data to the model
+  	 * @param session Used to store the users HTTP session
+  	 */
+  	@GetMapping("/resetshipmentbidsconfirmation/{id}")
+  	public String resetShipmentBidsConfirmation(@PathVariable("id") long id, Model model, HttpSession session) {
+  		Shipments shipment = shipmentsRepository.findById(id)
+  	  		.orElseThrow(() -> new IllegalArgumentException("Invalid shipment Id:" + id));
+  		
+  		System.out.println("test");
+  		
+  		for (Bids bid : shipment.getBids()) {
+  			bidsRepository.delete(bid);
+  		}
+  		
+  		return "redirect:" + session.getAttribute("redirectLocation");
+  	}
 	
 	/**
 	 * Accepts a bid from the carrier. <br>
