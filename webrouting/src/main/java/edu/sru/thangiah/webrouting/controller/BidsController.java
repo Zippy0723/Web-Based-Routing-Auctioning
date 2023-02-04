@@ -117,18 +117,15 @@ public class BidsController {
   		bid.setTime(time.format(now));
   		
   		boolean deny = false;
+  		Shipments shipment = bid.getShipment();
+  		List<Bids> bidsInShipment = shipment.getBids();
   		
-  		List<Bids> bids = (List<Bids>) bidsRepository.findAll();
-		
-		for (int i = 0; i < bids.size(); i++) {
-
-			Bids currentBid = bids.get(i);
-			
-		//	if (currentBid.getCarrier().getCarrierName().equals(bid.getCarrier().getCarrierName())
-			//		&& currentBid.getPrice().equals(bid.getPrice())) {
-				//deny = true;
-			//}
-		}
+  		for (Bids b: bidsInShipment) {
+			if (b.getCarrier().getCarrierName().equals(bid.getCarrier().getCarrierName())
+					&& b.getPrice().equals(bid.getPrice())) {
+				deny = true;
+			}
+  		}
   		
   		if (deny == true) {
   			model.addAttribute("error", "Error: Bid with the same carrier and price has already been placed.");
