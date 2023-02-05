@@ -80,11 +80,17 @@ public class BidsController {
 	 * @return "/add/add-bid"
 	 */
 	@GetMapping({"/add-bid/{id}"})
-    public String showBidList(@PathVariable("id") long id, Model model, Bids bid, BindingResult result) {
+    public String showBidList(@PathVariable("id") long id, Model model, Bids bid, BindingResult result, HttpSession session) {
 		Shipments shipment = shipmentsRepository.findById(id)
 				.orElseThrow(() -> new IllegalArgumentException("Invalid shipment Id: " + id));
         model.addAttribute("shipments", shipment);
         model.addAttribute("carriers", carriersRepository.findAll());
+        
+        if (!shipment.getFullFreightTerms().toString().equals("AVAILABLE SHIPMENT")) {
+        	 System.out.println("Error: User attempeted to place a bid on a shipment that was not in auction");
+        	 return (String) session.getAttribute("redirectLocation");
+        }
+        
         return "/add/add-bid";
     }
 	
@@ -208,8 +214,12 @@ public class BidsController {
   	public String resetShipmentBidsConfirmation(@PathVariable("id") long id, Model model, HttpSession session) {
   		Shipments shipment = shipmentsRepository.findById(id)
   	  		.orElseThrow(() -> new IllegalArgumentException("Invalid shipment Id:" + id));
+  		User user = getLoggedInUser();
   		
-  		System.out.println("test");
+  		if (!user.getRole().toString().equals("MASTERLIST")) {
+  			System.out.println("Error: Non master tried to reset shipment!");
+  			return "redirect:" + session.getAttribute("redirectLocation");
+  		}
   		
   		for (Bids bid : shipment.getBids()) {
   			bidsRepository.delete(bid);

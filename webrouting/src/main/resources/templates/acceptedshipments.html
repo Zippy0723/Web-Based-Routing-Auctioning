@@ -64,6 +64,9 @@
                         <li sec:authorize="hasAuthority('CARRIER')" class="navitem">
                             <a class="selected" id="nav_shipments_home_carrier" href="/shipmentshomecarrier">Shipments</a>
                         </li>
+                        <li sec:authorize="hasAnyAuthority('CARRIER', 'MASTERLIST', 'SHIPPER')" class="navitem">
+                            <a class="navlink" id="nav_shipments_home_carrier" href="/auctioninghome">Auctioning</a>
+                        </li>
                         <li sec:authorize="hasAnyAuthority('CARRIER','MASTERLIST')" class="navitem">
                             <a class="navlink" id="nav_routes" href="/routes">Routes</a>
                         </li>
@@ -143,6 +146,7 @@
 	                                    <th>Consignee Zip</th>
 	                                    <th sec:authorize="hasAuthority('MASTERLIST')">Edit</th>
                                     	<th sec:authorize="hasAuthority('MASTERLIST')">Delete</th>
+                                    	<th sec:authorize="hasAuthority('MASTERLIST')">Reset Bids</th>
 	                                </tr>
 	                            </thead>
 	                            <tbody>
@@ -169,6 +173,7 @@
 	                                    <td th:text="${shipment.consigneeZip}"></td>
                                         <td sec:authorize="hasAuthority('MASTERLIST')"><a th:href="@{/editshipment/{id}(id=${shipment.id})}">Edit</a></td>
                                         <td sec:authorize="hasAuthority('MASTERLIST')"><a th:href="@{/deleteshipment/{id}(id=${shipment.id})}">Delete</a></td>
+                                        <td sec:authorize="hasAuthority('MASTERLIST')"><a th:href="@{/resetshipmentbids/{id}(id=${shipment.id})}">Reset Bids</a></td>
                                         
 	                                </tr>
 	                            </tbody>

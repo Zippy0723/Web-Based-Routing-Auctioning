@@ -64,6 +64,9 @@
                         <li sec:authorize="hasAuthority('CARRIER')" class="navitem">
                             <a class="selected" id="nav_shipments_home_carrier" href="/shipmentshomecarrier">Shipments</a>
                         </li>
+                        <li sec:authorize="hasAnyAuthority('CARRIER', 'MASTERLIST', 'SHIPPER')" class="navitem">
+                            <a class="navlink" id="nav_shipments_home_carrier" href="/auctioninghome">Auctioning</a>
+                        </li>
                         <li sec:authorize="hasAnyAuthority('CARRIER','MASTERLIST')" class="navitem">
                             <a class="navlink" id="nav_routes" href="/routes">Routes</a>
                         </li>
@@ -144,6 +147,8 @@
                                     <th sec:authorize="hasAnyAuthority('SHIPPER','MASTERLIST')">Edit</th>
                                     <th sec:authorize="hasAnyAuthority('SHIPPER','MASTERLIST')">Delete</th>
                                     <th sec:authorize="hasAuthority('MASTERLIST')">Freeze</th>
+                                    <th sec:authorize="hasAuthority('MASTERLIST')">Reset Bids</th>
+                                    <th sec:authorize="hasAuthority('MASTERLIST')">Force End Auction</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -167,6 +172,8 @@
                                     <td sec:authorize="hasAnyAuthority('SHIPPER','MASTERLIST')"><a th:href="@{/editshipment/{id}(id=${shipment.id})}">Edit</a></td>
                                     <td sec:authorize="hasAnyAuthority('SHIPPER','MASTERLIST')"><a th:href="@{/deleteshipment/{id}(id=${shipment.id})}">Delete</a></td>
                                     <td sec:authorize="hasAuthority('MASTERLIST')"><a th:href="@{/freezeshipment/{id}(id=${shipment.id})}">Freeze</a></td>
+                                    <td sec:authorize="hasAuthority('MASTERLIST')"><a th:href="@{/resetshipmentbids/{id}(id=${shipment.id})}">Reset Bids</a></td>
+                                    <td sec:authorize="hasAuthority('MASTERLIST')"><a th:href="@{/forceendauction/{id}(id=${shipment.id})}">Force End Auction</a></td>
                                     
                                 </tr>
                             </tbody>
@@ -175,8 +182,6 @@
                     <br>
                       <p sec:authorize="hasAuthority('MASTERLIST')"><button class="buttons6" onclick="window.location.href='./shipmentshomemaster';">Back</button></p>
                       <p sec:authorize="hasAuthority('CARRIER')"><button class="buttons6" onclick="window.location.href='./shipmentshomecarrier';">Back</button></p>
-                      <p sec:authorize="hasAuthority('SHIPPER')"><button class="buttons6" onclick="window.location.href='./add-shipments';">Add New Shipment</button>
-                      		<button class="buttons6" onclick="window.location.href='./uploadshipments';">Upload an Excel File</button></p>
                 	<p sec:authorize="hasAuthority('SHIPPER')"><button class="buttons7" onclick="window.location.href='./shipmentshomeshipper';">Back</button>
                 	
                 </div>

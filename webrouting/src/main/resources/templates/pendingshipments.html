@@ -121,14 +121,14 @@
 				<div th:switch="${shipments}">
                     <h2 th:case="null">No shipments yet!</h2>
                     <div th:case="*">
-                        <h2>Frozen Shipments</h2>
+                        <h2>Pending Shipments</h2>
                         <br>
                         <span type="hidden" th:text="${error}" class="loginError"></span>
                         <br>
                         <table class="dataTable">
                             <thead>
                                 <tr>
-                                    <th>Shipment ID</th>
+                                    <th>ID</th>
                                     <th>Client</th>
                                     <th>Client Mode</th>
                                     <th>Ship Date</th>
@@ -142,11 +142,10 @@
                                     <th>Consignee City</th>
                                     <th>Consignee State</th>
                                     <th>Consignee Zip</th>
-                                    <th>View Bids</th>
-                                    <th sec:authorize="hasAnyAuthority('MASTERLIST')">Edit</th>
-                                    <th sec:authorize="hasAnyAuthority('MASTERLIST')">Delete</th>
-                                    <th sec:authorize="hasAuthority('MASTERLIST')">Unfreeze</th>
-                                    <th sec:authorize="hasAuthority('MASTERLIST')">Reset Bids</th>
+                                    <th sec:authorize="hasAnyAuthority('SHIPPER','MASTERLIST')">Edit</th>
+                                    <th sec:authorize="hasAnyAuthority('SHIPPER','MASTERLIST')">Delete</th>
+                                    <th sec:authorize="hasAuthority('MASTERLIST')">Freeze</th>
+                                    <th sec:authorize="hasAnyAuthority('SHIPPER','MASTERLIST')">Push to Auction</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -165,11 +164,10 @@
                                     <td th:text="${shipment.consigneeCity}"></td>
                                     <td th:text="${shipment.consigneeState}"></td>
                                     <td th:text="${shipment.consigneeZip}"></td>
-                                    <td><a th:href="@{/viewshipmentbids/{id}(id=${shipment.id})}">View Bids</a></td>
-                                    <td sec:authorize="hasAnyAuthority('MASTERLIST')"><a th:href="@{/editshipment/{id}(id=${shipment.id})}">Edit</a></td>
-                                    <td sec:authorize="hasAnyAuthority('MASTERLIST')"><a th:href="@{/deleteshipment/{id}(id=${shipment.id})}">Delete</a></td>
-                                    <td sec:authorize="hasAuthority('MASTERLIST')"><a th:href="@{/unfreezeshipment/{id}(id=${shipment.id})}">Unfreeze</a></td>
-                                    <td sec:authorize="hasAuthority('MASTERLIST')"><a th:href="@{/resetshipmentbids/{id}(id=${shipment.id})}">Reset Bids</a></td>
+                                    <td sec:authorize="hasAnyAuthority('SHIPPER','MASTERLIST')"><a th:href="@{/editshipment/{id}(id=${shipment.id})}">Edit</a></td>
+                                    <td sec:authorize="hasAnyAuthority('SHIPPER','MASTERLIST')"><a th:href="@{/deleteshipment/{id}(id=${shipment.id})}">Delete</a></td>
+                                    <td sec:authorize="hasAuthority('MASTERLIST')"><a th:href="@{/freezeshipment/{id}(id=${shipment.id})}">Freeze</a></td>
+                                    <td sec:authorize="hasAnyAuthority('SHIPPER','MASTERLIST')"><a th:href="@{/pushshipment/{id}(id=${shipment.id})}">Push to Auction</a></td>
                                     
                                 </tr>
                             </tbody>
@@ -178,6 +176,8 @@
                     <br>
                       <p sec:authorize="hasAuthority('MASTERLIST')"><button class="buttons6" onclick="window.location.href='./shipmentshomemaster';">Back</button></p>
                       <p sec:authorize="hasAuthority('CARRIER')"><button class="buttons6" onclick="window.location.href='./shipmentshomecarrier';">Back</button></p>
+                      <p sec:authorize="hasAuthority('SHIPPER')"><button class="buttons6" onclick="window.location.href='./add-shipments';">Add New Shipment</button>
+                      		<button class="buttons6" onclick="window.location.href='./uploadshipments';">Upload an Excel File</button></p>
                 	<p sec:authorize="hasAuthority('SHIPPER')"><button class="buttons7" onclick="window.location.href='./shipmentshomeshipper';">Back</button>
                 	
                 </div>
