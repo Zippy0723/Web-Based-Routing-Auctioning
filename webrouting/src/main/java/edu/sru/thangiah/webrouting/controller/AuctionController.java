@@ -44,6 +44,11 @@ public class AuctionController {
 	 */
 	@RequestMapping("/auctioninghome")
 	public String auctioningHome(Model model) {
+		User user = getLoggedInUser();
+		List<Shipments> allShipments = (List<Shipments>)shipmentsRepository.findAll();
+		
+		model.addAttribute("shipments", allShipments);
+		
 		return "auctioninghome";
 	}
 	
@@ -76,7 +81,45 @@ public class AuctionController {
         
 		return "/force/forceendauctionconfirm";
 	}
+	/**
+	 * 
+	 */
+	@RequestMapping("/pushshipment/{id}")
+	public String pushShipment(@PathVariable("id") long id, Model model, HttpSession session) {
+		Shipments shipment = shipmentsRepository.findById(id)
+        		.orElseThrow(() -> new IllegalArgumentException("Invalid shipment Id:" + id));
+        User user = getLoggedInUser();
+        String redirectLocation = (String) session.getAttribute("redirectLocation");
+        
+        if (!shipment.getFullFreightTerms().equals("PENDING")) {
+        	System.out.println("Error: Non-pending shipment attempted to be moved to auction.");
+        	return redirectLocation;
+        }
+        
+        model.addAttribute("shipments", shipment);
+        
+		return "/push/pushshipmentconfirm";
+	}
 	
+	/**
+	 * 
+	 */
+	@RequestMapping("/pushshipmentconfirmation/{id}")
+	public String pushShipmentConfirmation(@PathVariable("id") long id, Model model) {
+		Shipments shipment = shipmentsRepository.findById(id)
+	     .orElseThrow(() -> new IllegalArgumentException("Invalid Shipment Id:" + id));
+		User user = getLoggedInUser();		
+		
+		if (user.getRole().toString().equals("CARRIER") || (user.getRole().toString().equals("SHIPPER") && !user.getShipments().contains(shipment))) {
+			System.out.println("Error: Invalid permissions for pushing shipment");
+			return "redirect:/pendingshipments";
+		}
+		
+		shipment.setFullFreightTerms("AVAILABLE SHIPMENT");
+		shipmentsRepository.save(shipment);
+		
+		return "redirect:/pendingshipments";
+	}
 	/**
 	 * 
 	 */

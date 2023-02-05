@@ -247,7 +247,9 @@ public class ShipmentsController {
 	 * Adds Frozen Shipments to the Shipment model, 
 	 * or, if the user attempts to access the frozen shipments page and is not MASTERSEVER or SHIPPER, redirects them to index.
 	 * @param model Used to add data to the model
+	 * @param session Stores the users HTTP session (for passing around various user specific data between functions, primarily redirecitLocation)
 	 * @return "frozenshipments" or "/index" if user is not MASTERSERVER or SHIPPER
+	 * TODO URGENT: Need code for placing frozen pending shipments back to pending when unfrozen, rather then dumping then in accepeted
 	 */
 	@RequestMapping({"/frozenshipments"})
 	public String showFrozenShipmentsList(Model model, HttpSession session) {
@@ -262,7 +264,7 @@ public class ShipmentsController {
 		else if (user.getRole().toString().equals("MASTERLIST")) {
 			shipments = (List<Shipments>) shipmentsRepository.findAll();
 		}
-		else {
+		else { //Carriers shouldnt be able to see this page, this else will throw them back to index if they try
 			session.setAttribute("redirectLocation", "/index");
 			return "/index"; 
 		}
@@ -282,6 +284,44 @@ public class ShipmentsController {
 			
 		
 		return "frozenshipments";
+	}
+	
+	/**
+	 * Adds Pending Shipments to the Shipment model, then returns to the pending shipments page
+	 */
+	@RequestMapping({"/pendingshipments"})
+	public String showPendingShipmentsList(Model model, HttpSession session) {
+		List<Shipments> shipmentsPending = new ArrayList<>();
+		User user = getLoggedInUser();
+		session.setAttribute("redirectLocation", "/pendingshipments");
+		List<Shipments> shipments;
+		
+		if (user.getRole().toString().equals("SHIPPER")) {  
+			shipments = user.getShipments();
+		}
+		else if (user.getRole().toString().equals("MASTERLIST")) {
+			shipments = (List<Shipments>) shipmentsRepository.findAll();
+		}
+		else { //Carriers shouldnt be able to see this page
+			session.setAttribute("redirectLocation", "/index");
+			return "/index"; 
+		}
+		
+		if (shipments.size() != 0 && shipments != null) {
+			for (int i = 0; i < shipments.size(); i++) {
+				if (shipments.get(i).getFullFreightTerms().equals("PENDING")) {
+					shipmentsPending.add(shipments.get(i));
+						
+				}
+			}
+		}
+		
+		if (shipmentsPending.size() != 0 && shipmentsPending != null) {
+			model.addAttribute("shipments", shipmentsPending);   
+		}
+		
+		
+		return "pendingshipments";
 	}
 	
 
@@ -341,7 +381,7 @@ public class ShipmentsController {
   				List<Shipments> shipments = user.getShipments();
   				if (shipments.size() != 0 && shipments != null) {
   					for (int i = 0; i < shipments.size(); i++) {
-  						if (shipments.get(i).getCarrier() == null) {
+  						if (shipments.get(i).getFullFreightTerms().equals("AVAILABLE SHIPMENT")) {
   							shipmentsWOCarrier.add(shipments.get(i));
   						}
   					}
@@ -351,7 +391,7 @@ public class ShipmentsController {
   				}
   			     
   			}
-  			return "createdshipments";
+  			return "pendingshipments";
   		}
 
   		shipment.setCarrier(null);
@@ -359,10 +399,10 @@ public class ShipmentsController {
   		shipment.setPaidAmount("");
   		shipment.setScac("");
   		shipment.setFreightbillNumber("");
-  		shipment.setFullFreightTerms("AVAILABLE SHIPMENT");
+  		shipment.setFullFreightTerms("PENDING");
   		shipment.setUser(getLoggedInUser());
   		shipmentsRepository.save(shipment);
-  		return "redirect:/createdshipments";
+  		return "redirect:/pendingshipments";
   	}
 
 	/**
@@ -511,8 +551,11 @@ public class ShipmentsController {
         if (shipment.getFullFreightTerms().equals("AVAILABLE SHIPMENT")) {
         	redirectLocation = "redirect:/createdshipments";
         }
-        else if (shipment.getFullFreightTerms().equals("BID ACCEPTED")){  //master currently cannot freeze accepted shipments, this is for potential future
+        else if (shipment.getFullFreightTerms().equals("BID ACCEPTED")){  
         	redirectLocation = "redirect:/acceptedshipments";
+        } 
+        else if (shipment.getFullFreightTerms().equals("BID ACCEPTED")) {
+        	redirectLocation = "redirect:/pendingshipments";
         }
 		
 		shipment.setFullFreightTerms("FROZEN");
@@ -547,7 +590,12 @@ public class ShipmentsController {
 		Shipments shipment = shipmentsRepository.findById(id)
 	     .orElseThrow(() -> new IllegalArgumentException("Invalid Shipment Id:" + id));
 		
-		shipment.setFullFreightTerms("AVAILABLE SHIPMENT");
+		if (shipment.getBids().isEmpty()) {
+			shipment.setFullFreightTerms("PENDING");
+		} else {
+			shipment.setFullFreightTerms("AVAILABLE SHIPMENT");
+		}
+		
 		shipmentsRepository.save(shipment);
 		
 		return "redirect:/frozenshipments";
