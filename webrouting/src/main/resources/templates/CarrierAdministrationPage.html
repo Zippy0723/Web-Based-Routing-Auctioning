@@ -1,7 +1,7 @@
 <!doctype html>
 <html>
 	<head>
-		<title>Technicians</title>
+		<title>Carrier Users</title>
 
 		<link rel="stylesheet" type="text/css" href="/styles/reset.css" />
         <link rel="stylesheet" type="text/css" href="/styles/main.css" />
@@ -32,7 +32,7 @@
                             <a class="navlink" id="nav_users" href="/users">Users</a>
                         </li>
                         <li sec:authorize="hasAuthority('ADMIN')" class="navitem">
-                            <a class="navlink" id="nav_users" href="/CarrierAdministrationPage">Carrier Page</a>
+                            <a class="selected" id="nav_users" href="/CarrierAdministrationPage">Carrier Page</a>
                         </li>
                         <li sec:authorize="hasAuthority('ADMIN')" class="navitem">
                             <a class="navlink" id="nav_users" href="/ShipperAdministrationPage">Shipper Page</a>
@@ -53,7 +53,7 @@
                             <a class="navlink" id="nav_drivers" href="/drivers">Drivers</a>
                         </li>
                         <li sec:authorize="hasAuthority('CARRIER')" class="navitem">
-                            <a class="selected" id="nav_technicians" href="/technicians">Technicians</a>
+                            <a class="navlink" id="nav_technicians" href="/technicians">Technicians</a>
                         </li>
                         <li sec:authorize="hasAuthority('CARRIER')" class="navitem">
                             <a class="navlink" id="nav_maintenanceorders" href="/maintenanceorders">Maintenance</a>
@@ -119,10 +119,14 @@
   					<button class=""  id="hamburger" style="display:none" onclick="nav_open()">☰</button>
 				</span>
 				<br><br>
-				<div th:switch="${technicians}">
-                    <h2 th:case="null">No technicians yet!</h2>
+				<div th:switch="${userstable}">
+                    <h2 th:case="null">No users yet!</h2>
                     <div th:case="*">
-                        <h2>Technicians</h2>
+                        <h2>Carrier User Page</h2>
+                        <br>
+                        <div th:if="${resetMsg != null}">
+						<p><h2>[[${resetMsg}]]</h2></p>
+						</div>
                         <br>
                         <span type="hidden" th:text="${error}" class="loginError"></span>
                         <br>
@@ -130,26 +134,35 @@
                             <thead>
                                 <tr>
                                     <th>ID</th>
-                                    <th>Contact</th>
-                                    <th>Skill Grade</th>
-                                    <th>Current Requests</th>
+                                    <th>UserName</th>
+                                    <th>Email</th>
+                                    <th>Role</th>
+                                    <th>Carrier</th>
+                                    <th>Enabled</th>
+                                    <th>Auctioning Enabled</th>
                                     <th>Edit</th>
                                     <th>Delete</th>
+                                    
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr th:each="technician : ${technicians}">
-                                    <td th:text="${technician.id}"></td>
-                                    <td><a th:text="${technician.contact}" th:href="@{/viewcontact/{id}(id=${technician.contact.id})}"></a></td>
-                                  	<td th:text="${technician.skill_grade}"></td>
-                                  	<td><a th:href="@{/viewmaintenanceorders/{id}(id=${technician.id})}">View Requests</a></td>
-                                    <td><a th:href="@{/edittechnician/{id}(id=${technician.id})}">Edit</a></td>
-                                    <td><a th:href="@{/deletetechnician/{id}(id=${technician.id})}">Delete</a></td>
+                            
+                                <tr th:each="user : ${userstable}">                           
+                                    <td th:text="${user.id}"></td>
+                                    <td th:text="${user.username}"></td>
+                                    <td th:text="${user.email}"></td>
+                                    <td th:text="${user.role}"></td>
+                                    <td th:text="${user.carrier}"></td>
+                                    <td th:text= "${user.enabled}"></td>
+                                    <td th:text="${user.enabled}"></td>
+                                    <td><a th:href="@{/edituser/{id}(id=${user.id})}">Edit</a></td>
+                                    <td><a th:href="@{/deleteuser/{id}(id=${user.id})}">Delete</a></td>                         
                                 </tr>
                             </tbody>
                         </table>
                     </div>      
-                    <p><button class="buttons6" onclick="window.location.href='./add-technician';">Add Technician</button></p>
+                    <p><button class="buttons6" onclick="window.location.href='./signup';">Add New User</button></p>
+                    <p><button class="buttons6" onclick="window.location.href='./roles';">View Available Roles</button></p>
                 </div>
             </div>
         </div>

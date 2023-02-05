@@ -70,6 +70,7 @@ public class User {
     
     @Transient
     private String updateEmail;
+    
 
     /**
      * Gets the User ID

@@ -100,6 +100,38 @@ public class UserController {
         return "users";
     }
     
+    @RequestMapping("/CarrierAdministrationPage")
+    public String carrierAdministrationPage(Model model) {
+    	List<User> userList = userRepository.findAll();
+    	List<User> finalUserList = new ArrayList<User>();
+    	
+    	for (User user : userList) {
+    		if (user.getRole().toString().equals("CARRIER")) {
+    			finalUserList.add(user);
+    		}
+    	}
+    	
+    	
+        model.addAttribute("userstable", finalUserList);
+        return "CarrierAdministrationPage";
+    }
+    
+    @RequestMapping("/ShipperAdministrationPage")
+    public String shipperAdministrationPage(Model model) {
+    	List<User> userList = userRepository.findAll();
+    	List<User> finalUserList = new ArrayList<User>();
+    	
+    	for (User user : userList) {
+    		if (user.getRole().toString().equals("SHIPPER")) {
+    			finalUserList.add(user);
+    		}
+    	}
+    	
+    	
+        model.addAttribute("userstable", finalUserList);
+        return "ShipperAdministrationPage";
+    }
+    
     /**
      * Redirects user to the /add/add-user-home page
      * @param model Used to add data to the model
@@ -381,16 +413,6 @@ public class UserController {
   		
   		return "/index";
   	}
-  	/*@GetMapping("/disable/{id}")
-  	public String disableUser(@PathVariable long id) {
-  		User user = userRepository.findById(id)
-  	          .orElseThrow(() -> new IllegalArgumentException("Invalid user Id:" + id));
-  		if(user != null) {
-  			user.setApproved(false);
-  			userRepository.save(user);
-  		}
-  		
-  	}*/
   	/**
 	 * Returns the user that is currently logged into the system. <br>
 	 * If there is no user logged in, null is returned.
