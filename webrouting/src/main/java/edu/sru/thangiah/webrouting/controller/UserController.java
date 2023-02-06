@@ -1,5 +1,6 @@
 package edu.sru.thangiah.webrouting.controller;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -85,8 +86,50 @@ public class UserController {
 	 */
     @RequestMapping({"/users"})
     public String showUserList(Model model) {
-        model.addAttribute("userstable", userRepository.findAll());
+    	List<User> userList = userRepository.findAll();
+    	List<User> finalUserList = new ArrayList<User>();
+    	
+    	for (User user : userList) {
+    		if (!user.getRole().toString().equals("ADMIN") && !user.getRole().toString().equals("MASTERLIST")) {
+    			finalUserList.add(user);
+    		}
+    	}
+    	
+    	
+        model.addAttribute("userstable", finalUserList);
         return "users";
+    }
+    
+    @RequestMapping("/CarrierAdministrationPage")
+    public String carrierAdministrationPage(Model model) {
+    	List<User> userList = userRepository.findAll();
+    	List<User> finalUserList = new ArrayList<User>();
+    	
+    	for (User user : userList) {
+    		if (user.getRole().toString().equals("CARRIER")) {
+    			finalUserList.add(user);
+    		}
+    	}
+    	
+    	
+        model.addAttribute("userstable", finalUserList);
+        return "CarrierAdministrationPage";
+    }
+    
+    @RequestMapping("/ShipperAdministrationPage")
+    public String shipperAdministrationPage(Model model) {
+    	List<User> userList = userRepository.findAll();
+    	List<User> finalUserList = new ArrayList<User>();
+    	
+    	for (User user : userList) {
+    		if (user.getRole().toString().equals("SHIPPER")) {
+    			finalUserList.add(user);
+    		}
+    	}
+    	
+    	
+        model.addAttribute("userstable", finalUserList);
+        return "ShipperAdministrationPage";
     }
     
     /**

@@ -31,6 +31,12 @@
                         <li sec:authorize="hasAuthority('ADMIN')" class="navitem">
                             <a class="selected" id="nav_users" href="/users">Users</a>
                         </li>
+                        <li sec:authorize="hasAuthority('ADMIN')" class="navitem">
+                            <a class="navlink" id="nav_users" href="/CarrierAdministrationPage">Carrier Page</a>
+                        </li>
+                        <li sec:authorize="hasAuthority('ADMIN')" class="navitem">
+                            <a class="navlink" id="nav_users" href="/ShipperAdministrationPage">Shipper Page</a>
+                        </li>
                         <li sec:authorize="hasAuthority('CARRIER')" class="navitem">
                             <a class="navlink" id="nav_contacts" href="/contacts">Contacts</a>
                         </li>
@@ -136,21 +142,24 @@
                                     <th>Role</th>
                                     <th>Carrier</th>
                                     <th>Enabled</th>
+                                    <th>Auctioning Enabled</th>
                                     <th>Edit</th>
                                     <th>Delete</th>
                                     
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr th:each="user : ${userstable}">
+                            
+                                <tr th:each="user : ${userstable}">                           
                                     <td th:text="${user.id}"></td>
                                     <td th:text="${user.username}"></td>
                                     <td th:text="${user.email}"></td>
                                     <td th:text="${user.role}"></td>
                                     <td th:text="${user.carrier}"></td>
                                     <td th:text= "${user.enabled}"></td>
+                                    <td th:text="${user.enabled}"></td>
                                     <td><a th:href="@{/edituser/{id}(id=${user.id})}">Edit</a></td>
-                                    <td><a th:href="@{/deleteuser/{id}(id=${user.id})}">Delete</a></td>
+                                    <td><a th:href="@{/deleteuser/{id}(id=${user.id})}">Delete</a></td>                         
                                 </tr>
                             </tbody>
                         </table>

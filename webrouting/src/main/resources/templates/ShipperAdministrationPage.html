@@ -1,14 +1,7 @@
-<!DOCTYPE html>
+<!doctype html>
 <html>
-<head>
-<meta charset="ISO-8859-1">
-<title>Reset Your Password</title>
-</head>
-<body>
-<!DOCTYPE html>
-<html>
-<head>
-		<title>Enterprise Routing System</title>
+	<head>
+		<title>Carrier Users</title>
 
 		<link rel="stylesheet" type="text/css" href="/styles/reset.css" />
         <link rel="stylesheet" type="text/css" href="/styles/main.css" />
@@ -17,6 +10,7 @@
         <link rel="stylesheet" type="text/css" href="/styles/tables.css">
 
         <link rel="stylesheet" type="text/css" href="/styles/smoothness/jquery-ui-1.10.2.css" />
+
 	</head>
 	<body>
 		<div id="wrapper">
@@ -41,7 +35,7 @@
                             <a class="navlink" id="nav_users" href="/CarrierAdministrationPage">Carrier Page</a>
                         </li>
                         <li sec:authorize="hasAuthority('ADMIN')" class="navitem">
-                            <a class="navlink" id="nav_users" href="/ShipperAdministrationPage">Shipper Page</a>
+                            <a class="selected" id="nav_users" href="/ShipperAdministrationPage">Shipper Page</a>
                         </li>
                         <li sec:authorize="hasAuthority('CARRIER')" class="navitem">
                             <a class="navlink" id="nav_contacts" href="/contacts">Contacts</a>
@@ -76,9 +70,6 @@
                         <li sec:authorize="hasAuthority('CARRIER')" class="navitem">
                             <a class="navlink" id="nav_shipments_home_carrier" href="/shipmentshomecarrier">Shipments</a>
                         </li>
-                        <li sec:authorize="hasAnyAuthority('CARRIER', 'MASTERLIST', 'SHIPPER')" class="navitem">
-                            <a class="navlink" id="nav_shipments_home_carrier" href="/auctioninghome">Auctioning</a>
-                        </li>
                         <li sec:authorize="hasAnyAuthority('CARRIER','MASTERLIST')" class="navitem">
                             <a class="navlink" id="nav_routes" href="/routes">Routes</a>
                         </li>
@@ -94,10 +85,9 @@
             </div>
             <div sec:authorize="!isAuthenticated()" class = "navSideBar" id="mySidebar">
                 <button onclick="nav_close()" class="bar-item">...</button>
-
                 <ul class="navbar">
                     <li class="navitem">
-                        <a class="navlink" id="nav_home" href="/">Home</a>
+                        <a class="selected" id="nav_home" href="/">Home</a>
                     </li>
                     <br>
                     <li sec:authorize="!isAuthenticated()" class="navitem">
@@ -105,9 +95,23 @@
                     </li>
                     <br>
                     <li sec:authorize="!isAuthenticated()" class="navitem">
-                        <a class="selected" id="nav_registration" href="/registrationhome">Register</a>
+                        <a class="navlink" id="nav_registration" href="/registrationhome">Register</a>
                     </li>
                 </ul>
+            </div>
+
+            <div id="sub_heading">
+                <div id="loginDiv">
+                    <div sec:authorize="isAuthenticated()" style="float: right;">
+                        <form id="logoutForm" method="POST" th:action="@{/logout}">
+                            <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+                        </form>
+                        Hello <span sec:authentication="name"></span> | <a onclick="document.forms['logoutForm'].submit()">Logout</a>
+                    </div>
+                    <div sec:authorize="!isAuthenticated()" style="float: right;">
+                        <a id="loginLink" class="ui-button" href="/login">Login</a>
+                    </div>
+                </div>
             </div>
 			
 			<div id="content">
@@ -115,39 +119,53 @@
   					<button class=""  id="hamburger" style="display:none" onclick="nav_open()">☰</button>
 				</span>
 				<br><br>
-                <br>
-                <h1>Reset Password</h1>
-                <br>
-                <form method="POST" th:action="@{/resetpassword}" th:object="${userForm}">
-                <input type="hidden" name="otpCode" th:value="${otpCode}"/>
-                    <hr>
-                    <br>
-                    <div class="form-group">
+				<div th:switch="${userstable}">
+                    <h2 th:case="null">No users yet!</h2>
+                    <div th:case="*">
+                        <h2>Shipper User Page</h2>
                         <br>
-                        <h2> Enter Your Credentials To Reset Your Password</h2>
-                        <br><br>
-                        <br>
-                        <input type="password" th:field="*{password}" id="password" placeholder="Enter Your New Password"  required>
-                        <br>
-                        <input type="password" th:field="*{confirmPassword}" id="confirmPassword" placeholder= "Confirm your Password" required/>
-                        <p th:if="${#fields.hasErrors('password')}" th:errorclass="password" th:errors="*{password}"></p>
-                       	<span type="hidden" th:text="${error}" class="loginError"></span>
-                        <br>
-                        <div th:if="${message != null}">
-						<p><h2>[[${message}]]</h2></p>
+                        <div th:if="${resetMsg != null}">
+						<p><h2>[[${resetMsg}]]</h2></p>
 						</div>
-                        <button class="buttons" type="submit">Submit</button>
-                        <br><br>
-                    </div>
-                </form>
-                <div class="form-group2">
-                    <br>
-                    <button class="buttons2" onclick="window.location.href='login';">Login</button>
-                    <br><br>   
+                        <br>
+                        <span type="hidden" th:text="${error}" class="loginError"></span>
+                        <br>
+                        <table class="dataTable">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>UserName</th>
+                                    <th>Email</th>
+                                    <th>Role</th>
+                                    <th>Carrier</th>
+                                    <th>Enabled</th>
+                                    <th>Auctioning Enabled</th>
+                                    <th>Edit</th>
+                                    <th>Delete</th>
+                                    
+                                </tr>
+                            </thead>
+                            <tbody>
+                            
+                                <tr th:each="user : ${userstable}">                           
+                                    <td th:text="${user.id}"></td>
+                                    <td th:text="${user.username}"></td>
+                                    <td th:text="${user.email}"></td>
+                                    <td th:text="${user.role}"></td>
+                                    <td th:text="${user.carrier}"></td>
+                                    <td th:text= "${user.enabled}"></td>
+                                    <td th:text="${user.enabled}"></td>
+                                    <td><a th:href="@{/edituser/{id}(id=${user.id})}">Edit</a></td>
+                                    <td><a th:href="@{/deleteuser/{id}(id=${user.id})}">Delete</a></td>                         
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>      
+                    <p><button class="buttons6" onclick="window.location.href='./signup';">Add New User</button></p>
+                    <p><button class="buttons6" onclick="window.location.href='./roles';">View Available Roles</button></p>
                 </div>
-                <br>
-			</div>
-		</div>
+            </div>
+        </div>
 
 		<div class="footer">
             Copyright &copy; Slippery Rock University 2022
@@ -166,8 +184,5 @@
 		  	document.getElementById("hamburger").style.display = "block";
 		}
 		</script>
-
 	</body>
-</html>
-</body>
 </html>
