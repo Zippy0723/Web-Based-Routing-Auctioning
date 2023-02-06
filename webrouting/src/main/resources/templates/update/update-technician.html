@@ -64,6 +64,9 @@
                         <li sec:authorize="hasAuthority('CARRIER')" class="navitem">
                             <a class="navlink" id="nav_shipments_home_carrier" href="/shipmentshomecarrier">Shipments</a>
                         </li>
+                        <li sec:authorize="hasAnyAuthority('CARRIER', 'MASTERLIST', 'SHIPPER')" class="navitem">
+                            <a class="navlink" id="nav_shipments_home_carrier" href="/auctioninghome">Auctioning</a>
+                        </li>
                         <li sec:authorize="hasAnyAuthority('CARRIER','MASTERLIST')" class="navitem">
                             <a class="navlink" id="nav_routes" href="/routes">Routes</a>
                         </li>
@@ -133,7 +136,7 @@
                     <span th:if="${#fields.hasErrors('skill_grade')}" th:errors="*{skill_grade}"></span>    
                     <br>
                     <br>
-                    <button class="buttons3" onclick="window.location.href='./technicians">Back</button>
+                    <button class="buttons3" onclick="window.location.href='./technicians'">Back</button>
                     <button class="buttons4" type="submit">Update Technician</button>  
                 </div>
                 </form>

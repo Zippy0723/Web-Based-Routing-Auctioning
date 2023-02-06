@@ -64,9 +64,6 @@
                         <li sec:authorize="hasAuthority('CARRIER')" class="navitem">
                             <a class="navlink" id="nav_shipments_home_carrier" href="/shipmentshomecarrier">Shipments</a>
                         </li>
-                        <li sec:authorize="hasAnyAuthority('CARRIER', 'MASTERLIST', 'SHIPPER')" class="navitem">
-                            <a class="navlink" id="nav_shipments_home_carrier" href="/auctioninghome">Auctioning</a>
-                        </li>
                         <li sec:authorize="hasAnyAuthority('CARRIER','MASTERLIST')" class="navitem">
                             <a class="navlink" id="nav_routes" href="/routes">Routes</a>
                         </li>
@@ -115,16 +112,16 @@
   					<button class=""  id="hamburger" style="display:none" onclick="nav_open()">☰</button>
 				</span>
 				<br><br>
-                <div id="loginDiv" style="text-align: center" th:each="shipment : ${shipments}">
-                    <h1>Are you sure you want to freeze shipment: </h1>
+                <div id="loginDiv" style="text-align: center">
+                    <h1>Are you sure you want to delete all bids for shipment: </h1>
                     <br>
                     <br>
                     <h2 th:text="${shipment}"></h2>
                     <br>
                     <br>
-                    <h2><a th:href="|/freezeshipmentconfirmation/${shipment.id}|">Yes</a></h2>
+                    <h2><a th:href="|/resetshipmentbidsconfirmation/${shipment.id}|">Yes</a></h2>
                     <br>
-                    <h2><a href="/acceptedshipments">No</a></h2> <!-- this should only ever need to point back to acceptedshipments, but if the ability to freeze completed shipments is added, this will have to use ${redirectLocation} -->
+                    <h2><a th:href="${redirectLocation}">No</a></h2>
                 </div>
             </div>
 		</div>

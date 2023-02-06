@@ -62,7 +62,7 @@
                             <a class="navlink" id="nav_carriers" href="/carriers">Carriers</a>
                         </li>
                         <li sec:authorize="hasAnyAuthority('MANAGER','ASSTMANAGER')" class="navitem">
-                            <a class="navlink" id="nav_shipments" href="/shipments">Shipments</a>
+                            <a class="navlink" id="nav_shipments" href="/shipments">Shipments</a> <!- No button for auctioning page here, and why is this menu div different from the ones in other places? ->
                         </li>
                         <li sec:authorize="hasAnyAuthority('CARRIER','MASTERLIST')" class="navitem">
                             <a class="navlink" id="nav_routes" href="/routes">Routes</a>

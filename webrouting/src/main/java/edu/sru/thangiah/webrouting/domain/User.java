@@ -71,6 +71,8 @@ public class User {
     @Transient
     private String updateEmail;
     
+    @NonNull
+    private boolean auctioningAllowed;
 
     /**
      * Gets the User ID
@@ -281,5 +283,21 @@ public class User {
 	 */
 	public void setUpdateEmail(String updateEmail) {
 		this.updateEmail = updateEmail;
+	}
+
+	/**
+	 * @return the auctioningAllowed
+	 * @author Thomas Haley tjh1019@sru.edu
+	 */
+	public boolean isAuctioningAllowed() {
+		return auctioningAllowed;
+	}
+
+	/**
+	 * @param auctioningAllowed the auctioningAllowed to set
+	 * @author Thomas Haley tjh1019@sru.edu
+	 */
+	public void setAuctioningAllowed(boolean auctioningAllowed) {
+		this.auctioningAllowed = auctioningAllowed;
 	}
 }

@@ -4,6 +4,8 @@ package edu.sru.thangiah.webrouting.controller;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.servlet.http.HttpSession;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
@@ -54,10 +56,11 @@ public class CarriersController {
 	 * the carriers page. <br>
 	 * If a user is logged in as a carrier, the detials of their carrier is added to the page.
 	 * @param model Used to add data to the model
+	 * @param session Used to store the uses HttpSession
 	 * @return "carriers"
 	 */
 	@RequestMapping({"/carriers"})
-	public String showCarriersList(Model model) {
+	public String showCarriersList(Model model, HttpSession session) {
 		
 		User user = getLoggedInUser();
 		if (user.getRole().toString().equals("CARRIER")) {
@@ -68,7 +71,8 @@ public class CarriersController {
 			model.addAttribute("carriers", carriersRepository.findAll());
 		}
 	
-	
+		session.setAttribute("redirectLocation", "/carriers");
+		
         return "carriers";
     }
 	
@@ -118,11 +122,12 @@ public class CarriersController {
   	 * @return "bids"
   	 */
   	@GetMapping("/viewcarrierbids/{id}")
-    public String viewCarrierBids(@PathVariable("id") long id, Model model) {
+    public String viewCarrierBids(@PathVariable("id") long id, Model model, HttpSession session) {
         Carriers carrier = carriersRepository.findById(id)
           .orElseThrow(() -> new IllegalArgumentException("Invalid carrier Id:" + id));
         
         User user = getLoggedInUser();
+        model.addAttribute("redirectLocation",session.getAttribute("redirectLocation"));
         if (user.getRole().toString().equals("SHIPPER")) {
         	if (carrier.equals(user.getCarrier())) {
         		model.addAttribute("bids", carrier.getBids());
