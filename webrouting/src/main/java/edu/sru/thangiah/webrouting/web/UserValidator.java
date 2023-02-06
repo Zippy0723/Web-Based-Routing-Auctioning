@@ -191,7 +191,7 @@ public class UserValidator implements Validator {
     		ValidationUtils.rejectIfEmptyOrWhitespace(errors, "client", "NotEmpty","No client name entered");
     		if(shipment.getClient().length() < 6 || shipment.getClient().length() > 64) {
     			errors.rejectValue("client", "invalid.client", "The length of this client is not valid");
-    		}
+    		} 
     		ValidationUtils.rejectIfEmptyOrWhitespace(errors, "commodityClass", "NotEmpty","No commodity Class name entered");
     		if(shipment.getCommodityClass().length() > 12 || shipment.getCommodityClass().length() < 1) {
     			errors.rejectValue("commodityClass", "invalid.commodityClass", "This input is invalid");
@@ -306,17 +306,19 @@ public class UserValidator implements Validator {
     			errors.rejectValue("workPhone", "invalid.phoneNumber", "This is not a valid Phone Number");
     		}
     	}
-    
+    	
     	else if(o instanceof Bids) {
     		Bids bid = (Bids) o;
     		ValidationUtils.rejectIfEmptyOrWhitespace(errors, "price", "NotEmpty", "You cannot enter an empty bid");
     		if(bid.getPrice().length() > 16) {
-    			errors.rejectValue("price", "amount.price", "Thats a lot of money!");
+    			errors.rejectValue("price", "amount.price", "Error, value too high. Please Return to the shipments page and try again!");
     		}
+    		
     		if(bid.getPrice().length()== 1) {
-    			errors.rejectValue("price", "amount.price", "You are trying to win the bid.");
+    			errors.rejectValue("price", "amount.price", "Error, value too low. Please Return to the shipments page and try again!");
     		}
     	}
+    	
     	else if(o instanceof Locations) {
     		Locations location = (Locations) o;
     		 pattern = Pattern.compile("(-?[0-9]*[.]{1}[0-9]{7})");
@@ -324,10 +326,11 @@ public class UserValidator implements Validator {
     		if(location.getName().length() > 32) {
     			errors.rejectValue("name", "invalid.name", "invalid input");
     		}
+    		
     		if(location.getStreetAddress1().length() > 128) {
     			errors.rejectValue("streetAddress1", "invalid.StreetAddress", "Invalid Street Address");
     		}
-    		
+
     		if(location.getStreetAddress2().length() > 64) {
     			errors.rejectValue("streetAddress2", "invalid.StreetAddress2", "This input is too long");
     		}

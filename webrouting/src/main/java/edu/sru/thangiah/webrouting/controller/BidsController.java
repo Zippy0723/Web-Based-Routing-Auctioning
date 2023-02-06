@@ -4,8 +4,6 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
-import javax.servlet.http.HttpSession;
-
 import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -80,17 +78,11 @@ public class BidsController {
 	 * @return "/add/add-bid"
 	 */
 	@GetMapping({"/add-bid/{id}"})
-    public String showBidList(@PathVariable("id") long id, Model model, Bids bid, BindingResult result, HttpSession session) {
+    public String showBidList(@PathVariable("id") long id, Model model, Bids bid, BindingResult result) {
 		Shipments shipment = shipmentsRepository.findById(id)
 				.orElseThrow(() -> new IllegalArgumentException("Invalid shipment Id: " + id));
         model.addAttribute("shipments", shipment);
         model.addAttribute("carriers", carriersRepository.findAll());
-        
-        if (!shipment.getFullFreightTerms().toString().equals("AVAILABLE SHIPMENT")) {
-        	 System.out.println("Error: User attempeted to place a bid on a shipment that was not in auction");
-        	 return (String) session.getAttribute("redirectLocation");
-        }
-        
         return "/add/add-bid";
     }
 	
@@ -119,19 +111,23 @@ public class BidsController {
   		
   		User user = getLoggedInUser();
   		bid.setCarrier(user.getCarrier());
+  		
   		bid.setDate(date.format(now));
   		bid.setTime(time.format(now));
   		
   		boolean deny = false;
-  		Shipments shipment = bid.getShipment();
-  		List<Bids> bidsInShipment = shipment.getBids();
   		
-  		for (Bids b: bidsInShipment) {
-			if (b.getCarrier().getCarrierName().equals(bid.getCarrier().getCarrierName())
-					&& b.getPrice().equals(bid.getPrice())) {
+  		List<Bids> bids = (List<Bids>) bidsRepository.findAll();
+		
+		for (int i = 0; i < bids.size(); i++) {
+
+			Bids currentBid = bids.get(i);
+			
+			if (currentBid.getCarrier().getCarrierName().equals(bid.getCarrier().getCarrierName())
+					&& currentBid.getPrice().equals(bid.getPrice())) {
 				deny = true;
 			}
-  		}
+		}
   		
   		if (deny == true) {
   			model.addAttribute("error", "Error: Bid with the same carrier and price has already been placed.");
@@ -148,85 +144,36 @@ public class BidsController {
   	 * Finds a bid using the id parameter and if found, redirects user to delete confirmation page
   	 * @param id Holds the ID of the bid to be deleted
   	 * @param model Used to add data to the model
-  	 * @return "/delete/deletebidconfirm" if succesful, "redirect: + redirectLocation" otherwise
+  	 * @return "redirect:/createdshipments" or "/delete/deletebidconfirm"
   	 */
 	@GetMapping("/deletebid/{id}")
-    public String deleteBid(@PathVariable("id") long id, Model model, HttpSession session) {
+    public String deleteBid(@PathVariable("id") long id, Model model) {
         Bids bid = bidsRepository.findById(id)
         		 .orElseThrow(() -> new IllegalArgumentException("Invalid bid Id:" + id));
         User user = getLoggedInUser();
-        String redirectLocation = (String) session.getAttribute("redirectLocation");
         
-		 if (bid.getShipment().getFullFreightTerms().toString().equals("FROZEN") && !user.getRole().toString().equals("MASTERLIST")) {
-			 System.out.println("User attempeted to delete a bid on a frozen shipment"); //Replace this with a proper error message 
-			 return "redirect:" + redirectLocation;
-		 }
-        
-        if (bid.getCarrier().equals(user.getCarrier()) || user.getRole().toString().equals("MASTERLIST")) {
+        if (bid.getCarrier().equals(user.getCarrier())) {
         	model.addAttribute("bids", bid);
-        	model.addAttribute("redirectLocation",redirectLocation);
         	return "/delete/deletebidconfirm";
         }
         
-        return "redirect:" + redirectLocation;
+        return "redirect:/createdshipments";
     }
 	
 	/**
   	 * Finds a bid using the id parameter and if found, deletes the bid and redirects to created shipments page
   	 * @param id ID of the bid being deleted
   	 * @param model Used to add data to the model
-  	 * @param session Used to store the users HTTP session
-  	 * @return "redirect: + redirectLocation" (redirectLocation is stored in the HttpSession and set during page loads for critical pages)
+  	 * @return "redirect:/createdshipments"
   	 */
   	@GetMapping("/deletebidconfirmation/{id}")
-    public String deleteUserConfirm(@PathVariable("id") long id, Model model, HttpSession session) {
+    public String deleteUserConfirm(@PathVariable("id") long id, Model model) {
   		Bids bid = bidsRepository.findById(id)
        		 .orElseThrow(() -> new IllegalArgumentException("Invalid bid Id:" + id));
         
         bidsRepository.delete(bid);
-        return "redirect:" + session.getAttribute("redirectLocation");
+        return "redirect:/createdshipments";
     }
-  	
-  	/**
-  	 * Finds a shipment using the id parameter and if found, redirects users to the reset shipment bids confirmation page
-  	 * @param id : Holds the ID of the shipment to be reset
-  	 * @param model Used to add data to the model
-  	 * @return /resetshipmentbidsconfirm
-  	 */
-  	@GetMapping("/resetshipmentbids/{id}")
-  	public String resetShipmentBids(@PathVariable("id") long id, Model model, HttpSession session) {
-  		Shipments shipment = shipmentsRepository.findById(id)
-  			.orElseThrow(() -> new IllegalArgumentException("Invalid shipment Id:" + id));
-  		
-  		model.addAttribute("shipment",shipment);
-  		model.addAttribute("redirectLocation",session.getAttribute("redirectLocation"));
-  		
-  		return "/reset/resetshipmentbidsconfirm";
-  	}
-  	
-  	/**
-  	 * Finds a shipment using the id parameter and if found, gets all of that shipments bids then removes then. Then, returns the user to their redirectlocation
-  	 * @param id : Holds the ID of the shipment to be reset
-  	 * @param model Used to add data to the model
-  	 * @param session Used to store the users HTTP session
-  	 */
-  	@GetMapping("/resetshipmentbidsconfirmation/{id}")
-  	public String resetShipmentBidsConfirmation(@PathVariable("id") long id, Model model, HttpSession session) {
-  		Shipments shipment = shipmentsRepository.findById(id)
-  	  		.orElseThrow(() -> new IllegalArgumentException("Invalid shipment Id:" + id));
-  		User user = getLoggedInUser();
-  		
-  		if (!user.getRole().toString().equals("MASTERLIST")) {
-  			System.out.println("Error: Non master tried to reset shipment!");
-  			return "redirect:" + session.getAttribute("redirectLocation");
-  		}
-  		
-  		for (Bids bid : shipment.getBids()) {
-  			bidsRepository.delete(bid);
-  		}
-  		
-  		return "redirect:" + session.getAttribute("redirectLocation");
-  	}
 	
 	/**
 	 * Accepts a bid from the carrier. <br>
@@ -236,16 +183,11 @@ public class BidsController {
 	 * @param model Used to add data to the model
 	 * @return "redirect:/shipmentshomeshipper"
 	 */
+  	
 	@GetMapping("/acceptbid/{id}")
 	public String acceptBid(@PathVariable("id") long id, Model model) {
 		Bids bid = bidsRepository.findById(id)
 		.orElseThrow(() -> new IllegalArgumentException("Invalid bid Id: " + id));
-		User user = getLoggedInUser();
-		
-		 if (bid.getShipment().getFullFreightTerms().toString().equals("FROZEN") && !user.getRole().toString().equals("MASTERLIST")) {
-			 System.out.println("User attempeted to accept a bid on a frozen shipment"); //Replace this with a proper error message and redirect, for now it just dumps shippers out of the accept menu
-			 return "redirect:/createdshipments";
-		 }
 		
 		Carriers carrier = bid.getCarrier();
 		Shipments shipment = bid.getShipment();
@@ -268,28 +210,22 @@ public class BidsController {
   	 * @param model Used to add data to the model
   	 * @return "/update/update-bid"
   	 */
+	
 	@GetMapping("/editbid/{id}")
     public String showEditForm(@PathVariable("id") long id, Model model) {
 		Bids bid = bidsRepository.findById(id)
           .orElseThrow(() -> new IllegalArgumentException("Invalid Bid Id:" + id));
 		 User user = getLoggedInUser();
 		 
-		 if (bid.getShipment().getFullFreightTerms().toString().equals("FROZEN") && !user.getRole().toString().equals("MASTERLIST")) {
-			 System.out.println("User attempeted to edit a bid on a frozen shipment"); //Replace this with a proper error message and redirect, for now it just dumps carriers out of the edit menu
-			 return "redirect:/createdshipments";
-		 }
-		 
-		 if (bid.getCarrier().equals(user.getCarrier()) || user.getRole().toString().equals("MASTERLIST")) {
-			 model.addAttribute("bids", bid);
-			 model.addAttribute("shipments", shipmentsRepository.findAll());  
-			 model.addAttribute("carriers", carriersRepository.findAll());
-			 return "/update/update-bid";
-	    }
+		 if (!bid.getCarrier().equals(user.getCarrier())) {
+	        	return "redirect:/createdshipments";
+	        }
         
-
+		 model.addAttribute("bids", bid);
+		 model.addAttribute("shipments", shipmentsRepository.findAll());  
+		 model.addAttribute("carriers", carriersRepository.findAll());
 	     
-        
-        return "redirect:/createdshipments";
+        return "/update/update-bid";
     }
 	
 	/**
@@ -303,7 +239,7 @@ public class BidsController {
   	 * @return "redirect:/createdshipments" or "/update/update-bid"
   	 */
 	@PostMapping("/updatebid/{id}")
-    public String updateBid(@PathVariable("id") long id, @Validated Bids bid, //TODO: rewrite this to work with MASTERLIST able to edit bids. 
+    public String updateBid(@PathVariable("id") long id, @Validated Bids bid, 
       BindingResult result, Model model) {
 		userValidator.addition(bid, result);
         if (result.hasErrors()) {

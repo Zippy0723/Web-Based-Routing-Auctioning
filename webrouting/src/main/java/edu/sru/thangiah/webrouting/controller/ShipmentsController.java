@@ -6,9 +6,6 @@ import java.text.SimpleDateFormat;
 
 import java.util.Date;
 import java.util.List;
-
-import javax.servlet.http.HttpSession;
-
 import java.util.ArrayList;
 import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
@@ -143,16 +140,15 @@ public class ShipmentsController {
 	 * @return "createdshipments"
 	 */
 	@RequestMapping({"/createdshipments"})
-	public String showCreatedShipmentsList(Model model, HttpSession session) {
+	public String showCreatedShipmentsList(Model model) {
 		
 		List<Shipments> shipmentsWOCarrier = new ArrayList<>();
 		User user = getLoggedInUser();
-		session.setAttribute("redirectLocation", "/createdshipments");
 		if (user.getRole().toString().equals("SHIPPER")) {
 			List<Shipments> shipments = user.getShipments();
 			if (shipments.size() != 0 && shipments != null) {
 				for (int i = 0; i < shipments.size(); i++) {
-					if (shipments.get(i).getFullFreightTerms().equals("AVAILABLE SHIPMENT")) {
+					if (shipments.get(i).getCarrier() == null) {
 						shipmentsWOCarrier.add(shipments.get(i));
 					}
 				}
@@ -166,7 +162,7 @@ public class ShipmentsController {
 			List<Shipments> shipments = (List<Shipments>) shipmentsRepository.findAll();
 			if (shipments.size() != 0 && shipments != null) {
 				for (int i = 0; i < shipments.size(); i++) {
-					if (shipments.get(i).getFullFreightTerms().equals("AVAILABLE SHIPMENT")) {
+					if (shipments.get(i).getCarrier() == null) {
 						shipmentsWOCarrier.add(shipments.get(i));
 					}
 				}
@@ -186,15 +182,14 @@ public class ShipmentsController {
 	 * @return "acceptedshipments"
 	 */
 	@RequestMapping({"/acceptedshipments"})
-	public String showAcceptedShipmentsList(Model model, HttpSession session) {
+	public String showAcceptedShipmentsList(Model model) {
 		List<Shipments> shipmentsWCarrier = new ArrayList<>();
 		User user = getLoggedInUser();
-		session.setAttribute("redirectLocation", "/acceptedshipments");
 		if (user.getRole().toString().equals("SHIPPER")) {
 			List<Shipments> shipments = user.getShipments();
 			if (shipments.size() != 0 && shipments != null) {
 				for (int i = 0; i < shipments.size(); i++) {
-					if (shipments.get(i).getFullFreightTerms().equals("BID ACCEPTED")) {
+					if (shipments.get(i).getCarrier() != null) {
 						shipmentsWCarrier.add(shipments.get(i));
 						
 					}
@@ -215,7 +210,7 @@ public class ShipmentsController {
 			
 			if (shipments.size() != 0 && shipments != null) {
 				for (int i = 0; i < shipments.size(); i++) {
-					if (shipments.get(i).getCarrier() == null || shipments.get(i).getFullFreightTerms().toString().equals("FROZEN")) {
+					if (shipments.get(i).getCarrier() == null) {
 						shipments.remove(i);
 					}
 				}
@@ -228,7 +223,7 @@ public class ShipmentsController {
 			List<Shipments> shipments = (List<Shipments>) shipmentsRepository.findAll();
 			if (shipments.size() != 0 && shipments != null) {
 				for (int i = 0; i < shipments.size(); i++) {
-					if (shipments.get(i).getFullFreightTerms().equals("BID ACCEPTED")) {
+					if (shipments.get(i).getCarrier() != null) {
 						shipmentsWCarrier.add(shipments.get(i));
 						
 					}
@@ -242,88 +237,6 @@ public class ShipmentsController {
 		
         return "acceptedshipments";
     }
-	
-	/**
-	 * Adds Frozen Shipments to the Shipment model, 
-	 * or, if the user attempts to access the frozen shipments page and is not MASTERSEVER or SHIPPER, redirects them to index.
-	 * @param model Used to add data to the model
-	 * @param session Stores the users HTTP session (for passing around various user specific data between functions, primarily redirecitLocation)
-	 * @return "frozenshipments" or "/index" if user is not MASTERSERVER or SHIPPER
-	 * TODO URGENT: Need code for placing frozen pending shipments back to pending when unfrozen, rather then dumping then in accepeted
-	 */
-	@RequestMapping({"/frozenshipments"})
-	public String showFrozenShipmentsList(Model model, HttpSession session) {
-		List<Shipments> shipmentsFrozen = new ArrayList<>();
-		User user = getLoggedInUser();
-		session.setAttribute("redirectLocation", "/frozenshipments");
-		List<Shipments> shipments;
-		
-		if (user.getRole().toString().equals("SHIPPER")) {  
-			shipments = user.getShipments();
-		}
-		else if (user.getRole().toString().equals("MASTERLIST")) {
-			shipments = (List<Shipments>) shipmentsRepository.findAll();
-		}
-		else { //Carriers shouldnt be able to see this page, this else will throw them back to index if they try
-			session.setAttribute("redirectLocation", "/index");
-			return "/index"; 
-		}
-		
-		if (shipments.size() != 0 && shipments != null) {
-			for (int i = 0; i < shipments.size(); i++) {
-				if (shipments.get(i).getFullFreightTerms().equals("FROZEN")) {
-					shipmentsFrozen.add(shipments.get(i));
-						
-				}
-			}
-		}
-		
-		if (shipmentsFrozen.size() != 0 && shipmentsFrozen != null) {
-			model.addAttribute("shipments", shipmentsFrozen);   
-		}
-			
-		
-		return "frozenshipments";
-	}
-	
-	/**
-	 * Adds Pending Shipments to the Shipment model, then returns to the pending shipments page
-	 */
-	@RequestMapping({"/pendingshipments"})
-	public String showPendingShipmentsList(Model model, HttpSession session) {
-		List<Shipments> shipmentsPending = new ArrayList<>();
-		User user = getLoggedInUser();
-		session.setAttribute("redirectLocation", "/pendingshipments");
-		List<Shipments> shipments;
-		
-		if (user.getRole().toString().equals("SHIPPER")) {  
-			shipments = user.getShipments();
-		}
-		else if (user.getRole().toString().equals("MASTERLIST")) {
-			shipments = (List<Shipments>) shipmentsRepository.findAll();
-		}
-		else { //Carriers shouldnt be able to see this page
-			session.setAttribute("redirectLocation", "/index");
-			return "/index"; 
-		}
-		
-		if (shipments.size() != 0 && shipments != null) {
-			for (int i = 0; i < shipments.size(); i++) {
-				if (shipments.get(i).getFullFreightTerms().equals("PENDING")) {
-					shipmentsPending.add(shipments.get(i));
-						
-				}
-			}
-		}
-		
-		if (shipmentsPending.size() != 0 && shipmentsPending != null) {
-			model.addAttribute("shipments", shipmentsPending);   
-		}
-		
-		
-		return "pendingshipments";
-	}
-	
 
 	/**
 	 * Redirects user to the /add/add-shipments page <br>
@@ -381,7 +294,7 @@ public class ShipmentsController {
   				List<Shipments> shipments = user.getShipments();
   				if (shipments.size() != 0 && shipments != null) {
   					for (int i = 0; i < shipments.size(); i++) {
-  						if (shipments.get(i).getFullFreightTerms().equals("AVAILABLE SHIPMENT")) {
+  						if (shipments.get(i).getCarrier() == null) {
   							shipmentsWOCarrier.add(shipments.get(i));
   						}
   					}
@@ -391,7 +304,7 @@ public class ShipmentsController {
   				}
   			     
   			}
-  			return "pendingshipments";
+  			return "createdshipments";
   		}
 
   		shipment.setCarrier(null);
@@ -399,10 +312,10 @@ public class ShipmentsController {
   		shipment.setPaidAmount("");
   		shipment.setScac("");
   		shipment.setFreightbillNumber("");
-  		shipment.setFullFreightTerms("PENDING");
+  		shipment.setFullFreightTerms("AVAILABLE SHIPMENT");
   		shipment.setUser(getLoggedInUser());
   		shipmentsRepository.save(shipment);
-  		return "redirect:/pendingshipments";
+  		return "redirect:/createdshipments";
   	}
 
 	/**
@@ -412,19 +325,11 @@ public class ShipmentsController {
   	 * @return "redirect:/shipments"
   	 */
 	@GetMapping("/deleteshipment/{id}")
-    public String deleteShipment(@PathVariable("id") long id, Model model, HttpSession session) {
+    	public String deleteShipment(@PathVariable("id") long id, Model model) {
         Shipments shipment = shipmentsRepository.findById(id)
-        		.orElseThrow(() -> new IllegalArgumentException("Invalid shipment Id:" + id));
-        User user = getLoggedInUser();
-        String redirectLocation = (String) session.getAttribute("redirectLocation");
-        
-        if (shipment.getFullFreightTerms().toString().equals("FROZEN") && !user.getRole().toString().equals("MASTERLIST")) {
-        	System.out.println("Non-Master user attempted to delete a frozen shipment!"); //TODO: Replace this with a proper error message
-        	return redirectLocation; 
-        }
+        .orElseThrow(() -> new IllegalArgumentException("Invalid shipment Id:" + id));
         
         model.addAttribute("shipments", shipment);
-        model.addAttribute("redirectLocation",redirectLocation); //Needed so confirmation html page can redirect to the right place if the user clicks no
         return "/delete/deleteshipmentconfirm";
     }
 	
@@ -432,10 +337,10 @@ public class ShipmentsController {
   	 * Finds a shipment using the id parameter and if found, deletes the shipment and redirects to shipments page
   	 * @param id ID of the shipment being deleted
   	 * @param model Used to add data to the model
-  	 * @return "redirect:/createdshipments" or "redirect:/acceptedshipments"" 
+  	 * @return "redirect:/createdshipments"
   	 */
   	@GetMapping("/deleteshipmentconfirmation/{id}")
-    public String deleteShipmentConfirmation(@PathVariable("id") long id, Model model, HttpSession session) {
+    public String deleteShipmentConfirmation(@PathVariable("id") long id, Model model) {
   		Shipments shipment = shipmentsRepository.findById(id)
   		        .orElseThrow(() -> new IllegalArgumentException("Invalid shipment Id:" + id));
   		        
@@ -448,9 +353,8 @@ public class ShipmentsController {
         	
         	
         }
-        
         shipmentsRepository.delete(shipment);
-        return "redirect:" + session.getAttribute("redirectLocation"); 
+        return "redirect:/createdshipments";
     }
 	
 	/**
@@ -476,16 +380,16 @@ public class ShipmentsController {
   	 * @param model Used to add data to the model
   	 * @return "shipments"
   	 */
+  	
   	@GetMapping("/viewshipmentbids/{id}")
-    public String viewShipmentBids(@PathVariable("id") long id, Model model, HttpSession session) {
+    public String viewShipmentBids(@PathVariable("id") long id, Model model) {
         Shipments shipment = shipmentsRepository.findById(id)
           .orElseThrow(() -> new IllegalArgumentException("Invalid shipment Id:" + id));
         
-        model.addAttribute("redirectLocation", session.getAttribute("redirectLocation"));
         model.addAttribute("bids", shipment.getBids());
         
         if (shipment.getCarrier() != null) {
-        	return "viewbidscomplete"; //TODO: rework this system, i dont like there being two separate bids.html pages, it makes things confusing. 
+        	return "viewbidscomplete";
         }
         return "bids";
     }
@@ -507,11 +411,6 @@ public class ShipmentsController {
 	    
 	    User user = getLoggedInUser();
 	    
-        if (shipment.getFullFreightTerms().toString().equals("FROZEN") && !user.getRole().toString().equals("MASTERLIST")) {
-        	System.out.println("Non-Master user attempted to edit a frozen shipment!");
-        	return "/index"; //TODO: Replace this with a proper message and redirect.
-        }
-	    
 	    if (user.getRole().toString().equals("SHIPPER")) {
 	    	return "/update/update-shipments-shipper";
 	    }
@@ -520,86 +419,6 @@ public class ShipmentsController {
 	    }
         
     }
-	
-	/**
-	 * Finds a shipment by ID, then Redirects to the Freeze Shipment confirmation page
-	 * @param id ID of the shipment being frozen
-  	 * @param model Used to add data to the model
-  	 * @return "/freeze/freezeshipmentconfirm"
-	 */
-	@GetMapping("/freezeshipment/{id}")
-	public String freezeShipment(@PathVariable("id") long id, Model model) {
-		Shipments shipment = shipmentsRepository.findById(id)
-		.orElseThrow(() -> new IllegalArgumentException("Invalid Shipment Id:" + id));
-		
-		model.addAttribute("shipments", shipment);
-		return "/freeze/freezeshipmentconfirm";
-	}
-	
-	/**
-	 * Finds a shipment by ID, then sets that shipments freight terms to FROZEN, disabling interaction with it for all users except master. 
-	 * @param id ID of the shipment being frozen
-  	 * @param model Used to add data to the model
-  	 * @return "redirect:/createdshipments" or "redirect:/acceptedshipments"
-	 */
-	@GetMapping("/freezeshipmentconfirmation/{id}")
-	public String freezeShipmentConfirmation(@PathVariable("id") long id, Model model) {
-		String redirectLocation = "redirect:/";
-		Shipments shipment = shipmentsRepository.findById(id)
-	     .orElseThrow(() -> new IllegalArgumentException("Invalid Shipment Id:" + id));
-		
-        if (shipment.getFullFreightTerms().equals("AVAILABLE SHIPMENT")) {
-        	redirectLocation = "redirect:/createdshipments";
-        }
-        else if (shipment.getFullFreightTerms().equals("BID ACCEPTED")){  
-        	redirectLocation = "redirect:/acceptedshipments";
-        } 
-        else if (shipment.getFullFreightTerms().equals("BID ACCEPTED")) {
-        	redirectLocation = "redirect:/pendingshipments";
-        }
-		
-		shipment.setFullFreightTerms("FROZEN");
-		shipmentsRepository.save(shipment);
-		
-		return redirectLocation;
-	}
-	
-	/**
-	 * Finds a shipment by ID, then Redirects to the Unfreeze Shipment confirmation page
-	 * @param id ID of the shipment being frozen
-  	 * @param model Used to add data to the model
-  	 * @return "/freeze/unfreezeshipmentconfirm"
-	 */
-	@GetMapping("/unfreezeshipment/{id}")
-	public String unfreezeShipment(@PathVariable("id") long id, Model model) {
-		Shipments shipment = shipmentsRepository.findById(id)
-		.orElseThrow(() -> new IllegalArgumentException("Invalid Shipment Id:" + id));
-		
-		model.addAttribute("shipments", shipment);
-		return "/freeze/unfreezeshipmentconfirm";
-	}
-	
-	/**
-	 * Finds a shipment by ID, then sets that shipments freight terms to AVAILABLE SHIPMENT, effectively unfreezing it. 
-	 * @param id ID of the shipment being frozen
-  	 * @param model Used to add data to the model
-  	 * @return "redirect:/frozenshipments"
-	 */
-	@GetMapping("/unfreezeshipmentconfirmation/{id}")
-	public String unfreezeShipmentConfirmation(@PathVariable("id") long id, Model model) {
-		Shipments shipment = shipmentsRepository.findById(id)
-	     .orElseThrow(() -> new IllegalArgumentException("Invalid Shipment Id:" + id));
-		
-		if (shipment.getBids().isEmpty()) {
-			shipment.setFullFreightTerms("PENDING");
-		} else {
-			shipment.setFullFreightTerms("AVAILABLE SHIPMENT");
-		}
-		
-		shipmentsRepository.save(shipment);
-		
-		return "redirect:/frozenshipments";
-	}
 	
 	/**
   	 * Updates a shipment to the database. Checks if there are errors in the form. <br>
@@ -818,6 +637,7 @@ public class ShipmentsController {
 	 * If there is no user logged in, null is returned.
 	 * @return user2 or null
 	 */
+	
 	public User getLoggedInUser() {
     	if (securityService.isAuthenticated()) {
     		org.springframework.security.core.userdetails.User user = 
@@ -832,3 +652,4 @@ public class ShipmentsController {
     	}
     }
 }
+

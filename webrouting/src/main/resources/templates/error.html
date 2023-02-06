@@ -64,9 +64,6 @@
                         <li sec:authorize="hasAuthority('CARRIER')" class="navitem">
                             <a class="navlink" id="nav_shipments_home_carrier" href="/shipmentshomecarrier">Shipments</a>
                         </li>
-                        <li sec:authorize="hasAnyAuthority('CARRIER', 'MASTERLIST', 'SHIPPER')" class="navitem">
-                            <a class="navlink" id="nav_shipments_home_carrier" href="/auctioninghome">Auctioning</a>
-                        </li>
                         <li sec:authorize="hasAnyAuthority('CARRIER','MASTERLIST')" class="navitem">
                             <a class="navlink" id="nav_routes" href="/routes">Routes</a>
                         </li>
@@ -120,7 +117,7 @@
 					An unexpected error occurred.  Sorry for the inconvenience - Please try again.
                     <br>
                     <br>
-                    Either the page you have requested does not exist or an error occured.
+                    Either the page you have requested does not exist or an error occurred.
                     <br>
                     <br>
                     <img src="/images/sru1.jpg" alt="Gazebo" style="width: 50%;">
