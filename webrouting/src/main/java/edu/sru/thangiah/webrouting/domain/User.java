@@ -289,7 +289,7 @@ public class User {
 	 * @return the auctioningAllowed
 	 * @author Thomas Haley tjh1019@sru.edu
 	 */
-	public boolean isAuctioningAllowed() {
+	public boolean getAuctioningAllowed() {
 		return auctioningAllowed;
 	}
 

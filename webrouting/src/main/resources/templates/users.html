@@ -142,9 +142,10 @@
                                     <th>Role</th>
                                     <th>Carrier</th>
                                     <th>Enabled</th>
-                                    <th>Auctioning Enabled</th>
+                                    <th>Auctioning Allowed</th>
                                     <th>Edit</th>
                                     <th>Delete</th>
+                                    <th>Toggle Auctioning Allowed</th>
                                     
                                 </tr>
                             </thead>
@@ -157,9 +158,10 @@
                                     <td th:text="${user.role}"></td>
                                     <td th:text="${user.carrier}"></td>
                                     <td th:text= "${user.enabled}"></td>
-                                    <td th:text="${user.enabled}"></td>
+                                    <td th:text="${user.auctioningAllowed}"></td>
                                     <td><a th:href="@{/edituser/{id}(id=${user.id})}">Edit</a></td>
-                                    <td><a th:href="@{/deleteuser/{id}(id=${user.id})}">Delete</a></td>                         
+                                    <td><a th:href="@{/deleteuser/{id}(id=${user.id})}">Delete</a></td>
+                                    <td><a th:href="@{/toggleauctioning/{id}(id=${user.id})}">Toggle Auctioning Allowed</a></td>                         
                                 </tr>
                             </tbody>
                         </table>

@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 
@@ -16,6 +17,7 @@ import edu.sru.thangiah.webrouting.domain.Carriers;
 import edu.sru.thangiah.webrouting.domain.Shipments;
 import edu.sru.thangiah.webrouting.domain.User;
 import edu.sru.thangiah.webrouting.repository.ShipmentsRepository;
+import edu.sru.thangiah.webrouting.repository.UserRepository;
 import edu.sru.thangiah.webrouting.services.SecurityService;
 import edu.sru.thangiah.webrouting.services.UserService;
 
@@ -32,9 +34,11 @@ public class AuctionController {
      * Constructor for AuctionController.
      */
 	private ShipmentsRepository shipmentsRepository;
+	private UserRepository userRepository;
 	
-	public AuctionController (ShipmentsRepository sr) {
+	public AuctionController (ShipmentsRepository sr, UserRepository ur) {
 		this.shipmentsRepository = sr;
+		this.userRepository = ur;
 	}
 	
 	/**
@@ -162,7 +166,44 @@ public class AuctionController {
 		shipmentsRepository.save(shipment);
 		return "redirect:" + redirectLocation;
 	}
-
+	
+	/**
+	 * 
+	 */
+	@GetMapping("/toggleauctioning/{id}")
+	public String toggleAuctioning(@PathVariable("id") long id, Model model, HttpSession session) {
+		User user = userRepository.findById(id)
+				.orElseThrow(() -> new IllegalArgumentException("Invalid shipment Id:" + id));
+		User loggedinuser = getLoggedInUser();
+		String redirectLocation = (String) session.getAttribute("redirectLocation");
+		
+		if(!loggedinuser.getRole().toString().equals("ADMIN")) {
+			System.out.println("ERROR: Non admin user tried to toggle auctioning for another user!");
+			return redirectLocation;
+		}
+		
+		model.addAttribute("user",user);
+		model.addAttribute("redirectLocation",redirectLocation);
+		
+		return "/toggle/toggleauctioningconfirm";
+	}
+	
+	@GetMapping("/toggleauctioningconfirmation/{id}")
+	public String toggleAuctioningconfirmation(@PathVariable("id") long id, Model model, HttpSession session) {
+		User user = userRepository.findById(id)
+				.orElseThrow(() -> new IllegalArgumentException("Invalid shipment Id:" + id));
+		
+		if (user.getAuctioningAllowed()) {
+			user.setAuctioningAllowed(false);
+		}
+		else {
+			user.setAuctioningAllowed(true);
+		}
+		
+		userRepository.save(user);
+		return "redirect:" + session.getAttribute("redirectLocation");
+	}
+	
 	/**
 	 * Returns the user that is currently logged into the system. <br>
 	 * If there is no user logged in, null is returned.

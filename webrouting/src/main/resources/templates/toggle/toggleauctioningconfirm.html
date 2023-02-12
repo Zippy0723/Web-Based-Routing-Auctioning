@@ -115,7 +115,6 @@
   					<button class=""  id="hamburger" style="display:none" onclick="nav_open()">☰</button>
 				</span>
 				<br><br>
-                <div id="loginDiv" style="text-align: center" th:each="user : ${users}">
                     <h1>Are you sure you want to toggle auctioning to user: </h1>
                     <br>
                     <br>
@@ -125,7 +124,6 @@
                     <h2><a th:href="|/toggleauctioningconfirmation/${user.id}|">Yes</a></h2>
                     <br>
                     <h2><a href="/users">No</a></h2>
-                </div>
             </div>
 		</div>
 

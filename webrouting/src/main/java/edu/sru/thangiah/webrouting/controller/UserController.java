@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -85,9 +86,11 @@ public class UserController {
 	 * @return "users"
 	 */
     @RequestMapping({"/users"})
-    public String showUserList(Model model) {
+    public String showUserList(Model model, HttpSession session) {
     	List<User> userList = userRepository.findAll();
     	List<User> finalUserList = new ArrayList<User>();
+    	
+    	session.setAttribute("redirectLocation", "/users");
     	
     	for (User user : userList) {
     		if (!user.getRole().toString().equals("ADMIN") && !user.getRole().toString().equals("MASTERLIST")) {
