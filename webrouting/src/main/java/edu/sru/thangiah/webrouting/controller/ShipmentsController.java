@@ -528,10 +528,12 @@ public class ShipmentsController {
   	 * @return "/freeze/freezeshipmentconfirm"
 	 */
 	@GetMapping("/freezeshipment/{id}")
-	public String freezeShipment(@PathVariable("id") long id, Model model) {
+	public String freezeShipment(@PathVariable("id") long id, Model model, HttpSession session) {
 		Shipments shipment = shipmentsRepository.findById(id)
 		.orElseThrow(() -> new IllegalArgumentException("Invalid Shipment Id:" + id));
+		String redirectLocation = (String) session.getAttribute("redirectLocation");
 		
+		model.addAttribute("redirectLocation",redirectLocation);
 		model.addAttribute("shipments", shipment);
 		return "/freeze/freezeshipmentconfirm";
 	}
