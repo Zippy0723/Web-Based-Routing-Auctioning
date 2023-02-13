@@ -138,8 +138,9 @@ public class ShipmentsController {
 	
 	/**
 	 * Adds the created shipments to the model depending on what role the user has 
-	 * and redirects user to /createdshipments
+	 * and redirects user to /createdshipments. 
 	 * @param model Used to add data to the model
+	 * @param session stores the current logged in users HTTP session. Attribute "redirectLocation" can store a string containing the last page the user visited.
 	 * @return "createdshipments"
 	 */
 	@RequestMapping({"/createdshipments"})
@@ -182,7 +183,9 @@ public class ShipmentsController {
 	/**
 	 * Adds the accepted shipments to the model depending on what role the user has 
 	 * and redirects user to /acceptedshipments
+	 *
 	 * @param model Used to add data to the model
+	 * @param session stores the current logged in users HTTP session. Attribute "redirectLocation" can store a string containing the last page the user visited.
 	 * @return "acceptedshipments"
 	 */
 	@RequestMapping({"/acceptedshipments"})
@@ -247,9 +250,9 @@ public class ShipmentsController {
 	 * Adds Frozen Shipments to the Shipment model, 
 	 * or, if the user attempts to access the frozen shipments page and is not MASTERSEVER or SHIPPER, redirects them to index.
 	 * @param model Used to add data to the model
-	 * @param session Stores the users HTTP session (for passing around various user specific data between functions, primarily redirecitLocation)
+	 * @param session stores the current logged in users HTTP session. Attribute "redirectLocation" can store a string containing the last page the user visited.
 	 * @return "frozenshipments" or "/index" if user is not MASTERSERVER or SHIPPER
-	 * TODO URGENT: Need code for placing frozen pending shipments back to pending when unfrozen, rather then dumping then in accepeted
+	 
 	 */
 	@RequestMapping({"/frozenshipments"})
 	public String showFrozenShipmentsList(Model model, HttpSession session) {
@@ -288,6 +291,9 @@ public class ShipmentsController {
 	
 	/**
 	 * Adds Pending Shipments to the Shipment model, then returns to the pending shipments page
+	 * @param model Used to add data to the model
+	 * @param session stores the current logged in users HTTP session. Attribute "redirectLocation" can store a string containing the last page the user visited.
+	 * @return "pendingshipments" or "/index" if user is not MASTERSERVER or SHIPPER
 	 */
 	@RequestMapping({"/pendingshipments"})
 	public String showPendingShipmentsList(Model model, HttpSession session) {
@@ -344,12 +350,12 @@ public class ShipmentsController {
   	 * Adds a shipment to the database. Checks if there are errors in the form. <br>
   	 * Sets carrier, vehicle to null, paid amount and scac are empty strings and full freight terms is set to AVAILABLE SHIPMENT. <br>
   	 * Currently logged in user is also associated with that shipment. <br>
-  	 * If there are no errors, the shipment is saved in the shipmentsRepository. and the user is redirect to /createdshipments <br>
+  	 * If there are no errors, the shipment is saved in the shipmentsRepository. and the user is redirect to /pendingshipments <br>
   	 * If there are errors, the user is redirected to the /add/add-shipments page.
   	 * @param shipment Stores the information on the shipment being added
   	 * @param result Ensures that the values entered by the user are valid
   	 * @param model Used to add data to the model
-  	 * @return "redirect:/createdshipments" or "/add/add-shipments"
+  	 * @return "redirect:/pendingshipments" or "/add/add-shipments"
   	 */
 	@RequestMapping({"/addshipments"})
   	public String addShipment(@Validated Shipments shipment, BindingResult result, Model model) {
@@ -406,10 +412,11 @@ public class ShipmentsController {
   	}
 
 	/**
-  	 * Finds a shipment using the id parameter and if found, redirects to confirmation page
+  	 * Finds a frozen shipment that Master wants to delete. Using the id parameter and if found, redirects to delete confirmation page
   	 * @param id ID of the shipment being deleted
   	 * @param model Used to add data to the model
-  	 * @return "redirect:/shipments"
+  	 * @param session stores the current logged in users HTTP session. Attribute "redirectLocation" can store a string containing the last page the user visited.
+  	 * @return "redirect:"/delete/deleteshipmentconfirm"  
   	 */
 	@GetMapping("/deleteshipment/{id}")
     public String deleteShipment(@PathVariable("id") long id, Model model, HttpSession session) {
@@ -419,7 +426,7 @@ public class ShipmentsController {
         String redirectLocation = (String) session.getAttribute("redirectLocation");
         
         if (shipment.getFullFreightTerms().toString().equals("FROZEN") && !user.getRole().toString().equals("MASTERLIST")) {
-        	System.out.println("Non-Master user attempted to delete a frozen shipment!"); //TODO: Replace this with a proper error message
+        	System.out.println("Non-Master user attempted to delete a frozen shipment!"); //TODO: Replace this with a proper error message(what user would see this error?)
         	return redirectLocation; 
         }
         
@@ -429,10 +436,11 @@ public class ShipmentsController {
     }
 	
 	/**
-  	 * Finds a shipment using the id parameter and if found, deletes the shipment and redirects to shipments page
+  	 * Finds a shipment using the id parameter and if found, deletes the shipment and redirects to previous page.
   	 * @param id ID of the shipment being deleted
   	 * @param model Used to add data to the model
-  	 * @return "redirect:/createdshipments" or "redirect:/acceptedshipments"" 
+  	 * @param session stores the current logged in users HTTP session. Attribute "redirectLocation" can store a string containing the last page the user visited.
+  	 * @return "redirect: To whatever the previous page was."" 
   	 */
   	@GetMapping("/deleteshipmentconfirmation/{id}")
     public String deleteShipmentConfirmation(@PathVariable("id") long id, Model model, HttpSession session) {
@@ -474,7 +482,8 @@ public class ShipmentsController {
   	 * to the bids page
   	 * @param id ID of the shipment being used to get the bids
   	 * @param model Used to add data to the model
-  	 * @return "shipments"
+  	 * @param session stores the current logged in users HTTP session. Attribute "redirectLocation" can store a string containing the last page the user visited.
+  	 * @return "bids"
   	 */
   	@GetMapping("/viewshipmentbids/{id}")
     public String viewShipmentBids(@PathVariable("id") long id, Model model, HttpSession session) {
@@ -495,7 +504,7 @@ public class ShipmentsController {
   	 * to a form and redirects the user to that update form.
   	 * @param id ID of the shipment being edited
   	 * @param model Used to add data to the model
-  	 * @return "update/update-location"
+  	 * @return for Master: "/update/update-shipments" for Shipper: "/update/update-shipments-shipper"
   	 */
 	@GetMapping("/editshipment/{id}")
     public String showEditForm(@PathVariable("id") long id, Model model) {
@@ -525,6 +534,7 @@ public class ShipmentsController {
 	 * Finds a shipment by ID, then Redirects to the Freeze Shipment confirmation page
 	 * @param id ID of the shipment being frozen
   	 * @param model Used to add data to the model
+  	 * @param session stores the current logged in users HTTP session. Attribute "redirectLocation" can store a string containing the last page the user visited.
   	 * @return "/freeze/freezeshipmentconfirm"
 	 */
 	@GetMapping("/freezeshipment/{id}")
@@ -542,7 +552,7 @@ public class ShipmentsController {
 	 * Finds a shipment by ID, then sets that shipments freight terms to FROZEN, disabling interaction with it for all users except master. 
 	 * @param id ID of the shipment being frozen
   	 * @param model Used to add data to the model
-  	 * @return "redirect:/createdshipments" or "redirect:/acceptedshipments"
+  	 * @return "redirect:/createdshipments" or "redirect:/acceptedshipments" or "redirect:/pendingshipments"
 	 */
 	@GetMapping("/freezeshipmentconfirmation/{id}")
 	public String freezeShipmentConfirmation(@PathVariable("id") long id, Model model) {
@@ -611,7 +621,7 @@ public class ShipmentsController {
   	 * @param shipment Information on the shipment being updated
   	 * @param result Ensures that the values entered by the user are valid
   	 * @param model Used to add data to the model
-  	 * @return "redirect:/shipments" or "/update/update-shipments"
+  	 * @return "redirect:/shipments" or "/update/update-shipments" 
   	 */
 	@PostMapping("/updateshipment/{id}")
     public String updateShipment(@PathVariable("id") long id, @Validated Shipments shipment, 
