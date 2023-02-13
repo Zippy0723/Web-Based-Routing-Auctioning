@@ -77,6 +77,7 @@ public class BidsController {
 	 * @param model Used to add data the model
 	 * @param bid Holds information for the new bid
 	 * @param result Checks entered data to ensure it is valid
+	 * @param session stores the current logged in users HTTP session. Attribute "redirectLocation" can store a string containing the last page the user visited.
 	 * @return "/add/add-bid"
 	 */
 	@GetMapping({"/add-bid/{id}"})
@@ -148,6 +149,7 @@ public class BidsController {
   	 * Finds a bid using the id parameter and if found, redirects user to delete confirmation page
   	 * @param id Holds the ID of the bid to be deleted
   	 * @param model Used to add data to the model
+  	 * @param session stores the current logged in users HTTP session. Attribute "redirectLocation" can store a string containing the last page the user visited.
   	 * @return "/delete/deletebidconfirm" if succesful, "redirect: + redirectLocation" otherwise
   	 */
 	@GetMapping("/deletebid/{id}")
@@ -175,7 +177,7 @@ public class BidsController {
   	 * Finds a bid using the id parameter and if found, deletes the bid and redirects to created shipments page
   	 * @param id ID of the bid being deleted
   	 * @param model Used to add data to the model
-  	 * @param session Used to store the users HTTP session
+  	 * @param session stores the current logged in users HTTP session. Attribute "redirectLocation" can store a string containing the last page the user visited.
   	 * @return "redirect: + redirectLocation" (redirectLocation is stored in the HttpSession and set during page loads for critical pages)
   	 */
   	@GetMapping("/deletebidconfirmation/{id}")
@@ -191,7 +193,8 @@ public class BidsController {
   	 * Finds a shipment using the id parameter and if found, redirects users to the reset shipment bids confirmation page
   	 * @param id : Holds the ID of the shipment to be reset
   	 * @param model Used to add data to the model
-  	 * @return /resetshipmentbidsconfirm
+  	 * @param session stores the current logged in users HTTP session. Attribute "redirectLocation" can store a string containing the last page the user visited.
+  	 * @return "reset/resetshipmentbidsconfirm"
   	 */
   	@GetMapping("/resetshipmentbids/{id}")
   	public String resetShipmentBids(@PathVariable("id") long id, Model model, HttpSession session) {
@@ -208,7 +211,8 @@ public class BidsController {
   	 * Finds a shipment using the id parameter and if found, gets all of that shipments bids then removes then. Then, returns the user to their redirectlocation
   	 * @param id : Holds the ID of the shipment to be reset
   	 * @param model Used to add data to the model
-  	 * @param session Used to store the users HTTP session
+  	 * @param session stores the current logged in users HTTP session. Attribute "redirectLocation" can store a string containing the last page the user visited.
+  	 * @return "redirect: + redirectLocation" (redirectLocation is stored in the HttpSession and set during page loads for critical pages)
   	 */
   	@GetMapping("/resetshipmentbidsconfirmation/{id}")
   	public String resetShipmentBidsConfirmation(@PathVariable("id") long id, Model model, HttpSession session) {
@@ -266,7 +270,7 @@ public class BidsController {
   	 * Adds shipments and carriers to the model.
   	 * @param id Holds the ID of the bid to be edited
   	 * @param model Used to add data to the model
-  	 * @return "/update/update-bid"
+  	 * @return "/update/update-bid" or "redirect:/createdshipments"
   	 */
 	@GetMapping("/editbid/{id}")
     public String showEditForm(@PathVariable("id") long id, Model model) {
