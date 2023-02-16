@@ -55,6 +55,9 @@ public class User {
     @OneToMany(mappedBy = "user")
 	private List<Shipments> shipments = new ArrayList<>();
     
+    @OneToMany(mappedBy = "user")
+	private List<Notification> notifications = new ArrayList<>();
+    
     @Column(name = "verification_code", nullable=true, length=64)
     private String verificationCode;
     
@@ -299,5 +302,19 @@ public class User {
 	 */
 	public void setAuctioningAllowed(boolean auctioningAllowed) {
 		this.auctioningAllowed = auctioningAllowed;
+	}
+
+	/**
+	 * @return the notifications
+	 */
+	public List<Notification> getNotifications() {
+		return notifications;
+	}
+
+	/**
+	 * @param notifications the notifications to set
+	 */
+	public void setNotifications(List<Notification> notifications) {
+		this.notifications = notifications;
 	}
 }

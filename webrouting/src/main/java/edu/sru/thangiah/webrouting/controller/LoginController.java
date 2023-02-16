@@ -299,16 +299,12 @@ public class LoginController {
     @GetMapping({"/"})
     public String welcome(Model model) {
 		User user = getLoggedInUser();
-		List<Notification> allNotifications = (List<Notification>) notificationRepository.findAll(); 
 		List<Notification> notifications = new ArrayList<>();
 		
 		if(!(user == null)) {
-			for (Notification n : allNotifications) {
-				if (n.getUser().getId() == user.getId()) {
-					notifications.add(n);
-				}
-			}
+			notifications = user.getNotifications();
 		}
+		
 		model.addAttribute("notifications",notifications);
     	
         return "index";

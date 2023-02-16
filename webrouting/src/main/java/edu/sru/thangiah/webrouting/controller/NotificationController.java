@@ -43,14 +43,9 @@ public class NotificationController {
 	@RequestMapping("/notifications")
 	public String notifications(Model model) {
 		User user = getLoggedInUser();
-		List<Notification> allNotifications = (List<Notification>) notificationRepository.findAll(); 
 		List<Notification> notifications = new ArrayList<>();
 		
-		for (Notification n : allNotifications) {
-			if (n.getUser().getId() == user.getId()) {
-				notifications.add(n);
-			}
-		}
+		notifications = user.getNotifications();
 		   
 		model.addAttribute("notifications",notifications);
 			
