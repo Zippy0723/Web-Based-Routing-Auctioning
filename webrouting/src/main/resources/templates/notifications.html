@@ -125,8 +125,8 @@
   					<button class=""  id="hamburger" style="display:none" onclick="nav_open()">☰</button>
 				</span>
 				<br><br>
-				<div th:switch="${notifications}">
-					<h2 th:case="null">No Active Notifications!</h2>
+				<div th:switch="${notifications.size()}">
+					<h2 th:case="0">No Active Notifications!</h2>
 					<div th:case="*">
 						<h2>Notifications: </h2>
 						<br>

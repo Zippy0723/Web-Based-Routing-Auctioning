@@ -52,9 +52,7 @@ public class NotificationController {
 			}
 		}
 		   
-		if(!notifications.isEmpty()) {
-			model.addAttribute("notifications",notifications);
-		}
+		model.addAttribute("notifications",notifications);
 			
 		return "notifications";
 	}
