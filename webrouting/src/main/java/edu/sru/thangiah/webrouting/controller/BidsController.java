@@ -142,7 +142,6 @@ public class BidsController {
   		}
   		  		
   		bidsRepository.save(bid);
-  		NotificationController.addNotification(user,"test");
   		
   		return "redirect:/createdshipments";
   	}
