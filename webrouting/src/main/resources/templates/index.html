@@ -78,6 +78,9 @@
                         </li>
 						<br><br><br><br><br>
 						<li sec:authorize="hasAnyAuthority('CARRIER', 'MASTERLIST', 'ADMIN','SHIPPER')">
+							<a class= "navlink" id= "nav_notifications" href="/notifications">Notifications</a>
+						</li>
+						<li sec:authorize="hasAnyAuthority('CARRIER', 'MASTERLIST', 'ADMIN','SHIPPER')">
 							<a class= "navlink" id= "nav_update_user_details" href="/update-user-details">Update User</a>
 						</li>
                         <li sec:authorize="isAuthenticated()" class="navitem">

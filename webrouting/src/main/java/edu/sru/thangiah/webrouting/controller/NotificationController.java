@@ -1,6 +1,8 @@
 package edu.sru.thangiah.webrouting.controller;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -27,11 +29,11 @@ public class NotificationController {
     /**
      * Constructor for NotificationController.
      */
-	private UserRepository userRepository;
+	private static UserRepository userRepository;
 	private static NotificationRepository notificationRepository;
 	
 	public NotificationController(UserRepository ur, NotificationRepository nr) {
-		this.userRepository = ur;
+		NotificationController.userRepository = ur;
 		NotificationController.notificationRepository = nr;
 	}
 	
@@ -40,15 +42,34 @@ public class NotificationController {
 	 */
 	@RequestMapping("/notifications")
 	public String notifications(Model model) {
+		User user = getLoggedInUser();
+		List<Notification> allNotifications = (List<Notification>) notificationRepository.findAll(); 
+		List<Notification> notifications = new ArrayList<>();
+		
+		for (Notification n : allNotifications) {
+			if (n.getUser().getId() == user.getId()) {
+				notifications.add(n);
+			}
+		}
+		   
+		if(!notifications.isEmpty()) {
+			model.addAttribute("notifications",notifications);
+		}
+			
 		return "notifications";
 	}
 	
 	/**
 	 * Creates a new notification with the specified parameters
 	 */
-	public static void addNotification(User user, String time, String message) {
+	public static void addNotification(User user, String message) {
+		LocalDateTime now = LocalDateTime.now();
+		String time = now.toString();
+		
 		Notification notification = new Notification(user, time, message);
+		
 		notificationRepository.save(notification);
+		
 	}
 	
 	/**

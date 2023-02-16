@@ -45,6 +45,11 @@ public class Notification {
 		this.timesent = timesent;
 		this.message = message;
 	}
+	
+	/**
+	 * Null Constructor for iterablility
+	 */
+	public Notification() {}
 
 	/**
 	 * @return the id
@@ -75,20 +80,6 @@ public class Notification {
 	}
 
 	/**
-	 * @return the timeSent
-	 */
-	public String getTimeSent() {
-		return timesent;
-	}
-
-	/**
-	 * @param timeSent the timeSent to set
-	 */
-	public void setTimeSent(String timeSent) {
-		this.timesent = timeSent;
-	}
-
-	/**
 	 * @return the user
 	 */
 	public User getUser() {
@@ -100,5 +91,19 @@ public class Notification {
 	 */
 	public void setUser(User user) {
 		this.user = user;
+	}
+
+	/**
+	 * @return the timesent
+	 */
+	public String getTimesent() {
+		return timesent;
+	}
+
+	/**
+	 * @param timesent the timesent to set
+	 */
+	public void setTimesent(String timesent) {
+		this.timesent = timesent;
 	}
 }
