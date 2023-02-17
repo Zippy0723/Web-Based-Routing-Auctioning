@@ -60,9 +60,12 @@ public class NotificationController {
 	public String readNotifications(Model model) {
 		User user = getLoggedInUser();
 		List<Notification> notifications = new ArrayList<>();
+		List<Notification> unreadNotifications = new ArrayList<>();
 		
 		notifications = fetchReadNotifications(user);
-		   
+		unreadNotifications = fetchUnreadNotifications(user);
+		
+		model.addAttribute("unreadcount",unreadNotifications.size());
 		model.addAttribute("notifications",notifications);
 			
 		return "readnotifications";

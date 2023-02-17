@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import edu.sru.thangiah.webrouting.domain.Carriers;
 import edu.sru.thangiah.webrouting.domain.User;
 import edu.sru.thangiah.webrouting.repository.CarriersRepository;
+import edu.sru.thangiah.webrouting.repository.UserRepository;
 import edu.sru.thangiah.webrouting.services.SecurityService;
 import edu.sru.thangiah.webrouting.services.UserService;
 
@@ -41,14 +42,16 @@ public class CarriersController {
     private SecurityService securityService;
 
 	private CarriersRepository carriersRepository;
+	private static UserRepository userRepository;
 
 	/**
 	 * Constructor for CarriersController. <br>
 	 * Instantiates the carriersRepository
 	 * @param carriersRepository Used to interact with carriers in the database
 	 */
-	public CarriersController (CarriersRepository carriersRepository) {
+	public CarriersController (CarriersRepository carriersRepository, UserRepository userRepository) {
 		this.carriersRepository = carriersRepository;
+		CarriersController.userRepository = userRepository;
 	}
 
 	/**
@@ -201,6 +204,29 @@ public class CarriersController {
         carriersRepository.save(carrier);
         return "redirect:/carriers";
     }
+	
+	/**
+	 * 
+	 */
+	public static User getUserFromCarrier(Carriers carrier) { //This helper function is to fix a lack of relationship between carriers and users in the database. it should not be permenant.
+		List<User> carrierUsers = new ArrayList<>();
+		List<User> users = userRepository.findAll();
+		User result = null;
+		
+		for (User user : users) {
+			if(user.getCarrier() != null) {
+				carrierUsers.add(user);
+			}	
+		}
+		
+		for (User user : carrierUsers) {
+			if(user.getCarrier().getId() == carrier.getId()) {
+				result = user;
+			}
+		}
+		
+		return result;
+	}
 		
 	/**
 	 * Returns the user that is currently logged into the system. <br>

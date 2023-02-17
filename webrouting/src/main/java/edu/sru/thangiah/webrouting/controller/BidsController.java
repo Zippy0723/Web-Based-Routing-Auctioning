@@ -140,7 +140,10 @@ public class BidsController {
   	        model.addAttribute("carriers", carriersRepository.findAll());
   	        return "/add/add-bid";
   		}
-  		  		
+  		
+  		NotificationController.addNotification(bid.getShipment().getUser(), 
+  				"ALERT: A new bid as been added on your shipment with ID " + bid.getShipment().getId() + " and Client " + bid.getShipment().getClient());
+  		
   		bidsRepository.save(bid);
   		
   		return "redirect:/createdshipments";
@@ -185,6 +188,13 @@ public class BidsController {
     public String deleteUserConfirm(@PathVariable("id") long id, Model model, HttpSession session) {
   		Bids bid = bidsRepository.findById(id)
        		 .orElseThrow(() -> new IllegalArgumentException("Invalid bid Id:" + id));
+  		User user = getLoggedInUser();
+  		User bidUser = CarriersController.getUserFromCarrier(bid.getCarrier());
+  		
+  		if(user.getId() != bidUser.getId()) {
+  			NotificationController.addNotification(bidUser,
+  					"ALERT: Your bid with ID " + bid.getId() + " placed on shipment with ID " + bid.getShipment().getId() + " was deleted by " + user.getUsername());
+  		}
         
         bidsRepository.delete(bid);
         return "redirect:" + session.getAttribute("redirectLocation");
@@ -220,6 +230,7 @@ public class BidsController {
   		Shipments shipment = shipmentsRepository.findById(id)
   	  		.orElseThrow(() -> new IllegalArgumentException("Invalid shipment Id:" + id));
   		User user = getLoggedInUser();
+  		User bidUser;
   		
   		if (!user.getRole().toString().equals("MASTERLIST")) {
   			System.out.println("Error: Non master tried to reset shipment!");
@@ -227,6 +238,10 @@ public class BidsController {
   		}
   		
   		for (Bids bid : shipment.getBids()) {
+  			bidUser = CarriersController.getUserFromCarrier(bid.getCarrier());
+  			NotificationController.addNotification(bidUser,
+  					"ALERT: Your bid with ID " + bid.getId() + " placed on shipment with ID " + bid.getShipment().getId() + " was deleted by " + user.getUsername());
+  			
   			bidsRepository.delete(bid);
   		}
   		
@@ -246,6 +261,7 @@ public class BidsController {
 		Bids bid = bidsRepository.findById(id)
 		.orElseThrow(() -> new IllegalArgumentException("Invalid bid Id: " + id));
 		User user = getLoggedInUser();
+		User bidUser;
 		
 		 if (bid.getShipment().getFullFreightTerms().toString().equals("FROZEN") && !user.getRole().toString().equals("MASTERLIST")) {
 			 System.out.println("User attempeted to accept a bid on a frozen shipment"); //Replace this with a proper error message and redirect, for now it just dumps shippers out of the accept menu
@@ -259,6 +275,10 @@ public class BidsController {
 		shipment.setPaidAmount(bid.getPrice());
 		shipment.setScac(carrier.getScac());
 		shipment.setFullFreightTerms("BID ACCEPTED");
+		
+		bidUser = CarriersController.getUserFromCarrier(carrier);
+		NotificationController.addNotification(bidUser, 
+				"ALERT: You have won the auction on shipment with ID " + shipment.getId() + " with a final bid value of " + bid.getPrice());
 		
 		shipmentsRepository.save(shipment);
 		
@@ -278,6 +298,7 @@ public class BidsController {
 		Bids bid = bidsRepository.findById(id)
           .orElseThrow(() -> new IllegalArgumentException("Invalid Bid Id:" + id));
 		 User user = getLoggedInUser();
+		 User bidUser;
 		 
 		 if (bid.getShipment().getFullFreightTerms().toString().equals("FROZEN") && !user.getRole().toString().equals("MASTERLIST")) {
 			 System.out.println("User attempeted to edit a bid on a frozen shipment"); //Replace this with a proper error message and redirect, for now it just dumps carriers out of the edit menu
@@ -291,7 +312,9 @@ public class BidsController {
 			 return "/update/update-bid";
 	    }
         
-
+		 bidUser = CarriersController.getUserFromCarrier(bid.getCarrier());
+		 NotificationController.addNotification(bidUser, 
+				 "Your bid with Id " + bid.getId() + " on shipment with id " + bid.getShipment().getId() + " was edited by " + user.getUsername());
 	     
         
         return "redirect:/createdshipments";

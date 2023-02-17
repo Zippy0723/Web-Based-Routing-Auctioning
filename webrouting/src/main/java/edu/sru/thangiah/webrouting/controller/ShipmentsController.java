@@ -525,7 +525,7 @@ public class ShipmentsController {
         if (shipment.getFullFreightTerms().toString().equals("FROZEN") && !user.getRole().toString().equals("MASTERLIST")) {
         	System.out.println("Non-Master user attempted to edit a frozen shipment!");
         	return "/index"; //TODO: Replace this with a proper message and redirect.
-        }
+        }					//TODO: Add notification to this after master editing is implimented properly
 	    
 	    if (user.getRole().toString().equals("SHIPPER")) {
 	    	return "/update/update-shipments-shipper";
@@ -565,6 +565,7 @@ public class ShipmentsController {
 		String redirectLocation = "redirect:/";
 		Shipments shipment = shipmentsRepository.findById(id)
 	     .orElseThrow(() -> new IllegalArgumentException("Invalid Shipment Id:" + id));
+		User user = getLoggedInUser();
 		
         if (shipment.getFullFreightTerms().equals("AVAILABLE SHIPMENT")) {
         	redirectLocation = "redirect:/createdshipments";
@@ -576,6 +577,9 @@ public class ShipmentsController {
         	redirectLocation = "redirect:/pendingshipments";
         }
 		
+        NotificationController.addNotification(shipment.getUser(), 
+        		"ALERT: Your shipment with ID " + shipment.getId() + " and Client " + shipment.getClient() + " was frozen by " + user.getUsername());
+        
 		shipment.setFullFreightTerms("FROZEN");
 		shipmentsRepository.save(shipment);
 		
@@ -607,12 +611,16 @@ public class ShipmentsController {
 	public String unfreezeShipmentConfirmation(@PathVariable("id") long id, Model model) {
 		Shipments shipment = shipmentsRepository.findById(id)
 	     .orElseThrow(() -> new IllegalArgumentException("Invalid Shipment Id:" + id));
+		User user = getLoggedInUser();
 		
 		if (shipment.getBids().isEmpty()) {
 			shipment.setFullFreightTerms("PENDING");
 		} else {
 			shipment.setFullFreightTerms("AVAILABLE SHIPMENT");
 		}
+		
+		NotificationController.addNotification(shipment.getUser(), 
+        		"ALERT: Your shipment with ID " + shipment.getId() + " and Client " + shipment.getClient() + " was unfrozen by " + user.getUsername());
 		
 		shipmentsRepository.save(shipment);
 		

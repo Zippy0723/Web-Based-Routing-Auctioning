@@ -119,6 +119,11 @@ public class AuctionController {
 			return "redirect:/pendingshipments";
 		}
 		
+		if(shipment.getUser().getId() != user.getId()) {
+			NotificationController.addNotification(shipment.getUser(), 
+					"ALERT: Your shipment with ID " + shipment.getId() + " and Client " + shipment.getClient() + " was pushed to auction by " + user.getUsername());
+		}
+		
 		shipment.setFullFreightTerms("AVAILABLE SHIPMENT");
 		shipmentsRepository.save(shipment);
 		
@@ -133,6 +138,8 @@ public class AuctionController {
 				.orElseThrow(() -> new IllegalArgumentException("Invalid shipment Id:" + id));
 		List<Bids> bids = shipment.getBids(); 
 		String redirectLocation = (String) session.getAttribute("redirectLocation");
+		User user = getLoggedInUser();
+		User bidUser;
 		Bids winningBid = null;
 		double lowestBidValue = Double.POSITIVE_INFINITY; //set the current lowest bid to infinity so the first bid in the loop will become the new lowest, and then be tested against every other bid.
 		
@@ -162,6 +169,16 @@ public class AuctionController {
 		shipment.setPaidAmount(winningBid.getPrice());
 		shipment.setScac(carrier.getScac());
 		shipment.setFullFreightTerms("BID ACCEPTED");
+		
+		if(shipment.getUser().getId() != user.getId()) {
+			NotificationController.addNotification(shipment.getUser(), 
+					"ALERT: Your shipment with ID " + shipment.getId() + " and Client " + shipment.getClient() + " had its auction forcefully ended. It was given to carrer" + shipment.getCarrier().getCarrierName());
+			
+		}
+		
+		bidUser = CarriersController.getUserFromCarrier(winningBid.getCarrier());
+		NotificationController.addNotification(bidUser, 
+				"ALERT: You have won the auction on shipment with ID " + shipment.getId() + " with a final bid value of " + winningBid.getPrice());
 		
 		shipmentsRepository.save(shipment);
 		return "redirect:" + redirectLocation;
@@ -195,12 +212,16 @@ public class AuctionController {
 		
 		if (user.getAuctioningAllowed()) {
 			user.setAuctioningAllowed(false);
+			NotificationController.addNotification(user, 
+					"ALERT: Your auctioning abilites have been disabled. Please contact your system Master to regain access.");
 		}
 		else {
 			user.setAuctioningAllowed(true);
+			NotificationController.addNotification(user, 
+					"ALERT: Your auctioning abilites have been re-eneabled. Thank you!");
 		}
 		
-		userRepository.save(user);
+		userRepository.save(user); 
 		return "redirect:" + session.getAttribute("redirectLocation");
 	}
 	
