@@ -100,6 +100,8 @@ public class MaintenanceOrderController {
   	public String addMaintenanceOrder(@Validated MaintenanceOrders maintenanceOrder, BindingResult result, Model model) {
 		maintenanceOrder.setCarrier(getLoggedInUser().getCarrier());
 		
+		User loggedInUser = getLoggedInUser();
+		
 		if (result.hasErrors()) {
   			return "/add/add-maintenance";
 		}
@@ -119,13 +121,13 @@ public class MaintenanceOrderController {
   		
   		if(deny == true) {
   			model.addAttribute("error", "Unable to add Maintenance Request. Same Request is currently pending.");
-  			Logger.error("Unable to add Maintenance Request. Same Request is currently pending.");
+  			Logger.error("{} was unable to add Maintenance Request. Same Request is currently pending.", loggedInUser.getUsername());
   			model.addAttribute("maintenanceOrder", getLoggedInUser().getCarrier().getOrders());
   			return "maintenanceorders";
 			 
   		}
-  		Logger.info("Maintenance Order sucessfully saved");
   		maintenanceOrderRepository.save(maintenanceOrder);
+  		Logger.info("{} successfully saved the maintenance order with ID {}", loggedInUser.getUsername(), maintenanceOrder.getId());
   		return "redirect:/maintenanceorders";
   	}
 	
@@ -155,6 +157,8 @@ public class MaintenanceOrderController {
   		MaintenanceOrders maintenanceOrder = maintenanceOrderRepository.findById(id)
   	          .orElseThrow(() -> new IllegalArgumentException("Invalid maintenance Id:" + id));
   		
+  		User loggedInUser = getLoggedInUser();
+  		Logger.info("{} successfully deleted the maintenace order with ID {}", loggedInUser.getUsername(), maintenanceOrder.getId());
   		maintenanceOrderRepository.delete(maintenanceOrder);
   		
   	    return "redirect:/maintenanceorders";
@@ -195,6 +199,7 @@ public class MaintenanceOrderController {
     public String updateOrder(@PathVariable("id") long id, @Validated MaintenanceOrders maintenanceOrder, 
       BindingResult result, Model model) {
         maintenanceOrder.setCarrier(getLoggedInUser().getCarrier());
+        User loggedInUser = getLoggedInUser();
 		
 		if (result.hasErrors()) {
         	maintenanceOrder.setId(id);
@@ -221,8 +226,8 @@ public class MaintenanceOrderController {
 			 
   		}
   		
-  		Logger.info("Maintenance Order sucessfully saved");
         maintenanceOrderRepository.save(maintenanceOrder);
+        Logger.info("{} succesffully saved the maintenance order with ID {}",loggedInUser.getUsername(), maintenanceOrder.getId());
         return "redirect:/maintenanceorders";
     }
 	/**

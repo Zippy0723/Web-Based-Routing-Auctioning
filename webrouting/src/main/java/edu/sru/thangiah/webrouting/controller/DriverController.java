@@ -117,14 +117,13 @@ public class DriverController {
   		
   		if(deny == true) {
   			model.addAttribute("error", "Unable to add Driver. Lisence number already exists or Contact already in use");
-  			Logger.error("{} was unable to add a driver because lisence number already exists or contact already in use.", user.getUsername());
+  			Logger.error("{} was unable to add a driver because lisence number already exists or contact already in use for driver with ID {}.", user.getUsername(), drivers.getId());
   			model.addAttribute("drivers", user.getCarrier().getDrivers());
   			return "drivers";
-			 
   		}
   		
-  		Logger.info("{} sucessfully added a driver.", user.getUsername());
   		driverRepository.save(drivers);
+  		Logger.info("{} sucessfully added new driver with ID {}.", user.getUsername(), drivers.getId());
   		return "redirect:/drivers";
   	}
 	
@@ -153,7 +152,8 @@ public class DriverController {
   		Driver drivers = driverRepository.findById(id)
   	          .orElseThrow(() -> new IllegalArgumentException("Invalid driver Id:" + id));
   		
-  		Logger.info("Driver was successfully deleted.");
+  		User user = getLoggedInUser();
+  		Logger.info("{} successfully deleted driver with ID {}.", user.getUsername(), drivers.getId());
   		driverRepository.delete(drivers);
   	    return "redirect:/drivers";
     }
@@ -230,13 +230,13 @@ public class DriverController {
   		
   		if(deny == true) {
   			model.addAttribute("error", "Unable to update Driver. Lisence number already exists or Contact already in use");
-  			Logger.error("Unable to update Driver. Lisence number already exists or Contact already in use.");
+  			Logger.error("{} attempted to update driver with ID {}.Update failed due to lisence number already exists or contact already in use.", user.getUsername(), driver.getId());
   			model.addAttribute("drivers", user.getCarrier().getDrivers());
   			return "drivers";
 			 
   		}
-        Logger.info("Driver was successfully saved.");
         driverRepository.save(driver);
+        Logger.info("{} successfully updated driver with ID {}", user.getUsername(), driver.getId());
         return "redirect:/drivers";
     }
 	/**

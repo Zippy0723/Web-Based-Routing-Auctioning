@@ -77,13 +77,13 @@ public class AuctionController {
 		
 		if (!user.getRole().toString().equals("MASTERLIST")) {
 			System.out.println("Non-Master user attempeted to force end an auction!");
-			Logger.error("Non-Master user, {}, attempeted to force end an auction!", user.getUsername());///TODO: Replace this with a proper error message
+			Logger.error("Non-Master user, {}, attempeted to force end an auction with shipment ID {}!", user.getUsername(), shipment.getId());///TODO: Replace this with a proper error message
 			return "redirect:" + redirectLocation;
 		}
 		
 		if (bids.size() < 1) {
 			System.out.println("This shipment has no bids on it, cannot end an auction with no bids");
-			Logger.error("This shipment has no bids on it, cannot end an auction with no bids");///TODO: Replace this with an html pop in page if possible
+			Logger.error("{} attempted to end an auction without any bids on shipment ID {}", user.getUsername(), shipment.getId());///TODO: Replace this with an html pop in page if possible
 			return "redirect:" + redirectLocation;
 		}
 		
@@ -129,8 +129,8 @@ public class AuctionController {
 		}
 		
 		shipment.setFullFreightTerms("AVAILABLE SHIPMENT");
-		Logger.info("{} successfully added a shipment.", user.getUsername());
 		shipmentsRepository.save(shipment);
+		Logger.info("{} successfully the shipment with ID {}", user.getUsername(), shipment.getId());
 		
 		return "redirect:/pendingshipments";
 	}
@@ -143,6 +143,7 @@ public class AuctionController {
 				.orElseThrow(() -> new IllegalArgumentException("Invalid shipment Id:" + id));
 		List<Bids> bids = shipment.getBids(); 
 		String redirectLocation = (String) session.getAttribute("redirectLocation");
+		User user = getLoggedInUser();
 		Bids winningBid = null;
 		double lowestBidValue = Double.POSITIVE_INFINITY; //set the current lowest bid to infinity so the first bid in the loop will become the new lowest, and then be tested against every other bid.
 		
@@ -158,13 +159,13 @@ public class AuctionController {
 		} 
 		catch (NumberFormatException e) {
 			System.out.println("Caught an exception, invalid price format for bids. Does a shipment have a non numeric character in its bid price?");
-			Logger.error("Invalid price format for bids.");//TODO: replace with proper error logging
+			Logger.error("{} entered an invalid price format for bids.", user.getUsername());//TODO: replace with proper error logging
 			return "redirect:" + redirectLocation;
 		}
 		
 		if (winningBid == null){
 			System.out.println("Unable to select a winning bid");
-			Logger.error("Unable to select a winning bid.");//TODO: replace with proper error logging
+			Logger.error("{} was unable to select a winning bid.", user.getUsername());//TODO: replace with proper error logging
 			return "redirect:" + redirectLocation;
 		}
 		
@@ -176,7 +177,7 @@ public class AuctionController {
 		shipment.setFullFreightTerms("BID ACCEPTED");
 		
 		shipmentsRepository.save(shipment);
-		Logger.info("Shipment was successfully added.");
+		Logger.info("{} has successfully ended the auction for shipment with ID {}.", user.getUsername(), shipment.getId());
 		return "redirect:" + redirectLocation;
 	}
 	
@@ -206,6 +207,7 @@ public class AuctionController {
 	public String toggleAuctioningconfirmation(@PathVariable("id") long id, Model model, HttpSession session) {
 		User user = userRepository.findById(id)
 				.orElseThrow(() -> new IllegalArgumentException("Invalid shipment Id:" + id));
+		User loggedInUser = getLoggedInUser();
 		
 		if (user.getAuctioningAllowed()) {
 			user.setAuctioningAllowed(false);
@@ -215,7 +217,7 @@ public class AuctionController {
 			user.setAuctioningAllowed(true);
 			Logger.info("Auctioning is allowed for {}", user.getUsername());
 		}
-		Logger.error("Auctioning permissions was sucessfully saved for {}.", user.getUsername());
+		Logger.info("{} has successfully changed auctioning permissions for {}.", loggedInUser.getUsername() , user.getUsername());
 		userRepository.save(user);
 		return "redirect:" + session.getAttribute("redirectLocation");
 	}

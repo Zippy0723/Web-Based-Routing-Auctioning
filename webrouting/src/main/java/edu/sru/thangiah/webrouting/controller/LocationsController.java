@@ -123,12 +123,13 @@ public class LocationsController {
   		
   		if(deny == true) {
   			model.addAttribute("error", "Unable to add Location. Location address or name already exists");
+  			Logger.error("{} was unable to add location {} because the address or name already exists.", user.getUsername(), location.getName());
   			model.addAttribute("locations", user.getCarrier().getLocations());
   			return "locations";
 			 
   		}
-  		Logger.info("Location was successfully saved.");
   		locationsRepository.save(location);
+  		Logger.info("{} successfully saved location with ID {}.", user.getUsername(), location.getId());
   		return "redirect:/locations";
   	}
 	
@@ -165,7 +166,8 @@ public class LocationsController {
   		Locations location = locationsRepository.findById(id)
   	          .orElseThrow(() -> new IllegalArgumentException("Invalid location Id:" + id));
   		
-  		Logger.info("Location was successfully deleted.");
+  		User loggedInUser = getLoggedInUser();
+  		Logger.info("{} successfully deleted the location with ID {}.",loggedInUser.getUsername(), location.getId());
   		locationsRepository.delete(location);
   	    return "redirect:/locations";
     }
@@ -242,13 +244,13 @@ public class LocationsController {
   		
   		if(deny == true) {
   			model.addAttribute("error", "Unable to update Location. Location address already exists");
-  			Logger.info("Unable to update Location. Location address already exists.");
+  			Logger.error("{} attempted to update location. Update failed due to location already existing.", user.getUsername());
   			model.addAttribute("locations", user.getCarrier().getLocations());
   			return "locations";
 			 
   		}
-        Logger.info("The location was successsfully saved.");
         locationsRepository.save(location);
+        Logger.info("{} successfully updated location with ID {}.", user.getUsername(), location.getId());
         return "redirect:/locations";
     }
 	

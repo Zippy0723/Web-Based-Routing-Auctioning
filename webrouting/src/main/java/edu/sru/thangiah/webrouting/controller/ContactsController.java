@@ -95,6 +95,7 @@ public class ContactsController {
   	public String addContact(@Validated Contacts contacts, BindingResult result, Model model) {
   		userValidator.addition(contacts, result);
   		contacts.setCarrier(getLoggedInUser().getCarrier());
+  		User user = getLoggedInUser();
   		
   		if (result.hasErrors()) {
   			return "/add/add-contact";
@@ -113,14 +114,14 @@ public class ContactsController {
   		
   		if(deny == true) {
   			model.addAttribute("error", "Unable to add Contact. Contact Email already in use");
-  			Logger.error("Unable to add Contact. Contact Email already in use.");
+  			Logger.error("{} attempted to add contact and it failed because the email address {} is already in use.", user.getUsername(), contacts.getEmailAddress().toString());
   			model.addAttribute("contacts", getLoggedInUser().getCarrier().getContacts());
   			return "contacts";
 			 
   		}
   		
-  		Logger.info("Contact was successfully saved.");
   		contactsRepository.save(contacts);
+  		Logger.info("{} successfully added a new contact with ID {}.", user.getUsername(), contacts.getId());
   		
   		return "redirect:/contacts";
   	}
@@ -137,9 +138,10 @@ public class ContactsController {
         Contacts contacts = contactsRepository.findById(id)
           .orElseThrow(() -> new IllegalArgumentException("Invalid contact Id:" + id));
         
+        User user = getLoggedInUser();
         if(!contacts.getDrivers().isEmpty() || !contacts.getTechnicians().isEmpty()) {
         	model.addAttribute("error", "Unable to delete due to dependency conflict."); 
-        	Logger.error("error", "Unable to delete due to dependency conflict.");
+        	Logger.error("{} attmpted to delete contact. Deletion failed due to dependency conflict.", user.getUsername());
         	model.addAttribute("contacts", getLoggedInUser().getCarrier().getContacts());
         	return "contacts";
         }
@@ -158,7 +160,8 @@ public class ContactsController {
   		Contacts contacts = contactsRepository.findById(id)
   	          .orElseThrow(() -> new IllegalArgumentException("Invalid contact Id:" + id));
   		
-  		Logger.info("Contact was successfully deleted.");
+  		User user = getLoggedInUser();
+  		Logger.info("{} successfully deleted the contact with ID {}.", user.getUsername(), contacts.getId());
         contactsRepository.delete(contacts);
         return "redirect:/contacts";
     }
@@ -210,6 +213,7 @@ public class ContactsController {
       BindingResult result, Model model) {
   		userValidator.addition(contact, result);
   		contact.setCarrier(getLoggedInUser().getCarrier());
+  		User user = getLoggedInUser();
   		
   		if (result.hasErrors()) {
             contact.setId(id);
@@ -229,14 +233,14 @@ public class ContactsController {
   		
   		if(deny == true) {
   			model.addAttribute("error", "Unable to add Contact. Contact Email already in use");
-  			Logger.error("Unable to add Contact. Contact Email already in use");
+  			Logger.error("{} failed to add contact with email {} because the email is already in use.",user.getUsername(), contact.getEmailAddress());
   			model.addAttribute("contacts", getLoggedInUser().getCarrier().getContacts());
   			return "contacts";
 			 
   		}
             
-  		Logger.info("Contact was successfully updated.");
         contactsRepository.save(contact);
+        Logger.info("{} successfully updated the contact with ID {}.", user.getUsername(), contact.getId());
         return "redirect:/contacts";
     }
   	

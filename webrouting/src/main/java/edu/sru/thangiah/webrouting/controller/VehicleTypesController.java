@@ -5,6 +5,7 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -14,8 +15,11 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import edu.sru.thangiah.webrouting.domain.User;
 import edu.sru.thangiah.webrouting.domain.VehicleTypes;
 import edu.sru.thangiah.webrouting.repository.VehicleTypesRepository;
+import edu.sru.thangiah.webrouting.services.SecurityService;
+import edu.sru.thangiah.webrouting.services.UserService;
 import edu.sru.thangiah.webrouting.web.UserValidator;
 
 /**
@@ -29,6 +33,12 @@ import edu.sru.thangiah.webrouting.web.UserValidator;
 public class VehicleTypesController {
 	
 	private VehicleTypesRepository vehicleTypesRepository;
+	
+	@Autowired
+	private UserService userService;
+	
+	@Autowired
+	private SecurityService securityService;
 	
 	@Autowired
 	private UserValidator userValidator;
@@ -84,6 +94,8 @@ public class VehicleTypesController {
   			return "/add/add-vehicletype";
 		}
   		
+  		User loggedInUser = getLoggedInUser();
+  		
   		boolean deny = false;
   		
   		List<VehicleTypes> types = (List<VehicleTypes>) vehicleTypesRepository.findAll();
@@ -97,13 +109,13 @@ public class VehicleTypesController {
   		
   		if (deny == true) {
   			model.addAttribute("error", "Error: Vehicle Type already exists.");
-  			Logger.error("Vehicle Type already exists.");
+  			Logger.error("{} failed to update vehicle type because it already exists.", loggedInUser.getUsername());
   			model.addAttribute("vehicletypes", vehicleTypesRepository.findAll());
   			return "vehicletypes";
   		}
   		
-  		Logger.info("VehicleType was successfully saved.");
   		vehicleTypesRepository.save(vehicleTypes);
+  		Logger.info("{} successfully saved the Vehicle type with ID {}.",loggedInUser.getUsername(), vehicleTypes.getId());
   		return "redirect:/vehicletypes";
   	}
 	
@@ -119,8 +131,10 @@ public class VehicleTypesController {
         VehicleTypes vehicleTypes = vehicleTypesRepository.findById(id)
           .orElseThrow(() -> new IllegalArgumentException("Invalid vehicle type Id:" + id));
         
+        User loggedInUser = getLoggedInUser();
         if(!vehicleTypes.getVehicles().isEmpty()) {
         	model.addAttribute("error", "Unable to delete due to dependency conflict.");
+        	Logger.error("{} failed to delete the vehicle type due to dependency conflict.", loggedInUser.getUsername());
         	model.addAttribute("vehicletypes", vehicleTypesRepository.findAll());
         	return "vehicletypes";
         }
@@ -139,7 +153,8 @@ public class VehicleTypesController {
   		VehicleTypes vehicleTypes = vehicleTypesRepository.findById(id)
   	          .orElseThrow(() -> new IllegalArgumentException("Invalid vehicle type Id:" + id));
   		
-  		Logger.info("Vehicle type was successfully deleted");
+  		User loggedInUser = getLoggedInUser();
+  		Logger.info("{} successfully deleted the Vehicle type with ID {}.", loggedInUser.getUsername(),vehicleTypes.getId());
   		vehicleTypesRepository.delete(vehicleTypes);
         return "redirect:/vehicletypes";
     }
@@ -190,6 +205,9 @@ public class VehicleTypesController {
     public String updateVehicleType(@PathVariable("id") long id, @Validated VehicleTypes vehicleType, 
       BindingResult result, Model model) {
 		userValidator.addition(vehicleType, result);
+		
+		User loggedInUser = getLoggedInUser();
+		
         if (result.hasErrors()) {
         	vehicleType.setId(id);
             return "/update/update-vehicletype";
@@ -210,14 +228,28 @@ public class VehicleTypesController {
   		
   		if (deny == true) {
   			model.addAttribute("error", "Error: Vehicle Type already exists.");
-  			Logger.error("Vehicle type already exists.");
+  			Logger.error("{} failed to update vehicle Type because the Vehicle type already exists.", loggedInUser.getUsername());
   			model.addAttribute("vehicletypes", vehicleTypesRepository.findAll());
   			return "vehicletypes";
   		}
         
-  		Logger.info("Vehicle type was successfully saved.");
         vehicleTypesRepository.save(vehicleType);
+        Logger.info("{} successfully updated the Vehicle Type with ID {}.",loggedInUser.getUsername(),vehicleType.getId());
         return "redirect:/vehicletypes";
+    }
+	
+	public User getLoggedInUser() {
+    	if (securityService.isAuthenticated()) {
+    		org.springframework.security.core.userdetails.User user = 
+    				(org.springframework.security.core.userdetails.User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+    		
+    		User user2 = userService.findByUsername(user.getUsername());
+    		
+    		return user2;
+    	}
+    	else {
+    		return null;
+    	}
     }
 
 }

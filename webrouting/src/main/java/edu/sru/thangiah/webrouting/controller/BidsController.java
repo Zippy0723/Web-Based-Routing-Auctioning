@@ -139,14 +139,14 @@ public class BidsController {
   		
   		if (deny == true) {
   			model.addAttribute("error", "Error: Bid with the same carrier and price has already been placed.");
-  			Logger.error("Bid with the same carrier and price has already been placed.");
+  			Logger.error("{} failed to add bid due to a bid with the same carrier and price already being place.", user.getUsername());
   			model.addAttribute("shipments", bid.getShipment());
   	        model.addAttribute("carriers", carriersRepository.findAll());
   	        return "/add/add-bid";
   		}
   		  	
-  		Logger.info("New bid was saved.");
   		bidsRepository.save(bid);
+  		Logger.info("{} successfully created a new bid with ID {}", user.getUsername(), bid.getId());
   		return "redirect:/createdshipments";
   	}
 	
@@ -255,8 +255,8 @@ public class BidsController {
 		User user = getLoggedInUser();
 		
 		 if (bid.getShipment().getFullFreightTerms().toString().equals("FROZEN") && !user.getRole().toString().equals("MASTERLIST")) {
-			 System.out.println("User attempeted to accept a bid on a frozen shipment");
-			 Logger.error("User attempted to accept a bid on a frozen shipment.");//Replace this with a proper error message and redirect, for now it just dumps shippers out of the accept menu
+			 System.out.println("User attempted to accept a bid on a frozen shipment");
+			 Logger.error("{} attempted to accept a bid on a frozen shipment.", user.getUsername());//Replace this with a proper error message and redirect, for now it just dumps shippers out of the accept menu
 			 return "redirect:/createdshipments";
 		 }
 		
@@ -268,8 +268,8 @@ public class BidsController {
 		shipment.setScac(carrier.getScac());
 		shipment.setFullFreightTerms("BID ACCEPTED");
 		
-		Logger.info("Shipment was successfully saved.");
 		shipmentsRepository.save(shipment);
+		Logger.info("{} successfully created a new bid with ID {}", user.getUsername(), bid.getId());
 		
 		return "redirect:/shipmentshomeshipper";
 	}
@@ -290,7 +290,7 @@ public class BidsController {
 		 
 		 if (bid.getShipment().getFullFreightTerms().toString().equals("FROZEN") && !user.getRole().toString().equals("MASTERLIST")) {
 			 System.out.println("User attempeted to edit a bid on a frozen shipment");
-			 Logger.error("User attempted to edit a bid on a frozen shipment.");//Replace this with a proper error message and redirect, for now it just dumps carriers out of the edit menu
+			 Logger.error("{} attempted to edit a bid on a frozen shipment.", user.getUsername());//Replace this with a proper error message and redirect, for now it just dumps carriers out of the edit menu
 			 return "redirect:/createdshipments";
 		 }
 		 
@@ -354,14 +354,15 @@ public class BidsController {
   		
   		if (deny == true) {
   			model.addAttribute("error", "Error: Bid with the same carrier and price has already been placed.");
-  			Logger.error("Bid with the same carrier and price has already been placed.");
+  			Logger.error("Bid with the carrier {} and price {} has already been placed.",bid.getCarrier().getId(),bid.getPrice());
   			model.addAttribute("shipments", bid.getShipment());
   	        model.addAttribute("carriers", carriersRepository.findAll());
   	        return "/update/update-bid";
   		}
         
-  		Logger.info("New bid was successfully saved.");
+  		
         bidsRepository.save(bid);
+        Logger.info("{} successfully updated the bid with ID {}", user.getUsername(), bid.getId());
         return "redirect:/createdshipments";
     }
 	
