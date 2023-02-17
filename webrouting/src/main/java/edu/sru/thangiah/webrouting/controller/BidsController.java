@@ -333,6 +333,10 @@ public class BidsController {
 	@PostMapping("/updatebid/{id}")
     public String updateBid(@PathVariable("id") long id, @Validated Bids bid, //TODO: rewrite this to work with MASTERLIST able to edit bids. 
       BindingResult result, Model model) {
+		Bids oldbid = bidsRepository.findById(id)
+				.orElseThrow(() -> new IllegalArgumentException("Invalid Bid Id:" + id));;
+		Carriers carrier = oldbid.getCarrier();
+		
 		userValidator.addition(bid, result);
         if (result.hasErrors()) {
         	bid.setId(id);
@@ -345,7 +349,12 @@ public class BidsController {
   		LocalDateTime now = LocalDateTime.now();
   		
   		User user = getLoggedInUser();
-  		bid.setCarrier(user.getCarrier());
+  		
+  		if(user.getRole().getName().equals("MASTERLIST")) {
+  			bid.setCarrier(carrier);
+  		} else {
+  			bid.setCarrier(user.getCarrier());
+  		}
   		
   		bid.setDate(date.format(now));
   		bid.setTime(time.format(now));
@@ -370,6 +379,13 @@ public class BidsController {
   			model.addAttribute("shipments", bid.getShipment());
   	        model.addAttribute("carriers", carriersRepository.findAll());
   	        return "/update/update-bid";
+  		}
+  		
+  		User carrierUser = CarriersController.getUserFromCarrier(carrier);
+  		
+  		if(user.getId() != carrierUser.getId()) {
+  			NotificationController.addNotification(carrierUser, 
+  					"ALERT: Your bid with ID " + bid.getId() + " was editing by user " + user.getUsername());
   		}
             
         bidsRepository.save(bid);
