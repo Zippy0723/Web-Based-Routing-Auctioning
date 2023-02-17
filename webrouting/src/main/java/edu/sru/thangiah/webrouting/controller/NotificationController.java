@@ -103,6 +103,25 @@ public class NotificationController {
 	}
 	
 	/**
+	 * 
+	 * @param model
+	 * @return
+	 */
+	@RequestMapping("/markallasread")
+	public String markAllAsRead(Model model) {
+		User user = getLoggedInUser();
+		List<Notification> noitifications = NotificationController.fetchUnreadNotifications(user);
+		
+		for (Notification n : noitifications) {
+			n.setIsread(true);
+			notificationRepository.save(n);
+		}
+		
+		return "redirect:/unreadnotifications";
+		
+	}
+	
+	/**
 	 * Creates a new notification with the specified parameters
 	 */
 	public static void addNotification(User user, String message) {

@@ -171,6 +171,13 @@ public class VehiclesController {
     public String deleteVehicleConfirmation(@PathVariable("id") long id, Model model) {
   		Vehicles vehicle = vehiclesRepository.findById(id)
   	          .orElseThrow(() -> new IllegalArgumentException("Invalid vehicle Id:" + id));
+  		User user = getLoggedInUser();
+  		User carrierUser = CarriersController.getUserFromCarrier(vehicle.getCarrier());
+  		
+  		if(user.getId() != carrierUser.getId()) {
+  			NotificationController.addNotification(carrierUser, 
+  					"ALERT: Your vehicle with plate number " + vehicle.getPlateNumber() + " was deleted by " + user.getUsername());
+  		}
   		
   		vehiclesRepository.delete(vehicle);
         return "redirect:/vehicles";
