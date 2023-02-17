@@ -3,6 +3,8 @@ package edu.sru.thangiah.webrouting.controller;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
@@ -37,6 +39,8 @@ public class TechniciansController {
 
     @Autowired
     private SecurityService securityService;
+    
+    private static final Logger Logger = LoggerFactory.getLogger(TechniciansController.class);
 	
 	/**
 	 * Constructor for TechniciansController. <br>
@@ -104,7 +108,7 @@ public class TechniciansController {
   			return "technicians";
 			 
   		}
-  			
+  		Logger.info("Technician was successfully saved.");
   		techniciansRepository.save(technician);
   		return "redirect:/technicians";
   	}
@@ -123,6 +127,7 @@ public class TechniciansController {
         
         if(!technician.getOrders().isEmpty()) {
         	model.addAttribute("error", "Unable to delete due to dependency conflict."); 
+        	Logger.error("Unable to delete technician due to dependency conflict.");
         	model.addAttribute("technicians", techniciansRepository.findAll());
         	return "technicians";
         }
@@ -140,7 +145,8 @@ public class TechniciansController {
     public String deleteTechnicianConfirmation(@PathVariable("id") long id, Model model) {
   		Technicians technician = techniciansRepository.findById(id)
   	          .orElseThrow(() -> new IllegalArgumentException("Invalid technicians Id:" + id));
-  		        
+  		
+  		Logger.info("Technician was successfully deleted.");
   		techniciansRepository.delete(technician);
         return "redirect:/technicians";
     }
@@ -227,11 +233,13 @@ public class TechniciansController {
   		
   		if(deny == true) {
   			model.addAttribute("error", "Unable to update Technician. Contact already in use");
+  			Logger.info("Update technician failed. Contact already in use.");
   			model.addAttribute("technicians", techniciansRepository.findAll());
   			return "technicians";
 			 
   		}
-            
+  		
+        Logger.info("Technician was successfully saved.");
         techniciansRepository.save(technician);
         return "redirect:/technicians";
     }

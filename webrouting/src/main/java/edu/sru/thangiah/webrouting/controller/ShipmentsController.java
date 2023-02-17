@@ -13,6 +13,8 @@ import java.util.ArrayList;
 import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
@@ -66,6 +68,8 @@ public class ShipmentsController {
 	
 	@Autowired
 	private UserValidator userValidator;
+	
+	private static final Logger Logger = LoggerFactory.getLogger(ShipmentsController.class);
 
 	/**
 	 * Constructor for ShipmentsController. <br>
@@ -381,6 +385,7 @@ public class ShipmentsController {
   		
   		if (deny == true) {
   			model.addAttribute("error", "Error adding a shipment: Shipment already exists!");
+  			Logger.error("Shipment already exists");
   			List<Shipments> shipmentsWOCarrier = new ArrayList<>();
   			User user = getLoggedInUser();
   			if (user.getRole().toString().equals("SHIPPER")) {
@@ -407,6 +412,7 @@ public class ShipmentsController {
   		shipment.setFreightbillNumber("");
   		shipment.setFullFreightTerms("PENDING");
   		shipment.setUser(getLoggedInUser());
+  		Logger.info("Shipment was successfully saved.");
   		shipmentsRepository.save(shipment);
   		return "redirect:/pendingshipments";
   	}
@@ -426,7 +432,8 @@ public class ShipmentsController {
         String redirectLocation = (String) session.getAttribute("redirectLocation");
         
         if (shipment.getFullFreightTerms().toString().equals("FROZEN") && !user.getRole().toString().equals("MASTERLIST")) {
-        	System.out.println("Non-Master user attempted to delete a frozen shipment!"); //TODO: Replace this with a proper error message(what user would see this error?)
+        	System.out.println("Non-Master user attempted to delete a frozen shipment!");
+        	Logger.error("Non-Master user attempted to delete a frozen shipment!");//TODO: Replace this with a proper error message(what user would see this error?)
         	return redirectLocation; 
         }
         
@@ -453,10 +460,10 @@ public class ShipmentsController {
         	{ 
         		bidsRepository.delete(bid); 
         	}
-        	
+        	Logger.info("Bids were successfully deleted.");
         	
         }
-        
+        Logger.info("Shipment was successfully deleted.");
         shipmentsRepository.delete(shipment);
         return "redirect:" + session.getAttribute("redirectLocation"); 
     }
@@ -518,6 +525,7 @@ public class ShipmentsController {
 	    
         if (shipment.getFullFreightTerms().toString().equals("FROZEN") && !user.getRole().toString().equals("MASTERLIST")) {
         	System.out.println("Non-Master user attempted to edit a frozen shipment!");
+        	Logger.error("Non-Master, {}, attempted to edit a frozen shipment!", user.getUsername());
         	return "/index"; //TODO: Replace this with a proper message and redirect.
         }
 	    
@@ -660,6 +668,7 @@ public class ShipmentsController {
       		
       		if (deny == true) {
       			model.addAttribute("error", "Error adding a shipment: Shipment already exists!");
+      			Logger.error("Shipment not created because it already exists.");
       			List<Shipments> shipmentsWOCarrier = new ArrayList<>();
       			User user = getLoggedInUser();
       			if (user.getRole().toString().equals("SHIPPER")) {
@@ -687,6 +696,7 @@ public class ShipmentsController {
       		shipment.setFreightbillNumber("");
       		shipment.setFullFreightTerms("AVAILABLE SHIPMENT");
       		shipment.setUser(getLoggedInUser());
+      		Logger.info("Shipment was successfully saved.");
       		shipmentsRepository.save(shipment);
       		
       		return "redirect:/createdshipments";
@@ -717,6 +727,7 @@ public class ShipmentsController {
       		
       		if (deny == true) {
       			model.addAttribute("error", "Error adding a shipment: Shipment already exists!");
+      			Logger.error("Shipment not created because it already exists.");
     			
       			List<Shipments> shipments = getLoggedInUser().getCarrier().getShipments();
     			
@@ -734,11 +745,13 @@ public class ShipmentsController {
     			}
       			return "acceptedshipments";
       		}
-        	
+      		
+      		Logger.info("Shipment was successfully saved.");
         	shipmentsRepository.save(shipment);
         	return "redirect:/acceptedshipments";
         }
         else {
+        	Logger.info("Shipment was successfully saved.");
         	shipmentsRepository.save(shipment);
         	return "redirect:/shipments";
         }
@@ -810,6 +823,7 @@ public class ShipmentsController {
 		        shipment.setConsigneeLongitude(row.getCell(20).getRawValue());
 		        
 		        shipment.setUser(getLoggedInUser());
+		        Logger.info("Shipment was successfully saved.");
 		        shipmentsRepository.save(shipment);
 			 		
 			 }

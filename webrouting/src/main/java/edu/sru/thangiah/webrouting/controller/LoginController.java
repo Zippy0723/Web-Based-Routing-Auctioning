@@ -7,6 +7,8 @@ import java.util.List;
 import javax.mail.MessagingException;
 import javax.servlet.http.HttpServletRequest;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
@@ -62,6 +64,8 @@ public class LoginController {
     
     @Autowired
     private HttpServletRequest request;
+    
+    private static final Logger Logger = LoggerFactory.getLogger(LoginController.class);
     /**
      * Constructor for LoginController <br>
      * Instantiates carriersRepository
@@ -121,10 +125,12 @@ public class LoginController {
         userForm.setCarrier(null);
         googleResponse= request.getParameter("g-recaptcha-response");
         if(!captcha.VerifyRecaptcha(googleResponse)) {
+        	Logger.error("Failed recaptcha after creating shipper.");
         	return "registrationshipper";
         }
         
         if (bindingResult.hasErrors()) {
+        	Logger.error("Failed to create Shipper.");
             return "registrationshipper";
         }
         websiteUrl = MailSending.getUrl(mailRequest);
@@ -132,6 +138,7 @@ public class LoginController {
         emailImpl.saveVerificationCode(userForm);
         emailImpl.sendVerification(userForm, websiteUrl);
         redirectAttr.addFlashAttribute("emailMessage","Your Account Has been Created Please Check Your Inbox or Spam  to Verify Your Account");
+        Logger.info("{} shipper account was created.", userForm.getUsername());
         return "redirect:login";
     }
 
@@ -217,6 +224,7 @@ public class LoginController {
         
 
         if (bindingResult.hasErrors()) {
+        	Logger.error("Failed to create a carrier.");
             return "registrationcarrier";
         }
         
@@ -230,6 +238,7 @@ public class LoginController {
   		
   		if(deny == true) {
   			model.addAttribute("error", "Unable to add Carrier. Carrier name or SCAC code already exists");
+  			Logger.error("Unable to add Carrier. Carrier name or SCAC code already exists");
   			return "registrationcarrier";	 
   		}
   		String websiteUrl;
@@ -240,6 +249,7 @@ public class LoginController {
         emailImpl.saveVerificationCode(userForm);
         emailImpl.sendVerification(userForm, websiteUrl);
         redirectAttr.addFlashAttribute("emailMessage","Your Account Has been Created Please Check Your Email to Verify Your Account");
+        Logger.info("{} account was created.", carrierName);
         return "redirect:login";
     }
     
@@ -256,9 +266,10 @@ public class LoginController {
             return "redirect:/";
         }
 
-        if (error != null)
+        if (error != null) {
             model.addAttribute("error", "Your username and password is invalid.");
-
+            Logger.error("Login attempt failed.");
+        }
         return "registrationlogin";
     }
     
@@ -276,14 +287,17 @@ public class LoginController {
         if (securityService.isAuthenticated()) {
             return "redirect:/";
         }
-        if (error != null)
+        if (error != null) {
             model.addAttribute("error", "Your username or password is invalid.");
-       
-        if (logout != null)
+        	Logger.error("Login attempt failed.");
+        }
+        if (logout != null) { 
             model.addAttribute("message", "You have been logged out successfully.");
-        
+            Logger.info("Logged out.");
+        }
         return "login";
     }
+    
     
     /**
      * Redirects the user to the index page from /
@@ -301,6 +315,7 @@ public class LoginController {
      */
     @GetMapping("/403")
     public String error403() {
+    	Logger.error("Error 403 occured.");
         return "/403";
     }
     

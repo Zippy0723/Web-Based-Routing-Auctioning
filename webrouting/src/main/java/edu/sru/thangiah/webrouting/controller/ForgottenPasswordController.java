@@ -5,6 +5,8 @@ import java.io.UnsupportedEncodingException;
 import javax.mail.MessagingException;
 import javax.servlet.http.HttpServletRequest;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -53,6 +55,8 @@ public class ForgottenPasswordController {
 	private UserValidator userValidator;
 	
 	private String redirect;
+	
+	private static final Logger Logger = LoggerFactory.getLogger(ForgottenPasswordController.class);
 	/**
 	 * Used to handle the request and shows the user the form
 	 * @return forgotpasswordform - the form the user will fill out to recieve a link
@@ -78,6 +82,7 @@ public class ForgottenPasswordController {
 		webUrl = MailSending.getUrl(mailRequest);
 	    emailImpl.forgotPassword(email, webUrl);
 		model.addAttribute("message", "Your reset password link has been sent to your email");
+		Logger.info("Password reset link has been sent to email");
 	return "forgotpasswordform";
 	}
 	
@@ -124,11 +129,13 @@ public class ForgottenPasswordController {
 				redirectAttr.addFlashAttribute("org.springframework.validation.BindingResult.userForm", bindingResult);
 				redirectAttr.addFlashAttribute("userForm", userForm);
 				redirect = request.getHeader("Referer");
+				Logger.error("Failed password reset.");
 				return "redirect:" + redirect;
 	       }
 		else { 
 			userService.resetPassword(user,password);
 			model.addAttribute("message", "Your password has been changed");
+			Logger.info("Password has been changed");
 		}
 		return "resetpasswordform";
 	}

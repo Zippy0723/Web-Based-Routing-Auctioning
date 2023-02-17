@@ -3,6 +3,8 @@ package edu.sru.thangiah.webrouting.controller;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
@@ -44,6 +46,7 @@ public class LocationsController {
     @Autowired
     private UserValidator userValidator;
 	
+    private static final Logger Logger = LoggerFactory.getLogger(LocationsController.class);
     
 	/**
 	 * Constructor for LocationsController. <br>
@@ -124,7 +127,7 @@ public class LocationsController {
   			return "locations";
 			 
   		}
-  		
+  		Logger.info("Location was successfully saved.");
   		locationsRepository.save(location);
   		return "redirect:/locations";
   	}
@@ -143,6 +146,7 @@ public class LocationsController {
         User user = getLoggedInUser();
         if (!location.getVehicles().isEmpty()) {
         	model.addAttribute("error", "Unable to delete due to dependency conflict.");
+        	Logger.error("Unable to delete location due to dependecy conflict.");
         	model.addAttribute("locations", user.getCarrier().getLocations());
         	return "locations";
         }
@@ -161,6 +165,7 @@ public class LocationsController {
   		Locations location = locationsRepository.findById(id)
   	          .orElseThrow(() -> new IllegalArgumentException("Invalid location Id:" + id));
   		
+  		Logger.info("Location was successfully deleted.");
   		locationsRepository.delete(location);
   	    return "redirect:/locations";
     }
@@ -237,11 +242,12 @@ public class LocationsController {
   		
   		if(deny == true) {
   			model.addAttribute("error", "Unable to update Location. Location address already exists");
+  			Logger.info("Unable to update Location. Location address already exists.");
   			model.addAttribute("locations", user.getCarrier().getLocations());
   			return "locations";
 			 
   		}
-            
+        Logger.info("The location was successsfully saved.");
         locationsRepository.save(location);
         return "redirect:/locations";
     }

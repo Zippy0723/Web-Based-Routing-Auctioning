@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration>
+	<Appenders>
+		<Console name="Console" target="SYSTEM_OUT">
+			<PatternLayout pattern="%d{yyyy-MMM-dd HH:mm:ss} %t %-5Level %-50c{1.} - %msg %n"	/>
+		</Console>
+			<RollingFile
+      name="rollingFile"
+      fileName="WebroutingApplication.log"
+      filePattern="WebroutingApplication.%i.log.gz"
+      ignoreExceptions="false">
+      <PatternLayout pattern= "%d{yyyy-MMM-dd HH:mm:ss} %t %-5Level %-50c{1.} - %msg %n"/>
+      <Policies>
+          <SizeBasedTriggeringPolicy size="1MB" />
+      </Policies>
+      <DefaultRolloverStrategy max="5">
+        <Delete basePath="" maxDepth="2">
+          <IfFileName glob="*/app-*.log.gz" />
+          <IfLastModified age="P30D" />
+        </Delete>
+      </DefaultRolloverStrategy>
+    </RollingFile>
+	</Appenders>
+	<Loggers>
+		<Root level ="info">
+			<AppenderRef ref="Console"	/>
+			<AppenderRef ref="rollingFile"	/>
+		</Root>
+	</Loggers>
+</Configuration>

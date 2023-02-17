@@ -3,6 +3,8 @@ package edu.sru.thangiah.webrouting.controller;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
@@ -42,6 +44,8 @@ public class ContactsController {
 	
 	@Autowired
     private UserValidator userValidator;
+	
+	private static final Logger Logger = LoggerFactory.getLogger(ContactsController.class);
 	
 	
 	/**
@@ -109,12 +113,15 @@ public class ContactsController {
   		
   		if(deny == true) {
   			model.addAttribute("error", "Unable to add Contact. Contact Email already in use");
+  			Logger.error("Unable to add Contact. Contact Email already in use.");
   			model.addAttribute("contacts", getLoggedInUser().getCarrier().getContacts());
   			return "contacts";
 			 
   		}
   		
+  		Logger.info("Contact was successfully saved.");
   		contactsRepository.save(contacts);
+  		
   		return "redirect:/contacts";
   	}
   	
@@ -132,6 +139,7 @@ public class ContactsController {
         
         if(!contacts.getDrivers().isEmpty() || !contacts.getTechnicians().isEmpty()) {
         	model.addAttribute("error", "Unable to delete due to dependency conflict."); 
+        	Logger.error("error", "Unable to delete due to dependency conflict.");
         	model.addAttribute("contacts", getLoggedInUser().getCarrier().getContacts());
         	return "contacts";
         }
@@ -150,6 +158,7 @@ public class ContactsController {
   		Contacts contacts = contactsRepository.findById(id)
   	          .orElseThrow(() -> new IllegalArgumentException("Invalid contact Id:" + id));
   		
+  		Logger.info("Contact was successfully deleted.");
         contactsRepository.delete(contacts);
         return "redirect:/contacts";
     }
@@ -220,11 +229,13 @@ public class ContactsController {
   		
   		if(deny == true) {
   			model.addAttribute("error", "Unable to add Contact. Contact Email already in use");
+  			Logger.error("Unable to add Contact. Contact Email already in use");
   			model.addAttribute("contacts", getLoggedInUser().getCarrier().getContacts());
   			return "contacts";
 			 
   		}
             
+  		Logger.info("Contact was successfully updated.");
         contactsRepository.save(contact);
         return "redirect:/contacts";
     }

@@ -2,6 +2,8 @@ package edu.sru.thangiah.webrouting.controller;
 
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -30,6 +32,8 @@ public class VehicleTypesController {
 	
 	@Autowired
 	private UserValidator userValidator;
+	
+	private static final Logger Logger = LoggerFactory.getLogger(VehicleTypesController.class);
 	
 	/**
 	 * Constructor for VehicleTypesController. <br>
@@ -93,10 +97,12 @@ public class VehicleTypesController {
   		
   		if (deny == true) {
   			model.addAttribute("error", "Error: Vehicle Type already exists.");
+  			Logger.error("Vehicle Type already exists.");
   			model.addAttribute("vehicletypes", vehicleTypesRepository.findAll());
   			return "vehicletypes";
   		}
   		
+  		Logger.info("VehicleType was successfully saved.");
   		vehicleTypesRepository.save(vehicleTypes);
   		return "redirect:/vehicletypes";
   	}
@@ -133,6 +139,7 @@ public class VehicleTypesController {
   		VehicleTypes vehicleTypes = vehicleTypesRepository.findById(id)
   	          .orElseThrow(() -> new IllegalArgumentException("Invalid vehicle type Id:" + id));
   		
+  		Logger.info("Vehicle type was successfully deleted");
   		vehicleTypesRepository.delete(vehicleTypes);
         return "redirect:/vehicletypes";
     }
@@ -203,10 +210,12 @@ public class VehicleTypesController {
   		
   		if (deny == true) {
   			model.addAttribute("error", "Error: Vehicle Type already exists.");
+  			Logger.error("Vehicle type already exists.");
   			model.addAttribute("vehicletypes", vehicleTypesRepository.findAll());
   			return "vehicletypes";
   		}
-            
+        
+  		Logger.info("Vehicle type was successfully saved.");
         vehicleTypesRepository.save(vehicleType);
         return "redirect:/vehicletypes";
     }

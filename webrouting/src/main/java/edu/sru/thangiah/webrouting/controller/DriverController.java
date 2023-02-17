@@ -3,6 +3,8 @@ package edu.sru.thangiah.webrouting.controller;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
@@ -37,6 +39,9 @@ public class DriverController {
 
     @Autowired
     private SecurityService securityService;
+    
+    private static final Logger Logger = LoggerFactory.getLogger(DriverController.class);
+    
 	/**
 	 * Constructor for DriverController. <br>
 	 * Instantiates the driverRepository
@@ -112,11 +117,13 @@ public class DriverController {
   		
   		if(deny == true) {
   			model.addAttribute("error", "Unable to add Driver. Lisence number already exists or Contact already in use");
+  			Logger.error("{} was unable to add a driver because lisence number already exists or contact already in use.", user.getUsername());
   			model.addAttribute("drivers", user.getCarrier().getDrivers());
   			return "drivers";
 			 
   		}
   		
+  		Logger.info("{} sucessfully added a driver.", user.getUsername());
   		driverRepository.save(drivers);
   		return "redirect:/drivers";
   	}
@@ -146,6 +153,7 @@ public class DriverController {
   		Driver drivers = driverRepository.findById(id)
   	          .orElseThrow(() -> new IllegalArgumentException("Invalid driver Id:" + id));
   		
+  		Logger.info("Driver was successfully deleted.");
   		driverRepository.delete(drivers);
   	    return "redirect:/drivers";
     }
@@ -222,11 +230,12 @@ public class DriverController {
   		
   		if(deny == true) {
   			model.addAttribute("error", "Unable to update Driver. Lisence number already exists or Contact already in use");
+  			Logger.error("Unable to update Driver. Lisence number already exists or Contact already in use.");
   			model.addAttribute("drivers", user.getCarrier().getDrivers());
   			return "drivers";
 			 
   		}
-            
+        Logger.info("Driver was successfully saved.");
         driverRepository.save(driver);
         return "redirect:/drivers";
     }

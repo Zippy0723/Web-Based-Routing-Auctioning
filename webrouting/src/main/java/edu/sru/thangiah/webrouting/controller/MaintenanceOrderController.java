@@ -3,6 +3,8 @@ package edu.sru.thangiah.webrouting.controller;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
@@ -40,6 +42,8 @@ public class MaintenanceOrderController {
 
     @Autowired
     private SecurityService securityService;
+    
+    private static final Logger Logger = LoggerFactory.getLogger(MaintenanceOrderController.class);
     
 	/**
 	 * Constructor for MaintenanceOrderController. <br>
@@ -115,10 +119,12 @@ public class MaintenanceOrderController {
   		
   		if(deny == true) {
   			model.addAttribute("error", "Unable to add Maintenance Request. Same Request is currently pending.");
+  			Logger.error("Unable to add Maintenance Request. Same Request is currently pending.");
   			model.addAttribute("maintenanceOrder", getLoggedInUser().getCarrier().getOrders());
   			return "maintenanceorders";
 			 
   		}
+  		Logger.info("Maintenance Order sucessfully saved");
   		maintenanceOrderRepository.save(maintenanceOrder);
   		return "redirect:/maintenanceorders";
   	}
@@ -209,11 +215,13 @@ public class MaintenanceOrderController {
   		
   		if(deny == true) {
   			model.addAttribute("error", "Unable to update Maintenance Request. Same Request is currently pending.");
+  			Logger.error("Unable to update Maintenance Request. Same Request is currently pending.");
   			model.addAttribute("maintenanceOrder", getLoggedInUser().getCarrier().getOrders());
   			return "maintenanceorders";
 			 
   		}
-            
+  		
+  		Logger.info("Maintenance Order sucessfully saved");
         maintenanceOrderRepository.save(maintenanceOrder);
         return "redirect:/maintenanceorders";
     }

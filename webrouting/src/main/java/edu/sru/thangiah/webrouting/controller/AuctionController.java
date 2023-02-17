@@ -4,6 +4,8 @@ import java.util.List;
 
 import javax.servlet.http.HttpSession;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
@@ -34,7 +36,10 @@ public class AuctionController {
      * Constructor for AuctionController.
      */
 	private ShipmentsRepository shipmentsRepository;
+	
 	private UserRepository userRepository;
+	
+	private static final Logger Logger = LoggerFactory.getLogger(AuctionController.class);
 	
 	public AuctionController (ShipmentsRepository sr, UserRepository ur) {
 		this.shipmentsRepository = sr;
@@ -71,12 +76,14 @@ public class AuctionController {
 		List<Bids> bids = shipment.getBids(); 
 		
 		if (!user.getRole().toString().equals("MASTERLIST")) {
-			System.out.println("Non-Master user attempeted to force end an auction!"); ///TODO: Replace this with a proper error message
+			System.out.println("Non-Master user attempeted to force end an auction!");
+			Logger.error("Non-Master user, {}, attempeted to force end an auction!", user.getUsername());///TODO: Replace this with a proper error message
 			return "redirect:" + redirectLocation;
 		}
 		
 		if (bids.size() < 1) {
-			System.out.println("This shipment has no bids on it, cannot end an auction with no bids"); ///TODO: Replace this with an html pop in page if possible
+			System.out.println("This shipment has no bids on it, cannot end an auction with no bids");
+			Logger.error("This shipment has no bids on it, cannot end an auction with no bids");///TODO: Replace this with an html pop in page if possible
 			return "redirect:" + redirectLocation;
 		}
 		
@@ -97,6 +104,7 @@ public class AuctionController {
         
         if (!shipment.getFullFreightTerms().equals("PENDING")) {
         	System.out.println("Error: Non-pending shipment attempted to be moved to auction.");
+        	Logger.error("{} attempted to moved to auction a non-pending shipment.", user.getUsername());
         	return redirectLocation;
         }
         
@@ -116,10 +124,12 @@ public class AuctionController {
 		
 		if (user.getRole().toString().equals("CARRIER") || (user.getRole().toString().equals("SHIPPER") && !user.getShipments().contains(shipment))) {
 			System.out.println("Error: Invalid permissions for pushing shipment");
+			Logger.error("{} attempted to push a shipment and they do not have permission", user.getUsername());
 			return "redirect:/pendingshipments";
 		}
 		
 		shipment.setFullFreightTerms("AVAILABLE SHIPMENT");
+		Logger.info("{} successfully added a shipment.", user.getUsername());
 		shipmentsRepository.save(shipment);
 		
 		return "redirect:/pendingshipments";
@@ -147,12 +157,14 @@ public class AuctionController {
 			
 		} 
 		catch (NumberFormatException e) {
-			System.out.println("Caught an exception, invalid price format for bids. Does a shipment have a non numeric character in its bid price?"); //TODO: replace with proper error logging
+			System.out.println("Caught an exception, invalid price format for bids. Does a shipment have a non numeric character in its bid price?");
+			Logger.error("Invalid price format for bids.");//TODO: replace with proper error logging
 			return "redirect:" + redirectLocation;
 		}
 		
 		if (winningBid == null){
-			System.out.println("Unable to select a winning bid"); //TODO: replace with proper error logging
+			System.out.println("Unable to select a winning bid");
+			Logger.error("Unable to select a winning bid.");//TODO: replace with proper error logging
 			return "redirect:" + redirectLocation;
 		}
 		
@@ -164,6 +176,7 @@ public class AuctionController {
 		shipment.setFullFreightTerms("BID ACCEPTED");
 		
 		shipmentsRepository.save(shipment);
+		Logger.info("Shipment was successfully added.");
 		return "redirect:" + redirectLocation;
 	}
 	
@@ -179,6 +192,7 @@ public class AuctionController {
 		
 		if(!loggedinuser.getRole().toString().equals("ADMIN")) {
 			System.out.println("ERROR: Non admin user tried to toggle auctioning for another user!");
+			Logger.error("Non admin user, {}, tried to toggle auctioning for another user!", loggedinuser.getUsername());
 			return redirectLocation;
 		}
 		
@@ -195,11 +209,13 @@ public class AuctionController {
 		
 		if (user.getAuctioningAllowed()) {
 			user.setAuctioningAllowed(false);
+			Logger.info("Auctioning is not allowed for {}", user.getUsername());
 		}
 		else {
 			user.setAuctioningAllowed(true);
+			Logger.info("Auctioning is allowed for {}", user.getUsername());
 		}
-		
+		Logger.error("Auctioning permissions was sucessfully saved for {}.", user.getUsername());
 		userRepository.save(user);
 		return "redirect:" + session.getAttribute("redirectLocation");
 	}

@@ -6,6 +6,8 @@ import java.util.List;
 
 import javax.servlet.http.HttpSession;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
@@ -41,6 +43,8 @@ public class CarriersController {
     private SecurityService securityService;
 
 	private CarriersRepository carriersRepository;
+	
+	private static final Logger Logger = LoggerFactory.getLogger(CarriersController.class);
 
 	/**
 	 * Constructor for CarriersController. <br>
@@ -195,10 +199,12 @@ public class CarriersController {
   		if(deny == true) {
   			model.addAttribute("error", "Unable to update Carrier. Carrier name or SCAC code already exists");
   			model.addAttribute("carriers", user.getCarrier());
+  			Logger.error("Unable to update Carrier. Carrier name or SCAC code already exists");
   			return "carriers";	 
   		}
             
         carriersRepository.save(carrier);
+        Logger.info("{}'s carrier account was updated.", carrier.getCarrierName());
         return "redirect:/carriers";
     }
 		
