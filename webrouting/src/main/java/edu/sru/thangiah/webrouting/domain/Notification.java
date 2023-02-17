@@ -32,6 +32,9 @@ public class Notification {
 	@Column(name="timesent", nullable = false, columnDefinition="varchar(225)")
 	private String timesent; //Converted from LocalDateTime.now()
 	
+	@Column(name = "isread", nullable=false, columnDefinition="bit(1) default false")
+    private boolean isread;
+	
 	/**
 	 * Constructor for Notification
 	 * 
@@ -105,5 +108,19 @@ public class Notification {
 	 */
 	public void setTimesent(String timesent) {
 		this.timesent = timesent;
+	}
+
+	/**
+	 * @return the isread
+	 */
+	public boolean getIsread() {
+		return isread;
+	}
+
+	/**
+	 * @param isread the isread to set
+	 */
+	public void setIsread(boolean isread) {
+		this.isread = isread;
 	}
 }

@@ -446,7 +446,8 @@ public class ShipmentsController {
     public String deleteShipmentConfirmation(@PathVariable("id") long id, Model model, HttpSession session) {
   		Shipments shipment = shipmentsRepository.findById(id)
   		        .orElseThrow(() -> new IllegalArgumentException("Invalid shipment Id:" + id));
-  		        
+  		User user = getLoggedInUser();        
+  		
         if(!shipment.getBids().isEmpty()) {
         	List<Bids> bids = (List<Bids>) shipment.getBids();
         	for (Bids bid : bids) 
@@ -455,6 +456,11 @@ public class ShipmentsController {
         	}
         	
         	
+        }
+        
+        if (user.getId() != shipment.getId()) {
+        	NotificationController.addNotification(shipment.getUser(), 
+        			"ALERT: Your shipment with ID " + shipment.getId() + " and client " + shipment.getClient() + " was deleted by " + user.getUsername());
         }
         
         shipmentsRepository.delete(shipment);

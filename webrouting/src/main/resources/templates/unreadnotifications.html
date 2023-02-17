@@ -78,7 +78,7 @@
                         </li>
 						<br><br><br><br><br>
 						<li sec:authorize="hasAnyAuthority('CARRIER', 'MASTERLIST', 'ADMIN','SHIPPER')">
-							<a class= "navlink" id= "nav_notifications" href="/notifications" th:inline="text">Notifications ([[${notifications.size()}]])</a>
+							<a class= "navlink" id= "nav_notifications" href="/unreadnotifications" th:inline="text">Notifications ([[${notifications.size()}]])</a>
 						</li>
                         <li sec:authorize="isAuthenticated()" class="navitem">
                             <form id="logoutForm" method="POST" th:action="@{/logout}">
@@ -137,7 +137,8 @@
                         		<tr>
                         	    	<th>Notification ID</th>
                         			<th>Message</th>
-                        			<th>TIme</th>
+                        			<th>Time</th>
+                        			<th>Mark as Read</th>
                         		</tr>
                         	</thead>
                         	<tbody>
@@ -145,11 +146,14 @@
                         			<td th:text="${notification.id}"></td>
                         			<td th:text="${notification.message}"></td>
                         			<td th:text="${notification.timesent}"></td>
+                        			<td><a th:href="@{/markasread/{id}(id=${notification.id})}">Mark as Read</a></td>
                         		</tr>
                         	</tbody>
                         </table>
 					</div>
 				</div>
+				<br></br>
+				<p><button class="buttons1" onclick="window.location.href='./readnotifications';">Read Notifications</button></p>
             </div>
         </div>
 

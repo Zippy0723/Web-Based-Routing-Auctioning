@@ -302,7 +302,7 @@ public class LoginController {
 		List<Notification> notifications = new ArrayList<>();
 		
 		if(!(user == null)) {
-			notifications = user.getNotifications();
+			notifications = NotificationController.fetchUnreadNotifications(user);
 		}
 		
 		model.addAttribute("notifications",notifications);
