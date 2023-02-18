@@ -88,10 +88,11 @@ public class BidsController {
 				.orElseThrow(() -> new IllegalArgumentException("Invalid shipment Id: " + id));
         model.addAttribute("shipments", shipment);
         model.addAttribute("carriers", carriersRepository.findAll());
+        User loggedInUser = getLoggedInUser();
         
         if (!shipment.getFullFreightTerms().toString().equals("AVAILABLE SHIPMENT")) {
         	 System.out.println("Error: User attempeted to place a bid on a shipment that was not in auction");
-        	 Logger.error("User attempeted to place a bid on a shipment that was not in auction");
+        	 Logger.error("{} attempted to place a bid on a shipment that was not in auction", loggedInUser.getUsername());
         	 return (String) session.getAttribute("redirectLocation");
         }
         
@@ -166,7 +167,7 @@ public class BidsController {
         
 		 if (bid.getShipment().getFullFreightTerms().toString().equals("FROZEN") && !user.getRole().toString().equals("MASTERLIST")) {
 			 System.out.println("User attempeted to delete a bid on a frozen shipment");
-			 Logger.error("User attempted to delete a bid on a frozen shipment");//Replace this with a proper error message 
+			 Logger.error("{} attempted to delete a bid on a frozen shipment", user.getUsername());//Replace this with a proper error message 
 			 return "redirect:" + redirectLocation;
 		 }
         
@@ -191,7 +192,8 @@ public class BidsController {
   		Bids bid = bidsRepository.findById(id)
        		 .orElseThrow(() -> new IllegalArgumentException("Invalid bid Id:" + id));
         
-  		Logger.info("Bid was successfully deleted.");
+  		User loggedInUser = getLoggedInUser();
+  		Logger.info("{} successfully deleted Bid with ID {}.", loggedInUser.getUsername(), bid.getId());
         bidsRepository.delete(bid);
         return "redirect:" + session.getAttribute("redirectLocation");
     }
@@ -229,7 +231,7 @@ public class BidsController {
   		
   		if (!user.getRole().toString().equals("MASTERLIST")) {
   			System.out.println("Error: Non master tried to reset shipment!");
-  			Logger.error("Non master tried to reset shipment!");
+  			Logger.error("Non master, {}, tried to reset shipment!", user.getUsername());
   			return "redirect:" + session.getAttribute("redirectLocation");
   		}
   		
@@ -290,7 +292,7 @@ public class BidsController {
 		 
 		 if (bid.getShipment().getFullFreightTerms().toString().equals("FROZEN") && !user.getRole().toString().equals("MASTERLIST")) {
 			 System.out.println("User attempeted to edit a bid on a frozen shipment");
-			 Logger.error("{} attempted to edit a bid on a frozen shipment.", user.getUsername());//Replace this with a proper error message and redirect, for now it just dumps carriers out of the edit menu
+			 Logger.error("{} attempted to edit a bid with ID {}, on a frozen shipment.", user.getUsername(), bid.getId());//Replace this with a proper error message and redirect, for now it just dumps carriers out of the edit menu
 			 return "redirect:/createdshipments";
 		 }
 		 

@@ -434,7 +434,7 @@ public class ShipmentsController {
         
         if (shipment.getFullFreightTerms().toString().equals("FROZEN") && !user.getRole().toString().equals("MASTERLIST")) {
         	System.out.println("Non-Master user attempted to delete a frozen shipment!");
-        	Logger.error("Non-Master user attempted to delete a frozen shipment!");//TODO: Replace this with a proper error message(what user would see this error?)
+        	Logger.error("Non-Master user, {}, attempted to delete a frozen shipment with ID {}.", user.getUsername(), shipment.getId());//TODO: Replace this with a proper error message(what user would see this error?)
         	return redirectLocation; 
         }
         
@@ -462,7 +462,7 @@ public class ShipmentsController {
         	{ 
         		bidsRepository.delete(bid); 
         	}
-        	Logger.info("Bids were successfully deleted.");
+        	Logger.info("{} successfully deleted bids.", user.getUsername());
         	
         }
         Logger.info("{} successfully deleted a shipment with ID {}.", user.getUsername(), shipment.getId());
@@ -527,7 +527,7 @@ public class ShipmentsController {
 	    
         if (shipment.getFullFreightTerms().toString().equals("FROZEN") && !user.getRole().toString().equals("MASTERLIST")) {
         	System.out.println("Non-Master user attempted to edit a frozen shipment!");
-        	Logger.error("Non-Master, {}, attempted to edit a frozen shipment!", user.getUsername());
+        	Logger.error("Non-Master, {}, attempted to edit a frozen shipment with ID {}.", user.getUsername(), shipment.getId());
         	return "/index"; //TODO: Replace this with a proper message and redirect.
         }
 	    
@@ -584,7 +584,7 @@ public class ShipmentsController {
 		
 		shipment.setFullFreightTerms("FROZEN");
 		shipmentsRepository.save(shipment);
-		Logger.info("{} successfully froze shipment with ID {}", user.getUsername(), shipment.getId());
+		Logger.info("{} successfully froze shipment with ID {}.", user.getUsername(), shipment.getId());
 		
 		return redirectLocation;
 	}
@@ -624,7 +624,7 @@ public class ShipmentsController {
 		}
 		
 		shipmentsRepository.save(shipment);
-		Logger.info("{} successsfully unfroze shipment with ID ", user.getUsername(), shipment.getId());
+		Logger.info("{} successsfully unfroze shipment with ID {}.", user.getUsername(), shipment.getId());
 		
 		return "redirect:/frozenshipments";
 	}
@@ -755,12 +755,12 @@ public class ShipmentsController {
       		}
       		
         	shipmentsRepository.save(shipment);
-        	Logger.info("{} successfully saved shipment with ID ", user.getUsername(), shipment.getId());
+        	Logger.info("{} successfully saved shipment with ID {}.", user.getUsername(), shipment.getId());
         	return "redirect:/acceptedshipments";
         }
         else {
         	shipmentsRepository.save(shipment);
-        	Logger.info("{} successfully saved shipment with ID ", user.getUsername(), shipment.getId());
+        	Logger.info("{} successfully saved shipment with ID {}.", user.getUsername(), shipment.getId());
         	return "redirect:/shipments";
         }
     }
@@ -833,7 +833,7 @@ public class ShipmentsController {
 		        
 		        shipment.setUser(getLoggedInUser());
 		        shipmentsRepository.save(shipment);
-		        Logger.info("{} successfully saved shipment with ID ", user.getUsername(), shipment.getId());
+		        Logger.info("{} successfully saved shipment with ID ().", user.getUsername(), shipment.getId());
 			 		
 			 }
 			 

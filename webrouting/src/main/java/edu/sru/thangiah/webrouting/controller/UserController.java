@@ -250,7 +250,7 @@ public class UserController {
         
   		carriersRepository.save(carrier);
         userService.save(userForm);
-        Logger.info("{} successfully added the carrier {}" ,loggedInUser.getUsername(), userForm.getUsername());
+        Logger.info("{} successfully added the carrier {}." ,loggedInUser.getUsername(), userForm.getUsername());
 
         return "redirect:/users";
   	}
@@ -374,7 +374,7 @@ public class UserController {
         }
         user.setEnabled(true);
         userService.save(user);
-        Logger.info("{} successfully updated the user {}", loggedInUser.getUsername(), user.getUsername());
+        Logger.info("{} successfully updated the user {}.", loggedInUser.getUsername(), user.getUsername());
         
         return "redirect:/users";
     }
@@ -420,7 +420,7 @@ public class UserController {
   		User loggedInUser = getLoggedInUser();
   		if (result.hasErrors()) {
   			model.addAttribute("error","Error: Information entered is invalid");
-  			Logger.error("{} Failed to update {}",loggedInUser.getUsername(), user.getUsername());
+  			Logger.error("{} Failed to update {}.",loggedInUser.getUsername(), user.getUsername());
   			return "/update/update-user-details";
 		}
   		if(!updateEmail.equals(user.getEmail())) {
@@ -429,7 +429,7 @@ public class UserController {
   			emailImpl.updateUsersEmail(user.getEmail(), websiteUrl, updateEmail);
   		}
   		userService.save(user);
-  		Logger.info("{} sucessfully updated the user infomation for {}", loggedInUser.getUsername(), user.getUsername());
+  		Logger.info("{} sucessfully updated the user infomation for {}.", loggedInUser.getUsername(), user.getUsername());
   		model.addAttribute("message", "Information Updated! If you changed your email please re-verify your account!");
   		return "/index";
   	}

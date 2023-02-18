@@ -220,7 +220,7 @@ public class MaintenanceOrderController {
   		
   		if(deny == true) {
   			model.addAttribute("error", "Unable to update Maintenance Request. Same Request is currently pending.");
-  			Logger.error("Unable to update Maintenance Request. Same Request is currently pending.");
+  			Logger.error("{} was unable to update Maintenance Request with ID {}. Same Request is currently pending.",loggedInUser.getUsername(), maintenanceOrder.getId());
   			model.addAttribute("maintenanceOrder", getLoggedInUser().getCarrier().getOrders());
   			return "maintenanceorders";
 			 
