@@ -129,6 +129,33 @@ public class AuctionController {
 		
 		return "redirect:/pendingshipments";
 	}
+	
+	/**
+	 * 
+	 */
+	@RequestMapping("/removefromauction/{id}")
+	public String removeFromAuction(@PathVariable("id") long id, Model model, HttpSession session) {
+		Shipments shipment = shipmentsRepository.findById(id)
+			     .orElseThrow(() -> new IllegalArgumentException("Invalid Shipment Id:" + id));
+		User user = getLoggedInUser();
+		String redirectLocation = (String) session.getAttribute("redirectLocation");
+		
+		if (!user.getRole().toString().equals("MASTER") || !user.getRole().toString().equals("SHIPPER")) {
+			System.out.println("User with invalid role " + user.getRole().toString() + " attempted to remove shipment from auction");
+			return redirectLocation;
+		}
+		
+		if(user.getRole().toString().equals("SHIPPER")) {
+			if (shipment.getUser().getId() != user.getId()) {
+				System.out.println("Shipper attempted to remove a shipment that wasn't their own from auction");
+				return redirectLocation;
+			}
+		}
+		
+		model.addAttribute("shipments",shipment);
+		return "/push/removefromauctionconfirm";
+	}
+	
 	/**
 	 * 
 	 */
