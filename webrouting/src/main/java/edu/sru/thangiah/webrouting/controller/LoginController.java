@@ -215,7 +215,7 @@ public class LoginController {
         
         userForm.setRole(role);
         
-        userForm.setCarrier(carrier);
+        userForm.setCarrier(carrier);  
         
         googleResponse= request.getParameter("g-recaptcha-response");
         if(!captcha.VerifyRecaptcha(googleResponse)) {
