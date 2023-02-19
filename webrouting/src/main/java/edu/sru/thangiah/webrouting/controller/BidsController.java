@@ -103,7 +103,7 @@ public class BidsController {
   	 * Adds a bid to the database. Checks if there are errors in the form. <br>
   	 * Adds the date, time, and logged in user to the bid. <br>
   	 * If there are no errors, the bid is saved in the bidsRepository. and the user is redirect to /bids <br>
-  	 * If there are errors, the user is redirected to the /add/add-technician page.
+  	 * If there are errors, the user is redirected to the /add/add-bid/"Shipment ID" page.
   	 * @param bid Holds information for the new bid
   	 * @param result Checks entered data to ensure it is valid
   	 * @param model Used to add data to the model
@@ -113,7 +113,8 @@ public class BidsController {
   	public String addBid(@Validated Bids bid, BindingResult result, Model model) {
 		userValidator.addition(bid, result);
   		if (result.hasErrors()) {
-  			return "/add/add-bid";
+  			return "redirect:/add-bid/" + bid.getShipment().getId();
+
 		}
   		
   		DateTimeFormatter date = DateTimeFormatter.ofPattern("yyyy-MM-dd");

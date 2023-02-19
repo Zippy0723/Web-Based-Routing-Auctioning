@@ -309,14 +309,15 @@ public class UserValidator implements Validator {
     
     	else if(o instanceof Bids) {
     		Bids bid = (Bids) o;
+    		pattern = Pattern.compile("\\D?");
     		ValidationUtils.rejectIfEmptyOrWhitespace(errors, "price", "NotEmpty", "You cannot enter an empty bid");
-    		if(bid.getPrice().length() > 16) {
-    			errors.rejectValue("price", "amount.price", "Thats a lot of money!");
-    		}
-    		if(bid.getPrice().length()== 1) {
-    			errors.rejectValue("price", "amount.price", "You are trying to win the bid.");
+    		
+    		matcher = pattern.matcher(bid.getPrice());
+    		if(Integer.parseInt(bid.getPrice()) < 10 || Integer.parseInt(bid.getPrice()) > Integer.MAX_VALUE) {
+    			errors.rejectValue("price", "amount.price", "Error, value out of range. Please try again!");
     		}
     	}
+    		
     	else if(o instanceof Locations) {
     		Locations location = (Locations) o;
     		 pattern = Pattern.compile("(-?[0-9]*[.]{1}[0-9]{7})");
