@@ -454,8 +454,9 @@ public class ShipmentsController {
     public String deleteShipmentConfirmation(@PathVariable("id") long id, Model model, HttpSession session) {
   		Shipments shipment = shipmentsRepository.findById(id)
   		        .orElseThrow(() -> new IllegalArgumentException("Invalid shipment Id:" + id));
-  		
+
   		User user = getLoggedInUser();
+      
         if(!shipment.getBids().isEmpty()) {
         	List<Bids> bids = (List<Bids>) shipment.getBids();
         	for (Bids bid : bids) 
@@ -465,7 +466,13 @@ public class ShipmentsController {
         	Logger.info("{} successfully deleted bids.", user.getUsername());
         	
         }
+
         Logger.info("{} successfully deleted a shipment with ID {}.", user.getUsername(), shipment.getId());
+        if (user.getId() != shipment.getId()) {
+        	NotificationController.addNotification(shipment.getUser(), 
+        			"ALERT: Your shipment with ID " + shipment.getId() + " and client " + shipment.getClient() + " was deleted by " + user.getUsername());
+        }
+
         shipmentsRepository.delete(shipment);
         return "redirect:" + session.getAttribute("redirectLocation"); 
     }
@@ -529,7 +536,7 @@ public class ShipmentsController {
         	System.out.println("Non-Master user attempted to edit a frozen shipment!");
         	Logger.error("Non-Master, {}, attempted to edit a frozen shipment with ID {}.", user.getUsername(), shipment.getId());
         	return "/index"; //TODO: Replace this with a proper message and redirect.
-        }
+        }					//TODO: Add notification to this after master editing is implimented properly
 	    
 	    if (user.getRole().toString().equals("SHIPPER")) {
 	    	return "/update/update-shipments-shipper";
@@ -569,6 +576,7 @@ public class ShipmentsController {
 		String redirectLocation = "redirect:/";
 		Shipments shipment = shipmentsRepository.findById(id)
 	     .orElseThrow(() -> new IllegalArgumentException("Invalid Shipment Id:" + id));
+		User user = getLoggedInUser();
 		
 		User user = getLoggedInUser();
 		
@@ -582,6 +590,9 @@ public class ShipmentsController {
         	redirectLocation = "redirect:/pendingshipments";
         }
 		
+        NotificationController.addNotification(shipment.getUser(), 
+        		"ALERT: Your shipment with ID " + shipment.getId() + " and Client " + shipment.getClient() + " was frozen by " + user.getUsername());
+        
 		shipment.setFullFreightTerms("FROZEN");
 		shipmentsRepository.save(shipment);
 		Logger.info("{} successfully froze shipment with ID {}.", user.getUsername(), shipment.getId());
@@ -614,6 +625,7 @@ public class ShipmentsController {
 	public String unfreezeShipmentConfirmation(@PathVariable("id") long id, Model model) {
 		Shipments shipment = shipmentsRepository.findById(id)
 	     .orElseThrow(() -> new IllegalArgumentException("Invalid Shipment Id:" + id));
+		User user = getLoggedInUser();
 		
 		User user = getLoggedInUser();
 		
@@ -622,6 +634,9 @@ public class ShipmentsController {
 		} else {
 			shipment.setFullFreightTerms("AVAILABLE SHIPMENT");
 		}
+		
+		NotificationController.addNotification(shipment.getUser(), 
+        		"ALERT: Your shipment with ID " + shipment.getId() + " and Client " + shipment.getClient() + " was unfrozen by " + user.getUsername());
 		
 		shipmentsRepository.save(shipment);
 		Logger.info("{} successsfully unfroze shipment with ID {}.", user.getUsername(), shipment.getId());
@@ -817,7 +832,8 @@ public class ShipmentsController {
 		        
 		        shipment.setFreightbillNumber("");
 		        shipment.setPaidAmount("");
-		        shipment.setFullFreightTerms("AVAILABLE SHIPMENT");
+
+		        shipment.setFullFreightTerms("PENDING");
 		        shipment.setCommodityClass(row.getCell(8).toString());
 		        shipment.setCommodityPieces(row.getCell(9).toString());
 		        shipment.setCommodityPaidWeight(row.getCell(10).toString());
@@ -846,7 +862,7 @@ public class ShipmentsController {
 			e.printStackTrace();
 		}
 		
-		return "redirect:/createdshipments";
+		return "redirect:/pendingshipments";
 	}
 	
 	/**

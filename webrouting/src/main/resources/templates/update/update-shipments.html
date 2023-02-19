@@ -194,7 +194,7 @@
                     <span th:if="${#fields.hasErrors('consigneeLongitude')}" th:errors="*{consigneeLongitude}"></span>
                 	<br>                         
                 	<br>
-                	<p sec:authorize="hasAuthority('CARRIER')"><button class="buttons6" type="submit">Update Shipment</button></p>
+                	<p sec:authorize="hasAnyAuthority('CARRIER')"><button class="buttons6" type="submit">Update Shipment</button></p>
               	</div>
                 </form>
 			</div>

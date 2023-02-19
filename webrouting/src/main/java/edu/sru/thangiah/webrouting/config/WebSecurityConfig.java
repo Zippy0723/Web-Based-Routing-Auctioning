@@ -80,7 +80,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 					.antMatchers("/add/add-shipments","/add-shipments","/addshipments",
 							"/deleteshipment/**").hasAnyAuthority("SHIPPER","MASTERLIST")
 					
-					.antMatchers("/editshipment/**","/updateshipment/**").hasAnyAuthority("CARRIER", "SHIPPER")
+					.antMatchers("/editshipment/**","/updateshipment/**").hasAnyAuthority("CARRIER", "SHIPPER", "MASTERLIST")
 					
 					.antMatchers("/update/update-shipments").hasAnyAuthority("CARRIER","MASTERLIST")
 					
@@ -106,6 +106,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 							"/deletevehicletype/**","/editvehicletype/**","/updatevehicletype/**").hasAnyAuthority("CARRIER")
 					
 					.antMatchers("/users","/roles").hasAnyAuthority("ADMIN")
+					
+					.antMatchers("/freezeshipment/**").hasAuthority("MASTERLIST")
 					
 					//.antMatchers("/**").hasAnyAuthority("ADMIN", "CARRIER", "SHIPPER", "MASTERLIST")
 					.antMatchers("/verify","/verified", "/verificationfail","/forgotpasswordform","/forgotpassword", "/resetpassword", "/resetpasswordform").permitAll()

@@ -2,6 +2,7 @@ package edu.sru.thangiah.webrouting.controller;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.mail.MessagingException;
@@ -21,11 +22,13 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import edu.sru.thangiah.webrouting.captcha.Recaptcha;
 import edu.sru.thangiah.webrouting.domain.Carriers;
+import edu.sru.thangiah.webrouting.domain.Notification;
 import edu.sru.thangiah.webrouting.domain.Role;
 import edu.sru.thangiah.webrouting.domain.User;
 import edu.sru.thangiah.webrouting.mailsending.Emailing;
 import edu.sru.thangiah.webrouting.mailsending.MailSending;
 import edu.sru.thangiah.webrouting.repository.CarriersRepository;
+import edu.sru.thangiah.webrouting.repository.NotificationRepository;
 import edu.sru.thangiah.webrouting.services.SecurityService;
 import edu.sru.thangiah.webrouting.services.UserService;
 import edu.sru.thangiah.webrouting.web.UserValidator;
@@ -54,6 +57,8 @@ public class LoginController {
     
     private CarriersRepository carriersRepository;
     
+    private NotificationRepository notificationRepository;
+    
     @Autowired
     private Recaptcha captcha;
     
@@ -71,8 +76,9 @@ public class LoginController {
      * Instantiates carriersRepository
      * @param carriersRepository Used to interact with the carriers in the database
      */
-    public LoginController(CarriersRepository carriersRepository) {
+    public LoginController(CarriersRepository carriersRepository, NotificationRepository notificationRepository) {
     	this.carriersRepository = carriersRepository;
+    	this.notificationRepository = notificationRepository;
     }
     
     /**
@@ -303,6 +309,15 @@ public class LoginController {
      */
     @GetMapping({"/"})
     public String welcome(Model model) {
+		User user = getLoggedInUser();
+		List<Notification> notifications = new ArrayList<>();
+		
+		if(!(user == null)) {
+			notifications = NotificationController.fetchUnreadNotifications(user);
+		}
+		
+		model.addAttribute("notifications",notifications);
+    	
         return "index";
     }
 
