@@ -130,7 +130,7 @@ public class AuctionController {
 		
 		shipment.setFullFreightTerms("AVAILABLE SHIPMENT");
 		shipmentsRepository.save(shipment);
-		Logger.info("{} successfully the shipment with ID {}", user.getUsername(), shipment.getId());
+		Logger.info("{} successfully pushed the shipment with ID {} to auction.", user.getUsername(), shipment.getId());
 		
 		return "redirect:/pendingshipments";
 	}
