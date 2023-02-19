@@ -3,6 +3,8 @@ package edu.sru.thangiah.webrouting.controller;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
@@ -44,6 +46,7 @@ public class LocationsController {
     @Autowired
     private UserValidator userValidator;
 	
+    private static final Logger Logger = LoggerFactory.getLogger(LocationsController.class);
     
 	/**
 	 * Constructor for LocationsController. <br>
@@ -120,12 +123,13 @@ public class LocationsController {
   		
   		if(deny == true) {
   			model.addAttribute("error", "Unable to add Location. Location address or name already exists");
+  			Logger.error("{} was unable to add location {} because the address or name already exists.", user.getUsername(), location.getName());
   			model.addAttribute("locations", user.getCarrier().getLocations());
   			return "locations";
 			 
   		}
-  		
   		locationsRepository.save(location);
+  		Logger.info("{} successfully saved location with ID {}.", user.getUsername(), location.getId());
   		return "redirect:/locations";
   	}
 	
@@ -143,6 +147,7 @@ public class LocationsController {
         User user = getLoggedInUser();
         if (!location.getVehicles().isEmpty()) {
         	model.addAttribute("error", "Unable to delete due to dependency conflict.");
+        	Logger.error("Unable to delete location due to dependecy conflict.");
         	model.addAttribute("locations", user.getCarrier().getLocations());
         	return "locations";
         }
@@ -161,6 +166,8 @@ public class LocationsController {
   		Locations location = locationsRepository.findById(id)
   	          .orElseThrow(() -> new IllegalArgumentException("Invalid location Id:" + id));
   		
+  		User loggedInUser = getLoggedInUser();
+  		Logger.info("{} successfully deleted the location with ID {}.",loggedInUser.getUsername(), location.getId());
   		locationsRepository.delete(location);
   	    return "redirect:/locations";
     }
@@ -237,12 +244,13 @@ public class LocationsController {
   		
   		if(deny == true) {
   			model.addAttribute("error", "Unable to update Location. Location address already exists");
+  			Logger.error("{} attempted to update location. Update failed due to location already existing.", user.getUsername());
   			model.addAttribute("locations", user.getCarrier().getLocations());
   			return "locations";
 			 
   		}
-            
         locationsRepository.save(location);
+        Logger.info("{} successfully updated location with ID {}.", user.getUsername(), location.getId());
         return "redirect:/locations";
     }
 	

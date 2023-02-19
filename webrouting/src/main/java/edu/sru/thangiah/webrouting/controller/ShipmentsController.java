@@ -13,6 +13,8 @@ import java.util.ArrayList;
 import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
@@ -66,6 +68,8 @@ public class ShipmentsController {
 	
 	@Autowired
 	private UserValidator userValidator;
+	
+	private static final Logger Logger = LoggerFactory.getLogger(ShipmentsController.class);
 
 	/**
 	 * Constructor for ShipmentsController. <br>
@@ -364,6 +368,8 @@ public class ShipmentsController {
   			return "/add/add-shipments";
 		}
   		
+  		User user = getLoggedInUser();
+  		
   		boolean deny = false;
   		List<Shipments> shipmentsList = (List<Shipments>) shipmentsRepository.findAll();
   		
@@ -381,8 +387,8 @@ public class ShipmentsController {
   		
   		if (deny == true) {
   			model.addAttribute("error", "Error adding a shipment: Shipment already exists!");
+  			Logger.error("{} attempted to add a shipment that already exists.", user.getUsername());
   			List<Shipments> shipmentsWOCarrier = new ArrayList<>();
-  			User user = getLoggedInUser();
   			if (user.getRole().toString().equals("SHIPPER")) {
   				List<Shipments> shipments = user.getShipments();
   				if (shipments.size() != 0 && shipments != null) {
@@ -408,6 +414,7 @@ public class ShipmentsController {
   		shipment.setFullFreightTerms("PENDING");
   		shipment.setUser(getLoggedInUser());
   		shipmentsRepository.save(shipment);
+  		Logger.info("{} has successfully added a new shipment with ID {}.",user.getUsername(), shipment.getId());
   		return "redirect:/pendingshipments";
   	}
 
@@ -426,7 +433,8 @@ public class ShipmentsController {
         String redirectLocation = (String) session.getAttribute("redirectLocation");
         
         if (shipment.getFullFreightTerms().toString().equals("FROZEN") && !user.getRole().toString().equals("MASTERLIST")) {
-        	System.out.println("Non-Master user attempted to delete a frozen shipment!"); //TODO: Replace this with a proper error message(what user would see this error?)
+        	System.out.println("Non-Master user attempted to delete a frozen shipment!");
+        	Logger.error("Non-Master user, {}, attempted to delete a frozen shipment with ID {}.", user.getUsername(), shipment.getId());//TODO: Replace this with a proper error message(what user would see this error?)
         	return redirectLocation; 
         }
         
@@ -446,23 +454,25 @@ public class ShipmentsController {
     public String deleteShipmentConfirmation(@PathVariable("id") long id, Model model, HttpSession session) {
   		Shipments shipment = shipmentsRepository.findById(id)
   		        .orElseThrow(() -> new IllegalArgumentException("Invalid shipment Id:" + id));
-  		User user = getLoggedInUser();        
-  		
+
+  		User user = getLoggedInUser();
+      
         if(!shipment.getBids().isEmpty()) {
         	List<Bids> bids = (List<Bids>) shipment.getBids();
         	for (Bids bid : bids) 
         	{ 
         		bidsRepository.delete(bid); 
         	}
-        	
+        	Logger.info("{} successfully deleted bids.", user.getUsername());
         	
         }
-        
+
+        Logger.info("{} successfully deleted a shipment with ID {}.", user.getUsername(), shipment.getId());
         if (user.getId() != shipment.getId()) {
         	NotificationController.addNotification(shipment.getUser(), 
         			"ALERT: Your shipment with ID " + shipment.getId() + " and client " + shipment.getClient() + " was deleted by " + user.getUsername());
         }
-        
+
         shipmentsRepository.delete(shipment);
         return "redirect:" + session.getAttribute("redirectLocation"); 
     }
@@ -524,6 +534,7 @@ public class ShipmentsController {
 	    
         if (shipment.getFullFreightTerms().toString().equals("FROZEN") && !user.getRole().toString().equals("MASTERLIST")) {
         	System.out.println("Non-Master user attempted to edit a frozen shipment!");
+        	Logger.error("Non-Master, {}, attempted to edit a frozen shipment with ID {}.", user.getUsername(), shipment.getId());
         	return "/index"; //TODO: Replace this with a proper message and redirect.
         }					//TODO: Add notification to this after master editing is implimented properly
 	    
@@ -567,6 +578,8 @@ public class ShipmentsController {
 	     .orElseThrow(() -> new IllegalArgumentException("Invalid Shipment Id:" + id));
 		User user = getLoggedInUser();
 		
+		User user = getLoggedInUser();
+		
         if (shipment.getFullFreightTerms().equals("AVAILABLE SHIPMENT")) {
         	redirectLocation = "redirect:/createdshipments";
         }
@@ -582,6 +595,7 @@ public class ShipmentsController {
         
 		shipment.setFullFreightTerms("FROZEN");
 		shipmentsRepository.save(shipment);
+		Logger.info("{} successfully froze shipment with ID {}.", user.getUsername(), shipment.getId());
 		
 		return redirectLocation;
 	}
@@ -613,6 +627,8 @@ public class ShipmentsController {
 	     .orElseThrow(() -> new IllegalArgumentException("Invalid Shipment Id:" + id));
 		User user = getLoggedInUser();
 		
+		User user = getLoggedInUser();
+		
 		if (shipment.getBids().isEmpty()) {
 			shipment.setFullFreightTerms("PENDING");
 		} else {
@@ -623,6 +639,7 @@ public class ShipmentsController {
         		"ALERT: Your shipment with ID " + shipment.getId() + " and Client " + shipment.getClient() + " was unfrozen by " + user.getUsername());
 		
 		shipmentsRepository.save(shipment);
+		Logger.info("{} successsfully unfroze shipment with ID {}.", user.getUsername(), shipment.getId());
 		
 		return "redirect:/frozenshipments";
 	}
@@ -641,6 +658,7 @@ public class ShipmentsController {
     public String updateShipment(@PathVariable("id") long id, @Validated Shipments shipment, 
       BindingResult result, Model model) {
 		userValidator.addition(shipment, result);
+		User user = getLoggedInUser();
         if (result.hasErrors()) {
         	if (getLoggedInUser().getRole().toString().equals("SHIPPER")) {
         		shipment.setId(id);
@@ -674,8 +692,8 @@ public class ShipmentsController {
       		
       		if (deny == true) {
       			model.addAttribute("error", "Error adding a shipment: Shipment already exists!");
+      			Logger.error("{} failed to update shipment with ID {} because it already exists.", user.getUsername(), shipment.getId());
       			List<Shipments> shipmentsWOCarrier = new ArrayList<>();
-      			User user = getLoggedInUser();
       			if (user.getRole().toString().equals("SHIPPER")) {
       				List<Shipments> shipments = user.getShipments();
       				if (shipments.size() != 0 && shipments != null) {
@@ -702,6 +720,7 @@ public class ShipmentsController {
       		shipment.setFullFreightTerms("AVAILABLE SHIPMENT");
       		shipment.setUser(getLoggedInUser());
       		shipmentsRepository.save(shipment);
+      		Logger.info("{} successfully saved shipment with ID {}", user.getUsername(), shipment.getId());
       		
       		return "redirect:/createdshipments";
         }
@@ -731,6 +750,7 @@ public class ShipmentsController {
       		
       		if (deny == true) {
       			model.addAttribute("error", "Error adding a shipment: Shipment already exists!");
+      			Logger.error("{} failed to update shipment with ID {} because it already exists.", user.getUsername(), shipment.getId());
     			
       			List<Shipments> shipments = getLoggedInUser().getCarrier().getShipments();
     			
@@ -748,12 +768,14 @@ public class ShipmentsController {
     			}
       			return "acceptedshipments";
       		}
-        	
+      		
         	shipmentsRepository.save(shipment);
+        	Logger.info("{} successfully saved shipment with ID {}.", user.getUsername(), shipment.getId());
         	return "redirect:/acceptedshipments";
         }
         else {
         	shipmentsRepository.save(shipment);
+        	Logger.info("{} successfully saved shipment with ID {}.", user.getUsername(), shipment.getId());
         	return "redirect:/shipments";
         }
     }
@@ -779,6 +801,7 @@ public class ShipmentsController {
 	public String LoadFromExcelData(@RequestParam("file") MultipartFile excelData){
 		XSSFWorkbook workbook;
 		try {
+			User user = getLoggedInUser();
 			workbook = new XSSFWorkbook(excelData.getInputStream());
 	
 		
@@ -794,7 +817,8 @@ public class ShipmentsController {
 		        if(row.getCell(0).getStringCellValue().isEmpty() || row.getCell(0)== null ) {
 		        	break;
 		        }
-	
+		        
+		        
 	    		shipment.setClient(row.getCell(0).toString());
 	    		shipment.setCarrier(null);
 	    		shipment.setVehicle(null);
@@ -808,6 +832,7 @@ public class ShipmentsController {
 		        
 		        shipment.setFreightbillNumber("");
 		        shipment.setPaidAmount("");
+
 		        shipment.setFullFreightTerms("PENDING");
 		        shipment.setCommodityClass(row.getCell(8).toString());
 		        shipment.setCommodityPieces(row.getCell(9).toString());
@@ -825,6 +850,7 @@ public class ShipmentsController {
 		        
 		        shipment.setUser(getLoggedInUser());
 		        shipmentsRepository.save(shipment);
+		        Logger.info("{} successfully saved shipment with ID {}.", user.getUsername(), shipment.getId());
 			 		
 			 }
 			 

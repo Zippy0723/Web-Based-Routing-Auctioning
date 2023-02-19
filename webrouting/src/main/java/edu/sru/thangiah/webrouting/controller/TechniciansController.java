@@ -3,6 +3,8 @@ package edu.sru.thangiah.webrouting.controller;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
@@ -37,6 +39,8 @@ public class TechniciansController {
 
     @Autowired
     private SecurityService securityService;
+    
+    private static final Logger Logger = LoggerFactory.getLogger(TechniciansController.class);
 	
 	/**
 	 * Constructor for TechniciansController. <br>
@@ -88,6 +92,7 @@ public class TechniciansController {
   			return "/add/add-technician";
 		}
   		Boolean deny = false;
+  		User loggedInUser = getLoggedInUser();
   		
   		List<Technicians> checkTech = new ArrayList<>();
   		checkTech = (List<Technicians>) techniciansRepository.findAll();
@@ -104,8 +109,8 @@ public class TechniciansController {
   			return "technicians";
 			 
   		}
-  			
   		techniciansRepository.save(technician);
+  		Logger.info("{} successfully saved Technician with ID {}.",loggedInUser.getUsername(), technician.getId());
   		return "redirect:/technicians";
   	}
 	
@@ -121,8 +126,10 @@ public class TechniciansController {
         Technicians technician = techniciansRepository.findById(id)
           .orElseThrow(() -> new IllegalArgumentException("Invalid technicians Id:" + id));
         
+        User loggedInUser = getLoggedInUser();
         if(!technician.getOrders().isEmpty()) {
         	model.addAttribute("error", "Unable to delete due to dependency conflict."); 
+        	Logger.error("{} was unable to delete Technician with ID {} due to a dependecy conflict.", loggedInUser.getUsername(), technician.getId());
         	model.addAttribute("technicians", techniciansRepository.findAll());
         	return "technicians";
         }
@@ -140,7 +147,9 @@ public class TechniciansController {
     public String deleteTechnicianConfirmation(@PathVariable("id") long id, Model model) {
   		Technicians technician = techniciansRepository.findById(id)
   	          .orElseThrow(() -> new IllegalArgumentException("Invalid technicians Id:" + id));
-  		        
+  		
+  		User user = getLoggedInUser();
+  		Logger.info("{} successfully deleted Technician with ID {}.", user.getUsername(), technician.getId());
   		techniciansRepository.delete(technician);
         return "redirect:/technicians";
     }
@@ -212,7 +221,7 @@ public class TechniciansController {
         	technician.setId(id);
             return "/update/update-technician";
         }
-        
+        User user = getLoggedInUser();
         Boolean deny = false;
   		List<Technicians> checkTech = new ArrayList<>();
   		checkTech = (List<Technicians>) techniciansRepository.findAll();
@@ -227,12 +236,14 @@ public class TechniciansController {
   		
   		if(deny == true) {
   			model.addAttribute("error", "Unable to update Technician. Contact already in use");
+  			Logger.info("{} failed to update Technician with ID {}", user.getUsername(), technician.getId());
   			model.addAttribute("technicians", techniciansRepository.findAll());
   			return "technicians";
 			 
   		}
-            
+  		
         techniciansRepository.save(technician);
+        Logger.info("{} successfully updated Technician with ID {}", user.getUsername(), technician.getId());
         return "redirect:/technicians";
     }
 	

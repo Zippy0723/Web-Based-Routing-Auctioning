@@ -29,7 +29,7 @@ public class SecurityServiceImpl implements SecurityService {
     @Autowired
     private UserDetailsService userDetailsService;
 
-    private static final Logger logger = LoggerFactory.getLogger(SecurityServiceImpl.class);
+    private static final Logger Logger = LoggerFactory.getLogger(SecurityServiceImpl.class);
 
     /**
      * Checks if user is authenticated using the Spring Authentication
@@ -58,11 +58,12 @@ public class SecurityServiceImpl implements SecurityService {
         authenticationManager.authenticate(usernamePasswordAuthenticationToken);
         
         System.out.println(isAuthenticated());
+        Logger.info("{} attempted to login.", username);
 
         if (usernamePasswordAuthenticationToken.isAuthenticated()) {
             SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
             System.out.println("Auto Login Successful");
-            logger.debug(String.format("Auto login %s successfully!", username));
+            Logger.info("{} logged in successfully.", username);
         }
     }
     
