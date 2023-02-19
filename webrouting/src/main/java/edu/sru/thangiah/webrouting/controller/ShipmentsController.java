@@ -578,8 +578,6 @@ public class ShipmentsController {
 	     .orElseThrow(() -> new IllegalArgumentException("Invalid Shipment Id:" + id));
 		User user = getLoggedInUser();
 		
-		User user = getLoggedInUser();
-		
         if (shipment.getFullFreightTerms().equals("AVAILABLE SHIPMENT")) {
         	redirectLocation = "redirect:/createdshipments";
         }
@@ -625,8 +623,6 @@ public class ShipmentsController {
 	public String unfreezeShipmentConfirmation(@PathVariable("id") long id, Model model) {
 		Shipments shipment = shipmentsRepository.findById(id)
 	     .orElseThrow(() -> new IllegalArgumentException("Invalid Shipment Id:" + id));
-		User user = getLoggedInUser();
-		
 		User user = getLoggedInUser();
 		
 		if (shipment.getBids().isEmpty()) {
