@@ -12,7 +12,11 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.access.AccessDeniedHandler;
+import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
+import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
 
+import edu.sru.thangiah.webrouting.web.CustomLoginSuccessHandler;
+import edu.sru.thangiah.webrouting.web.CustomLogoutSuccessHandler;
 import edu.sru.thangiah.webrouting.web.UserValidator;
 
 /**
@@ -111,15 +115,25 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 .formLogin()
 					.loginPage("/login")
+					.successHandler(loginSuccessHandler())
 					.permitAll()
 					//.failureUrl("/login?error=true")
 					.and()
                 .logout()
+                	.logoutSuccessHandler(logoutSuccessHandler())
 					.permitAll()
 					.and()
                 .exceptionHandling().accessDeniedHandler(accessDeniedHandler);
 
     }
+	
+	@Bean LogoutSuccessHandler logoutSuccessHandler() {
+		return new CustomLogoutSuccessHandler();
+	}
+	
+	@Bean AuthenticationSuccessHandler loginSuccessHandler() {
+		return new CustomLoginSuccessHandler();
+	}
 	
 	/**
 	 * Used to get the authentication manager class

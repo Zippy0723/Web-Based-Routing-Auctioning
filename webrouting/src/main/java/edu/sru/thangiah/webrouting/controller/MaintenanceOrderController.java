@@ -227,7 +227,7 @@ public class MaintenanceOrderController {
   		}
   		
         maintenanceOrderRepository.save(maintenanceOrder);
-        Logger.info("{} succesffully saved the maintenance order with ID {}",loggedInUser.getUsername(), maintenanceOrder.getId());
+        Logger.info("{} successfully updated the maintenance order with ID {}",loggedInUser.getUsername(), maintenanceOrder.getId());
         return "redirect:/maintenanceorders";
     }
 	/**

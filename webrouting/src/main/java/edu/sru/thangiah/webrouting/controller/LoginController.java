@@ -130,7 +130,6 @@ public class LoginController {
         }
         
         if (bindingResult.hasErrors()) {
-        	Logger.error("Failed to create Shipper.");
             return "registrationshipper";
         }
         websiteUrl = MailSending.getUrl(mailRequest);
@@ -224,7 +223,6 @@ public class LoginController {
         
 
         if (bindingResult.hasErrors()) {
-        	Logger.error("Failed to create a carrier.");
             return "registrationcarrier";
         }
         
@@ -288,12 +286,11 @@ public class LoginController {
             return "redirect:/";
         }
         if (error != null) {
-            model.addAttribute("error", "Your username or password is invalid.");
         	Logger.error("Login attempt failed.");
+            model.addAttribute("error", "Your username or password is invalid.");
         }
         if (logout != null) { 
             model.addAttribute("message", "You have been logged out successfully.");
-            Logger.info("Logged out.");
         }
         return "login";
     }

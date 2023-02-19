@@ -802,7 +802,8 @@ public class ShipmentsController {
 		        if(row.getCell(0).getStringCellValue().isEmpty() || row.getCell(0)== null ) {
 		        	break;
 		        }
-	
+		        
+		        
 	    		shipment.setClient(row.getCell(0).toString());
 	    		shipment.setCarrier(null);
 	    		shipment.setVehicle(null);
@@ -817,23 +818,23 @@ public class ShipmentsController {
 		        shipment.setFreightbillNumber("");
 		        shipment.setPaidAmount("");
 		        shipment.setFullFreightTerms("AVAILABLE SHIPMENT");
-		        shipment.setCommodityClass(row.getCell(8).getRawValue());
-		        shipment.setCommodityPieces(row.getCell(9).getRawValue());
-		        shipment.setCommodityPaidWeight(row.getCell(10).getRawValue());
+		        shipment.setCommodityClass(row.getCell(8).toString());
+		        shipment.setCommodityPieces(row.getCell(9).toString());
+		        shipment.setCommodityPaidWeight(row.getCell(10).toString());
 		        shipment.setShipperCity(row.getCell(11).toString());
 		        shipment.setShipperState(row.getCell(12).toString());
-		        shipment.setShipperZip(row.getCell(13).getRawValue());
-		        shipment.setShipperLatitude(row.getCell(14).getRawValue());
-		        shipment.setShipperLongitude(row.getCell(15).getRawValue());
+		        shipment.setShipperZip(row.getCell(13).toString());
+		        shipment.setShipperLatitude(row.getCell(14).toString());
+		        shipment.setShipperLongitude(row.getCell(15).toString());
 		        shipment.setConsigneeCity(row.getCell(16).toString());
 		        shipment.setConsigneeState(row.getCell(17).toString());
-		        shipment.setConsigneeZip(row.getCell(18).getRawValue());
-		        shipment.setConsigneeLatitude(row.getCell(19).getRawValue());
-		        shipment.setConsigneeLongitude(row.getCell(20).getRawValue());
+		        shipment.setConsigneeZip(row.getCell(18).toString());
+		        shipment.setConsigneeLatitude(row.getCell(19).toString());
+		        shipment.setConsigneeLongitude(row.getCell(20).toString());
 		        
 		        shipment.setUser(getLoggedInUser());
 		        shipmentsRepository.save(shipment);
-		        Logger.info("{} successfully saved shipment with ID ().", user.getUsername(), shipment.getId());
+		        Logger.info("{} successfully saved shipment with ID {}.", user.getUsername(), shipment.getId());
 			 		
 			 }
 			 
