@@ -1,7 +1,7 @@
 <!doctype html>
 <html>
 	<head>
-		<title>Carrier Users</title>
+		<title>Add Shipper User</title>
 
 		<link rel="stylesheet" type="text/css" href="/styles/reset.css" />
         <link rel="stylesheet" type="text/css" href="/styles/main.css" />
@@ -29,13 +29,7 @@
                             <a class="navlink" id="nav_home" href="/">Home</a>
                         </li>
                         <li sec:authorize="hasAuthority('ADMIN')" class="navitem">
-                            <a class="navlink" id="nav_users" href="/users">Users</a>
-                        </li>
-                        <li sec:authorize="hasAuthority('ADMIN')" class="navitem">
-                            <a class="selected" id="nav_users" href="/CarrierAdministrationPage">Carrier Page</a>
-                        </li>
-                        <li sec:authorize="hasAuthority('ADMIN')" class="navitem">
-                            <a class="navlink" id="nav_users" href="/ShipperAdministrationPage">Shipper Page</a>
+                            <a class="selected" id="nav_users" href="/users">Users</a>
                         </li>
                         <li sec:authorize="hasAuthority('CARRIER')" class="navitem">
                             <a class="navlink" id="nav_contacts" href="/contacts">Contacts</a>
@@ -62,13 +56,16 @@
                             <a class="navlink" id="nav_carriers" href="/carriers">Carriers</a>
                         </li>
                         <li sec:authorize="hasAuthority('MASTERLIST')" class="navitem">
-                            <a class="navlink" id="nav_shipments_home_masterlist" href="/shipmentshomemaster">Shipments</a>
+                          <a class="navlink" id="nav_shipments_home_masterlist" href="/shipmentshomemaster">Shipments</a>
                         </li>
                         <li sec:authorize="hasAuthority('SHIPPER')" class="navitem">
                             <a class="navlink" id="nav_shipments_home_shipper" href="/shipmentshomeshipper">Shipments</a>
                         </li>
                         <li sec:authorize="hasAuthority('CARRIER')" class="navitem">
                             <a class="navlink" id="nav_shipments_home_carrier" href="/shipmentshomecarrier">Shipments</a>
+                        </li>
+                        <li sec:authorize="hasAnyAuthority('CARRIER', 'MASTERLIST', 'SHIPPER')" class="navitem">
+                            <a class="navlink" id="nav_shipments_home_carrier" href="/auctioninghome">Auctioning</a>
                         </li>
                         <li sec:authorize="hasAnyAuthority('CARRIER','MASTERLIST')" class="navitem">
                             <a class="navlink" id="nav_routes" href="/routes">Routes</a>
@@ -87,7 +84,7 @@
                 <button onclick="nav_close()" class="bar-item">...</button>
                 <ul class="navbar">
                     <li class="navitem">
-                        <a class="selected" id="nav_home" href="/">Home</a>
+                        <a class="navlink" id="nav_home" href="/">Home</a>
                     </li>
                     <br>
                     <li sec:authorize="!isAuthenticated()" class="navitem">
@@ -95,7 +92,7 @@
                     </li>
                     <br>
                     <li sec:authorize="!isAuthenticated()" class="navitem">
-                        <a class="navlink" id="nav_registration" href="/registrationhome">Register</a>
+                        <a class="selected" id="nav_registration" href="/registrationhome">Register</a>
                     </li>
                 </ul>
             </div>
@@ -119,53 +116,46 @@
   					<button class=""  id="hamburger" style="display:none" onclick="nav_open()">☰</button>
 				</span>
 				<br><br>
-				<div th:switch="${userstable}">
-                    <h2 th:case="null">No users yet!</h2>
-                    <div th:case="*">
-                        <h2>Carrier User Page</h2>
-                        <br>
-                        <div th:if="${resetMsg != null}">
-						<p><h2>[[${resetMsg}]]</h2></p>
-						</div>
-                        <br>
-                        <span type="hidden" th:text="${error}" class="loginError"></span>
-                        <br>
-                        <table class="dataTable">
-                            <thead>
-                                <tr>
-                                    <th>ID</th>
-                                    <th>UserName</th>
-                                    <th>Email</th>
-                                    <th>Role</th>
-                                    <th>Carrier</th>
-                                    <th>Enabled</th>
-                                    <th>Auctioning Enabled</th>
-                                    <th>Edit</th>
-                                    <th>Delete</th>
-                                    
-                                </tr>
-                            </thead>
-                            <tbody>
-                            
-                                <tr th:each="user : ${userstable}">                           
-                                    <td th:text="${user.id}"></td>
-                                    <td th:text="${user.username}"></td>
-                                    <td th:text="${user.email}"></td>
-                                    <td th:text="${user.role}"></td>
-                                    <td th:text="${user.carrier}"></td>
-                                    <td th:text= "${user.enabled}"></td>
-                                    <td th:text="${user.enabled}"></td>
-                                    <td><a th:href="@{/edituser/{id}(id=${user.id})}">Edit</a></td>
-                                    <td><a th:href="@{/deleteuser/{id}(id=${user.id})}">Delete</a></td>                         
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>      
-                    <p><button class="buttons6" onclick="window.location.href='./carriersignup';">Add New User</button></p>
-                    <p><button class="buttons6" onclick="window.location.href='./roles';">View Available Roles</button></p>
-                </div>
-            </div>
-        </div>
+                <h2>Add Shipper User Account</h2>
+                <br>
+                <form action="/ShipperAdministrationPage">
+                    <input type="submit" value="Cancel Adding User" />
+                </form>
+                <br>
+				<hr>
+                <form action="#" th:action="@{/addshipperuser}" th:object="${user}" method="post">
+				<div class="form-group">
+	            	<br>
+	            	<h2> Enter Account Info</h2>
+	            	<br><br>
+	                <label for="username">UserName: </label>
+	                <input type="text" th:field="*{username}" id="username" placeholder="UserName" required>
+	                <span th:if="${#fields.hasErrors('username')}" th:errors="*{username}"></span>
+	             	<br>
+	                <label for="password">Password: </label>
+	                <input type="password" th:field="*{password}" id="password" placeholder="Password" required>
+	                <span th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></span>
+	            	<br>
+	                <label for="email">Email: </label>
+	                <input type="text" th:field="*{email}" id="email" placeholder="Email" required>
+	                <span th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></span>
+	             	<br>
+	                <label for="role">Role: </label>
+	                <select th:field="*{role}" required>
+	                    <th:block th:each="role : ${roles}">
+	                        <option th:text="${role.name}" th:value="${role.id}"></option>
+	                    </th:block>
+	                </select>  
+	
+	   				<br>            
+	    			<br>
+	    			<button class = "buttons6" onclick="window.location.href='./ShipperAdministrationPage';">Back</button>
+	                <button type="submit" class = "buttons6">Add Shipper User</button>
+	                <br><br>
+	            </div> 
+                </form>
+			</div>
+		</div>
 
 		<div class="footer">
             Copyright &copy; Slippery Rock University 2022
@@ -177,11 +167,11 @@
 			document.getElementById("mySidebar").style.display = "block";
 			document.getElementById("hamburger").style.display = "none";
 		}
-		
+	
 		function nav_close() {
-		  	document.getElementById("content").style.marginLeft = "0%";
-		  	document.getElementById("mySidebar").style.display = "none";
-		  	document.getElementById("hamburger").style.display = "block";
+	  		document.getElementById("content").style.marginLeft = "0%";
+	  		document.getElementById("mySidebar").style.display = "none";
+	  		document.getElementById("hamburger").style.display = "block";
 		}
 		</script>
 	</body>
