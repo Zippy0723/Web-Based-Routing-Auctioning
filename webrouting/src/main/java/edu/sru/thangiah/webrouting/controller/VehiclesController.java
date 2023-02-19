@@ -187,7 +187,6 @@ public class VehiclesController {
   					"ALERT: Your vehicle with plate number " + vehicle.getPlateNumber() + " was deleted by " + user.getUsername());
   		}
   		
-  		User user = getLoggedInUser();
   		Logger.info("{} successfully deleted the vehicle with ID {}." ,user.getUsername() ,vehicle.getId());
   		vehiclesRepository.delete(vehicle);
         return "redirect:/vehicles";
