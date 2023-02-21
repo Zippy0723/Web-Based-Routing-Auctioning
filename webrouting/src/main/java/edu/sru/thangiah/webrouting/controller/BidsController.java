@@ -6,6 +6,8 @@ import java.util.List;
 
 import javax.servlet.http.HttpSession;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -54,7 +56,7 @@ public class BidsController {
 	@Autowired
 	private UserValidator userValidator;
 	
-	
+	private static final Logger Logger = LoggerFactory.getLogger(BidsController.class);
 	/**
 	 * Constructor for BidsController. <br>
 	 * Instantiates the bidsRepository <br>
@@ -86,9 +88,11 @@ public class BidsController {
 				.orElseThrow(() -> new IllegalArgumentException("Invalid shipment Id: " + id));
         model.addAttribute("shipments", shipment);
         model.addAttribute("carriers", carriersRepository.findAll());
+        User loggedInUser = getLoggedInUser();
         
         if (!shipment.getFullFreightTerms().toString().equals("AVAILABLE SHIPMENT")) {
         	 System.out.println("Error: User attempeted to place a bid on a shipment that was not in auction");
+        	 Logger.error("{} attempted to place a bid on a shipment that was not in auction", loggedInUser.getUsername());
         	 return (String) session.getAttribute("redirectLocation");
         }
         
@@ -136,16 +140,17 @@ public class BidsController {
   		
   		if (deny == true) {
   			model.addAttribute("error", "Error: Bid with the same carrier and price has already been placed.");
+  			Logger.error("{} failed to add bid due to a bid with the same carrier and price already being place.", user.getUsername());
   			model.addAttribute("shipments", bid.getShipment());
   	        model.addAttribute("carriers", carriersRepository.findAll());
   	        return "/add/add-bid";
   		}
-  		
-  		NotificationController.addNotification(bid.getShipment().getUser(), 
-  				"ALERT: A new bid as been added on your shipment with ID " + bid.getShipment().getId() + " and Client " + bid.getShipment().getClient());
-  		
+  		  	
   		bidsRepository.save(bid);
-  		
+  		Logger.info("{} successfully created a new bid with ID {}", user.getUsername(), bid.getId());
+       NotificationController.addNotification(bid.getShipment().getUser(), 
+  				"ALERT: A new bid as been added on your shipment with ID " + bid.getShipment().getId() + " and Client " + bid.getShipment().getClient());
+          
   		return "redirect:/createdshipments";
   	}
 	
@@ -164,7 +169,8 @@ public class BidsController {
         String redirectLocation = (String) session.getAttribute("redirectLocation");
         
 		 if (bid.getShipment().getFullFreightTerms().toString().equals("FROZEN") && !user.getRole().toString().equals("MASTERLIST")) {
-			 System.out.println("User attempeted to delete a bid on a frozen shipment"); //Replace this with a proper error message 
+			 System.out.println("User attempeted to delete a bid on a frozen shipment");
+			 Logger.error("{} attempted to delete a bid on a frozen shipment", user.getUsername());//Replace this with a proper error message 
 			 return "redirect:" + redirectLocation;
 		 }
         
@@ -196,6 +202,8 @@ public class BidsController {
   					"ALERT: Your bid with ID " + bid.getId() + " placed on shipment with ID " + bid.getShipment().getId() + " was deleted by " + user.getUsername());
   		}
         
+  		User loggedInUser = getLoggedInUser();
+  		Logger.info("{} successfully deleted Bid with ID {}.", loggedInUser.getUsername(), bid.getId());
         bidsRepository.delete(bid);
         return "redirect:" + session.getAttribute("redirectLocation");
     }
@@ -234,6 +242,7 @@ public class BidsController {
   		
   		if (!user.getRole().toString().equals("MASTERLIST")) {
   			System.out.println("Error: Non master tried to reset shipment!");
+  			Logger.error("Non master, {}, tried to reset shipment!", user.getUsername());
   			return "redirect:" + session.getAttribute("redirectLocation");
   		}
   		
@@ -264,7 +273,8 @@ public class BidsController {
 		User bidUser;
 		
 		 if (bid.getShipment().getFullFreightTerms().toString().equals("FROZEN") && !user.getRole().toString().equals("MASTERLIST")) {
-			 System.out.println("User attempeted to accept a bid on a frozen shipment"); //Replace this with a proper error message and redirect, for now it just dumps shippers out of the accept menu
+			 System.out.println("User attempted to accept a bid on a frozen shipment");
+			 Logger.error("{} attempted to accept a bid on a frozen shipment.", user.getUsername());//Replace this with a proper error message and redirect, for now it just dumps shippers out of the accept menu
 			 return "redirect:/createdshipments";
 		 }
 		
@@ -281,6 +291,7 @@ public class BidsController {
 				"ALERT: You have won the auction on shipment with ID " + shipment.getId() + " with a final bid value of " + bid.getPrice());
 		
 		shipmentsRepository.save(shipment);
+		Logger.info("{} successfully created a new bid with ID {}", user.getUsername(), bid.getId());
 		
 		return "redirect:/shipmentshomeshipper";
 	}
@@ -301,7 +312,8 @@ public class BidsController {
 		 User bidUser;
 		 
 		 if (bid.getShipment().getFullFreightTerms().toString().equals("FROZEN") && !user.getRole().toString().equals("MASTERLIST")) {
-			 System.out.println("User attempeted to edit a bid on a frozen shipment"); //Replace this with a proper error message and redirect, for now it just dumps carriers out of the edit menu
+			 System.out.println("User attempeted to edit a bid on a frozen shipment");
+			 Logger.error("{} attempted to edit a bid with ID {}, on a frozen shipment.", user.getUsername(), bid.getId());//Replace this with a proper error message and redirect, for now it just dumps carriers out of the edit menu
 			 return "redirect:/createdshipments";
 		 }
 		 
@@ -376,19 +388,21 @@ public class BidsController {
   		
   		if (deny == true) {
   			model.addAttribute("error", "Error: Bid with the same carrier and price has already been placed.");
+  			Logger.error("Bid with the carrier {} and price {} has already been placed.",bid.getCarrier().getId(),bid.getPrice());
   			model.addAttribute("shipments", bid.getShipment());
   	        model.addAttribute("carriers", carriersRepository.findAll());
   	        return "/update/update-bid";
   		}
-  		
+
   		User carrierUser = CarriersController.getUserFromCarrier(carrier);
   		
   		if(user.getId() != carrierUser.getId()) {
   			NotificationController.addNotification(carrierUser, 
   					"ALERT: Your bid with ID " + bid.getId() + " was editing by user " + user.getUsername());
   		}
-            
+
         bidsRepository.save(bid);
+        Logger.info("{} successfully updated the bid with ID {}", user.getUsername(), bid.getId());
         return "redirect:/createdshipments";
     }
 	
