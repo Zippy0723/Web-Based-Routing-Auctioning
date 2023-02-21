@@ -1,5 +1,5 @@
 <!doctype html>
-<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+<html>
 	<head>
 		<title>Enterprise Routing System</title>
 
@@ -26,10 +26,10 @@
                 <div id="menu">
                     <ul class="navbar">
                         <li class="navitem">
-                            <a class="selected" id="nav_home" href="/">Home</a>
+                            <a class="navlink" id="nav_home" href="/">Home</a>
                         </li>
                         <li sec:authorize="hasAuthority('ADMIN')" class="navitem">
-                            <a class="navlink" id="nav_users" href="/users">Users</a>
+                            <a class="selected" id="nav_users" href="/users">Users</a>
                         </li>
                         <li sec:authorize="hasAuthority('ADMIN')" class="navitem">
                             <a class="navlink" id="nav_users" href="/CarrierAdministrationPage">Carrier Page</a>
@@ -90,7 +90,7 @@
                 <button onclick="nav_close()" class="bar-item">...</button>
                 <ul class="navbar">
                     <li class="navitem">
-                        <a class="selected" id="nav_home" href="/">Home</a>
+                        <a class="navlink" id="nav_home" href="/">Home</a>
                     </li>
                     <br>
                     <li sec:authorize="!isAuthenticated()" class="navitem">
@@ -98,41 +98,36 @@
                     </li>
                     <br>
                     <li sec:authorize="!isAuthenticated()" class="navitem">
-                        <a class="navlink" id="nav_registration" href="/registrationhome">Register</a>
+                        <a class="selected" id="nav_registration" href="/registrationhome">Register</a>
                     </li>
                 </ul>
             </div>
-
-            <div id="sub_heading">
-                <div id="loginDiv">
-                    <div sec:authorize="isAuthenticated()" style="float: right;">
-                        <form id="logoutForm" method="POST" th:action="@{/logout}">
-                            <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
-                        </form>
-                        Hello <span sec:authentication="name"></span> | <a onclick="document.forms['logoutForm'].submit()">Logout</a>
-                    </div>
-                    <div sec:authorize="!isAuthenticated()" style="float: right;">
-                        <a id="loginLink" class="ui-button" href="/login">Login</a>
-                    </div>
-                </div>
-            </div>
+			
 			<div id="content">
 				<span class="nav-expand">
   					<button class=""  id="hamburger" style="display:none" onclick="nav_open()">☰</button>
 				</span>
 				<br><br>
-                <div id="loginDiv" style="text-align: center" th:each="user : ${users}">
-                    <h1>Are you sure you want to delete user: </h1>
+                <div style="text-align: center;">
+                    <h1>Choose what type of account you want to create</h1>
                     <br>
                     <br>
-                    <h2 th:text="${user}"></h2>
+                    <form action="/CarrierAdministrationPage">
+                        <input type="submit" value="Cancel Adding User" />
+                    </form>
                     <br>
                     <br>
-                    <h2><a th:href="|/deleteuserconfirmation/${user.id}|">Yes</a></h2>
                     <br>
-                    <h2><a href="/users">No</a></h2>
+                    <br>
+                    <h3><a href="/addcarrieruser">Carrier</a></h3>
+                    <h4>Add a user with the carrier role</h4>
+                    <br>
+                    <br>
+                    <br>
+                    <br>
+                    <a href="/CarrierAdministrationPage">Carrier Users Page</a>
                 </div>
-            </div>
+			</div>
 		</div>
 
 		<div class="footer">

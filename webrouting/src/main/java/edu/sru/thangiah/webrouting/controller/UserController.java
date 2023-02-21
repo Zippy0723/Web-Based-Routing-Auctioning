@@ -6,6 +6,8 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
@@ -65,6 +67,8 @@ public class UserController {
 	private User dtoUser;
     
 	private String websiteUrl;
+	
+	private static final Logger Logger = LoggerFactory.getLogger(UserController.class);
 	/**
 	 * Constructor for UserController. <br>
 	 * Instantiates the userRepository <br>
@@ -144,6 +148,15 @@ public class UserController {
    public String shownAddHomePage(Model model) {
 	   return "/add/add-user-home";
    }
+   @RequestMapping({"/shippersignup"})
+   public String shownShipperAddHomePage(Model model) {
+	   return "/add/add-user-shipper-home";
+   }
+   
+   @RequestMapping({"/carriersignup"})
+   public String shownCarrierAddHomePage(Model model) {
+	   return "/add/add-user-carrier-home";
+   }
    
    /**
     * Redirects user to the /add/add-user-carrier page. <br>
@@ -169,10 +182,26 @@ public class UserController {
   	@RequestMapping({"/addotheruser"})
       public String showOtherPage(User user, Model model) {
   		List<Role> roles = (List<Role>) roleRepository.findAll();
+  		roles.remove(1);
   		roles.remove(2);
   		model.addAttribute("roles", roles);
   		return "/add/add-user";
     }
+  	
+  	@RequestMapping({"/addshipperuser"})
+    public String showShipperPage(User user, Model model) {
+		List<Role> roles = (List<Role>) roleRepository.findAll();
+		List<Role> result = new ArrayList<Role>();
+
+		for(Role r : roles){
+		  if(r.getName().equals("SHIPPER")){
+		    result.add(r);
+		  }
+		}
+
+		model.addAttribute("roles",result);
+		return "/add/add-user-shipper";
+  }
   	
   	/**
   	 * Adds a user with the CARRIER role to the database. <br> 
@@ -196,6 +225,8 @@ public class UserController {
   		List<Carriers> carrierList = (List<Carriers>) carriersRepository.findAll();
     	
     	Carriers carrier = new Carriers();
+    	
+    	User loggedInUser = getLoggedInUser();
     	
     	Long carrierId;
 
@@ -238,13 +269,15 @@ public class UserController {
   		
   		if(deny == true) {
   			model.addAttribute("error", "Unable to add Carrier. Carrier name or SCAC code already exists");
+  			Logger.error("{} was unable to add {} as a carrier because that Carrier name or SCAC code already exists.",loggedInUser.getUsername(), userForm.getUsername());
   			return "/add/add-user-carrier";	 
   		}
         
   		carriersRepository.save(carrier);
         userService.save(userForm);
+        Logger.info("{} successfully added the carrier {}." ,loggedInUser.getUsername(), userForm.getUsername());
 
-        return "redirect:/users";
+        return "redirect:/CarrierAdministrationPage";
   	}
       
   	/**
@@ -259,13 +292,25 @@ public class UserController {
   	@RequestMapping({"/adduser"})
   	public String addUser(@Validated User user, BindingResult result, Model model) {
   		userValidator.validate(user, result);
+  		User loggedInUser = getLoggedInUser();
   		if (result.hasErrors()) {
   			return "/add/add-user";
 		}
-  		
   		userService.save(user);
+  		Logger.info("{} successfully saved the user {}." ,loggedInUser.getUsername(), user.getUsername());
   		return "redirect:/users";
   	}
+  	
+  	@RequestMapping({"/addusershipper"})
+  	public String addUserShipper(@Validated User user, BindingResult result, Model model) {
+  		userValidator.validate(user, result);
+  		if (result.hasErrors()) {
+  			return "/add/add-user-shipper";
+		}
+  		
+  		userService.save(user);
+  		return "redirect:/ShipperAdministrationPage";
+  	} 
   	
   	/**
   	 * Finds a user using the id parameter and if found, redirects user to confirmation page
@@ -279,8 +324,10 @@ public class UserController {
         User user = userRepository.findById(id)
           .orElseThrow(() -> new IllegalArgumentException("Invalid user Id:" + id));
         
+        User loggedInUser = getLoggedInUser();
         if (!user.getShipments().isEmpty()) {
-        	model.addAttribute("error", "Unable to delete due to dependency conflict."); 
+        	model.addAttribute("error", "Unable to delete due to dependency conflict.");
+        	Logger.error("{} was unable to delete user with ID {} due to depedency conflict.", loggedInUser.getUsername(), user.getId());
         	model.addAttribute("userstable", userRepository.findAll());
         	return "users";
         	
@@ -300,12 +347,21 @@ public class UserController {
         User user = userRepository.findById(id)
           .orElseThrow(() -> new IllegalArgumentException("Invalid user Id:" + id));
         
+        User loggedInUser = getLoggedInUser();
         userRepository.delete(user);
+      if(user.getRole().toString().equals("SHIPPER")){
+    	  return "redirect:/ShipperAdministrationPage";
+      }
       
+      if(user.getRole().toString().equals("CARRIER")){
+    	  return "redirect:/CarrierAdministrationPage";
+      }
+      
+      else {
+        Logger.info("{} successfully deleted the user {}.", loggedInUser.getUsername(), user.getUsername());
         return "redirect:/users";
+      }
     }
-  	
-  	
   	
   	/**
   	 * Finds a user using the id parameter and if found, adds the details of that user
@@ -343,6 +399,7 @@ public class UserController {
     public String updateUser(@PathVariable("id") long id, @Validated User user, 
       BindingResult result, Model model, boolean nocarrier, boolean resetPassword, RedirectAttributes redirectAttr, String updateEmail) {
   		updateEmail = user.getUpdateEmail();
+  		User loggedInUser = getLoggedInUser();
   		userValidator.validateEmail(user, result);
         if (result.hasErrors()) {
         	user.setId(id);
@@ -361,7 +418,21 @@ public class UserController {
         }
         user.setEnabled(true);
         userService.save(user);
+
+        if(user.getRole().toString().equals("SHIPPER")){
+      	  return "redirect:/ShipperAdministrationPage";
+        }
+        
+        if(user.getRole().toString().equals("CARRIER")){
+      	  return "redirect:/CarrierAdministrationPage";
+        }
+        
+        else {
+
+        Logger.info("{} successfully updated the user {}.", loggedInUser.getUsername(), user.getUsername());
+
         return "redirect:/users";
+        }
     }
   	
   	/**
@@ -402,8 +473,10 @@ public class UserController {
   		user.setId(getLoggedInUser().getId());
   		user.setEnabled(true);
   		userValidator.validateUpdate(user, result);
+  		User loggedInUser = getLoggedInUser();
   		if (result.hasErrors()) {
   			model.addAttribute("error","Error: Information entered is invalid");
+  			Logger.error("{} Failed to update {}.",loggedInUser.getUsername(), user.getUsername());
   			return "/update/update-user-details";
 		}
   		if(!updateEmail.equals(user.getEmail())) {
@@ -412,8 +485,8 @@ public class UserController {
   			emailImpl.updateUsersEmail(user.getEmail(), websiteUrl, updateEmail);
   		}
   		userService.save(user);
+  		Logger.info("{} sucessfully updated the user infomation for {}.", loggedInUser.getUsername(), user.getUsername());
   		model.addAttribute("message", "Information Updated! If you changed your email please re-verify your account!");
-  		
   		return "/index";
   	}
   	/**

@@ -31,6 +31,12 @@
                         <li sec:authorize="hasAuthority('ADMIN')" class="navitem">
                             <a class="selected" id="nav_users" href="/users">Users</a>
                         </li>
+                        <li sec:authorize="hasAuthority('ADMIN')" class="navitem">
+                            <a class="navlink" id="nav_users" href="/CarrierAdministrationPage">Carrier Page</a>
+                        </li>
+                        <li sec:authorize="hasAuthority('ADMIN')" class="navitem">
+                            <a class="navlink" id="nav_users" href="/ShipperAdministrationPage">Shipper Page</a>
+                        </li>
                         <li sec:authorize="hasAuthority('CARRIER')" class="navitem">
                             <a class="navlink" id="nav_contacts" href="/contacts">Contacts</a>
                         </li>
@@ -105,7 +111,7 @@
                 <h2 >Add Carrier Account</h2>
                 <br>
                 <br>
-                <form action="/users">
+                <form action="/CarrierAdministrationPage">
                     <input type="submit" value="Cancel Adding User" />
                 </form>
                 <form method="POST" th:object="${userForm}" th:action="@{/addusercarrier}">
@@ -114,7 +120,7 @@
                         <span type="hidden" th:text="${message}" class="loginMessage"></span>
                         <span type="hidden" th:text="${error}" class="loginError"></span>
                         <br>
-                        <h2> Enter User Info</h2>
+                        <h2> Enter Carrier User Info</h2>
                         <br>
                         <input type="text" th:field="*{username}" id="username" placeholder="Username"  autofocus="true" required>
                         <p th:if="${#fields.hasErrors('username')}" th:errorclass="username" th:errors="*{username}"></p>
@@ -162,7 +168,7 @@
                         
 						<button class="buttons4" type="submit">Submit</button>
 						<br>
-						<button class="buttons6" onclick="window.location.href='./users';">Users Page</button>
+						<button class="buttons6" onclick="window.location.href='./CarrierAdministrationPage';">Carrier Users Page</button>
 					</div>
                 </form>
 			</div>

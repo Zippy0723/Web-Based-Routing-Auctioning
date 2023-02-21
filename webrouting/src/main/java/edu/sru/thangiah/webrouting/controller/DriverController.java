@@ -3,6 +3,8 @@ package edu.sru.thangiah.webrouting.controller;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
@@ -37,6 +39,9 @@ public class DriverController {
 
     @Autowired
     private SecurityService securityService;
+    
+    private static final Logger Logger = LoggerFactory.getLogger(DriverController.class);
+    
 	/**
 	 * Constructor for DriverController. <br>
 	 * Instantiates the driverRepository
@@ -112,12 +117,13 @@ public class DriverController {
   		
   		if(deny == true) {
   			model.addAttribute("error", "Unable to add Driver. Lisence number already exists or Contact already in use");
+  			Logger.error("{} was unable to add a driver because lisence number already exists or contact already in use for driver with ID {}.", user.getUsername(), drivers.getId());
   			model.addAttribute("drivers", user.getCarrier().getDrivers());
   			return "drivers";
-			 
   		}
   		
   		driverRepository.save(drivers);
+  		Logger.info("{} sucessfully added new driver with ID {}.", user.getUsername(), drivers.getId());
   		return "redirect:/drivers";
   	}
 	
@@ -146,6 +152,8 @@ public class DriverController {
   		Driver drivers = driverRepository.findById(id)
   	          .orElseThrow(() -> new IllegalArgumentException("Invalid driver Id:" + id));
   		
+  		User user = getLoggedInUser();
+  		Logger.info("{} successfully deleted driver with ID {}.", user.getUsername(), drivers.getId());
   		driverRepository.delete(drivers);
   	    return "redirect:/drivers";
     }
@@ -222,12 +230,13 @@ public class DriverController {
   		
   		if(deny == true) {
   			model.addAttribute("error", "Unable to update Driver. Lisence number already exists or Contact already in use");
+  			Logger.error("{} attempted to update driver with ID {}.Update failed due to lisence number already exists or contact already in use.", user.getUsername(), driver.getId());
   			model.addAttribute("drivers", user.getCarrier().getDrivers());
   			return "drivers";
 			 
   		}
-            
         driverRepository.save(driver);
+        Logger.info("{} successfully updated driver with ID {}", user.getUsername(), driver.getId());
         return "redirect:/drivers";
     }
 	/**

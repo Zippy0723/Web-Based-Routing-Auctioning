@@ -3,6 +3,8 @@ package edu.sru.thangiah.webrouting.controller;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
@@ -44,6 +46,8 @@ public class VehiclesController {
     
     @Autowired
     private UserValidator userValidator;
+    
+    private static final Logger Logger = LoggerFactory.getLogger(VehiclesController.class);
 	
 	/**
 	 * Constructor for VehiclesController. <br>
@@ -132,11 +136,13 @@ public class VehiclesController {
   		
   		if(deny == true) {
   			model.addAttribute("error", "Unable to add Vehicle. Vehicle VIN or Plate Number already exists");
+  			Logger.error("{} was unable to add Vehicle because VIN or Plate Number already exists.", user.getUsername());
   			model.addAttribute("vehicles", user.getCarrier().getVehicles());
   			return "vehicles";
   		}
   		
   		vehiclesRepository.save(vehicles);
+  		Logger.error("{} successfully added vehicle with ID {}.", user.getUsername(), vehicles.getId());
   		return "redirect:/vehicles";
   	}
 	
@@ -152,8 +158,10 @@ public class VehiclesController {
         Vehicles vehicle = vehiclesRepository.findById(id)
           .orElseThrow(() -> new IllegalArgumentException("Invalid vehicle Id:" + id));
         
+        User user = getLoggedInUser();
         if (!vehicle.getOrders().isEmpty() || !vehicle.getShipments().isEmpty() || !vehicle.getDrivers().isEmpty()){
         	model.addAttribute("error", "Unable to delete due to dependency conflict.");
+        	Logger.error("{} was unable to delete due to dependency conflict.", user.getUsername());
         	model.addAttribute("vehicles", vehiclesRepository.findAll());
        	 	return "vehicles";
         }
@@ -179,6 +187,7 @@ public class VehiclesController {
   					"ALERT: Your vehicle with plate number " + vehicle.getPlateNumber() + " was deleted by " + user.getUsername());
   		}
   		
+  		Logger.info("{} successfully deleted the vehicle with ID {}." ,user.getUsername() ,vehicle.getId());
   		vehiclesRepository.delete(vehicle);
         return "redirect:/vehicles";
     }
@@ -275,6 +284,7 @@ public class VehiclesController {
     public String updateVehicle(@PathVariable("id") long id, @Validated Vehicles vehicle, 
       BindingResult result, Model model) {
 		userValidator.addition(vehicle, result);
+		User loggedInUser = getLoggedInUser();
         if (result.hasErrors()) {
         	vehicle.setId(id);
             return "/update/update-vehicle";
@@ -297,10 +307,11 @@ public class VehiclesController {
   		if(deny == true) {
   			model.addAttribute("error", "Unable to update Vehicle. Vehicle VIN or Plate Number already exists");
   			model.addAttribute("vehicles", user.getCarrier().getVehicles());
+  			Logger.error("{} was unable to update Vehicle because VIN or Plate Number already exists.", user.getUsername());
   			return "vehicles";
   		}
-  		
   		vehiclesRepository.save(vehicle);
+  		Logger.info("{} successfully updated vehicle with ID {}.",loggedInUser.getUsername(),vehicle.getId());
   		return "redirect:/vehicles";
             
        

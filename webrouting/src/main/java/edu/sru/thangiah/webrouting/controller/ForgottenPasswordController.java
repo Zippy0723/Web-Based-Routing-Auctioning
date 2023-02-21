@@ -5,7 +5,10 @@ import java.io.UnsupportedEncodingException;
 import javax.mail.MessagingException;
 import javax.servlet.http.HttpServletRequest;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -19,6 +22,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import edu.sru.thangiah.webrouting.domain.User;
 import edu.sru.thangiah.webrouting.mailsending.Emailing;
 import edu.sru.thangiah.webrouting.mailsending.MailSending;
+import edu.sru.thangiah.webrouting.services.SecurityService;
 import edu.sru.thangiah.webrouting.services.UserService;
 import edu.sru.thangiah.webrouting.web.UserValidator;
 
@@ -52,7 +56,12 @@ public class ForgottenPasswordController {
 	@Autowired
 	private UserValidator userValidator;
 	
+    @Autowired
+    private SecurityService securityService;
+	
 	private String redirect;
+	
+	private static final Logger Logger = LoggerFactory.getLogger(ForgottenPasswordController.class);
 	/**
 	 * Used to handle the request and shows the user the form
 	 * @return forgotpasswordform - the form the user will fill out to recieve a link
@@ -77,7 +86,9 @@ public class ForgottenPasswordController {
 		userService.assignOtpCode(email);
 		webUrl = MailSending.getUrl(mailRequest);
 	    emailImpl.forgotPassword(email, webUrl);
+	    User user = getLoggedInUser();
 		model.addAttribute("message", "Your reset password link has been sent to your email");
+		Logger.info("Password reset link has been to {}", user.getUsername());
 	return "forgotpasswordform";
 	}
 	
@@ -117,6 +128,7 @@ public class ForgottenPasswordController {
 		otpCode = request.getParameter("otpCode");
 		password = request.getParameter("password");
 		user = userService.findByOtp(otpCode);
+		User loggedInUser = getLoggedInUser();
 		if(user == null) {
 			model.addAttribute("message", "Invalid OTP Code");
 			} 
@@ -124,14 +136,29 @@ public class ForgottenPasswordController {
 				redirectAttr.addFlashAttribute("org.springframework.validation.BindingResult.userForm", bindingResult);
 				redirectAttr.addFlashAttribute("userForm", userForm);
 				redirect = request.getHeader("Referer");
+				Logger.error("{} failed to reset password.", user.getUsername());
 				return "redirect:" + redirect;
 	       }
 		else { 
 			userService.resetPassword(user,password);
 			model.addAttribute("message", "Your password has been changed");
+			Logger.info("Password has been changed for {}", loggedInUser.getUsername());
 		}
 		return "resetpasswordform";
 	}
 	
+	public User getLoggedInUser() {
+    	if (securityService.isAuthenticated()) {
+    		org.springframework.security.core.userdetails.User user = 
+    				(org.springframework.security.core.userdetails.User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+    		
+    		User user2 = userService.findByUsername(user.getUsername());
+    		
+    		return user2;
+    	}
+    	else {
+    		return null;
+    	}
+    }
 	
 }
