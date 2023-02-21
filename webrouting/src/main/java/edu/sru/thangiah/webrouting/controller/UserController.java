@@ -148,6 +148,15 @@ public class UserController {
    public String shownAddHomePage(Model model) {
 	   return "/add/add-user-home";
    }
+   @RequestMapping({"/shippersignup"})
+   public String shownShipperAddHomePage(Model model) {
+	   return "/add/add-user-shipper-home";
+   }
+   
+   @RequestMapping({"/carriersignup"})
+   public String shownCarrierAddHomePage(Model model) {
+	   return "/add/add-user-carrier-home";
+   }
    
    /**
     * Redirects user to the /add/add-user-carrier page. <br>
@@ -173,10 +182,26 @@ public class UserController {
   	@RequestMapping({"/addotheruser"})
       public String showOtherPage(User user, Model model) {
   		List<Role> roles = (List<Role>) roleRepository.findAll();
+  		roles.remove(1);
   		roles.remove(2);
   		model.addAttribute("roles", roles);
   		return "/add/add-user";
     }
+  	
+  	@RequestMapping({"/addshipperuser"})
+    public String showShipperPage(User user, Model model) {
+		List<Role> roles = (List<Role>) roleRepository.findAll();
+		List<Role> result = new ArrayList<Role>();
+
+		for(Role r : roles){
+		  if(r.getName().equals("SHIPPER")){
+		    result.add(r);
+		  }
+		}
+
+		model.addAttribute("roles",result);
+		return "/add/add-user-shipper";
+  }
   	
   	/**
   	 * Adds a user with the CARRIER role to the database. <br> 
@@ -252,7 +277,7 @@ public class UserController {
         userService.save(userForm);
         Logger.info("{} successfully added the carrier {}." ,loggedInUser.getUsername(), userForm.getUsername());
 
-        return "redirect:/users";
+        return "redirect:/CarrierAdministrationPage";
   	}
       
   	/**
@@ -275,6 +300,17 @@ public class UserController {
   		Logger.info("{} successfully saved the user {}." ,loggedInUser.getUsername(), user.getUsername());
   		return "redirect:/users";
   	}
+  	
+  	@RequestMapping({"/addusershipper"})
+  	public String addUserShipper(@Validated User user, BindingResult result, Model model) {
+  		userValidator.validate(user, result);
+  		if (result.hasErrors()) {
+  			return "/add/add-user-shipper";
+		}
+  		
+  		userService.save(user);
+  		return "redirect:/ShipperAdministrationPage";
+  	} 
   	
   	/**
   	 * Finds a user using the id parameter and if found, redirects user to confirmation page
@@ -313,11 +349,19 @@ public class UserController {
         
         User loggedInUser = getLoggedInUser();
         userRepository.delete(user);
+      if(user.getRole().toString().equals("SHIPPER")){
+    	  return "redirect:/ShipperAdministrationPage";
+      }
+      
+      if(user.getRole().toString().equals("CARRIER")){
+    	  return "redirect:/CarrierAdministrationPage";
+      }
+      
+      else {
         Logger.info("{} successfully deleted the user {}.", loggedInUser.getUsername(), user.getUsername());
         return "redirect:/users";
+      }
     }
-  	
-  	
   	
   	/**
   	 * Finds a user using the id parameter and if found, adds the details of that user
@@ -374,9 +418,21 @@ public class UserController {
         }
         user.setEnabled(true);
         userService.save(user);
-        Logger.info("{} successfully updated the user {}.", loggedInUser.getUsername(), user.getUsername());
+
+        if(user.getRole().toString().equals("SHIPPER")){
+      	  return "redirect:/ShipperAdministrationPage";
+        }
         
+        if(user.getRole().toString().equals("CARRIER")){
+      	  return "redirect:/CarrierAdministrationPage";
+        }
+        
+        else {
+
+        Logger.info("{} successfully updated the user {}.", loggedInUser.getUsername(), user.getUsername());
+
         return "redirect:/users";
+        }
     }
   	
   	/**
