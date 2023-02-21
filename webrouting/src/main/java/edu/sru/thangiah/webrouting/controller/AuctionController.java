@@ -86,7 +86,7 @@ public class AuctionController {
 		return "/force/forceendauctionconfirm";
 	}
 	/**
-	 * 
+	 * Finds a given shipment by ID, then 
 	 */
 	@RequestMapping("/pushshipment/{id}")
 	public String pushShipment(@PathVariable("id") long id, Model model, HttpSession session) {
@@ -154,6 +154,29 @@ public class AuctionController {
 		
 		model.addAttribute("shipments",shipment);
 		return "/push/removefromauctionconfirm";
+	}
+	
+	
+	@RequestMapping("/removefromauctionconfirmation/{id}")
+	public String removeFromAuctionConfirmation(@PathVariable("id") long id, Model model) {
+		Shipments shipment = shipmentsRepository.findById(id)
+	     .orElseThrow(() -> new IllegalArgumentException("Invalid Shipment Id:" + id));
+		User user = getLoggedInUser();		
+		
+		if (user.getRole().toString().equals("CARRIER") || (user.getRole().toString().equals("SHIPPER") && !user.getShipments().contains(shipment))) {
+			System.out.println("Error: Invalid permissions for pushing shipment");
+			return "redirect:/pendingshipments";
+		}
+		
+		if(shipment.getUser().getId() != user.getId()) {
+			NotificationController.addNotification(shipment.getUser(), 
+					"ALERT: Your shipment with ID " + shipment.getId() + " and Client " + shipment.getClient() + " was pushed to auction by " + user.getUsername());
+		}
+		
+		shipment.setFullFreightTerms("AVAILABLE SHIPMENT");
+		shipmentsRepository.save(shipment);
+		
+		return "redirect:/pendingshipments";
 	}
 	
 	/**

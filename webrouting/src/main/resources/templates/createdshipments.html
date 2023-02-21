@@ -1,5 +1,5 @@
 <!doctype html>
-<html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
 	<head>
 		<title>Shipments</title>
 
@@ -10,7 +10,17 @@
         <link rel="stylesheet" type="text/css" href="/styles/tables.css">
 
         <link rel="stylesheet" type="text/css" href="/styles/smoothness/jquery-ui-1.10.2.css" />
+ 		<script>
+            const confirmAction = () => {
+                const response = confirm("Remove from Auction");
 
+                if (response) {
+                    alert("Ok was pressed");
+                } else {
+                    alert("Cancel was pressed");
+                }
+            }
+        </script>
 	</head>
 	<body>
 		<div id="wrapper">
@@ -93,14 +103,7 @@
                         <li class="navitem">
                             <a class="selected" id="nav_home" href="/">Home</a>
                         </li>
-                        <br>
-                        <li sec:authorize="!isAuthenticated()" class="navitem">
-                            <a class="navlink" id="nav_login" href="login">Login</a>
-                        </li>
-                        <br>
-                        <li sec:authorize="!isAuthenticated()" class="navitem">
-                            <a class="navlink" id="nav_registration" href="/registrationhome">Register</a>
-                        </li>
+                       
                     </ul>
                 </div>
             </div>
@@ -149,13 +152,19 @@
                                     <th>Consignee State</th>
                                     <th>Consignee Zip</th>
                                     <th>View Bids</th>
+                                  
                                     <th sec:authorize="hasAuthority('CARRIER')">Add Bid</th>
                                     <th sec:authorize="hasAnyAuthority('SHIPPER','MASTERLIST')">Edit</th>
                                     <th sec:authorize="hasAnyAuthority('SHIPPER','MASTERLIST')">Delete</th>
                                     <th sec:authorize="hasAuthority('MASTERLIST')">Freeze</th>
                                     <th sec:authorize="hasAuthority('MASTERLIST')">Reset Bids</th>
                                     <th sec:authorize="hasAuthority('MASTERLIST')">Force End Auction</th>
-                                </tr>
+                                    <th sec:authorize="hasAuthority('MASTERLIST')">Force End Auction</th>
+                                    <th sec:authorize="hasAnyAuthority('SHIPPER','MASTERLIST')">Remove From Auction</th>
+                                    
+                              
+									
+								</tr>
                             </thead>
                             <tbody>
                                 <tr th:each="shipment : ${shipments}">
@@ -180,6 +189,8 @@
                                     <td sec:authorize="hasAuthority('MASTERLIST')"><a th:href="@{/freezeshipment/{id}(id=${shipment.id})}">Freeze</a></td>
                                     <td sec:authorize="hasAuthority('MASTERLIST')"><a th:href="@{/resetshipmentbids/{id}(id=${shipment.id})}">Reset Bids</a></td>
                                     <td sec:authorize="hasAuthority('MASTERLIST')"><a th:href="@{/forceendauction/{id}(id=${shipment.id})}">Force End Auction</a></td>
+                           			<td sec:authorize="hasAnyAuthority('SHIPPER','MASTERLIST')"><a th:href="@{/removefromauction/{id}(id=${shipment.id})}"><button onclick="confirmAction()">Remove from Auction</button> </a></td>
+                           	
                                     
                                 </tr>
                             </tbody>
