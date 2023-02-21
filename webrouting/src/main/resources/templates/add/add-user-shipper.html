@@ -31,6 +31,12 @@
                         <li sec:authorize="hasAuthority('ADMIN')" class="navitem">
                             <a class="selected" id="nav_users" href="/users">Users</a>
                         </li>
+                        <li sec:authorize="hasAuthority('ADMIN')" class="navitem">
+                            <a class="navlink" id="nav_users" href="/CarrierAdministrationPage">Carrier Page</a>
+                        </li>
+                        <li sec:authorize="hasAuthority('ADMIN')" class="navitem">
+                            <a class="navlink" id="nav_users" href="/ShipperAdministrationPage">Shipper Page</a>
+                        </li>
                         <li sec:authorize="hasAuthority('CARRIER')" class="navitem">
                             <a class="navlink" id="nav_contacts" href="/contacts">Contacts</a>
                         </li>
@@ -123,7 +129,7 @@
                 </form>
                 <br>
 				<hr>
-                <form action="#" th:action="@{/addshipperuser}" th:object="${user}" method="post">
+                <form action="#" th:action="@{/addusershipper}" th:object="${user}" method="post">
 				<div class="form-group">
 	            	<br>
 	            	<h2> Enter Account Info</h2>
@@ -149,8 +155,10 @@
 	
 	   				<br>            
 	    			<br>
-	    			<button class = "buttons6" onclick="window.location.href='./ShipperAdministrationPage';">Back</button>
-	                <button type="submit" class = "buttons6">Add Shipper User</button>
+	    			<!-- <input type="submit" value="Submit" />  -->
+	                <button class="buttons4" type="submit">Submit</button>
+					<br>
+	                <button class = "buttons6" onclick="window.location.href='./ShipperAdministrationPage';">Back</button>
 	                <br><br>
 	            </div> 
                 </form>

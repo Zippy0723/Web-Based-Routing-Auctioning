@@ -292,7 +292,7 @@ public class UserController {
   		return "redirect:/users";
   	}
   	
-  	@RequestMapping({"/addShipperuser"})
+  	@RequestMapping({"/addusershipper"})
   	public String addUserShipper(@Validated User user, BindingResult result, Model model) {
   		userValidator.validate(user, result);
   		if (result.hasErrors()) {
@@ -301,7 +301,7 @@ public class UserController {
   		
   		userService.save(user);
   		return "redirect:/ShipperAdministrationPage";
-  	}
+  	} 
   	
   	/**
   	 * Finds a user using the id parameter and if found, redirects user to confirmation page
@@ -338,10 +338,18 @@ public class UserController {
         
         userRepository.delete(user);
       
+      if(user.getRole().toString().equals("SHIPPER")){
+    	  return "redirect:/ShipperAdministrationPage";
+      }
+      
+      if(user.getRole().toString().equals("CARRIER")){
+    	  return "redirect:/CarrierAdministrationPage";
+      }
+      
+      else {
         return "redirect:/users";
+      }
     }
-  	
-  	
   	
   	/**
   	 * Finds a user using the id parameter and if found, adds the details of that user
@@ -397,7 +405,17 @@ public class UserController {
         }
         user.setEnabled(true);
         userService.save(user);
+        if(user.getRole().toString().equals("SHIPPER")){
+      	  return "redirect:/ShipperAdministrationPage";
+        }
+        
+        if(user.getRole().toString().equals("CARRIER")){
+      	  return "redirect:/CarrierAdministrationPage";
+        }
+        
+        else {
         return "redirect:/users";
+        }
     }
   	
   	/**
