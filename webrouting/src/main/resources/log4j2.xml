@@ -2,14 +2,14 @@
 <Configuration>
 	<Appenders>
 		<Console name="Console" target="SYSTEM_OUT">
-			<PatternLayout pattern="%d{yyyy-MMM-dd HH:mm:ss} %t %-5Level %-50c{1.} - %msg %n"	/>
+			<PatternLayout pattern="%d{yyyy-MMM-dd HH:mm:ss} %t %-5p %-50c{1.} - %msg %n"	/>
 		</Console>
 			<RollingFile
       name="rollingFile"
       fileName="WebroutingApplication.log"
       filePattern="WebroutingApplication.%i.log.gz"
       ignoreExceptions="false">
-      <PatternLayout pattern= "%d{yyyy-MMM-dd HH:mm:ss} %t %-5Level %-50c{1.} - %msg %n"/>
+      <PatternLayout pattern= "%d{yyyy-MMM-dd HH:mm:ss} %t %-5p %-50c{1.} - %msg %n"/>
       <Policies>
           <SizeBasedTriggeringPolicy size="1MB" />
       </Policies>
