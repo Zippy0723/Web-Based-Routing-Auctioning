@@ -1,7 +1,7 @@
 <!doctype html>
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
 	<head>
-		<title>Enterprise Routing System</title>
+		<title>Shipments</title>
 
 		<link rel="stylesheet" type="text/css" href="/styles/reset.css" />
         <link rel="stylesheet" type="text/css" href="/styles/main.css" />
@@ -22,7 +22,7 @@
             	<br><br>
             </div>
             <div sec:authorize="isAuthenticated()" class = "navSideBar" id="mySidebar">
-                  <button onclick="nav_close()" class="bar-item">...</button>
+                <button onclick="nav_close()" class="bar-item">...</button>
                 <div id="menu">
                     <ul class="navbar">
                         <li class="navitem">
@@ -62,7 +62,7 @@
                             <a class="navlink" id="nav_carriers" href="/carriers">Carriers</a>
                         </li>
                         <li sec:authorize="hasAuthority('MASTERLIST')" class="navitem">
-                            <a class="navlink" id="nav_shipments_home_masterlist" href="/shipmentshomemaster">Shipments</a>
+                           <a class="navlink" id="nav_shipments_home_masterlist" href="/shipmentshomemaster">Shipments</a>
                         </li>
                         <li sec:authorize="hasAuthority('SHIPPER')" class="navitem">
                             <a class="navlink" id="nav_shipments_home_shipper" href="/shipmentshomeshipper">Shipments</a>
@@ -76,15 +76,12 @@
                         <li sec:authorize="hasAnyAuthority('CARRIER','MASTERLIST')" class="navitem">
                             <a class="navlink" id="nav_routes" href="/routes">Routes</a>
                         </li>
-                         <li sec:authorize="hasAnyAuthority('SHADOWADMIN')" class="navitem">
+                        <li sec:authorize="hasAnyAuthority('SHADOWADMIN')" class="navitem">
                             <a class="selected" id="nav_log_home" href="/loghome">Logs</a>
                         </li>
 						<br><br><br><br><br>
 						<li sec:authorize="hasAnyAuthority('CARRIER', 'MASTERLIST', 'ADMIN','SHIPPER')">
-							<a class= "navlink" id= "nav_notifications" href="/unreadnotifications" th:inline="text">Notifications ([[${notifications.size()}]])</a>
-						</li>
-						<li sec:authorize="hasAnyAuthority('CARRIER', 'MASTERLIST', 'ADMIN','SHIPPER')">
-							<a class= "navlink" id= "nav_update_user_details" href="/update-user-details">Update User</a>
+							<a class= "navlink" id= "nav_notifications" href="/unreadnotifications" th:inline="text">Notifications ([[${unreadcount}]])</a>
 						</li>
                         <li sec:authorize="isAuthenticated()" class="navitem">
                             <form id="logoutForm" method="POST" th:action="@{/logout}">
@@ -95,8 +92,74 @@
                     </ul>
                 </div>
             </div>
+            <div sec:authorize="!isAuthenticated()" class = "navSideBar" id="mySidebar">
+                <button onclick="nav_close()" class="bar-item">...</button>
+                <ul class="navbar">
+                    <li class="navitem">
+                        <a class="selected" id="nav_home" href="/">Home</a>
+                    </li>
+                    <br>
+                    <li sec:authorize="!isAuthenticated()" class="navitem">
+                        <a class="navlink" id="nav_login" href="login">Login</a>
+                    </li>
+                    <br>
+                    <li sec:authorize="!isAuthenticated()" class="navitem">
+                        <a class="navlink" id="nav_registration" href="/registrationhome">Register</a>
+                    </li>
+                </ul>
+           </div>
+
+            <div id="sub_heading">
+                <div id="loginDiv">
+                    <div sec:authorize="isAuthenticated()" style="float: right;">
+                        <form id="logoutForm" method="POST" th:action="@{/logout}">
+                            <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+                        </form>
+                        Hello <span sec:authentication="name"></span> | <a onclick="document.forms['logoutForm'].submit()">Logout</a>
+                    </div>
+                    <div sec:authorize="!isAuthenticated()" style="float: right;">
+                        <a id="loginLink" class="ui-button" href="/login">Login</a>
+                    </div>
+                </div>
             </div>
-            <div class="footer">
+			
+			<div id="content">
+				<span class="nav-expand">
+  					<button class=""  id="hamburger" style="display:none" onclick="nav_open()">☰</button>
+				</span>
+				<br><br>
+				<div th:switch="${logs.size()}">
+                    <h2 th:case="0">No logs!</h2>
+                    <div th:case="*">
+                        <h2>Logs</h2>
+                        <br>
+                        <span type="hidden" th:text="${error}" class="loginError"></span>
+                        <br>
+                        <table class="dataTable">
+                            <thead>
+                                <tr>
+                                    <th>Date</th>
+                                    <th>Time</th>
+                                    <th>Level</th>
+                                    <th>Message</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr th:each="log : ${logs}">
+                                    <td th:text="${log.date}"></td>
+                                    <td th:text="${log.time}"></td>
+                                    <td th:text="${log.level}"></td>
+                                    <td th:text="${log.msg}"></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div> 
+                    </div>
+				<br></br>
+            </div>
+        </div>
+
+		<div class="footer">
             Copyright &copy; Slippery Rock University 2022
         </div>
 		<script>
@@ -108,9 +171,9 @@
 		}
 		
 		function nav_close() {
-		    document.getElementById("content").style.marginLeft = "0%";
-		    document.getElementById("mySidebar").style.display = "none";
-		    document.getElementById("hamburger").style.display = "block";
+		  	document.getElementById("content").style.marginLeft = "0%";
+		  	document.getElementById("mySidebar").style.display = "none";
+		  	document.getElementById("hamburger").style.display = "block";
 		}
 		</script>
 	</body>

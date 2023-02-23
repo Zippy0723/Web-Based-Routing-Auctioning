@@ -810,6 +810,9 @@ public class ShipmentsController {
 			List<Carriers> carriersList;
 			carriersList = (List<Carriers>) carriersRepository.findAll();
 			
+			List<String> states = Arrays.asList("Alabama", "Alaska", "Arizona", "Arkansas", "California", "Colorado", "Connecticut", "Delaware", "Florida", "Georgia", "Hawaii", "Idaho", "Illinois", "Indiana", "Iowa", "Kansas", "Kentucky", "Louisiana", "Maine", "Maryland", "Massachusetts", "Michigan", "Minnesota", "Mississippi", "Missouri", "Montana", "Nebraska", "Nevada", "New Hampshire", "New Jersey", "New Mexico", "New York", "North Carolina", "North Dakota", "Ohio", "Oklahoma", "Oregon", "Pennsylvania", "Rhode Island", "South Carolina", "South Dakota", "Tennessee", "Texas", "Utah", "Vermont", "Virginia", "Washington", "West Virginia", "Wisconsin", "Wyoming");
+			List<String> stateAbbreviations = Arrays.asList("AL", "AK", "AZ", "AR", "CA", "CO", "CT", "DE", "FL", "GA", "HI", "ID", "IL", "IN", "IA", "KS", "KY", "LA", "ME", "MD", "MA", "MI", "MN", "MS", "MO", "MT", "NE", "NV", "NH", "NJ", "NM", "NY", "NC", "ND", "OH", "OK", "OR", "PA", "RI", "SC", "SD", "TN", "TX", "UT", "VT", "VA", "WA", "WV", "WI", "WY");
+			
 			for(int i=1; i<worksheet.getPhysicalNumberOfRows(); i++) {
 				 
 				Shipments shipment = new Shipments();
@@ -819,9 +822,6 @@ public class ShipmentsController {
 		        	break;
 		        }
 		        
-		        
-		        List<String> states = Arrays.asList("Alabama", "Alaska", "Arizona", "Arkansas", "California", "Colorado", "Connecticut", "Delaware", "Florida", "Georgia", "Hawaii", "Idaho", "Illinois", "Indiana", "Iowa", "Kansas", "Kentucky", "Louisiana", "Maine", "Maryland", "Massachusetts", "Michigan", "Minnesota", "Mississippi", "Missouri", "Montana", "Nebraska", "Nevada", "New Hampshire", "New Jersey", "New Mexico", "New York", "North Carolina", "North Dakota", "Ohio", "Oklahoma", "Oregon", "Pennsylvania", "Rhode Island", "South Carolina", "South Dakota", "Tennessee", "Texas", "Utah", "Vermont", "Virginia", "Washington", "West Virginia", "Wisconsin", "Wyoming");
-				List<String> stateAbbreviations = Arrays.asList("AL", "AK", "AZ", "AR", "CA", "CO", "CT", "DE", "FL", "GA", "HI", "ID", "IL", "IN", "IA", "KS", "KY", "LA", "ME", "MD", "MA", "MI", "MN", "MS", "MO", "MT", "NE", "NV", "NH", "NJ", "NM", "NY", "NC", "ND", "OH", "OK", "OR", "PA", "RI", "SC", "SD", "TN", "TX", "UT", "VT", "VA", "WA", "WV", "WI", "WY");
 		        
 		       
 		        String scac = "1";												//Not Set By Upload
@@ -856,120 +856,118 @@ public class ShipmentsController {
 		    	DateFormat dateFormat1 = new SimpleDateFormat("yyyy-MM-dd");
 		    	String shipDate1 = dateFormat1.format(date1);
 		    	
-		    	
-	    		
 	    		
 	    		if (!(clientName.length() < 64 && clientName.length() > 0) || !(clientName.matches("^[a-zA-Z0-9.]+$"))) {
 	    			workbook.close();
-	    			Logger.info("Client field must be between 0 and 64 characters and alphanumeric.");
+	    			Logger.error("Client field must be between 0 and 64 characters and alphanumeric.");
 	    			continue;
 	    		}
 	    		
 	    		if(!(clientMode.equals("LTL") || clientMode.equals("FTL"))) {
 	    			workbook.close();
-	    			Logger.info("Client Mode must be between 0 and 3 characters and alphanumeric.");
+	    			Logger.error("Client Mode must be between 0 and 3 characters and alphanumeric.");
 	    			continue;
 	    		}
 	    		
 	    		//TODO: This needs to be fixed because of the excel date formating RAWDATA
 	    	//	if(!(shipDate1.length() < 12 && shipDate1.length() > 0 && shipDate1.matches("^\d{4}-\d{2}-\d{2}$")) { //broken
 	    	//		workbook.close();
-	    	//		Logger.info("Date must be between 0 and 12 characters and formated YYYY-MM-DD.");
+	    	//		Logger.error("Date must be between 0 and 12 characters and formated YYYY-MM-DD.");
 	    	//	}
 	    		
 	    		if(!(freightBillNumber.length() < 32 && freightBillNumber.length() > 0) || !(freightBillNumber.matches("^[0-9]*\\.?[0-9]+$"))) {
 	    			workbook.close();
-	    			Logger.info("Freight Bill Number must be between 0 and 32 numbers long.");
+	    			Logger.error("Freight Bill Number must be between 0 and 32 numbers long.");
 	    			continue;
 	    		}
 	    		
 	    		if(!(paidAmount.length() < 16 && paidAmount.length() > 0) || !(paidAmount.matches("^[0-9]*\\.?[0-9]+$"))) {
 	    			workbook.close();
-	    			Logger.info("Paid Amount must be between 0 and 16 numbers long.");
+	    			Logger.error("Paid Amount must be between 0 and 16 numbers long.");
 	    			continue;
 	    		}
 	    		
 	    		if(!(fullFreightTerms.length() < 24 && fullFreightTerms.length() > 0)) {
 	    			workbook.close();
-	    			Logger.info("Full Freight Terms has to be between 0 and 24 characters.");
+	    			Logger.error("Full Freight Terms has to be between 0 and 24 characters.");
 	    			continue;
 	    		}
 	    		
 	    		if(!(commodityClass.length() < 12 && commodityClass.length() > 0) || !(commodityClass.matches("^[a-zA-Z0-9.]+$"))) {
 	    			workbook.close();
-	    			Logger.info("Commodity Class must be between 0 and 12 characters and alphanumeric.");
+	    			Logger.error("Commodity Class must be between 0 and 12 characters and alphanumeric.");
 	    			continue;
 	    		}
 	    		
 	    		if(!(commodityPieces.length() < 64 && commodityPieces.length() > 0) || !(commodityPieces.matches("^[0-9.]+$"))) {
 	    			workbook.close();
-	    			Logger.info("Commodity Pieces must be between 0 and 64 characters long and numeric.");
+	    			Logger.error("Commodity Pieces must be between 0 and 64 characters long and numeric.");
 	    			continue;
 	    		}
 	    		
 	    		if(!(commodityPaidWeight.length() < 16 && commodityPaidWeight.length() > 0) || !(commodityPaidWeight.matches("^[0-9.]*\\.?[0-9.]+$"))) {
 	    			workbook.close();
-	    			Logger.info("Commodity Paid Weight must be between 0 and 16 characters long and numeric.");
+	    			Logger.error("Commodity Paid Weight must be between 0 and 16 characters long and numeric.");
 	    			continue;
 	    		}
 	    		
 	    		if(!(shipperCity.length() < 64 && shipperCity.length() > 0) || !(shipperCity.matches("^[a-zA-Z]+$"))) {
 	    			workbook.close();
-	    			Logger.info("Shipper City must be between 0 and 64 characters and is alphabetic.");
+	    			Logger.error("Shipper City must be between 0 and 64 characters and is alphabetic.");
 	    			continue;
 	    		}
 	    		
 	    		if(!(states.contains(shipperState) || stateAbbreviations.contains(shipperState))) {
 	    			workbook.close();
-	    			Logger.info("Shipper State must be a state or state abbreviation.");
+	    			Logger.error("Shipper State must be a state or state abbreviation.");
 	    			continue;
 	    		}
 	    		
 	    		if(!(shipperZip.length() < 12 && shipperZip.length() > 0) || !(shipperZip.matches("^[0-9.]+$"))){
 	    			workbook.close();
-	    			Logger.info("Shipper Zip must be between 0 and 12 characters and is numeric.");
+	    			Logger.error("Shipper Zip must be between 0 and 12 characters and is numeric.");
 	    			continue;
 	    		}
 	    		
 	    		if(!(shipperLatitude.matches("^(-?[0-8]?\\d(\\.\\d{1,7})?|90(\\.0{1,7})?)$"))) {
 	    			workbook.close();
-	    			Logger.info("Shipper Latitude must be between 90 and -90 up to 7 decimal places.");
+	    			Logger.error("Shipper Latitude must be between 90 and -90 up to 7 decimal places.");
 	    			continue;
 	    		}
 	    		
 	    		if(!(shipperLongitude.matches("^-?(180(\\.0{1,7})?|\\d{1,2}(\\.\\d{1,7})?|1[0-7]\\d(\\.\\d{1,7})?|-180(\\.0{1,7})?|-?\\d{1,2}(\\.\\d{1,7})?)$"))) {
 	    			workbook.close();
-	    			Logger.info("Shipper Longitude must be between 0 and 12 characters.");
+	    			Logger.error("Shipper Longitude must be between 0 and 12 characters.");
 	    			continue;
 	    		}
 	    		
 	    		if(!(consigneeCity.length() < 64 && consigneeCity.length() > 0) || !( consigneeCity.matches("^[a-zA-Z]+$"))) {
 	    			workbook.close();
-	    			Logger.info("Consignee City must be between 0 and 64 characters and is alphabetic.");
+	    			Logger.error("Consignee City must be between 0 and 64 characters and is alphabetic.");
 	    			continue;
 	    		}
 	    		
 	    		if(!(states.contains(consigneeState) || stateAbbreviations.contains(consigneeState))) {
 	    			workbook.close();
-	    			Logger.info("Consignee State must be a state or state abbreviation.");
+	    			Logger.error("Consignee State must be a state or state abbreviation.");
 	    			continue;
 	    		}
 	    		
 	    		if(!(consigneeZip.length() < 12 && consigneeZip.length() > 0) || !(consigneeZip.matches("^[0-9.]+$"))){
 	    			workbook.close();
-	    			Logger.info("Consignee Zip must be between 0 and 12 characters and is alphabetic.");
+	    			Logger.error("Consignee Zip must be between 0 and 12 characters and is alphabetic.");
 	    			continue;
 	    		}
 	    		
 	    		if(!(consigneeLatitude.matches("^(-?[0-8]?\\d(\\.\\d{1,7})?|90(\\.0{1,7})?)$"))) {
 	    			workbook.close();
-	    			Logger.info("Consignee Latitude must be between 90 and -90 up to 7 decimal places.");
+	    			Logger.error("Consignee Latitude must be between 90 and -90 up to 7 decimal places.");
 	    			continue;
 	    		}
 	    		
 	    		if(!(consigneeLongitude.matches("^-?(180(\\.0{1,7})?|\\d{1,2}(\\.\\d{1,7})?|1[0-7]\\d(\\.\\d{1,7})?|-180(\\.0{1,7})?|-?\\d{1,2}(\\.\\d{1,7})?)$"))) {
 	    			workbook.close();
-	    			Logger.info("Consignee Longitude must be between 180 and -180 up to 7 decimal places.");
+	    			Logger.error("Consignee Longitude must be between 180 and -180 up to 7 decimal places.");
 	    			continue;
 	    		}
 	    		
