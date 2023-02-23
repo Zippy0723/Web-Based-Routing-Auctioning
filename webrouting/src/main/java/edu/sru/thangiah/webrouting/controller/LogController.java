@@ -3,7 +3,7 @@ package edu.sru.thangiah.webrouting.controller;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-
+import java.util.Collections;
 import java.util.Scanner;
 
 
@@ -41,6 +41,8 @@ public class LogController {
 	            }
 	        }
 	        scanner.close();
+	        
+	        Collections.reverse(logs);
 	        model.addAttribute("logs",logs);
 	      
 	    } catch (IOException e) {
