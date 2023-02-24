@@ -318,7 +318,7 @@ input#routeDate {
 	border-radius: 20px;
 	border: 3px solid black;
 	color: white;
-	background-color: #006438;
+	background-color: grey;
 	font-weight: bold;
 	font-size: 16px;    
 	margin: 0 3px;
@@ -326,7 +326,7 @@ input#routeDate {
 }
 
 .buttons10:hover {
-	background-color: #005730;
+	background-color: #676767;
 }
 
 
