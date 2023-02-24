@@ -814,6 +814,8 @@ public class ShipmentsController {
 			List<String> stateAbbreviations = Arrays.asList("AL", "AK", "AZ", "AR", "CA", "CO", "CT", "DE", "FL", "GA", "HI", "ID", "IL", "IN", "IA", "KS", "KY", "LA", "ME", "MD", "MA", "MI", "MN", "MS", "MO", "MT", "NE", "NV", "NH", "NJ", "NM", "NY", "NC", "ND", "OH", "OK", "OR", "PA", "RI", "SC", "SD", "TN", "TX", "UT", "VT", "VA", "WA", "WV", "WI", "WY");
 			
 			for(int i=1; i<worksheet.getPhysicalNumberOfRows(); i++) {
+				
+				carriersRepository.findAll();
 				 
 				Shipments shipment = new Shipments();
 		        XSSFRow row = worksheet.getRow(i);
@@ -832,7 +834,7 @@ public class ShipmentsController {
 	    		
 	    		String clientName = row.getCell(0).toString().strip();
 			    String clientMode = row.getCell(1).toString().strip();
-			    
+			    String date = row.getCell(2).toString();
 	    		String commodityClass = row.getCell(3).toString().strip();
 	    		String commodityPieces = row.getCell(4).toString().strip();
 	    		String commodityPaidWeight = row.getCell(5).toString().strip();
@@ -847,14 +849,7 @@ public class ShipmentsController {
 	    		String consigneeLatitude = row.getCell(14).toString().strip();
 	    		String consigneeLongitude = row.getCell(15).toString().strip();
 	    		
-	    		
-	    		//TODO: Proper Date Validation.
-	    		
-	    		Date date1 = row.getCell(2).getDateCellValue();
-		    	DateFormat dateFormat1 = new SimpleDateFormat("yyyy-MM-dd");
-		    	String shipDate1 = dateFormat1.format(date1);
-		    	
-	    		
+
 	    		if (!(clientName.length() < 64 && clientName.length() > 0) || !(clientName.matches("^[a-zA-Z0-9.]+$"))) {
 	    			workbook.close();
 	    			Logger.error("{} attempted to upload a shipment but the Client field must be between 0 and 64 characters and alphanumeric.",user.getUsername());
@@ -867,11 +862,12 @@ public class ShipmentsController {
 	    			continue;
 	    		}
 	    		
-	    		//TODO: This needs to be fixed because of the excel date formating RAWDATA
-	    	//	if(!(shipDate1.length() < 12 && shipDate1.length() > 0 && shipDate1.matches("^\d{4}-\d{2}-\d{2}$")) { //broken
-	    	//		workbook.close();
-	    	//		Logger.error("{} attempted to upload a shipment but the Date must be between 0 and 12 characters and formated YYYY-MM-DD.",user.getUsername());
-	    	//	}
+	    		
+	    		if(!(date.length() < 12 && date.length() > 0 && date.matches("^\\d{2}-(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)-\\d{4}$"))) { 
+	    			workbook.close();
+	    			Logger.error("{} attempted to upload a shipment but the Date must be between 0 and 12 characters and formated MM/DD/YYYY.",user.getUsername());
+	    			continue;
+	    		}
 	    		
 	    		if(!(freightBillNumber.length() < 32 && freightBillNumber.length() > 0) || !(freightBillNumber.matches("^[0-9]*\\.?[0-9]+$"))) {
 	    			workbook.close();
@@ -977,7 +973,7 @@ public class ShipmentsController {
 	    		shipment.setClient(clientName);
 	    		shipment.setClientMode(clientMode);
 	    		shipment.setScac(scac);
-	    		shipment.setShipDate(shipDate1);
+	    		shipment.setShipDate(date);
 	    		shipment.setFreightbillNumber(freightBillNumber);
 	    		shipment.setPaidAmount(paidAmount);
 	    		shipment.setFullFreightTerms(fullFreightTerms);
