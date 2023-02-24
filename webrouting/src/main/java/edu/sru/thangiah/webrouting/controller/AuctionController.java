@@ -53,7 +53,6 @@ public class AuctionController {
 	 */
 	@RequestMapping("/auctioninghome")
 	public String auctioningHome(Model model) {
-		User user = getLoggedInUser();
 		List<Shipments> allShipments = (List<Shipments>)shipmentsRepository.findAll();
 		
 		model.addAttribute("shipments", allShipments);
@@ -196,7 +195,6 @@ public class AuctionController {
 	public String forceEndAuctionConfirmation(@PathVariable("id") long id, Model model, HttpSession session) {
 		Shipments shipment = shipmentsRepository.findById(id)
 				.orElseThrow(() -> new IllegalArgumentException("Invalid shipment Id:" + id));
-		List<Bids> bids = shipment.getBids(); 
 		String redirectLocation = (String) session.getAttribute("redirectLocation");
 		User user = getLoggedInUser();
 
