@@ -3,8 +3,11 @@ package edu.sru.thangiah.webrouting.controller;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 import javax.servlet.MultipartConfigElement;
+import javax.swing.text.DateFormatter;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.expression.AccessException;
@@ -24,22 +27,29 @@ import edu.sru.thangiah.webrouting.utilities.BackupUtil;
 @Controller
 public class BackupController {
 	
+	@Value("${spring.datasource.username}")
 	private String dbUsername;
+	
+	@Value("${spring.datasource.password}")
 	private String dbPassword;
+	
 	private String dbName;
 	private String outputFile;
 	
+	final static DateTimeFormatter CUSTOM_FORMATTER = DateTimeFormatter.ofPattern("yyyy_MM_dd_hh.mm");
+	
 	public BackupController() {
-		this.dbUsername = "root";
-		this.dbPassword = "password"; //TODO: Make constructor grab these from applications.properties
 		this.dbName = "webrouting";
-		this.outputFile = "backups/backup.sql";
+		this.outputFile = "";
 	}
 	
 	@Scheduled(fixedRate = 1200000) //Every twenty minutes
 	public void executeBackup() {
 		try {
-			BackupUtil.backupDatabase(dbUsername, dbPassword, dbName, outputFile);
+			LocalDateTime now = LocalDateTime.now();
+			String dateString = now.format(CUSTOM_FORMATTER);
+			System.out.println("backups/backup " + dateString + ".sql");
+			BackupUtil.backupDatabase(dbUsername, dbPassword, dbName, "backups/backup" + dateString + ".sql");
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
