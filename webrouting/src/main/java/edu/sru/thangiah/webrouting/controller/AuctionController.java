@@ -201,30 +201,14 @@ public class AuctionController {
 		User user = getLoggedInUser();
 
 		User bidUser;
-		Bids winningBid = null;
-		double lowestBidValue = Double.POSITIVE_INFINITY; //set the current lowest bid to infinity so the first bid in the loop will become the new lowest, and then be tested against every other bid.
+		Bids winningBid = shipment.getLowestBid();
 		
-		try {
-			//TODO: This currently cannot handle ties, it will just hand it off to whichever bid was placed later if there is a tie. A prompt should come up if there is a tie.
-			for(Bids bid : bids) { //For each bid in shipment.bids 
-				if (Integer.parseInt(bid.getPrice()) < lowestBidValue) {
-					winningBid = bid; //TODO: For some reason this fails on bid values more than ten digits? not sure why. will investigate further. For now this function is too buggy to be considered working, so issue will remain open. 
-					lowestBidValue = Double.parseDouble(bid.getPrice()); //TODO: (this should be added a seperate github issue) the price variable in Bids should not be a string, as we are now doing math on it. Should be a double
-				}
-			}
-			
-		} 
-		catch (NumberFormatException e) {
-			System.out.println("Caught an exception, invalid price format for bids. Does a shipment have a non numeric character in its bid price?");
-			Logger.error("{} entered an invalid price format for bids.", user.getUsername());//TODO: replace with proper error logging
-			return "redirect:" + redirectLocation;
+		if (winningBid == null) {
+			System.out.println("ERROR: Failed to end auction on auction with no bids");
+			Logger.error("ERROR: Failed to end auction on auction with no bids!", user.getUsername()); //TODO: Make errors like this display on the page for user end to see (follow method used in database.html
+			return redirectLocation;
 		}
 		
-		if (winningBid == null){
-			System.out.println("Unable to select a winning bid");
-			Logger.error("{} was unable to select a winning bid.", user.getUsername());//TODO: replace with proper error logging
-			return "redirect:" + redirectLocation;
-		}
 		
 		Carriers carrier = winningBid.getCarrier();
 		
