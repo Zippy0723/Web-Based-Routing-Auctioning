@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import edu.sru.thangiah.webrouting.domain.Contacts;
+import edu.sru.thangiah.webrouting.domain.Notification;
 import edu.sru.thangiah.webrouting.domain.User;
 import edu.sru.thangiah.webrouting.repository.ContactsRepository;
 import edu.sru.thangiah.webrouting.services.SecurityService;
@@ -66,6 +67,16 @@ public class ContactsController {
 	@RequestMapping({"/contacts"})
     public String showContactList(Model model) {
         model.addAttribute("contacts", getLoggedInUser().getCarrier().getContacts());
+        
+        User user = getLoggedInUser();
+        List<Notification> notifications = new ArrayList<>();
+        
+        if(!(user == null)) {
+            notifications = NotificationController.fetchUnreadNotifications(user);
+        }
+        
+        model.addAttribute("notifications",notifications);
+        
         return "contacts";
     }
     
