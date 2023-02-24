@@ -163,7 +163,7 @@ public class AuctionController {
 		}
 		
 		model.addAttribute("shipments",shipment);
-		return "/push/removefromauctionconfirm";
+		return "/createdshipments";
 	}
 	
 	

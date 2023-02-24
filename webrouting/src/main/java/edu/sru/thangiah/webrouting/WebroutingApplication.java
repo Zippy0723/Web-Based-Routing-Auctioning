@@ -7,6 +7,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.scheduling.annotation.EnableAsync;
+import org.springframework.scheduling.annotation.EnableScheduling;
 
 /*
  * Fleet Management Software
@@ -41,6 +42,7 @@ import org.springframework.scheduling.annotation.EnableAsync;
 @SpringBootApplication
 @EnableAsync
 @EntityScan(basePackages = {"edu.sru.thangiah.webrouting.domain"})
+@EnableScheduling
 public class WebroutingApplication {
 
 	/**
