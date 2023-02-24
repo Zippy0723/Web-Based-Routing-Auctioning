@@ -157,6 +157,7 @@ public class ShipmentsController {
 		List<Shipments> shipmentsWOCarrier = new ArrayList<>();
 		User user = getLoggedInUser();
 		session.setAttribute("redirectLocation", "/createdshipments");
+		
 		if (user.getRole().toString().equals("SHIPPER")) {
 			List<Shipments> shipments = user.getShipments();
 			if (shipments.size() != 0 && shipments != null) {

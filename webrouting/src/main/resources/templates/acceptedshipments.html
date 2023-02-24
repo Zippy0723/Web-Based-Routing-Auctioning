@@ -132,6 +132,7 @@
 	                                <tr>
 	                                    <th>View All Details</th>
 	                                    <th>View Bids</th>
+	                                    <th>Winning Bid</th>
 	                                    <th>Shipment ID</th>
 	                                    <th>Client</th>
 	                                    <th>Carrier Name</th>
@@ -159,6 +160,7 @@
 	                                <tr th:each="shipment : ${shipments}">
 	                                    <td><a th:href="@{/viewshipment/{id}(id=${shipment.id})}">View All Details</a></td>
 	                                    <td><a th:href="@{/viewshipmentbids/{id}(id=${shipment.id})}" th:inline="text">View Bids ([[${shipment.getBids().size()}]])</a></td>
+	                                    <td><p th:inline="text">[[${shipment.getLowestBidValue()}]]</p></td>
 	                                    <td th:text="${shipment.id}"></td>
 	                                    <td th:text="${shipment.client}"></td>
 	                                    <td><a th:text="${shipment.carrier.carrierName}"></a></td>
