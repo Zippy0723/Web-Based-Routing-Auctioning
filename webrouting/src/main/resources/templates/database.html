@@ -122,6 +122,9 @@
 			</span>
 			<br><br>
         	<h1>Database Control</h1>
+        	<div class="alert alert-info" th:if="${message}">
+       		<span th:text="${message}"></span>
+       		</div>
 	        <br><br>
 	            	*** Warning: Uploading a new .sql file and reseting the database will delete the current state of the database. Please be careful!
 			<br><br>

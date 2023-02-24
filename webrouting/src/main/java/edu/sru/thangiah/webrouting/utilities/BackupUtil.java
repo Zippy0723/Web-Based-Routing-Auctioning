@@ -2,6 +2,8 @@ package edu.sru.thangiah.webrouting.utilities;
 
 import java.io.IOException;
 
+import org.springframework.ui.Model;
+
 /*
  * Some ideas for this code were taken from:
  * https://waynestalk.com/en/spring-boot-backup-restore-mysql-en/
@@ -37,7 +39,7 @@ public class BackupUtil {
 		}
 	}
 	
-	public static void restoreDatabase(String dbUsername, String dbPassword, String dbName, String sourceFile)
+	public static void restoreDatabase(String dbUsername, String dbPassword, String dbName, String sourceFile, Model model)
             throws IOException, InterruptedException {
 		
 		try {
@@ -57,9 +59,11 @@ public class BackupUtil {
 	        
 	        if(status == 0) {
 				System.out.println("Database restore complete!");
+				model.addAttribute("message", "The database was restored from the backup successfully!");
 				//TODO: Dakota logger
 			} else {
 				System.out.println("Error restoring database! Restore exited with error code " + status);
+				model.addAttribute("message", "There was a problem loading the database! Please check your input file. Error code was " + status);
 				//TODO: Dakota logger
 			}
 	        

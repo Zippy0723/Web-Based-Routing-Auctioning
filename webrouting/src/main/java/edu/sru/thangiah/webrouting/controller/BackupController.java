@@ -63,17 +63,19 @@ public class BackupController {
 	public String restoreDatabase(Model model, @RequestParam("file") MultipartFile backupFile) throws AccessException, IOException {
 		File tmpFile = convertMultipartFileToFile(backupFile);
 		
-		System.out.println(tmpFile.getAbsolutePath());
-		
 		try {
-			BackupUtil.restoreDatabase(dbUsername, dbPassword, dbName,tmpFile.getAbsolutePath());
+			BackupUtil.restoreDatabase(dbUsername, dbPassword, dbName,tmpFile.getAbsolutePath(),model);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+			model.addAttribute("message", "There was a problem loading the database! Please check your input file.");
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+			model.addAttribute("message", "There was a problem loading the database! Please check your input file.");
 		}
+		
+		tmpFile.delete();
 		
 		return "database";
 	}
