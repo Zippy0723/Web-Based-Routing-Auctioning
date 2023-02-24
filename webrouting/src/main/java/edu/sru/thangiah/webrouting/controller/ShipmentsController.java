@@ -848,7 +848,7 @@ public class ShipmentsController {
 	    		String consigneeLongitude = row.getCell(15).toString().strip();
 	    		
 	    		
-	    		//Date manipulation
+	    		//TODO: Proper Date Validation.
 	    		
 	    		Date date1 = row.getCell(2).getDateCellValue();
 		    	DateFormat dateFormat1 = new SimpleDateFormat("yyyy-MM-dd");
@@ -970,12 +970,8 @@ public class ShipmentsController {
 	    		}
 	    		
 	    		
-	    		
-	    		
-	    		//defaults
-	    		shipment.setCarrier(null);
-	    		shipment.setVehicle(null);
-	    		
+	    		shipment.setCarrier(null);			//THIS IS DEFAULT
+	    		shipment.setVehicle(null);			//THIS IS DEFAULT
 	    		
 	    		
 	    		shipment.setClient(clientName);
