@@ -42,7 +42,7 @@ public class BackupUtil {
 		
 		try {
 			String[] command = new String[]{
-                "mysql",
+                "src/main/resources/static/binaries/mysql",
                 "-u" + dbUsername,
                 "-p" + dbPassword,
                 "-e",
