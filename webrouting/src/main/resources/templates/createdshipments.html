@@ -163,7 +163,7 @@
                                     <th sec:authorize="hasAuthority('MASTERLIST')">Freeze</th>
                                     <th sec:authorize="hasAuthority('MASTERLIST')">Reset Bids</th>
                                     <th sec:authorize="hasAuthority('MASTERLIST')">Force End Auction</th>
-                                    <th sec:authorize="hasAnyAuthority('SHIPPER','MASTERLIST')">Remove From Auction</th>
+                                   <!--  <th sec:authorize="hasAnyAuthority('SHIPPER','MASTERLIST')">Remove From Auction</th> -->
                                     
                               
 									
@@ -193,7 +193,7 @@
                                     <td sec:authorize="hasAuthority('MASTERLIST')"><a th:href="@{/freezeshipment/{id}(id=${shipment.id})}">Freeze</a></td>
                                     <td sec:authorize="hasAuthority('MASTERLIST')"><a th:href="@{/resetshipmentbids/{id}(id=${shipment.id})}">Reset Bids</a></td>
                                     <td sec:authorize="hasAuthority('MASTERLIST')"><a th:href="@{/forceendauction/{id}(id=${shipment.id})}">Force End Auction</a></td>
-                           			<td sec:authorize="hasAnyAuthority('SHIPPER','MASTERLIST')"><a th:href="@{/removefromauction/{id}(id=${shipment.id})}"><button th:onclick="confirmAction(${shipment.id})">Remove from Auction</button> </a></td>
+                           			<!-- <td sec:authorize="hasAnyAuthority('SHIPPER','MASTERLIST')"><a th:href="@{/removefromauction/{id}(id=${shipment.id})}"><button th:onclick="confirmAction(${shipment.id})">Remove from Auction</button> </a></td> -->
                            	
                                     
                                 </tr>

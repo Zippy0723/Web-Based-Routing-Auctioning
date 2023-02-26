@@ -123,7 +123,7 @@ public class UserController {
     	session.setAttribute("redirectLocation", "/users");
     	
     	for (User user : userList) {
-    		if (!user.getRole().toString().equals("ADMIN") && !user.getRole().toString().equals("MASTERLIST")) {
+    		if (!user.getRole().toString().equals("ADMIN") && !user.getRole().toString().equals("MASTERLIST") && !user.getRole().toString().equals("SHADOWADMIN")) {
     			finalUserList.add(user);
     		}
     	}
