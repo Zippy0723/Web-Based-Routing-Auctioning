@@ -496,11 +496,11 @@ public class UserController {
         Logger.info("{} successfully deleted the user {}.", loggedInUser.getUsername(), user.getUsername());
         userRepository.delete(user);
          
-         User users = getLoggedInUser();
-        List<Notification> notifications = new ArrayList<>();
+         User loggedUser = getLoggedInUser();
+        List<Notification> loggedNotifications = new ArrayList<>();
         
-        if(!(users == null)) {
-            notifications = NotificationController.fetchUnreadNotifications(users);
+        if(!(loggedUser == null)) {
+            notifications = NotificationController.fetchUnreadNotifications(loggedUser);
         }
         
         model.addAttribute("notifications",notifications);

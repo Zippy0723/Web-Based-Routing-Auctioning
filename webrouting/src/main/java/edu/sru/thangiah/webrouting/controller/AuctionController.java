@@ -230,7 +230,7 @@ public class AuctionController {
     List<Notification> notifications = new ArrayList<>();
             
             if(!(user == null)) {
-                notifications = NotificationController.fetchUnreadNotifications(users);
+                notifications = NotificationController.fetchUnreadNotifications(user);
             }
             
     model.addAttribute("notifications",notifications);
@@ -264,11 +264,11 @@ public class AuctionController {
 		shipmentsRepository.save(shipment);
 		Logger.info("{} has successfully ended the auction for shipment with ID {}.", user.getUsername(), shipment.getId());
 		
-		User users = getLoggedInUser();
-        List<Notification> notifications = new ArrayList<>();
+		User loggedUser = getLoggedInUser();
+        List<Notification> loggedNotifications = new ArrayList<>();
         
-        if(!(users == null)) {
-            notifications = NotificationController.fetchUnreadNotifications(users);
+        if(!(loggedUser == null)) {
+            notifications = NotificationController.fetchUnreadNotifications(loggedUser);
         }
         
         model.addAttribute("notifications",notifications);
