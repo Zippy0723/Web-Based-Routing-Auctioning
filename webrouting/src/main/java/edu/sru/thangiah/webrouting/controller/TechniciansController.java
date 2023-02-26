@@ -115,6 +115,17 @@ public class TechniciansController {
   	}
 	
 	/**
+     * Redirects user to the /uploadtechnicians page when clicking "Upload an excel file" button in the technicians section of Carrier login
+     * @param model used to add data to the model
+     * @return "/uploadtechnicians"
+     */
+    
+    @RequestMapping({"/uploadtechnicians"})
+    public String showAddTechniciansExcel(Model model) {
+ 	   return "/uploadtechnicians";
+    }
+	
+	/**
   	 * Finds a technician using the id parameter and if found, redirects to confirmation page 
   	 * If there are dependency issues, the technician is not deleted and an error is displayed to the user.
   	 * @param id ID of the technician being deleted

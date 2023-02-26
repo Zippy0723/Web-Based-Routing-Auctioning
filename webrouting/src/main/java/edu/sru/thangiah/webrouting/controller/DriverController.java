@@ -128,6 +128,17 @@ public class DriverController {
   	}
 	
 	/**
+     * Redirects user to the /uploaddrivers page when clicking "Upload an excel file" button in the Drivers section of Carrier login
+     * @param model used to add data to the model
+     * @return "/uploaddrivers"
+     */
+    
+    @RequestMapping({"/uploaddrivers"})
+    public String showAddDriversExcel(Model model) {
+ 	   return "/uploaddrivers";
+    }
+	
+	/**
   	 * Finds a driver using the id parameter and if found, redirects user to confrimation page
   	 * @param id Stores the ID of the driver to be deleted
   	 * @param model Used to add data to the model

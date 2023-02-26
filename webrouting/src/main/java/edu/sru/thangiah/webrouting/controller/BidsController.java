@@ -109,8 +109,14 @@ public class BidsController {
   	 * @param model Used to add data to the model
   	 * @return "redirect:/createdshipments" or "/add/add-bid"
   	 */
+	
 	@RequestMapping({"/addbid"})
   	public String addBid(@Validated Bids bid, BindingResult result, Model model) {
+  		Shipments shipment = bid.getShipment();
+
+        model.addAttribute("shipments", shipment);
+        model.addAttribute("carriers", carriersRepository.findAll());
+        
 		userValidator.addition(bid, result);
   		if (result.hasErrors()) {
   			return "/add/add-bid";
@@ -128,7 +134,6 @@ public class BidsController {
   		bid.setTime(time.format(now));
   		
   		boolean deny = false;
-  		Shipments shipment = bid.getShipment();
   		List<Bids> bidsInShipment = shipment.getBids();
   		
   		for (Bids b: bidsInShipment) {
