@@ -59,14 +59,8 @@ public class AuctionController {
 		
 		model.addAttribute("shipments", allShipments);
 		
-		User users = getLoggedInUser();
-        List<Notification> notifications = new ArrayList<>();
-        
-        if(!(users == null)) {
-            notifications = NotificationController.fetchUnreadNotifications(users);
-        }
-        
-        model.addAttribute("notifications",notifications);
+		User user = getLoggedInUser();
+		model = NotificationController.loadNotificationsIntoModel(user, model);
 		
 		return "auctioninghome";
 	}
@@ -82,6 +76,7 @@ public class AuctionController {
 				.orElseThrow(() -> new IllegalArgumentException("Invalid shipment Id:" + id));
 		
 		User user = getLoggedInUser();
+		model = NotificationController.loadNotificationsIntoModel(user, model);
 		String redirectLocation = (String) session.getAttribute("redirectLocation");
 		List<Bids> bids = shipment.getBids(); 
 		
@@ -100,15 +95,6 @@ public class AuctionController {
 		model.addAttribute("shipments", shipment);
         model.addAttribute("redirectLocation",redirectLocation);
         
-        User users = getLoggedInUser();
-        List<Notification> notifications = new ArrayList<>();
-        
-        if(!(users == null)) {
-            notifications = NotificationController.fetchUnreadNotifications(users);
-        }
-        
-        model.addAttribute("notifications",notifications);
-        
 		return "/force/forceendauctionconfirm";
 	}
 	/**
@@ -119,6 +105,7 @@ public class AuctionController {
 		Shipments shipment = shipmentsRepository.findById(id)
         		.orElseThrow(() -> new IllegalArgumentException("Invalid shipment Id:" + id));
         User user = getLoggedInUser();
+        model = NotificationController.loadNotificationsIntoModel(user, model);
         String redirectLocation = (String) session.getAttribute("redirectLocation");
         
         if (!shipment.getFullFreightTerms().equals("PENDING")) {
@@ -128,15 +115,6 @@ public class AuctionController {
         }
         
         model.addAttribute("shipments", shipment);
-        
-        User users = getLoggedInUser();
-        List<Notification> notifications = new ArrayList<>();
-        
-        if(!(users == null)) {
-            notifications = NotificationController.fetchUnreadNotifications(users);
-        }
-        
-        model.addAttribute("notifications",notifications);
         
 		return "/push/pushshipmentconfirm";
 	}
@@ -148,7 +126,8 @@ public class AuctionController {
 	public String pushShipmentConfirmation(@PathVariable("id") long id, Model model) {
 		Shipments shipment = shipmentsRepository.findById(id)
 	     .orElseThrow(() -> new IllegalArgumentException("Invalid Shipment Id:" + id));
-		User user = getLoggedInUser();		
+        User user = getLoggedInUser();
+        model = NotificationController.loadNotificationsIntoModel(user, model);
 		
 		if (user.getRole().toString().equals("CARRIER") || (user.getRole().toString().equals("SHIPPER") && !user.getShipments().contains(shipment))) {
 			System.out.println("Error: Invalid permissions for pushing shipment");
@@ -225,15 +204,8 @@ public class AuctionController {
 		Shipments shipment = shipmentsRepository.findById(id)
 				.orElseThrow(() -> new IllegalArgumentException("Invalid shipment Id:" + id));
 		String redirectLocation = (String) session.getAttribute("redirectLocation");
-		User user = getLoggedInUser();
-    
-    List<Notification> notifications = new ArrayList<>();
-            
-            if(!(user == null)) {
-                notifications = NotificationController.fetchUnreadNotifications(user);
-            }
-            
-    model.addAttribute("notifications",notifications);
+        User user = getLoggedInUser();
+        model = NotificationController.loadNotificationsIntoModel(user, model);
             
 		User bidUser;
 		Bids winningBid = shipment.getLowestBid();
@@ -264,15 +236,6 @@ public class AuctionController {
 		shipmentsRepository.save(shipment);
 		Logger.info("{} has successfully ended the auction for shipment with ID {}.", user.getUsername(), shipment.getId());
 		
-		User loggedUser = getLoggedInUser();
-        List<Notification> loggedNotifications = new ArrayList<>();
-        
-        if(!(loggedUser == null)) {
-            notifications = NotificationController.fetchUnreadNotifications(loggedUser);
-        }
-        
-        model.addAttribute("notifications",notifications);
-		
 		return "redirect:" + redirectLocation;
 	}
 	
@@ -284,6 +247,7 @@ public class AuctionController {
 		User user = userRepository.findById(id)
 				.orElseThrow(() -> new IllegalArgumentException("Invalid shipment Id:" + id));
 		User loggedinuser = getLoggedInUser();
+		model = NotificationController.loadNotificationsIntoModel(loggedinuser, model);
 		String redirectLocation = (String) session.getAttribute("redirectLocation");
 		
 		if(!loggedinuser.getRole().toString().equals("ADMIN")) {
@@ -295,15 +259,6 @@ public class AuctionController {
 		model.addAttribute("user",user);
 		model.addAttribute("redirectLocation",redirectLocation);
 		
-		User users = getLoggedInUser();
-        List<Notification> notifications = new ArrayList<>();
-        
-        if(!(users == null)) {
-            notifications = NotificationController.fetchUnreadNotifications(users);
-        }
-        
-        model.addAttribute("notifications",notifications);
-		
 		return "/toggle/toggleauctioningconfirm";
 	}
 	
@@ -312,6 +267,7 @@ public class AuctionController {
 		User user = userRepository.findById(id)
 				.orElseThrow(() -> new IllegalArgumentException("Invalid shipment Id:" + id));
 		User loggedInUser = getLoggedInUser();
+		model = NotificationController.loadNotificationsIntoModel(loggedInUser, model);
 		
 		if (user.getAuctioningAllowed()) {
 			user.setAuctioningAllowed(false);

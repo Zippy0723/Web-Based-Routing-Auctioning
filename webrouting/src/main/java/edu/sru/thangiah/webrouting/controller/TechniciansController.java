@@ -62,14 +62,8 @@ public class TechniciansController {
     public String showTechList(Model model) {
         model.addAttribute("technicians", techniciansRepository.findAll());
         
-        User users = getLoggedInUser();
-        List<Notification> notifications = new ArrayList<>();
-        
-        if(!(users == null)) {
-            notifications = NotificationController.fetchUnreadNotifications(users);
-        }
-        
-        model.addAttribute("notifications",notifications);
+        User user = getLoggedInUser();
+        model = NotificationController.loadNotificationsIntoModel(user, model);
         
         return "technicians";
     }
@@ -86,14 +80,8 @@ public class TechniciansController {
     public String showContactList(Model model, Technicians technician, BindingResult result) {
         model.addAttribute("contacts", getLoggedInUser().getCarrier().getContacts()); 
         
-        User users = getLoggedInUser();
-        List<Notification> notifications = new ArrayList<>();
-        
-        if(!(users == null)) {
-            notifications = NotificationController.fetchUnreadNotifications(users);
-        }
-        
-        model.addAttribute("notifications",notifications);
+        User user = getLoggedInUser();
+        model = NotificationController.loadNotificationsIntoModel(user, model);
         
         return "/add/add-technician";
     }
@@ -114,6 +102,7 @@ public class TechniciansController {
 		}
   		Boolean deny = false;
   		User loggedInUser = getLoggedInUser();
+  		model = NotificationController.loadNotificationsIntoModel(loggedInUser, model);
   		
   		List<Technicians> checkTech = new ArrayList<>();
   		checkTech = (List<Technicians>) techniciansRepository.findAll();
@@ -130,6 +119,7 @@ public class TechniciansController {
   			return "technicians";
 			 
   		}
+  		
   		techniciansRepository.save(technician);
   		Logger.info("{} successfully saved Technician with ID {}.",loggedInUser.getUsername(), technician.getId());
   		return "redirect:/technicians";
@@ -146,34 +136,17 @@ public class TechniciansController {
     public String deletetechnician(@PathVariable("id") long id, Model model) {
         Technicians technician = techniciansRepository.findById(id)
           .orElseThrow(() -> new IllegalArgumentException("Invalid technicians Id:" + id));
-        
         User loggedInUser = getLoggedInUser();
+        model = NotificationController.loadNotificationsIntoModel(loggedInUser, model);
+        
         if(!technician.getOrders().isEmpty()) {
         	model.addAttribute("error", "Unable to delete due to dependency conflict."); 
         	Logger.error("{} was unable to delete Technician with ID {} due to a dependecy conflict.", loggedInUser.getUsername(), technician.getId());
         	model.addAttribute("technicians", techniciansRepository.findAll());
         	
-        	User users = getLoggedInUser();
-            List<Notification> notifications = new ArrayList<>();
-            
-            if(!(users == null)) {
-                notifications = NotificationController.fetchUnreadNotifications(users);
-            }
-            
-            model.addAttribute("notifications",notifications);
-        	
         	return "technicians";
         }
         model.addAttribute("technicians", technician);
-        
-        User users = getLoggedInUser();
-        List<Notification> notifications = new ArrayList<>();
-        
-        if(!(users == null)) {
-            notifications = NotificationController.fetchUnreadNotifications(users);
-        }
-        
-        model.addAttribute("notifications",notifications);
         
         return "/delete/deletetechnicianconfirm";
     }
@@ -190,6 +163,7 @@ public class TechniciansController {
   	          .orElseThrow(() -> new IllegalArgumentException("Invalid technicians Id:" + id));
   		
   		User user = getLoggedInUser();
+  		model = NotificationController.loadNotificationsIntoModel(user, model);
   		Logger.info("{} successfully deleted Technician with ID {}.", user.getUsername(), technician.getId());
   		techniciansRepository.delete(technician);
         return "redirect:/technicians";
@@ -209,14 +183,8 @@ public class TechniciansController {
         
         model.addAttribute("technicians", technician);
         
-        User users = getLoggedInUser();
-        List<Notification> notifications = new ArrayList<>();
-        
-        if(!(users == null)) {
-            notifications = NotificationController.fetchUnreadNotifications(users);
-        }
-        
-        model.addAttribute("notifications",notifications);
+        User user = getLoggedInUser();
+        model = NotificationController.loadNotificationsIntoModel(user, model);
         
         return "technicians";
     }
@@ -234,14 +202,8 @@ public class TechniciansController {
   	  	
         model.addAttribute("maintenanceOrder", technician.getOrders());
         
-        User users = getLoggedInUser();
-        List<Notification> notifications = new ArrayList<>();
-        
-        if(!(users == null)) {
-            notifications = NotificationController.fetchUnreadNotifications(users);
-        }
-        
-        model.addAttribute("notifications",notifications);
+        User user = getLoggedInUser();
+        model = NotificationController.loadNotificationsIntoModel(user, model);
         
         return "maintenanceorders";
     }
@@ -262,14 +224,8 @@ public class TechniciansController {
 		 model.addAttribute("contacts", getLoggedInUser().getCarrier().getContacts());  
 	     model.addAttribute("technicians", technician);
 	     
-	     User users = getLoggedInUser();
-	        List<Notification> notifications = new ArrayList<>();
-	        
-	        if(!(users == null)) {
-	            notifications = NotificationController.fetchUnreadNotifications(users);
-	        }
-	        
-	        model.addAttribute("notifications",notifications);
+	     User user = getLoggedInUser();
+	     model = NotificationController.loadNotificationsIntoModel(user, model);
 	     
         return "/update/update-technician";
     }
@@ -292,6 +248,7 @@ public class TechniciansController {
             return "/update/update-technician";
         }
         User user = getLoggedInUser();
+        model = NotificationController.loadNotificationsIntoModel(user, model);
         Boolean deny = false;
   		List<Technicians> checkTech = new ArrayList<>();
   		checkTech = (List<Technicians>) techniciansRepository.findAll();

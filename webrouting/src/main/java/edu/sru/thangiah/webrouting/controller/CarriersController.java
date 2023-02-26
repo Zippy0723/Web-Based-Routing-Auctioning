@@ -71,7 +71,9 @@ public class CarriersController {
 	@RequestMapping({"/carriers"})
 	public String showCarriersList(Model model, HttpSession session) {
 		
-		User user = getLoggedInUser();
+  		User user = getLoggedInUser();
+        model = NotificationController.loadNotificationsIntoModel(user, model);
+        
 		if (user.getRole().toString().equals("CARRIER")) {
 			
 			 model.addAttribute("carriers", user.getCarrier());
@@ -81,15 +83,6 @@ public class CarriersController {
 		}
 	
 		session.setAttribute("redirectLocation", "/carriers");
-		
-		User users = getLoggedInUser();
-        List<Notification> notifications = new ArrayList<>();
-        
-        if(!(users == null)) {
-            notifications = NotificationController.fetchUnreadNotifications(users);
-        }
-        
-        model.addAttribute("notifications",notifications);
 		
         return "carriers";
     }
@@ -105,23 +98,13 @@ public class CarriersController {
     public String showEditForm(@PathVariable("id") long id, Model model) {
 		Carriers carrier = carriersRepository.findById(id)
           .orElseThrow(() -> new IllegalArgumentException("Invalid carrier Id:" + id));
-		User user = getLoggedInUser();
+  		User user = getLoggedInUser();
+        model = NotificationController.loadNotificationsIntoModel(user, model);
         if (carrier.equals(user.getCarrier())) {
-        	 model.addAttribute("carriers", carrier);
-        	 
-        	 User users = getLoggedInUser();
-             List<Notification> notifications = new ArrayList<>();
-             
-             if(!(users == null)) {
-                 notifications = NotificationController.fetchUnreadNotifications(users);
-             }
-             
-             model.addAttribute("notifications",notifications);
-        	 
+        	 model.addAttribute("carriers", carrier); 
              return "/update/update-carriers";
+             
         } else {
-        	
-        	
         	return "redirect:/carriers";
         }
     }
@@ -140,14 +123,8 @@ public class CarriersController {
         
         model.addAttribute("shipments", carrier.getShipments());
         
-        User users = getLoggedInUser();
-        List<Notification> notifications = new ArrayList<>();
-        
-        if(!(users == null)) {
-            notifications = NotificationController.fetchUnreadNotifications(users);
-        }
-        
-        model.addAttribute("notifications",notifications);
+  		User user = getLoggedInUser();
+        model = NotificationController.loadNotificationsIntoModel(user, model);
         
         return "shipments";
     }
@@ -164,20 +141,12 @@ public class CarriersController {
         Carriers carrier = carriersRepository.findById(id)
           .orElseThrow(() -> new IllegalArgumentException("Invalid carrier Id:" + id));
         
-        User user = getLoggedInUser();
+  		User user = getLoggedInUser();
+        model = NotificationController.loadNotificationsIntoModel(user, model);
         model.addAttribute("redirectLocation",session.getAttribute("redirectLocation"));
         if (user.getRole().toString().equals("SHIPPER")) {
         	if (carrier.equals(user.getCarrier())) {
         		model.addAttribute("bids", carrier.getBids());
-        		
-        		 User users = getLoggedInUser();
-        	        List<Notification> notifications = new ArrayList<>();
-        	        
-        	        if(!(users == null)) {
-        	            notifications = NotificationController.fetchUnreadNotifications(users);
-        	        }
-        	        
-        	        model.addAttribute("notifications",notifications);
         		
         		return "bids";
         	} 
@@ -185,30 +154,12 @@ public class CarriersController {
         	
        			model.addAttribute("bids", user.getCarrier().getBids());
        			
-       		 User users = getLoggedInUser();
-             List<Notification> notifications = new ArrayList<>();
-             
-             if(!(users == null)) {
-                 notifications = NotificationController.fetchUnreadNotifications(users);
-             }
-             
-             model.addAttribute("notifications",notifications);
-       			
        			return "bids";
        		}
         } 
         else {
         	model.addAttribute("bids", carrier.getBids() );
-        	
-        	 User users = getLoggedInUser();
-             List<Notification> notifications = new ArrayList<>();
-             
-             if(!(users == null)) {
-                 notifications = NotificationController.fetchUnreadNotifications(users);
-             }
-             
-             model.addAttribute("notifications",notifications);
-        	
+        
    			return "bids";
         }
         
@@ -227,14 +178,8 @@ public class CarriersController {
         
         model.addAttribute("carriers", carrier);
         
-        User users = getLoggedInUser();
-        List<Notification> notifications = new ArrayList<>();
-        
-        if(!(users == null)) {
-            notifications = NotificationController.fetchUnreadNotifications(users);
-        }
-        
-        model.addAttribute("notifications",notifications);
+  		User user = getLoggedInUser();
+        model = NotificationController.loadNotificationsIntoModel(user, model);
         
         return "carriers";
     }
@@ -256,7 +201,9 @@ public class CarriersController {
         	carrier.setId(id);
             return "/update/update-carriers";
         }
-        User user = getLoggedInUser();
+		
+  		User user = getLoggedInUser();
+        model = NotificationController.loadNotificationsIntoModel(user, model);
         Boolean deny = false;
   		List<Carriers> checkCarriers = new ArrayList<>();
   		checkCarriers = (List<Carriers>) carriersRepository.findAll();
