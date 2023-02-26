@@ -91,14 +91,13 @@ public class BidsController {
         model.addAttribute("shipments", shipment);
         model.addAttribute("carriers", carriersRepository.findAll());
         User loggedInUser = getLoggedInUser();
+        model = NotificationController.loadNotificationsIntoModel(loggedInUser, model);
         
         if (!shipment.getFullFreightTerms().toString().equals("AVAILABLE SHIPMENT")) {
         	 System.out.println("Error: User attempeted to place a bid on a shipment that was not in auction");
         	 Logger.error("{} attempted to place a bid on a shipment that was not in auction", loggedInUser.getUsername());
         	 return (String) session.getAttribute("redirectLocation");
         }
-        
-        model = NotificationController.loadNotificationsIntoModel(loggedInUser, model);
         
         return "/add/add-bid";
     }
@@ -113,15 +112,11 @@ public class BidsController {
   	 * @param model Used to add data to the model
   	 * @return "redirect:/createdshipments" or "/add/add-bid"
   	 */
-	
 	@RequestMapping({"/addbid"})
   	public String addBid(@Validated Bids bid, BindingResult result, Model model) {
-  		Shipments shipment = bid.getShipment();
-
-        model.addAttribute("shipments", shipment);
-        model.addAttribute("carriers", carriersRepository.findAll());
-        
 		userValidator.addition(bid, result);
+		User user = getLoggedInUser();
+		model = NotificationController.loadNotificationsIntoModel(user, model);
   		if (result.hasErrors()) {
   			return "/add/add-bid";
 		}
@@ -132,12 +127,12 @@ public class BidsController {
 				
   		LocalDateTime now = LocalDateTime.now();
   		
-  		User user = getLoggedInUser();
   		bid.setCarrier(user.getCarrier());
   		bid.setDate(date.format(now));
   		bid.setTime(time.format(now));
   		
   		boolean deny = false;
+  		Shipments shipment = bid.getShipment();
   		List<Bids> bidsInShipment = shipment.getBids();
   		
   		for (Bids b: bidsInShipment) {
