@@ -9,6 +9,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import edu.sru.thangiah.webrouting.domain.Notification;
 import edu.sru.thangiah.webrouting.domain.Shipments;
 import edu.sru.thangiah.webrouting.domain.User;
 import edu.sru.thangiah.webrouting.domain.Vehicles;
@@ -63,6 +64,16 @@ public class RoutesController {
 		if (anydate) {
 			model.addAttribute("shipments", vehicle.getShipments());
 			model.addAttribute("vehicle", vehiclesRepository.findAll());
+			
+			User users = getLoggedInUser();
+	        List<Notification> notifications = new ArrayList<>();
+	        
+	        if(!(users == null)) {
+	            notifications = NotificationController.fetchUnreadNotifications(users);
+	        }
+	        
+	        model.addAttribute("notifications",notifications);
+			
 			return "routes";
 		}
 		
@@ -82,6 +93,16 @@ public class RoutesController {
 			System.out.println(shownShipments);
 			model.addAttribute("shipments", shownShipments);
 			model.addAttribute("vehicle", getVehiclesWithShipments());
+			
+			User users = getLoggedInUser();
+	        List<Notification> notifications = new ArrayList<>();
+	        
+	        if(!(users == null)) {
+	            notifications = NotificationController.fetchUnreadNotifications(users);
+	        }
+	        
+	        model.addAttribute("notifications",notifications);
+	        
 			return "routes";
 		}
 	}
@@ -100,6 +121,16 @@ public class RoutesController {
 		else {
 			model.addAttribute("vehicle", getVehiclesWithShipments());
 		}
+		
+		User users = getLoggedInUser();
+        List<Notification> notifications = new ArrayList<>();
+        
+        if(!(users == null)) {
+            notifications = NotificationController.fetchUnreadNotifications(users);
+        }
+        
+        model.addAttribute("notifications",notifications);
+		
         return "routes";
     }
 	

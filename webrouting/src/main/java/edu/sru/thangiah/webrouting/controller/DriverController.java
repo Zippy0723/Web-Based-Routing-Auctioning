@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import edu.sru.thangiah.webrouting.domain.Driver;
+import edu.sru.thangiah.webrouting.domain.Notification;
 import edu.sru.thangiah.webrouting.domain.User;
 import edu.sru.thangiah.webrouting.repository.DriverRepository;
 import edu.sru.thangiah.webrouting.services.SecurityService;
@@ -63,10 +64,30 @@ public class DriverController {
 		if (user.getRole().toString().equals("CARRIER")) {
 			
 			 model.addAttribute("drivers", user.getCarrier().getDrivers());
+			 
+			 User users = getLoggedInUser();
+		        List<Notification> notifications = new ArrayList<>();
+		        
+		        if(!(users == null)) {
+		            notifications = NotificationController.fetchUnreadNotifications(users);
+		        }
+		        
+		        model.addAttribute("notifications",notifications);
+			 
 			 return "drivers";
 		}
 		
 		model.addAttribute("drivers", driverRepository.findAll());
+		
+		User users = getLoggedInUser();
+        List<Notification> notifications = new ArrayList<>();
+        
+        if(!(users == null)) {
+            notifications = NotificationController.fetchUnreadNotifications(users);
+        }
+        
+        model.addAttribute("notifications",notifications);
+		
         return "drivers";
     }
 	
@@ -85,6 +106,16 @@ public class DriverController {
 		model.addAttribute("carriers", user.getCarrier());
 		model.addAttribute("contacts", user.getCarrier().getContacts());
 		model.addAttribute("vehicles", user.getCarrier().getVehicles());
+		
+		User users = getLoggedInUser();
+        List<Notification> notifications = new ArrayList<>();
+        
+        if(!(users == null)) {
+            notifications = NotificationController.fetchUnreadNotifications(users);
+        }
+        
+        model.addAttribute("notifications",notifications);
+		
         return "/add/add-driver";
     }
 	
@@ -100,6 +131,16 @@ public class DriverController {
 	@RequestMapping({"/adddriver"})
   	public String addDriver(@Validated Driver drivers, BindingResult result, Model model) {
   		if (result.hasErrors()) {
+  			
+  			User users = getLoggedInUser();
+  	        List<Notification> notifications = new ArrayList<>();
+  	        
+  	        if(!(users == null)) {
+  	            notifications = NotificationController.fetchUnreadNotifications(users);
+  	        }
+  	        
+  	        model.addAttribute("notifications",notifications);
+  			
   			return "/add/add-driver";
 		}
   		
@@ -119,11 +160,31 @@ public class DriverController {
   			model.addAttribute("error", "Unable to add Driver. Lisence number already exists or Contact already in use");
   			Logger.error("{} was unable to add a driver because lisence number already exists or contact already in use for driver with ID {}.", user.getUsername(), drivers.getId());
   			model.addAttribute("drivers", user.getCarrier().getDrivers());
+  			
+  			User users = getLoggedInUser();
+  	        List<Notification> notifications = new ArrayList<>();
+  	        
+  	        if(!(users == null)) {
+  	            notifications = NotificationController.fetchUnreadNotifications(users);
+  	        }
+  	        
+  	        model.addAttribute("notifications",notifications);
+  			
   			return "drivers";
   		}
   		
   		driverRepository.save(drivers);
   		Logger.info("{} sucessfully added new driver with ID {}.", user.getUsername(), drivers.getId());
+  		
+  		User users = getLoggedInUser();
+        List<Notification> notifications = new ArrayList<>();
+        
+        if(!(users == null)) {
+            notifications = NotificationController.fetchUnreadNotifications(users);
+        }
+        
+        model.addAttribute("notifications",notifications);
+  		
   		return "redirect:/drivers";
   	}
 	
@@ -138,6 +199,16 @@ public class DriverController {
         Driver drivers = driverRepository.findById(id)
           .orElseThrow(() -> new IllegalArgumentException("Invalid driver Id:" + id));
         model.addAttribute("drivers", drivers);
+        
+        User users = getLoggedInUser();
+        List<Notification> notifications = new ArrayList<>();
+        
+        if(!(users == null)) {
+            notifications = NotificationController.fetchUnreadNotifications(users);
+        }
+        
+        model.addAttribute("notifications",notifications);
+        
         return "/delete/deletedriverconfirm";
     }
     
@@ -171,6 +242,16 @@ public class DriverController {
           .orElseThrow(() -> new IllegalArgumentException("Invalid driver Id:" + id));
         
         model.addAttribute("drivers", driver);
+        
+        User users = getLoggedInUser();
+	        List<Notification> notifications = new ArrayList<>();
+	        
+	        if(!(users == null)) {
+	            notifications = NotificationController.fetchUnreadNotifications(users);
+	        }
+	        
+	        model.addAttribute("notifications",notifications);
+        
         return "drivers";
     }
 	
@@ -191,6 +272,15 @@ public class DriverController {
 		 model.addAttribute("carriers", user.getCarrier());
 		 model.addAttribute("contacts", user.getCarrier().getContacts());
 	     model.addAttribute("driver", drivers);
+	     
+	     User users = getLoggedInUser();
+	        List<Notification> notifications = new ArrayList<>();
+	        
+	        if(!(users == null)) {
+	            notifications = NotificationController.fetchUnreadNotifications(users);
+	        }
+	        
+	        model.addAttribute("notifications",notifications);
 	     
         return "/update/update-driver";
     }

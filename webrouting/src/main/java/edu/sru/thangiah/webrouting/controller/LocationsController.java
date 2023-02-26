@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import edu.sru.thangiah.webrouting.domain.Locations;
+import edu.sru.thangiah.webrouting.domain.Notification;
 import edu.sru.thangiah.webrouting.domain.User;
 import edu.sru.thangiah.webrouting.repository.LocationsRepository;
 import edu.sru.thangiah.webrouting.services.SecurityService;
@@ -69,10 +70,30 @@ public class LocationsController {
 		if (user.getRole().toString().equals("CARRIER")) {
 			
 			 model.addAttribute("locations", user.getCarrier().getLocations());
+			 
+			 User users = getLoggedInUser();
+		        List<Notification> notifications = new ArrayList<>();
+		        
+		        if(!(users == null)) {
+		            notifications = NotificationController.fetchUnreadNotifications(users);
+		        }
+		        
+		        model.addAttribute("notifications",notifications);
+			 
 			 return "locations";
 		}
 		
         model.addAttribute("locations", locationsRepository.findAll());
+        
+        User users = getLoggedInUser();
+        List<Notification> notifications = new ArrayList<>();
+        
+        if(!(users == null)) {
+            notifications = NotificationController.fetchUnreadNotifications(users);
+        }
+        
+        model.addAttribute("notifications",notifications);
+        
         return "locations";
     }
 	
@@ -88,7 +109,17 @@ public class LocationsController {
 		
 		User user = getLoggedInUser();
 		
-		model.addAttribute("carriers", user.getCarrier());       
+		model.addAttribute("carriers", user.getCarrier());  
+		
+		User users = getLoggedInUser();
+        List<Notification> notifications = new ArrayList<>();
+        
+        if(!(users == null)) {
+            notifications = NotificationController.fetchUnreadNotifications(users);
+        }
+        
+        model.addAttribute("notifications",notifications);
+		
 	    return "/add/add-location";
 		
     }
@@ -149,9 +180,29 @@ public class LocationsController {
         	model.addAttribute("error", "Unable to delete due to dependency conflict.");
         	Logger.error("Unable to delete location due to dependecy conflict.");
         	model.addAttribute("locations", user.getCarrier().getLocations());
+        	
+        	User users = getLoggedInUser();
+            List<Notification> notifications = new ArrayList<>();
+            
+            if(!(users == null)) {
+                notifications = NotificationController.fetchUnreadNotifications(users);
+            }
+            
+            model.addAttribute("notifications",notifications);
+        	
         	return "locations";
         }
         model.addAttribute("locations", location);
+        
+        User users = getLoggedInUser();
+        List<Notification> notifications = new ArrayList<>();
+        
+        if(!(users == null)) {
+            notifications = NotificationController.fetchUnreadNotifications(users);
+        }
+        
+        model.addAttribute("notifications",notifications);
+        
         return "/delete/deletelocationconfirm";
     }
     
@@ -185,6 +236,16 @@ public class LocationsController {
           .orElseThrow(() -> new IllegalArgumentException("Invalid location Id:" + id));
         
         model.addAttribute("locations", location);
+        
+        User users = getLoggedInUser();
+        List<Notification> notifications = new ArrayList<>();
+        
+        if(!(users == null)) {
+            notifications = NotificationController.fetchUnreadNotifications(users);
+        }
+        
+        model.addAttribute("notifications",notifications);
+        
         return "locations";
     }
 	
@@ -204,6 +265,16 @@ public class LocationsController {
 		
 			model.addAttribute("carriers", user.getCarrier());
 			model.addAttribute("locations", location);
+			
+			User users = getLoggedInUser();
+	        List<Notification> notifications = new ArrayList<>();
+	        
+	        if(!(users == null)) {
+	            notifications = NotificationController.fetchUnreadNotifications(users);
+	        }
+	        
+	        model.addAttribute("notifications",notifications);
+			
 			return "/update/update-location";
 		
 		

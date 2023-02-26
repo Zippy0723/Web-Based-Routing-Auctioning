@@ -280,6 +280,55 @@ input#routeDate {
 	cursor: pointer;	
 }
 
+.buttons8{
+	padding: 6px 10px;
+	border-radius: 20px;
+	border: 2px solid black;
+	color: white;
+	background-color: grey;
+	font-weight: bold;
+	font-size: 20px;    
+	margin: 0 3px;
+	cursor: pointer;
+	
+	}
+	
+.buttons8:hover {
+	background-color: #676767;
+}
+
+.buttons9{
+	padding: 6px 10px;
+	border-radius: 20px;
+	border: 2px solid black;
+	color: white;
+	background-color: #006438;
+	font-weight: bold;
+	font-size: 16px;    
+	margin: 0 3px;
+	cursor: pointer;
+}
+
+.buttons9:hover {
+	background-color: #005730;
+}
+
+.buttons10{
+	padding: 5px 9px;
+	border-radius: 20px;
+	border: 3px solid black;
+	color: white;
+	background-color: grey;
+	font-weight: bold;
+	font-size: 16px;    
+	margin: 0 3px;
+	cursor: pointer;
+}
+
+.buttons10:hover {
+	background-color: #676767;
+}
+
 
 
 

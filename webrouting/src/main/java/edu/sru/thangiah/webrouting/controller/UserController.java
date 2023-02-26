@@ -1,14 +1,23 @@
 package edu.sru.thangiah.webrouting.controller;
 
+import java.io.IOException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
+import org.apache.poi.xssf.usermodel.XSSFRow;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.expression.AccessException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -19,6 +28,8 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import edu.sru.thangiah.webrouting.domain.Bids;
@@ -119,6 +130,16 @@ public class UserController {
     	
     	
         model.addAttribute("userstable", finalUserList);
+        
+        User users = getLoggedInUser();
+        List<Notification> notifications = new ArrayList<>();
+        
+        if(!(users == null)) {
+            notifications = NotificationController.fetchUnreadNotifications(users);
+        }
+        
+        model.addAttribute("notifications",notifications);
+        
         return "users";
     }
     
@@ -135,6 +156,16 @@ public class UserController {
     	
     	
         model.addAttribute("userstable", finalUserList);
+        
+        User users = getLoggedInUser();
+        List<Notification> notifications = new ArrayList<>();
+        
+        if(!(users == null)) {
+            notifications = NotificationController.fetchUnreadNotifications(users);
+        }
+        
+        model.addAttribute("notifications",notifications);
+        
         return "CarrierAdministrationPage";
     }
     
@@ -151,6 +182,16 @@ public class UserController {
     	
     	
         model.addAttribute("userstable", finalUserList);
+        
+        User users = getLoggedInUser();
+        List<Notification> notifications = new ArrayList<>();
+        
+        if(!(users == null)) {
+            notifications = NotificationController.fetchUnreadNotifications(users);
+        }
+        
+        model.addAttribute("notifications",notifications);
+        
         return "ShipperAdministrationPage";
     }
     
@@ -161,15 +202,45 @@ public class UserController {
      */
    @RequestMapping({"/signup"})
    public String shownAddHomePage(Model model) {
+	   
+	   User users = getLoggedInUser();
+       List<Notification> notifications = new ArrayList<>();
+       
+       if(!(users == null)) {
+           notifications = NotificationController.fetchUnreadNotifications(users);
+       }
+       
+       model.addAttribute("notifications",notifications);
+	   
 	   return "/add/add-user-home";
    }
    @RequestMapping({"/shippersignup"})
    public String shownShipperAddHomePage(Model model) {
+	   
+	   User users = getLoggedInUser();
+       List<Notification> notifications = new ArrayList<>();
+       
+       if(!(users == null)) {
+           notifications = NotificationController.fetchUnreadNotifications(users);
+       }
+       
+       model.addAttribute("notifications",notifications);
+	   
 	   return "/add/add-user-shipper-home";
    }
    
    @RequestMapping({"/carriersignup"})
    public String shownCarrierAddHomePage(Model model) {
+	   
+	   User users = getLoggedInUser();
+       List<Notification> notifications = new ArrayList<>();
+       
+       if(!(users == null)) {
+           notifications = NotificationController.fetchUnreadNotifications(users);
+       }
+       
+       model.addAttribute("notifications",notifications);
+	   
 	   return "/add/add-user-carrier-home";
    }
    
@@ -183,7 +254,16 @@ public class UserController {
    @RequestMapping({"/addcarrieruser"})
    public String showCarrierPage(User user, Model model) {
 	   model.addAttribute("userForm", new User());
-
+	   
+	   User users = getLoggedInUser();
+       List<Notification> notifications = new ArrayList<>();
+       
+       if(!(users == null)) {
+           notifications = NotificationController.fetchUnreadNotifications(users);
+       }
+       
+       model.addAttribute("notifications",notifications);
+	   
        return "/add/add-user-carrier";
    }
     
@@ -200,6 +280,16 @@ public class UserController {
   		roles.remove(1);
   		roles.remove(2);
   		model.addAttribute("roles", roles);
+  		
+  		User users = getLoggedInUser();
+        List<Notification> notifications = new ArrayList<>();
+        
+        if(!(users == null)) {
+            notifications = NotificationController.fetchUnreadNotifications(users);
+        }
+        
+        model.addAttribute("notifications",notifications);
+  		
   		return "/add/add-user";
     }
   	
@@ -215,6 +305,16 @@ public class UserController {
 		}
 
 		model.addAttribute("roles",result);
+		
+		User users = getLoggedInUser();
+        List<Notification> notifications = new ArrayList<>();
+        
+        if(!(users == null)) {
+            notifications = NotificationController.fetchUnreadNotifications(users);
+        }
+        
+        model.addAttribute("notifications",notifications);
+		
 		return "/add/add-user-shipper";
   }
   	
@@ -338,6 +438,15 @@ public class UserController {
     public String deleteUser(@PathVariable("id") long id, Model model) {
         User user = userRepository.findById(id)
           .orElseThrow(() -> new IllegalArgumentException("Invalid user Id:" + id));
+          
+         User users = getLoggedInUser();
+        List<Notification> notifications = new ArrayList<>();
+        
+        if(!(users == null)) {
+            notifications = NotificationController.fetchUnreadNotifications(users);
+        }
+        
+        model.addAttribute("notifications",notifications);
         
         model.addAttribute("users", user);
         return "/delete/deleteuserconfirm";
@@ -383,19 +492,20 @@ public class UserController {
   			notficationRepository.delete(n);
   		}
         
-        userRepository.delete(user);
-      if(user.getRole().toString().equals("SHIPPER")){
-    	  return "redirect:/ShipperAdministrationPage";
-      }
-      
-      if(user.getRole().toString().equals("CARRIER")){
-    	  return "redirect:/CarrierAdministrationPage";
-      }
-      
-      else {
+       
         Logger.info("{} successfully deleted the user {}.", loggedInUser.getUsername(), user.getUsername());
+        userRepository.delete(user);
+         
+         User users = getLoggedInUser();
+        List<Notification> notifications = new ArrayList<>();
+        
+        if(!(users == null)) {
+            notifications = NotificationController.fetchUnreadNotifications(users);
+        }
+        
+        model.addAttribute("notifications",notifications);
+         
         return "redirect:/users";
-      }
     }
   	
   	/**
@@ -413,6 +523,29 @@ public class UserController {
   		model.addAttribute("roles", roleRepository.findAll());
   		model.addAttribute("carriers", carriersRepository.findAll());
         model.addAttribute("user", user);
+        
+       if(user.getRole().toString().equals("SHIPPER")) {
+        List<Role> roles = (List<Role>) roleRepository.findAll();
+		List<Role> results = new ArrayList<Role>();
+
+		for(Role rs : roles){
+		  if(rs.getName().equals("SHIPPER")){
+		    results.add(rs);
+		  }
+		}
+
+		model.addAttribute("roles",results);
+       }
+        
+        User users = getLoggedInUser();
+        List<Notification> notifications = new ArrayList<>();
+        
+        if(!(users == null)) {
+            notifications = NotificationController.fetchUnreadNotifications(users);
+        }
+        
+        model.addAttribute("notifications",notifications);
+        
         return "/update/update-user";
     }
   	
@@ -451,6 +584,7 @@ public class UserController {
         	 websiteUrl = MailSending.getUrl(mailRequest);
         	 emailImpl.forgotPasswordAdminFunction(user.getUsername(), websiteUrl);
         }
+        
         user.setEnabled(true);
         userService.save(user);
 
@@ -483,6 +617,16 @@ public class UserController {
   		dtoUser = new User();
   		dtoUser = getLoggedInUser();
   		dtoUser.setUpdateEmail(dtoUser.getEmail());
+  		
+  		User users = getLoggedInUser();
+        List<Notification> notifications = new ArrayList<>();
+        
+        if(!(users == null)) {
+            notifications = NotificationController.fetchUnreadNotifications(users);
+        }
+        
+        model.addAttribute("notifications",notifications);
+  		
   		return "/update/update-user-details";
   	}
   	
@@ -541,6 +685,6 @@ public class UserController {
     	else {
     		return null;
     	}
-    }
+  	}
     
 }

@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 
 import edu.sru.thangiah.webrouting.domain.Carriers;
+import edu.sru.thangiah.webrouting.domain.Notification;
 import edu.sru.thangiah.webrouting.domain.User;
 import edu.sru.thangiah.webrouting.repository.CarriersRepository;
 import edu.sru.thangiah.webrouting.repository.UserRepository;
@@ -81,6 +82,15 @@ public class CarriersController {
 	
 		session.setAttribute("redirectLocation", "/carriers");
 		
+		User users = getLoggedInUser();
+        List<Notification> notifications = new ArrayList<>();
+        
+        if(!(users == null)) {
+            notifications = NotificationController.fetchUnreadNotifications(users);
+        }
+        
+        model.addAttribute("notifications",notifications);
+		
         return "carriers";
     }
 	
@@ -98,6 +108,16 @@ public class CarriersController {
 		User user = getLoggedInUser();
         if (carrier.equals(user.getCarrier())) {
         	 model.addAttribute("carriers", carrier);
+        	 
+        	 User users = getLoggedInUser();
+             List<Notification> notifications = new ArrayList<>();
+             
+             if(!(users == null)) {
+                 notifications = NotificationController.fetchUnreadNotifications(users);
+             }
+             
+             model.addAttribute("notifications",notifications);
+        	 
              return "/update/update-carriers";
         } else {
         	
@@ -119,6 +139,16 @@ public class CarriersController {
           .orElseThrow(() -> new IllegalArgumentException("Invalid carrier Id:" + id));
         
         model.addAttribute("shipments", carrier.getShipments());
+        
+        User users = getLoggedInUser();
+        List<Notification> notifications = new ArrayList<>();
+        
+        if(!(users == null)) {
+            notifications = NotificationController.fetchUnreadNotifications(users);
+        }
+        
+        model.addAttribute("notifications",notifications);
+        
         return "shipments";
     }
   	
@@ -139,16 +169,46 @@ public class CarriersController {
         if (user.getRole().toString().equals("SHIPPER")) {
         	if (carrier.equals(user.getCarrier())) {
         		model.addAttribute("bids", carrier.getBids());
+        		
+        		 User users = getLoggedInUser();
+        	        List<Notification> notifications = new ArrayList<>();
+        	        
+        	        if(!(users == null)) {
+        	            notifications = NotificationController.fetchUnreadNotifications(users);
+        	        }
+        	        
+        	        model.addAttribute("notifications",notifications);
+        		
         		return "bids";
         	} 
     		else {
         	
        			model.addAttribute("bids", user.getCarrier().getBids());
+       			
+       		 User users = getLoggedInUser();
+             List<Notification> notifications = new ArrayList<>();
+             
+             if(!(users == null)) {
+                 notifications = NotificationController.fetchUnreadNotifications(users);
+             }
+             
+             model.addAttribute("notifications",notifications);
+       			
        			return "bids";
        		}
         } 
         else {
         	model.addAttribute("bids", carrier.getBids() );
+        	
+        	 User users = getLoggedInUser();
+             List<Notification> notifications = new ArrayList<>();
+             
+             if(!(users == null)) {
+                 notifications = NotificationController.fetchUnreadNotifications(users);
+             }
+             
+             model.addAttribute("notifications",notifications);
+        	
    			return "bids";
         }
         
@@ -166,6 +226,16 @@ public class CarriersController {
           .orElseThrow(() -> new IllegalArgumentException("Invalid carrier Id:" + id));
         
         model.addAttribute("carriers", carrier);
+        
+        User users = getLoggedInUser();
+        List<Notification> notifications = new ArrayList<>();
+        
+        if(!(users == null)) {
+            notifications = NotificationController.fetchUnreadNotifications(users);
+        }
+        
+        model.addAttribute("notifications",notifications);
+        
         return "carriers";
     }
 	

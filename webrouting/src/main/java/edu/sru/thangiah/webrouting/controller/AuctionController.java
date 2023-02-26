@@ -1,5 +1,6 @@
 package edu.sru.thangiah.webrouting.controller;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.http.HttpSession;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import edu.sru.thangiah.webrouting.domain.Bids;
 import edu.sru.thangiah.webrouting.domain.Carriers;
+import edu.sru.thangiah.webrouting.domain.Notification;
 import edu.sru.thangiah.webrouting.domain.Shipments;
 import edu.sru.thangiah.webrouting.domain.User;
 import edu.sru.thangiah.webrouting.repository.ShipmentsRepository;
@@ -57,6 +59,15 @@ public class AuctionController {
 		
 		model.addAttribute("shipments", allShipments);
 		
+		User users = getLoggedInUser();
+        List<Notification> notifications = new ArrayList<>();
+        
+        if(!(users == null)) {
+            notifications = NotificationController.fetchUnreadNotifications(users);
+        }
+        
+        model.addAttribute("notifications",notifications);
+		
 		return "auctioninghome";
 	}
 	
@@ -89,6 +100,15 @@ public class AuctionController {
 		model.addAttribute("shipments", shipment);
         model.addAttribute("redirectLocation",redirectLocation);
         
+        User users = getLoggedInUser();
+        List<Notification> notifications = new ArrayList<>();
+        
+        if(!(users == null)) {
+            notifications = NotificationController.fetchUnreadNotifications(users);
+        }
+        
+        model.addAttribute("notifications",notifications);
+        
 		return "/force/forceendauctionconfirm";
 	}
 	/**
@@ -108,6 +128,15 @@ public class AuctionController {
         }
         
         model.addAttribute("shipments", shipment);
+        
+        User users = getLoggedInUser();
+        List<Notification> notifications = new ArrayList<>();
+        
+        if(!(users == null)) {
+            notifications = NotificationController.fetchUnreadNotifications(users);
+        }
+        
+        model.addAttribute("notifications",notifications);
         
 		return "/push/pushshipmentconfirm";
 	}
@@ -197,16 +226,23 @@ public class AuctionController {
 				.orElseThrow(() -> new IllegalArgumentException("Invalid shipment Id:" + id));
 		String redirectLocation = (String) session.getAttribute("redirectLocation");
 		User user = getLoggedInUser();
-
+    
+    List<Notification> notifications = new ArrayList<>();
+            
+            if(!(user == null)) {
+                notifications = NotificationController.fetchUnreadNotifications(users);
+            }
+            
+    model.addAttribute("notifications",notifications);
+            
 		User bidUser;
 		Bids winningBid = shipment.getLowestBid();
-		
+
 		if (winningBid == null) {
 			System.out.println("ERROR: Failed to end auction on auction with no bids");
 			Logger.error("ERROR: Failed to end auction on auction with no bids!", user.getUsername()); //TODO: Make errors like this display on the page for user end to see (follow method used in database.html
 			return redirectLocation;
 		}
-		
 		
 		Carriers carrier = winningBid.getCarrier();
 		
@@ -227,6 +263,16 @@ public class AuctionController {
 		
 		shipmentsRepository.save(shipment);
 		Logger.info("{} has successfully ended the auction for shipment with ID {}.", user.getUsername(), shipment.getId());
+		
+		User users = getLoggedInUser();
+        List<Notification> notifications = new ArrayList<>();
+        
+        if(!(users == null)) {
+            notifications = NotificationController.fetchUnreadNotifications(users);
+        }
+        
+        model.addAttribute("notifications",notifications);
+		
 		return "redirect:" + redirectLocation;
 	}
 	
@@ -248,6 +294,15 @@ public class AuctionController {
 		
 		model.addAttribute("user",user);
 		model.addAttribute("redirectLocation",redirectLocation);
+		
+		User users = getLoggedInUser();
+        List<Notification> notifications = new ArrayList<>();
+        
+        if(!(users == null)) {
+            notifications = NotificationController.fetchUnreadNotifications(users);
+        }
+        
+        model.addAttribute("notifications",notifications);
 		
 		return "/toggle/toggleauctioningconfirm";
 	}

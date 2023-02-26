@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import edu.sru.thangiah.webrouting.domain.Notification;
 import edu.sru.thangiah.webrouting.domain.Technicians;
 import edu.sru.thangiah.webrouting.domain.User;
 import edu.sru.thangiah.webrouting.repository.TechniciansRepository;
@@ -60,6 +61,16 @@ public class TechniciansController {
 	@RequestMapping({"/technicians"})
     public String showTechList(Model model) {
         model.addAttribute("technicians", techniciansRepository.findAll());
+        
+        User users = getLoggedInUser();
+        List<Notification> notifications = new ArrayList<>();
+        
+        if(!(users == null)) {
+            notifications = NotificationController.fetchUnreadNotifications(users);
+        }
+        
+        model.addAttribute("notifications",notifications);
+        
         return "technicians";
     }
 	
@@ -73,7 +84,17 @@ public class TechniciansController {
 	 */
 	@GetMapping({"/add-technician"})
     public String showContactList(Model model, Technicians technician, BindingResult result) {
-        model.addAttribute("contacts", getLoggedInUser().getCarrier().getContacts());       
+        model.addAttribute("contacts", getLoggedInUser().getCarrier().getContacts()); 
+        
+        User users = getLoggedInUser();
+        List<Notification> notifications = new ArrayList<>();
+        
+        if(!(users == null)) {
+            notifications = NotificationController.fetchUnreadNotifications(users);
+        }
+        
+        model.addAttribute("notifications",notifications);
+        
         return "/add/add-technician";
     }
 	
@@ -131,9 +152,29 @@ public class TechniciansController {
         	model.addAttribute("error", "Unable to delete due to dependency conflict."); 
         	Logger.error("{} was unable to delete Technician with ID {} due to a dependecy conflict.", loggedInUser.getUsername(), technician.getId());
         	model.addAttribute("technicians", techniciansRepository.findAll());
+        	
+        	User users = getLoggedInUser();
+            List<Notification> notifications = new ArrayList<>();
+            
+            if(!(users == null)) {
+                notifications = NotificationController.fetchUnreadNotifications(users);
+            }
+            
+            model.addAttribute("notifications",notifications);
+        	
         	return "technicians";
         }
         model.addAttribute("technicians", technician);
+        
+        User users = getLoggedInUser();
+        List<Notification> notifications = new ArrayList<>();
+        
+        if(!(users == null)) {
+            notifications = NotificationController.fetchUnreadNotifications(users);
+        }
+        
+        model.addAttribute("notifications",notifications);
+        
         return "/delete/deletetechnicianconfirm";
     }
 	
@@ -167,6 +208,16 @@ public class TechniciansController {
           .orElseThrow(() -> new IllegalArgumentException("Invalid technician Id:" + id));
         
         model.addAttribute("technicians", technician);
+        
+        User users = getLoggedInUser();
+        List<Notification> notifications = new ArrayList<>();
+        
+        if(!(users == null)) {
+            notifications = NotificationController.fetchUnreadNotifications(users);
+        }
+        
+        model.addAttribute("notifications",notifications);
+        
         return "technicians";
     }
   	
@@ -182,6 +233,16 @@ public class TechniciansController {
   	          .orElseThrow(() -> new IllegalArgumentException("Invalid technician Id:" + id));
   	  	
         model.addAttribute("maintenanceOrder", technician.getOrders());
+        
+        User users = getLoggedInUser();
+        List<Notification> notifications = new ArrayList<>();
+        
+        if(!(users == null)) {
+            notifications = NotificationController.fetchUnreadNotifications(users);
+        }
+        
+        model.addAttribute("notifications",notifications);
+        
         return "maintenanceorders";
     }
 	
@@ -200,6 +261,15 @@ public class TechniciansController {
 		
 		 model.addAttribute("contacts", getLoggedInUser().getCarrier().getContacts());  
 	     model.addAttribute("technicians", technician);
+	     
+	     User users = getLoggedInUser();
+	        List<Notification> notifications = new ArrayList<>();
+	        
+	        if(!(users == null)) {
+	            notifications = NotificationController.fetchUnreadNotifications(users);
+	        }
+	        
+	        model.addAttribute("notifications",notifications);
 	     
         return "/update/update-technician";
     }
