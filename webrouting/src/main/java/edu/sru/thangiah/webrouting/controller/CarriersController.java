@@ -95,6 +95,17 @@ public class CarriersController {
     }
 	
 	/**
+	    * Redirects user to the /uploadcarrier page when clicking "Upload an excel file" button in the carriers section of AdminTry
+	    * @param model used to add data to the model
+	    * @return "/uploadcarrier"
+	    */
+	   
+	   @RequestMapping({"/uploadcarrier"})
+	   public String showAddCarrierExcel(Model model) {
+		   return "/uploadcarrier";
+	   }
+	
+	/**
   	 * Finds a carrier using the id parameter and if found, adds the details of that carrier
   	 * to a form and redirects the user to that update form.
   	 * @param id Stores the ID of the carrier to be edited

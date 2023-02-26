@@ -165,6 +165,17 @@ public class LocationsController {
   	}
 	
 	/**
+     * Redirects user to the /uploadlocations page when clicking "Upload an excel file" button in the locations section of Carrier login
+     * @param model used to add data to the model
+     * @return "/uploadlocations"
+     */
+    
+    @RequestMapping({"/uploadlocations"})
+    public String showAddLocationsExcel(Model model) {
+ 	   return "/uploadlocations";
+    }
+	
+	/**
   	 * Finds a location using the id parameter and if found, redirects to the confirmation page
   	 * Makes sure there are no dependencies before deleting. If there are, an error message is displayed
   	 * @param id Stores the ID of the location to be deleted

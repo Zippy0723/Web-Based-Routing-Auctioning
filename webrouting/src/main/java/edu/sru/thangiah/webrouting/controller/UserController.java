@@ -200,6 +200,7 @@ public class UserController {
      * @param model Used to add data to the model
      * @return "/add/add-user-home"
      */
+    
    @RequestMapping({"/signup"})
    public String shownAddHomePage(Model model) {
 	   
@@ -251,6 +252,7 @@ public class UserController {
     * @param model Used to add data to the model
     * @return "/add/add-user-carrier"
     */
+   
    @RequestMapping({"/addcarrieruser"})
    public String showCarrierPage(User user, Model model) {
 	   model.addAttribute("userForm", new User());
@@ -265,6 +267,17 @@ public class UserController {
        model.addAttribute("notifications",notifications);
 	   
        return "/add/add-user-carrier";
+   }
+   
+   /**
+    * Redirects user to the /upload users page when clicking "Upload an excel file" button in the users section of AdminTry
+    * @param model used to add data to the model
+    * @return "/uploadusers"
+    */
+   
+   @RequestMapping({"/uploadusers"})
+   public String showAddUserExcel(Model model) {
+	   return "/uploadusers";
    }
     
     /**

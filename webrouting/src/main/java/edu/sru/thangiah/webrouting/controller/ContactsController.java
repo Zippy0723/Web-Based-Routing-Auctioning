@@ -177,6 +177,17 @@ public class ContactsController {
   	}
   	
   	/**
+     * Redirects user to the /uploadcontacts page when clicking "Upload an excel file" button in the contacts section of Carrier login
+     * @param model used to add data to the model
+     * @return "/uploadcontacts"
+     */
+    
+    @RequestMapping({"/uploadcontacts"})
+    public String showAddContactsExcel(Model model) {
+ 	   return "/uploadcontacts";
+    }
+  	
+  	/**
   	 * Finds a contact using the id parameter and if found, redirects user to delete confirmation page
   	 * Checks if dependencies are empty before deleting it.
   	 * @param id Stores the ID of the contact to be deleted

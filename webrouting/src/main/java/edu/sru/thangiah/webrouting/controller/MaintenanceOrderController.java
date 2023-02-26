@@ -153,6 +153,17 @@ public class MaintenanceOrderController {
   	}
 	
 	/**
+     * Redirects user to the /uploadmaintenance page when clicking "Upload an excel file" button in the Maintenance section of Carrier login
+     * @param model used to add data to the model
+     * @return "/uploadmaintenance"
+     */
+    
+    @RequestMapping({"/uploadmaintenance"})
+    public String showAddMaintenanceExcel(Model model) {
+ 	   return "/uploadmaintenance";
+    }
+	
+	/**
   	 * Finds a maintenance order using the id parameter and if found, redirects to confirmation page
   	 * @param id Stores the ID of the maintenance order to be deleted
   	 * @param model Used to add data to the model

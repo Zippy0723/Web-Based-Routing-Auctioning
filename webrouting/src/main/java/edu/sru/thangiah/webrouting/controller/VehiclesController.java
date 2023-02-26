@@ -137,6 +137,17 @@ public class VehiclesController {
     }
 	
 	/**
+     * Redirects user to the /uploadvehicles page when clicking "Upload an excel file" button in the vehicles section of Carrier login
+     * @param model used to add data to the model
+     * @return "/uploadvehicles"
+     */
+    
+    @RequestMapping({"/uploadvehicles"})
+    public String showAddVehiclesExcel(Model model) {
+ 	   return "/uploadvehicles";
+    }
+	
+	/**
   	 * Adds a vehicle to the database. Checks if there are errors in the form. <br>
   	 * If there are no errors, the vehicle is saved in the vehiclesRepository. and the user is redirect to /vehicles <br>
   	 * If there are errors, the user is redirected to the /add/add-vehicle page.

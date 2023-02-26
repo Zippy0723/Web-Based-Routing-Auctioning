@@ -544,6 +544,7 @@ public class ShipmentsController {
   	 * @param session stores the current logged in users HTTP session. Attribute "redirectLocation" can store a string containing the last page the user visited.
   	 * @return "redirect:"/delete/deleteshipmentconfirm"  
   	 */
+	
 	@GetMapping("/deleteshipment/{id}")
     public String deleteShipment(@PathVariable("id") long id, Model model, HttpSession session) {
         Shipments shipment = shipmentsRepository.findById(id)

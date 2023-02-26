@@ -171,6 +171,18 @@ public class VehicleTypesController {
   		return "redirect:/vehicletypes";
   	}
 	
+
+/**
+     * Redirects user to the /uploadvehicletypes page when clicking "Upload an excel file" button in the Vehicle Types section of Carrier login
+     * @param model used to add data to the model
+     * @return "/uploadvehicletypes"
+     */
+    
+    @RequestMapping({"/uploadvehicletypes"})
+    public String showAddVehicleTypesExcel(Model model) {
+ 	   return "/uploadvehicletypes";
+    }
+	
 	/**
   	 * Finds a vehicle type using the id parameter and if found, redirects to confirmation page
   	 * If there are dependency issues, the vehicle is not deleted and an error is displayed to the user.
