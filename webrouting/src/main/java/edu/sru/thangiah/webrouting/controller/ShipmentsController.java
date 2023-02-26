@@ -803,7 +803,7 @@ public class ShipmentsController {
   	 */
 	@SuppressWarnings("unused")
 	@PostMapping("/upload-shipment")
-	public String LoadFromExcelData(@RequestParam("file") MultipartFile excelData) throws AccessException{
+	public String LoadFromExcelData(@RequestParam("file") MultipartFile excelData){
 		XSSFWorkbook workbook;
 		try {
 			User user = getLoggedInUser();
@@ -814,7 +814,12 @@ public class ShipmentsController {
 			List<Carriers> carriersList;
 			carriersList = (List<Carriers>) carriersRepository.findAll();
 			
+			List<String> states = Arrays.asList("Alabama", "Alaska", "Arizona", "Arkansas", "California", "Colorado", "Connecticut", "Delaware", "Florida", "Georgia", "Hawaii", "Idaho", "Illinois", "Indiana", "Iowa", "Kansas", "Kentucky", "Louisiana", "Maine", "Maryland", "Massachusetts", "Michigan", "Minnesota", "Mississippi", "Missouri", "Montana", "Nebraska", "Nevada", "New Hampshire", "New Jersey", "New Mexico", "New York", "North Carolina", "North Dakota", "Ohio", "Oklahoma", "Oregon", "Pennsylvania", "Rhode Island", "South Carolina", "South Dakota", "Tennessee", "Texas", "Utah", "Vermont", "Virginia", "Washington", "West Virginia", "Wisconsin", "Wyoming");
+			List<String> stateAbbreviations = Arrays.asList("AL", "AK", "AZ", "AR", "CA", "CO", "CT", "DE", "FL", "GA", "HI", "ID", "IL", "IN", "IA", "KS", "KY", "LA", "ME", "MD", "MA", "MI", "MN", "MS", "MO", "MT", "NE", "NV", "NH", "NJ", "NM", "NY", "NC", "ND", "OH", "OK", "OR", "PA", "RI", "SC", "SD", "TN", "TX", "UT", "VT", "VA", "WA", "WV", "WI", "WY");
+			
 			for(int i=1; i<worksheet.getPhysicalNumberOfRows(); i++) {
+				
+				carriersRepository.findAll();
 				 
 				Shipments shipment = new Shipments();
 		        XSSFRow row = worksheet.getRow(i);
@@ -824,172 +829,155 @@ public class ShipmentsController {
 		        }
 		        
 		        
-		        List<String> states = Arrays.asList("Alabama", "Alaska", "Arizona", "Arkansas", "California", "Colorado", "Connecticut", "Delaware", "Florida", "Georgia", "Hawaii", "Idaho", "Illinois", "Indiana", "Iowa", "Kansas", "Kentucky", "Louisiana", "Maine", "Maryland", "Massachusetts", "Michigan", "Minnesota", "Mississippi", "Missouri", "Montana", "Nebraska", "Nevada", "New Hampshire", "New Jersey", "New Mexico", "New York", "North Carolina", "North Dakota", "Ohio", "Oklahoma", "Oregon", "Pennsylvania", "Rhode Island", "South Carolina", "South Dakota", "Tennessee", "Texas", "Utah", "Vermont", "Virginia", "Washington", "West Virginia", "Wisconsin", "Wyoming");
-				List<String> stateAbbreviations = Arrays.asList("AL", "AK", "AZ", "AR", "CA", "CO", "CT", "DE", "FL", "GA", "HI", "ID", "IL", "IN", "IA", "KS", "KY", "LA", "ME", "MD", "MA", "MI", "MN", "MS", "MO", "MT", "NE", "NV", "NH", "NJ", "NM", "NY", "NC", "ND", "OH", "OK", "OR", "PA", "RI", "SC", "SD", "TN", "TX", "UT", "VT", "VA", "WA", "WV", "WI", "WY");
-		        
 		       
-		        String scac = "1";												//Not Set By Upload
-	    		String freightBillNumber = "1";									//Not Set By Upload
-	    		String paidAmount = "1";										//Not Set By Upload
-	    		String fullFreightTerms = "PENDING"; 							//ALWAYS PENDING
+		        String scac = "NONE";										//Not Set By Upload
+	    		String freightBillNumber = "0.00";							//Not Set By Upload
+	    		String paidAmount = "0.00";									//Not Set By Upload
+	    		String fullFreightTerms = "PENDING"; 						//Not Set By Upload (ALWAYS PENDING)
 	    		
 	    		
+	    		String clientName = row.getCell(0).toString().strip();
+			    String clientMode = row.getCell(1).toString().strip();
+			    String date = row.getCell(2).toString();
+	    		String commodityClass = row.getCell(3).toString().strip();
+	    		String commodityPieces = row.getCell(4).toString().strip();
+	    		String commodityPaidWeight = row.getCell(5).toString().strip();
+	    		String shipperCity = row.getCell(6).toString().strip();
+	    		String shipperState = row.getCell(7).toString().strip();
+	    		String shipperZip = row.getCell(8).toString().strip();
+	    		String shipperLatitude = row.getCell(9).toString().strip();
+	    		String shipperLongitude = row.getCell(10).toString().strip();
+	    		String consigneeCity = row.getCell(11).toString().strip();
+	    		String consigneeState = row.getCell(12).toString().strip();
+	    		String consigneeZip = row.getCell(13).toString().strip();
+	    		String consigneeLatitude = row.getCell(14).toString().strip();
+	    		String consigneeLongitude = row.getCell(15).toString().strip();
 	    		
-	    		
-	    		String clientName = row.getCell(0).toString();
-			    String clientMode = row.getCell(1).toString();
-			    
-	    		String commodityClass = row.getCell(3).toString();
-	    		String commodityPieces = row.getCell(4).toString();
-	    		String commodityPaidWeight = row.getCell(5).toString();
-	    		String shipperCity = row.getCell(6).toString();
-	    		String shipperState = row.getCell(7).toString();
-	    		String shipperZip = row.getCell(8).toString();
-	    		String shipperLatitude = row.getCell(9).toString();
-	    		String shipperLongitude = row.getCell(10).toString();
-	    		String consigneeCity = row.getCell(11).toString();
-	    		String consigneeState = row.getCell(12).toString();
-	    		String consigneeZip = row.getCell(13).toString();
-	    		String consigneeLatitude = row.getCell(14).toString();
-	    		String consigneeLongitude = row.getCell(15).toString();
-	    		
-	    		
-	    		//Date manipulation
-	    		
-	    		Date date1 = row.getCell(2).getDateCellValue();
-		    	DateFormat dateFormat1 = new SimpleDateFormat("yyyy-MM-dd");
-		    	String shipDate1 = dateFormat1.format(date1);
-		    	
-		    	
-	    		
-	    		
+
 	    		if (!(clientName.length() < 64 && clientName.length() > 0) || !(clientName.matches("^[a-zA-Z0-9.]+$"))) {
 	    			workbook.close();
-	    			Logger.info("Client field must be between 0 and 64 characters and alphanumeric.");
+	    			Logger.error("{} attempted to upload a shipment but the Client field must be between 0 and 64 characters and alphanumeric.",user.getUsername());
 	    			continue;
 	    		}
 	    		
 	    		if(!(clientMode.equals("LTL") || clientMode.equals("FTL"))) {
 	    			workbook.close();
-	    			Logger.info("Client Mode must be between 0 and 3 characters and alphanumeric.");
+	    			Logger.error("{} attempted to upload a shipment but the Client Mode must be between 0 and 3 characters and alphanumeric.",user.getUsername());
 	    			continue;
 	    		}
 	    		
-	    		//TODO: This needs to be fixed because of the excel date formating RAWDATA
-	    	//	if(!(shipDate1.length() < 12 && shipDate1.length() > 0 && shipDate1.matches("^\d{4}-\d{2}-\d{2}$")) { //broken
-	    	//		workbook.close();
-	    	//		Logger.info("Date must be between 0 and 12 characters and formated YYYY-MM-DD.");
-	    	//	}
+	    		
+	    		if(!(date.length() < 12 && date.length() > 0 && date.matches("^\\d{2}-(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)-\\d{4}$"))) { 
+	    			workbook.close();
+	    			Logger.error("{} attempted to upload a shipment but the Date must be between 0 and 12 characters and formated MM/DD/YYYY.",user.getUsername());
+	    			continue;
+	    		}
 	    		
 	    		if(!(freightBillNumber.length() < 32 && freightBillNumber.length() > 0) || !(freightBillNumber.matches("^[0-9]*\\.?[0-9]+$"))) {
 	    			workbook.close();
-	    			Logger.info("Freight Bill Number must be between 0 and 32 numbers long.");
+	    			Logger.error("{} attempted to upload a shipment but the Freight Bill Number must be between 0 and 32 numbers long.",user.getUsername());
 	    			continue;
 	    		}
 	    		
 	    		if(!(paidAmount.length() < 16 && paidAmount.length() > 0) || !(paidAmount.matches("^[0-9]*\\.?[0-9]+$"))) {
 	    			workbook.close();
-	    			Logger.info("Paid Amount must be between 0 and 16 numbers long.");
+	    			Logger.error("{} attempted to upload a shipment but the Paid Amount must be between 0 and 16 numbers long.",user.getUsername());
 	    			continue;
 	    		}
 	    		
 	    		if(!(fullFreightTerms.length() < 24 && fullFreightTerms.length() > 0)) {
 	    			workbook.close();
-	    			Logger.info("Full Freight Terms has to be between 0 and 24 characters.");
+	    			Logger.error("{} attempted to upload a shipment but the Full Freight Terms has to be between 0 and 24 characters.",user.getUsername());
 	    			continue;
 	    		}
 	    		
 	    		if(!(commodityClass.length() < 12 && commodityClass.length() > 0) || !(commodityClass.matches("^[a-zA-Z0-9.]+$"))) {
 	    			workbook.close();
-	    			Logger.info("Commodity Class must be between 0 and 12 characters and alphanumeric.");
+	    			Logger.error("{} attempted to upload a shipment but the Commodity Class must be between 0 and 12 characters and alphanumeric.",user.getUsername());
 	    			continue;
 	    		}
 	    		
 	    		if(!(commodityPieces.length() < 64 && commodityPieces.length() > 0) || !(commodityPieces.matches("^[0-9.]+$"))) {
 	    			workbook.close();
-	    			Logger.info("Commodity Pieces must be between 0 and 64 characters long and numeric.");
+	    			Logger.error("{} attempted to upload a shipment but the Commodity Pieces must be between 0 and 64 characters long and numeric.",user.getUsername());
 	    			continue;
 	    		}
 	    		
 	    		if(!(commodityPaidWeight.length() < 16 && commodityPaidWeight.length() > 0) || !(commodityPaidWeight.matches("^[0-9.]*\\.?[0-9.]+$"))) {
 	    			workbook.close();
-	    			Logger.info("Commodity Paid Weight must be between 0 and 16 characters long and numeric.");
+	    			Logger.error("{} attempted to upload a shipment but the Commodity Paid Weight must be between 0 and 16 characters long and numeric.",user.getUsername());
 	    			continue;
 	    		}
 	    		
 	    		if(!(shipperCity.length() < 64 && shipperCity.length() > 0) || !(shipperCity.matches("^[a-zA-Z]+$"))) {
 	    			workbook.close();
-	    			Logger.info("Shipper City must be between 0 and 64 characters and is alphabetic.");
+	    			Logger.error("{} attempted to upload a shipment but the Shipper City must be between 0 and 64 characters and is alphabetic.",user.getUsername());
 	    			continue;
 	    		}
 	    		
 	    		if(!(states.contains(shipperState) || stateAbbreviations.contains(shipperState))) {
 	    			workbook.close();
-	    			Logger.info("Shipper State must be a state or state abbreviation.");
+	    			Logger.error("{} attempted to upload a shipment but the Shipper State must be a state or state abbreviation.",user.getUsername());
 	    			continue;
 	    		}
 	    		
 	    		if(!(shipperZip.length() < 12 && shipperZip.length() > 0) || !(shipperZip.matches("^[0-9.]+$"))){
 	    			workbook.close();
-	    			Logger.info("Shipper Zip must be between 0 and 12 characters and is numeric.");
+	    			Logger.error("{} attempted to upload a shipment but the Shipper Zip must be between 0 and 12 characters and is numeric.",user.getUsername());
 	    			continue;
 	    		}
 	    		
 	    		if(!(shipperLatitude.matches("^(-?[0-8]?\\d(\\.\\d{1,7})?|90(\\.0{1,7})?)$"))) {
 	    			workbook.close();
-	    			Logger.info("Shipper Latitude must be between 90 and -90 up to 7 decimal places.");
+	    			Logger.error("{} attempted to upload a shipment but the Shipper Latitude must be between 90 and -90 up to 7 decimal places.",user.getUsername());
 	    			continue;
 	    		}
 	    		
 	    		if(!(shipperLongitude.matches("^-?(180(\\.0{1,7})?|\\d{1,2}(\\.\\d{1,7})?|1[0-7]\\d(\\.\\d{1,7})?|-180(\\.0{1,7})?|-?\\d{1,2}(\\.\\d{1,7})?)$"))) {
 	    			workbook.close();
-	    			Logger.info("Shipper Longitude must be between 0 and 12 characters.");
+	    			Logger.error("{} attempted to upload a shipment but the Shipper Longitude must be between 0 and 12 characters.",user.getUsername());
 	    			continue;
 	    		}
 	    		
 	    		if(!(consigneeCity.length() < 64 && consigneeCity.length() > 0) || !( consigneeCity.matches("^[a-zA-Z]+$"))) {
 	    			workbook.close();
-	    			Logger.info("Consignee City must be between 0 and 64 characters and is alphabetic.");
+	    			Logger.error("{} attempted to upload a shipment but the Consignee City must be between 0 and 64 characters and is alphabetic.",user.getUsername());
 	    			continue;
 	    		}
 	    		
 	    		if(!(states.contains(consigneeState) || stateAbbreviations.contains(consigneeState))) {
 	    			workbook.close();
-	    			Logger.info("Consignee State must be a state or state abbreviation.");
+	    			Logger.error("{} attempted to upload a shipment but the Consignee State must be a state or state abbreviation.",user.getUsername());
 	    			continue;
 	    		}
 	    		
 	    		if(!(consigneeZip.length() < 12 && consigneeZip.length() > 0) || !(consigneeZip.matches("^[0-9.]+$"))){
 	    			workbook.close();
-	    			Logger.info("Consignee Zip must be between 0 and 12 characters and is alphabetic.");
+	    			Logger.error("{} attempted to upload a shipment but the Consignee Zip must be between 0 and 12 characters and is alphabetic.",user.getUsername());
 	    			continue;
 	    		}
 	    		
 	    		if(!(consigneeLatitude.matches("^(-?[0-8]?\\d(\\.\\d{1,7})?|90(\\.0{1,7})?)$"))) {
 	    			workbook.close();
-	    			Logger.info("Consignee Latitude must be between 90 and -90 up to 7 decimal places.");
+	    			Logger.error("{} attempted to upload a shipment but the Consignee Latitude must be between 90 and -90 up to 7 decimal places.",user.getUsername());
 	    			continue;
 	    		}
 	    		
 	    		if(!(consigneeLongitude.matches("^-?(180(\\.0{1,7})?|\\d{1,2}(\\.\\d{1,7})?|1[0-7]\\d(\\.\\d{1,7})?|-180(\\.0{1,7})?|-?\\d{1,2}(\\.\\d{1,7})?)$"))) {
 	    			workbook.close();
-	    			Logger.info("Consignee Longitude must be between 180 and -180 up to 7 decimal places.");
+	    			Logger.error("{} attempted to upload a shipment but the Consignee Longitude must be between 180 and -180 up to 7 decimal places.",user.getUsername());
 	    			continue;
 	    		}
 	    		
 	    		
-	    		
-	    		
-	    		//defaults
-	    		shipment.setCarrier(null);
-	    		shipment.setVehicle(null);
-	    		
+	    		shipment.setCarrier(null);			//THIS IS DEFAULT
+	    		shipment.setVehicle(null);			//THIS IS DEFAULT
 	    		
 	    		
 	    		shipment.setClient(clientName);
 	    		shipment.setClientMode(clientMode);
 	    		shipment.setScac(scac);
-	    		shipment.setShipDate(shipDate1);
+	    		shipment.setShipDate(date);
 	    		shipment.setFreightbillNumber(freightBillNumber);
 	    		shipment.setPaidAmount(paidAmount);
 	    		shipment.setFullFreightTerms(fullFreightTerms);
