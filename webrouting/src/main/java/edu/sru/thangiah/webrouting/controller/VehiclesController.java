@@ -112,19 +112,11 @@ public class VehiclesController {
     public String showLists(Model model, Vehicles vehicles, BindingResult result) {
 		
 		User user = getLoggedInUser();
+		model = NotificationController.loadNotificationsIntoModel(user, model);
 		
 			model.addAttribute("carriers", user.getCarrier());
 			model.addAttribute("vehicleTypes", vehicleTypesRepository.findAll()); 
 		    model.addAttribute("locations", user.getCarrier().getLocations()); 
-		    
-		    User users = getLoggedInUser();
-	        List<Notification> notifications = new ArrayList<>();
-	        
-	        if(!(users == null)) {
-	            notifications = NotificationController.fetchUnreadNotifications(users);
-	        }
-	        
-	        model.addAttribute("notifications",notifications);
 		    
 	        return "/add/add-vehicle";
 		
@@ -161,20 +153,15 @@ public class VehiclesController {
 		userValidator.addition(vehicles, result);
   		if (result.hasErrors()) {
   			
-  			User users = getLoggedInUser();
-	        List<Notification> notifications = new ArrayList<>();
-	        
-	        if(!(users == null)) {
-	            notifications = NotificationController.fetchUnreadNotifications(users);
-	        }
-	        
-	        model.addAttribute("notifications",notifications);
+  			User user = getLoggedInUser();
+  			model = NotificationController.loadNotificationsIntoModel(user, model);
   			
   			return "/add/add-vehicle";
 		}
   		
   		Boolean deny = false;
   		User user = getLoggedInUser();
+  		model = NotificationController.loadNotificationsIntoModel(user, model);
   		List<Vehicles> checkVehicles = new ArrayList<>();
   		checkVehicles = (List<Vehicles>) vehiclesRepository.findAll();
   		
@@ -231,32 +218,15 @@ public class VehiclesController {
           .orElseThrow(() -> new IllegalArgumentException("Invalid vehicle Id:" + id));
         
         User user = getLoggedInUser();
+        model = NotificationController.loadNotificationsIntoModel(user, model);
         if (!vehicle.getOrders().isEmpty() || !vehicle.getShipments().isEmpty() || !vehicle.getDrivers().isEmpty()){
         	model.addAttribute("error", "Unable to delete due to dependency conflict.");
         	Logger.error("{} was unable to delete due to dependency conflict.", user.getUsername());
         	model.addAttribute("vehicles", vehiclesRepository.findAll());
         	
-        	User users = getLoggedInUser();
-            List<Notification> notifications = new ArrayList<>();
-            
-            if(!(users == null)) {
-                notifications = NotificationController.fetchUnreadNotifications(users);
-            }
-            
-            model.addAttribute("notifications",notifications);
-        	
        	 	return "vehicles";
         }
         model.addAttribute("vehicles", vehicle);
-        
-        User users = getLoggedInUser();
-        List<Notification> notifications = new ArrayList<>();
-        
-        if(!(users == null)) {
-            notifications = NotificationController.fetchUnreadNotifications(users);
-        }
-        
-        model.addAttribute("notifications",notifications);
         
         return "/delete/deletevehicleconfirm";
     }
@@ -272,6 +242,7 @@ public class VehiclesController {
   		Vehicles vehicle = vehiclesRepository.findById(id)
   	          .orElseThrow(() -> new IllegalArgumentException("Invalid vehicle Id:" + id));
   		User user = getLoggedInUser();
+  		model = NotificationController.loadNotificationsIntoModel(user, model);
   		User carrierUser = CarriersController.getUserFromCarrier(vehicle.getCarrier());
   		
   		if(user.getId() != carrierUser.getId()) {
@@ -298,14 +269,8 @@ public class VehiclesController {
         
         model.addAttribute("vehicles", vehicle);
         
-        User users = getLoggedInUser();
-        List<Notification> notifications = new ArrayList<>();
-        
-        if(!(users == null)) {
-            notifications = NotificationController.fetchUnreadNotifications(users);
-        }
-        
-        model.addAttribute("notifications",notifications);
+        User user = getLoggedInUser();
+        model = NotificationController.loadNotificationsIntoModel(user, model);
         
         return "vehicles";
     }
@@ -322,21 +287,13 @@ public class VehiclesController {
 		 Vehicles vehicle = vehiclesRepository.findById(id)
           .orElseThrow(() -> new IllegalArgumentException("Invalid Vehicle Id:" + id));
 		 User user = getLoggedInUser();
+		 model = NotificationController.loadNotificationsIntoModel(user, model);
 		 
 			
 				model.addAttribute("carriers", user.getCarrier());
 				model.addAttribute("vehicleTypes", vehicleTypesRepository.findAll()); 
 			    model.addAttribute("locations", user.getCarrier().getLocations());
 			    model.addAttribute("vehicles", vehicle);
-			    
-			    User users = getLoggedInUser();
-		        List<Notification> notifications = new ArrayList<>();
-		        
-		        if(!(users == null)) {
-		            notifications = NotificationController.fetchUnreadNotifications(users);
-		        }
-		        
-		        model.addAttribute("notifications",notifications);
 			    
 			    return "/update/update-vehicle";
 			}
@@ -364,14 +321,8 @@ public class VehiclesController {
         
         model.addAttribute("drivers", vehicle.getDrivers());
         
-        User users = getLoggedInUser();
-        List<Notification> notifications = new ArrayList<>();
-        
-        if(!(users == null)) {
-            notifications = NotificationController.fetchUnreadNotifications(users);
-        }
-        
-        model.addAttribute("notifications",notifications);
+        User user = getLoggedInUser();
+        model = NotificationController.loadNotificationsIntoModel(user, model);
         
         return "drivers";
     }
@@ -390,14 +341,8 @@ public class VehiclesController {
         
         model.addAttribute("shipments", vehicle.getShipments());
         
-        User users = getLoggedInUser();
-        List<Notification> notifications = new ArrayList<>();
-        
-        if(!(users == null)) {
-            notifications = NotificationController.fetchUnreadNotifications(users);
-        }
-        
-        model.addAttribute("notifications",notifications);
+        User user = getLoggedInUser();
+        model = NotificationController.loadNotificationsIntoModel(user, model);
         
         return "shipments";
     }
@@ -417,6 +362,7 @@ public class VehiclesController {
       BindingResult result, Model model) {
 		userValidator.addition(vehicle, result);
 		User loggedInUser = getLoggedInUser();
+		model = NotificationController.loadNotificationsIntoModel(loggedInUser, model);
         if (result.hasErrors()) {
         	vehicle.setId(id);
             return "/update/update-vehicle";

@@ -34,8 +34,6 @@ import edu.sru.thangiah.webrouting.web.UserValidator;
 @Controller
 public class LocationsController {
 	
-	
-	
 	private LocationsRepository locationsRepository;
 	
 	@Autowired
@@ -67,32 +65,15 @@ public class LocationsController {
 	@RequestMapping({"/locations"})
     public String showLocationsList(Model model) {
 		User user = getLoggedInUser();
+		model = NotificationController.loadNotificationsIntoModel(user, model);
 		if (user.getRole().toString().equals("CARRIER")) {
 			
 			 model.addAttribute("locations", user.getCarrier().getLocations());
-			 
-			 User users = getLoggedInUser();
-		        List<Notification> notifications = new ArrayList<>();
-		        
-		        if(!(users == null)) {
-		            notifications = NotificationController.fetchUnreadNotifications(users);
-		        }
-		        
-		        model.addAttribute("notifications",notifications);
 			 
 			 return "locations";
 		}
 		
         model.addAttribute("locations", locationsRepository.findAll());
-        
-        User users = getLoggedInUser();
-        List<Notification> notifications = new ArrayList<>();
-        
-        if(!(users == null)) {
-            notifications = NotificationController.fetchUnreadNotifications(users);
-        }
-        
-        model.addAttribute("notifications",notifications);
         
         return "locations";
     }
@@ -110,16 +91,8 @@ public class LocationsController {
 		User user = getLoggedInUser();
 		
 		model.addAttribute("carriers", user.getCarrier());  
-		
-		User users = getLoggedInUser();
-        List<Notification> notifications = new ArrayList<>();
+        model = NotificationController.loadNotificationsIntoModel(user, model);
         
-        if(!(users == null)) {
-            notifications = NotificationController.fetchUnreadNotifications(users);
-        }
-        
-        model.addAttribute("notifications",notifications);
-		
 	    return "/add/add-location";
 		
     }
@@ -141,6 +114,7 @@ public class LocationsController {
   		}
   		Boolean deny = false;
   		User user = getLoggedInUser();
+        model = NotificationController.loadNotificationsIntoModel(user, model);
   		List<Locations> checkLocation = new ArrayList<>();
   		checkLocation = (List<Locations>) locationsRepository.findAll();
   		
@@ -187,32 +161,15 @@ public class LocationsController {
         Locations location = locationsRepository.findById(id)
           .orElseThrow(() -> new IllegalArgumentException("Invalid location Id:" + id));
         User user = getLoggedInUser();
+        model = NotificationController.loadNotificationsIntoModel(user, model);
         if (!location.getVehicles().isEmpty()) {
         	model.addAttribute("error", "Unable to delete due to dependency conflict.");
         	Logger.error("Unable to delete location due to dependecy conflict.");
         	model.addAttribute("locations", user.getCarrier().getLocations());
         	
-        	User users = getLoggedInUser();
-            List<Notification> notifications = new ArrayList<>();
-            
-            if(!(users == null)) {
-                notifications = NotificationController.fetchUnreadNotifications(users);
-            }
-            
-            model.addAttribute("notifications",notifications);
-        	
         	return "locations";
         }
         model.addAttribute("locations", location);
-        
-        User users = getLoggedInUser();
-        List<Notification> notifications = new ArrayList<>();
-        
-        if(!(users == null)) {
-            notifications = NotificationController.fetchUnreadNotifications(users);
-        }
-        
-        model.addAttribute("notifications",notifications);
         
         return "/delete/deletelocationconfirm";
     }
@@ -229,6 +186,7 @@ public class LocationsController {
   	          .orElseThrow(() -> new IllegalArgumentException("Invalid location Id:" + id));
   		
   		User loggedInUser = getLoggedInUser();
+        model = NotificationController.loadNotificationsIntoModel(loggedInUser, model);
   		Logger.info("{} successfully deleted the location with ID {}.",loggedInUser.getUsername(), location.getId());
   		locationsRepository.delete(location);
   	    return "redirect:/locations";
@@ -248,14 +206,8 @@ public class LocationsController {
         
         model.addAttribute("locations", location);
         
-        User users = getLoggedInUser();
-        List<Notification> notifications = new ArrayList<>();
-        
-        if(!(users == null)) {
-            notifications = NotificationController.fetchUnreadNotifications(users);
-        }
-        
-        model.addAttribute("notifications",notifications);
+        User user = getLoggedInUser();
+        model = NotificationController.loadNotificationsIntoModel(user, model);
         
         return "locations";
     }
@@ -273,23 +225,13 @@ public class LocationsController {
           .orElseThrow(() -> new IllegalArgumentException("Invalid Location Id:" + id));
 		
 		User user = getLoggedInUser();
-		
-			model.addAttribute("carriers", user.getCarrier());
-			model.addAttribute("locations", location);
+        model = NotificationController.loadNotificationsIntoModel(user, model);
+        
+		model.addAttribute("carriers", user.getCarrier());
+		model.addAttribute("locations", location);
 			
-			User users = getLoggedInUser();
-	        List<Notification> notifications = new ArrayList<>();
-	        
-	        if(!(users == null)) {
-	            notifications = NotificationController.fetchUnreadNotifications(users);
-	        }
-	        
-	        model.addAttribute("notifications",notifications);
-			
-			return "/update/update-location";
+		return "/update/update-location";
 		
-		
-	
     }
 	
 	/**
@@ -313,7 +255,8 @@ public class LocationsController {
         }
         
         Boolean deny = false;
-  		User user = getLoggedInUser();
+        User user = getLoggedInUser();
+        model = NotificationController.loadNotificationsIntoModel(user, model);
   		List<Locations> checkLocation = new ArrayList<>();
   		checkLocation = (List<Locations>) locationsRepository.findAll();
   		

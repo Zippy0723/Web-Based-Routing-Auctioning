@@ -123,7 +123,7 @@ public class UserController {
     	session.setAttribute("redirectLocation", "/users");
     	
     	for (User user : userList) {
-    		if (!user.getRole().toString().equals("ADMIN") && !user.getRole().toString().equals("MASTERLIST")) {
+    		if (!user.getRole().toString().equals("ADMIN") && !user.getRole().toString().equals("MASTERLIST") && !user.getRole().toString().equals("SHADOWADMIN")) {
     			finalUserList.add(user);
     		}
     	}
@@ -131,14 +131,8 @@ public class UserController {
     	
         model.addAttribute("userstable", finalUserList);
         
-        User users = getLoggedInUser();
-        List<Notification> notifications = new ArrayList<>();
-        
-        if(!(users == null)) {
-            notifications = NotificationController.fetchUnreadNotifications(users);
-        }
-        
-        model.addAttribute("notifications",notifications);
+        User user = getLoggedInUser();
+        model = NotificationController.loadNotificationsIntoModel(user, model);
         
         return "users";
     }
@@ -157,14 +151,8 @@ public class UserController {
     	
         model.addAttribute("userstable", finalUserList);
         
-        User users = getLoggedInUser();
-        List<Notification> notifications = new ArrayList<>();
-        
-        if(!(users == null)) {
-            notifications = NotificationController.fetchUnreadNotifications(users);
-        }
-        
-        model.addAttribute("notifications",notifications);
+        User user = getLoggedInUser();
+        model = NotificationController.loadNotificationsIntoModel(user, model);
         
         return "CarrierAdministrationPage";
     }
@@ -183,14 +171,8 @@ public class UserController {
     	
         model.addAttribute("userstable", finalUserList);
         
-        User users = getLoggedInUser();
-        List<Notification> notifications = new ArrayList<>();
-        
-        if(!(users == null)) {
-            notifications = NotificationController.fetchUnreadNotifications(users);
-        }
-        
-        model.addAttribute("notifications",notifications);
+        User user = getLoggedInUser();
+        model = NotificationController.loadNotificationsIntoModel(user, model);
         
         return "ShipperAdministrationPage";
     }
@@ -203,45 +185,15 @@ public class UserController {
     
    @RequestMapping({"/signup"})
    public String shownAddHomePage(Model model) {
-	   
-	   User users = getLoggedInUser();
-       List<Notification> notifications = new ArrayList<>();
-       
-       if(!(users == null)) {
-           notifications = NotificationController.fetchUnreadNotifications(users);
-       }
-       
-       model.addAttribute("notifications",notifications);
-	   
 	   return "/add/add-user-home";
    }
    @RequestMapping({"/shippersignup"})
    public String shownShipperAddHomePage(Model model) {
-	   
-	   User users = getLoggedInUser();
-       List<Notification> notifications = new ArrayList<>();
-       
-       if(!(users == null)) {
-           notifications = NotificationController.fetchUnreadNotifications(users);
-       }
-       
-       model.addAttribute("notifications",notifications);
-	   
 	   return "/add/add-user-shipper-home";
    }
    
    @RequestMapping({"/carriersignup"})
    public String shownCarrierAddHomePage(Model model) {
-	   
-	   User users = getLoggedInUser();
-       List<Notification> notifications = new ArrayList<>();
-       
-       if(!(users == null)) {
-           notifications = NotificationController.fetchUnreadNotifications(users);
-       }
-       
-       model.addAttribute("notifications",notifications);
-	   
 	   return "/add/add-user-carrier-home";
    }
    
@@ -256,15 +208,6 @@ public class UserController {
    @RequestMapping({"/addcarrieruser"})
    public String showCarrierPage(User user, Model model) {
 	   model.addAttribute("userForm", new User());
-	   
-	   User users = getLoggedInUser();
-       List<Notification> notifications = new ArrayList<>();
-       
-       if(!(users == null)) {
-           notifications = NotificationController.fetchUnreadNotifications(users);
-       }
-       
-       model.addAttribute("notifications",notifications);
 	   
        return "/add/add-user-carrier";
    }
@@ -294,15 +237,6 @@ public class UserController {
   		roles.remove(2);
   		model.addAttribute("roles", roles);
   		
-  		User users = getLoggedInUser();
-        List<Notification> notifications = new ArrayList<>();
-        
-        if(!(users == null)) {
-            notifications = NotificationController.fetchUnreadNotifications(users);
-        }
-        
-        model.addAttribute("notifications",notifications);
-  		
   		return "/add/add-user";
     }
   	
@@ -318,15 +252,6 @@ public class UserController {
 		}
 
 		model.addAttribute("roles",result);
-		
-		User users = getLoggedInUser();
-        List<Notification> notifications = new ArrayList<>();
-        
-        if(!(users == null)) {
-            notifications = NotificationController.fetchUnreadNotifications(users);
-        }
-        
-        model.addAttribute("notifications",notifications);
 		
 		return "/add/add-user-shipper";
   }
@@ -452,15 +377,9 @@ public class UserController {
         User user = userRepository.findById(id)
           .orElseThrow(() -> new IllegalArgumentException("Invalid user Id:" + id));
           
-         User users = getLoggedInUser();
-        List<Notification> notifications = new ArrayList<>();
-        
-        if(!(users == null)) {
-            notifications = NotificationController.fetchUnreadNotifications(users);
-        }
-        
-        model.addAttribute("notifications",notifications);
-        
+        User loggedInUser = getLoggedInUser();
+        model = NotificationController.loadNotificationsIntoModel(loggedInUser, model);
+         
         model.addAttribute("users", user);
         return "/delete/deleteuserconfirm";
     }
@@ -477,6 +396,7 @@ public class UserController {
           .orElseThrow(() -> new IllegalArgumentException("Invalid user Id:" + id));
         
         User loggedInUser = getLoggedInUser();
+        model = NotificationController.loadNotificationsIntoModel(loggedInUser, model);
         
       if (!user.getShipments().isEmpty()) {
         	
@@ -508,15 +428,6 @@ public class UserController {
        
         Logger.info("{} successfully deleted the user {}.", loggedInUser.getUsername(), user.getUsername());
         userRepository.delete(user);
-         
-         User users = getLoggedInUser();
-        List<Notification> notifications = new ArrayList<>();
-        
-        if(!(users == null)) {
-            notifications = NotificationController.fetchUnreadNotifications(users);
-        }
-        
-        model.addAttribute("notifications",notifications);
          
         return "redirect:/users";
     }
@@ -550,14 +461,8 @@ public class UserController {
 		model.addAttribute("roles",results);
        }
         
-        User users = getLoggedInUser();
-        List<Notification> notifications = new ArrayList<>();
-        
-        if(!(users == null)) {
-            notifications = NotificationController.fetchUnreadNotifications(users);
-        }
-        
-        model.addAttribute("notifications",notifications);
+        User loggedInUser = getLoggedInUser();
+        model = NotificationController.loadNotificationsIntoModel(loggedInUser, model);
         
         return "/update/update-user";
     }
@@ -581,6 +486,7 @@ public class UserController {
       BindingResult result, Model model, boolean nocarrier, boolean resetPassword, RedirectAttributes redirectAttr, String updateEmail) {
   		updateEmail = user.getUpdateEmail();
   		User loggedInUser = getLoggedInUser();
+  		model = NotificationController.loadNotificationsIntoModel(loggedInUser, model);
   		userValidator.validateEmail(user, result);
         if (result.hasErrors()) {
         	user.setId(id);
@@ -631,14 +537,8 @@ public class UserController {
   		dtoUser = getLoggedInUser();
   		dtoUser.setUpdateEmail(dtoUser.getEmail());
   		
-  		User users = getLoggedInUser();
-        List<Notification> notifications = new ArrayList<>();
-        
-        if(!(users == null)) {
-            notifications = NotificationController.fetchUnreadNotifications(users);
-        }
-        
-        model.addAttribute("notifications",notifications);
+  		User loggedInUser = getLoggedInUser();
+  		model = NotificationController.loadNotificationsIntoModel(loggedInUser, model);
   		
   		return "/update/update-user-details";
   	}
@@ -666,6 +566,7 @@ public class UserController {
   		user.setEnabled(true);
   		userValidator.validateUpdate(user, result);
   		User loggedInUser = getLoggedInUser();
+  		model = NotificationController.loadNotificationsIntoModel(loggedInUser, model);
   		if (result.hasErrors()) {
   			model.addAttribute("error","Error: Information entered is invalid");
   			Logger.error("{} Failed to update {}.",loggedInUser.getUsername(), user.getUsername());

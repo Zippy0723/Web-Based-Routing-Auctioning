@@ -5,13 +5,17 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.servlet.MultipartConfigElement;
 import javax.swing.text.DateFormatter;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.expression.AccessException;
 import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -22,6 +26,10 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.commons.CommonsMultipartFile;
 
+import edu.sru.thangiah.webrouting.domain.Notification;
+import edu.sru.thangiah.webrouting.domain.User;
+import edu.sru.thangiah.webrouting.services.SecurityService;
+import edu.sru.thangiah.webrouting.services.UserService;
 import edu.sru.thangiah.webrouting.utilities.BackupUtil;
 
 @Controller
@@ -32,6 +40,12 @@ public class BackupController {
 	
 	@Value("${spring.datasource.password}")
 	private String dbPassword;
+	
+	@Autowired
+    private UserService userService;
+
+    @Autowired
+    private SecurityService securityService;
 	
 	private String dbName;
 	private String outputFile;
@@ -66,6 +80,10 @@ public class BackupController {
 	 */
 	@GetMapping("/database")
 	public String database(Model model) {
+		User user = getLoggedInUser();
+	    
+		model = NotificationController.loadNotificationsIntoModel(user, model);
+
 		return "database";
 	}
 	
@@ -87,6 +105,9 @@ public class BackupController {
 		
 		tmpFile.delete();
 		
+		User user = getLoggedInUser();
+		model = NotificationController.loadNotificationsIntoModel(user, model);
+		
 		return "database";
 	}
 	
@@ -106,5 +127,24 @@ public class BackupController {
         fos.write(file.getBytes());
         fos.close(); 
         return convFile;
+    }
+	
+	/**
+	 * Returns the user that is currently logged into the system. <br>
+	 * If there is no user logged in, null is returned.
+	 * @return user2 or null
+	 */
+	public User getLoggedInUser() {
+    	if (securityService.isAuthenticated()) {
+    		org.springframework.security.core.userdetails.User user = 
+    				(org.springframework.security.core.userdetails.User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+    		
+    		User user2 = userService.findByUsername(user.getUsername());
+    		
+    		return user2;
+    	}
+    	else {
+    		return null;
+    	}
     }
 }

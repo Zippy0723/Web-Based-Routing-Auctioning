@@ -69,13 +69,7 @@ public class ContactsController {
         model.addAttribute("contacts", getLoggedInUser().getCarrier().getContacts());
         
         User user = getLoggedInUser();
-        List<Notification> notifications = new ArrayList<>();
-        
-        if(!(user == null)) {
-            notifications = NotificationController.fetchUnreadNotifications(user);
-        }
-        
-        model.addAttribute("notifications",notifications);
+        model = NotificationController.loadNotificationsIntoModel(user, model);
         
         return "contacts";
     }
@@ -91,16 +85,10 @@ public class ContactsController {
   	@RequestMapping({"/signupcontact"})
       public String showContactSignUpForm(Model model, Contacts contact, BindingResult result) {
   		
-  		User users = getLoggedInUser();
-        List<Notification> notifications = new ArrayList<>();
-        
-        if(!(users == null)) {
-            notifications = NotificationController.fetchUnreadNotifications(users);
-        }
-        
-        model.addAttribute("notifications",notifications);
+  		User user = getLoggedInUser();
+        model = NotificationController.loadNotificationsIntoModel(user, model);
   		
-          return "/add/add-contact";
+        return "/add/add-contact";
     }
       
   	/**
@@ -117,18 +105,9 @@ public class ContactsController {
   		userValidator.addition(contacts, result);
   		contacts.setCarrier(getLoggedInUser().getCarrier());
   		User user = getLoggedInUser();
+        model = NotificationController.loadNotificationsIntoModel(user, model);
   		
   		if (result.hasErrors()) {
-  			
-  			User users = getLoggedInUser();
-	        List<Notification> notifications = new ArrayList<>();
-	        
-	        if(!(users == null)) {
-	            notifications = NotificationController.fetchUnreadNotifications(users);
-	        }
-	        
-	        model.addAttribute("notifications",notifications);
-  			
   			return "/add/add-contact";
 		}
   		
@@ -148,30 +127,12 @@ public class ContactsController {
   			Logger.error("{} attempted to add contact and it failed because the email address {} is already in use.", user.getUsername(), contacts.getEmailAddress().toString());
   			model.addAttribute("contacts", getLoggedInUser().getCarrier().getContacts());
   			
-  			User users = getLoggedInUser();
-  	        List<Notification> notifications = new ArrayList<>();
-  	        
-  	        if(!(users == null)) {
-  	            notifications = NotificationController.fetchUnreadNotifications(users);
-  	        }
-  	        
-  	        model.addAttribute("notifications",notifications);
-  			
   			return "contacts";
 			 
   		}
   		
   		contactsRepository.save(contacts);
   		Logger.info("{} successfully added a new contact with ID {}.", user.getUsername(), contacts.getId());
-  		
-  		User users = getLoggedInUser();
-        List<Notification> notifications = new ArrayList<>();
-        
-        if(!(users == null)) {
-            notifications = NotificationController.fetchUnreadNotifications(users);
-        }
-        
-        model.addAttribute("notifications",notifications);
   		
   		return "redirect:/contacts";
   	}
@@ -200,32 +161,17 @@ public class ContactsController {
           .orElseThrow(() -> new IllegalArgumentException("Invalid contact Id:" + id));
         
         User user = getLoggedInUser();
+        model = NotificationController.loadNotificationsIntoModel(user, model);
+        
         if(!contacts.getDrivers().isEmpty() || !contacts.getTechnicians().isEmpty()) {
         	model.addAttribute("error", "Unable to delete due to dependency conflict."); 
         	Logger.error("{} attmpted to delete contact. Deletion failed due to dependency conflict.", user.getUsername());
         	model.addAttribute("contacts", getLoggedInUser().getCarrier().getContacts());
         	
-        	User users = getLoggedInUser();
-            List<Notification> notifications = new ArrayList<>();
-            
-            if(!(users == null)) {
-                notifications = NotificationController.fetchUnreadNotifications(users);
-            }
-            
-            model.addAttribute("notifications",notifications);
-        	
         	return "contacts";
         }
+        
         model.addAttribute("contacts", contacts);
-        
-        User users = getLoggedInUser();
-        List<Notification> notifications = new ArrayList<>();
-        
-        if(!(users == null)) {
-            notifications = NotificationController.fetchUnreadNotifications(users);
-        }
-        
-        model.addAttribute("notifications",notifications);
         
     	return "/delete/deletecontactconfirm";
     }
@@ -242,6 +188,7 @@ public class ContactsController {
   	          .orElseThrow(() -> new IllegalArgumentException("Invalid contact Id:" + id));
   		
   		User user = getLoggedInUser();
+        model = NotificationController.loadNotificationsIntoModel(user, model);
   		Logger.info("{} successfully deleted the contact with ID {}.", user.getUsername(), contacts.getId());
         contactsRepository.delete(contacts);
         return "redirect:/contacts";
@@ -261,14 +208,8 @@ public class ContactsController {
         
         model.addAttribute("contacts", contacts);
         
-        User users = getLoggedInUser();
-        List<Notification> notifications = new ArrayList<>();
-        
-        if(!(users == null)) {
-            notifications = NotificationController.fetchUnreadNotifications(users);
-        }
-        
-        model.addAttribute("notifications",notifications);
+  		User user = getLoggedInUser();
+        model = NotificationController.loadNotificationsIntoModel(user, model);
         
         return "contacts";
     }
@@ -287,14 +228,8 @@ public class ContactsController {
         
         model.addAttribute("contacts", contacts);
         
-        User users = getLoggedInUser();
-        List<Notification> notifications = new ArrayList<>();
-        
-        if(!(users == null)) {
-            notifications = NotificationController.fetchUnreadNotifications(users);
-        }
-        
-        model.addAttribute("notifications",notifications);
+  		User user = getLoggedInUser();
+        model = NotificationController.loadNotificationsIntoModel(user, model);
         
         return "/update/update-contact";
     }
@@ -315,6 +250,7 @@ public class ContactsController {
   		userValidator.addition(contact, result);
   		contact.setCarrier(getLoggedInUser().getCarrier());
   		User user = getLoggedInUser();
+        model = NotificationController.loadNotificationsIntoModel(user, model);
   		
   		if (result.hasErrors()) {
             contact.setId(id);

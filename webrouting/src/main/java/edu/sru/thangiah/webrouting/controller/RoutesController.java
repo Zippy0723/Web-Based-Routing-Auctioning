@@ -94,14 +94,8 @@ public class RoutesController {
 			model.addAttribute("shipments", shownShipments);
 			model.addAttribute("vehicle", getVehiclesWithShipments());
 			
-			User users = getLoggedInUser();
-	        List<Notification> notifications = new ArrayList<>();
-	        
-	        if(!(users == null)) {
-	            notifications = NotificationController.fetchUnreadNotifications(users);
-	        }
-	        
-	        model.addAttribute("notifications",notifications);
+			User user = getLoggedInUser();
+	        model = NotificationController.loadNotificationsIntoModel(user, model);
 	        
 			return "routes";
 		}
@@ -122,14 +116,8 @@ public class RoutesController {
 			model.addAttribute("vehicle", getVehiclesWithShipments());
 		}
 		
-		User users = getLoggedInUser();
-        List<Notification> notifications = new ArrayList<>();
-        
-        if(!(users == null)) {
-            notifications = NotificationController.fetchUnreadNotifications(users);
-        }
-        
-        model.addAttribute("notifications",notifications);
+		User user = getLoggedInUser();
+        model = NotificationController.loadNotificationsIntoModel(user, model);
 		
         return "routes";
     }

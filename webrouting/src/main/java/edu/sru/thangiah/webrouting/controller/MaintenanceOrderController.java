@@ -96,15 +96,8 @@ public class MaintenanceOrderController {
 		model.addAttribute("drivers", user.getCarrier().getDrivers());
 		model.addAttribute("vehicles", user.getCarrier().getVehicles());
 		
-		User users = getLoggedInUser();
-        List<Notification> notifications = new ArrayList<>();
+        model = NotificationController.loadNotificationsIntoModel(user, model);
         
-        if(!(users == null)) {
-            notifications = NotificationController.fetchUnreadNotifications(users);
-        }
-        
-        model.addAttribute("notifications",notifications);
-		
         return "/add/add-maintenance";
     }
 	
@@ -122,6 +115,7 @@ public class MaintenanceOrderController {
 		maintenanceOrder.setCarrier(getLoggedInUser().getCarrier());
 		
 		User loggedInUser = getLoggedInUser();
+        model = NotificationController.loadNotificationsIntoModel(loggedInUser, model);
 		
 		if (result.hasErrors()) {
   			return "/add/add-maintenance";
@@ -176,14 +170,8 @@ public class MaintenanceOrderController {
 
 		model.addAttribute("maintenanceorders", maintenanceOrder);
 		
-		User users = getLoggedInUser();
-        List<Notification> notifications = new ArrayList<>();
-        
-        if(!(users == null)) {
-            notifications = NotificationController.fetchUnreadNotifications(users);
-        }
-        
-        model.addAttribute("notifications",notifications);
+		User user = getLoggedInUser();
+        model = NotificationController.loadNotificationsIntoModel(user, model);
 		
 		return "/delete/deleteorderconfirm";
     }
@@ -200,6 +188,7 @@ public class MaintenanceOrderController {
   	          .orElseThrow(() -> new IllegalArgumentException("Invalid maintenance Id:" + id));
   		
   		User loggedInUser = getLoggedInUser();
+        model = NotificationController.loadNotificationsIntoModel(loggedInUser, model);
   		Logger.info("{} successfully deleted the maintenace order with ID {}", loggedInUser.getUsername(), maintenanceOrder.getId());
   		maintenanceOrderRepository.delete(maintenanceOrder);
   		
@@ -224,14 +213,7 @@ public class MaintenanceOrderController {
 		model.addAttribute("vehicles", user.getCarrier().getVehicles());
 	    model.addAttribute("maintenanceOrders", maintenanceOrder);
 	    
-	    User users = getLoggedInUser();
-        List<Notification> notifications = new ArrayList<>();
-        
-        if(!(users == null)) {
-            notifications = NotificationController.fetchUnreadNotifications(users);
-        }
-        
-        model.addAttribute("notifications",notifications);
+        model = NotificationController.loadNotificationsIntoModel(user, model);
 	    
         return "/update/update-maintenance";
     }
@@ -251,6 +233,7 @@ public class MaintenanceOrderController {
       BindingResult result, Model model) {
         maintenanceOrder.setCarrier(getLoggedInUser().getCarrier());
         User loggedInUser = getLoggedInUser();
+        model = NotificationController.loadNotificationsIntoModel(loggedInUser, model);
 		
 		if (result.hasErrors()) {
         	maintenanceOrder.setId(id);

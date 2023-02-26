@@ -66,14 +66,8 @@ public class VehicleTypesController {
     public String showVehicleTypeList(Model model) {
         model.addAttribute("vehicletypes", vehicleTypesRepository.findAll());
         
-        User users = getLoggedInUser();
-        List<Notification> notifications = new ArrayList<>();
-        
-        if(!(users == null)) {
-            notifications = NotificationController.fetchUnreadNotifications(users);
-        }
-        
-        model.addAttribute("notifications",notifications);
+        User user = getLoggedInUser();
+        model = NotificationController.loadNotificationsIntoModel(user, model);
         
         return "vehicletypes";
     }
@@ -88,14 +82,8 @@ public class VehicleTypesController {
 	@RequestMapping({"/signupvehicletype"})
     public String showVehicleTypeSignUpForm(Model model, VehicleTypes vehicleTypes, BindingResult result) {
         
-		User users = getLoggedInUser();
-        List<Notification> notifications = new ArrayList<>();
-        
-        if(!(users == null)) {
-            notifications = NotificationController.fetchUnreadNotifications(users);
-        }
-        
-        model.addAttribute("notifications",notifications);
+		User user = getLoggedInUser();
+		model = NotificationController.loadNotificationsIntoModel(user, model);
 		
 		return "/add/add-vehicletype";
 	}
@@ -112,21 +100,12 @@ public class VehicleTypesController {
 	@RequestMapping({"/addvehicletypes"})
   	public String addVehicleType(@Validated VehicleTypes vehicleTypes, BindingResult result, Model model) {
 		userValidator.addition(vehicleTypes, result);
-  		if (result.hasErrors()) {
-  			
-  			User users = getLoggedInUser();
-  	        List<Notification> notifications = new ArrayList<>();
-  	        
-  	        if(!(users == null)) {
-  	            notifications = NotificationController.fetchUnreadNotifications(users);
-  	        }
-  	        
-  	        model.addAttribute("notifications",notifications);
-  			
+		User loggedInUser = getLoggedInUser();
+		model = NotificationController.loadNotificationsIntoModel(loggedInUser, model);
+		
+  		if (result.hasErrors()) {	
   			return "/add/add-vehicletype";
 		}
-  		
-  		User loggedInUser = getLoggedInUser();
   		
   		boolean deny = false;
   		
@@ -144,29 +123,11 @@ public class VehicleTypesController {
   			Logger.error("{} failed to update vehicle type because it already exists.", loggedInUser.getUsername());
   			model.addAttribute("vehicletypes", vehicleTypesRepository.findAll());
   			
-  			User users = getLoggedInUser();
-  	        List<Notification> notifications = new ArrayList<>();
-  	        
-  	        if(!(users == null)) {
-  	            notifications = NotificationController.fetchUnreadNotifications(users);
-  	        }
-  	        
-  	        model.addAttribute("notifications",notifications);
-  			
   			return "vehicletypes";
   		}
   		
   		vehicleTypesRepository.save(vehicleTypes);
   		Logger.info("{} successfully saved the Vehicle type with ID {}.",loggedInUser.getUsername(), vehicleTypes.getId());
-  		
-  		User users = getLoggedInUser();
-        List<Notification> notifications = new ArrayList<>();
-        
-        if(!(users == null)) {
-            notifications = NotificationController.fetchUnreadNotifications(users);
-        }
-        
-        model.addAttribute("notifications",notifications);
   		
   		return "redirect:/vehicletypes";
   	}
@@ -196,32 +157,15 @@ public class VehicleTypesController {
           .orElseThrow(() -> new IllegalArgumentException("Invalid vehicle type Id:" + id));
         
         User loggedInUser = getLoggedInUser();
+        model = NotificationController.loadNotificationsIntoModel(loggedInUser, model);
         if(!vehicleTypes.getVehicles().isEmpty()) {
         	model.addAttribute("error", "Unable to delete due to dependency conflict.");
         	Logger.error("{} failed to delete the vehicle type due to dependency conflict.", loggedInUser.getUsername());
         	model.addAttribute("vehicletypes", vehicleTypesRepository.findAll());
-        	
-        	User users = getLoggedInUser();
-            List<Notification> notifications = new ArrayList<>();
-            
-            if(!(users == null)) {
-                notifications = NotificationController.fetchUnreadNotifications(users);
-            }
-            
-            model.addAttribute("notifications",notifications);
             
         	return "vehicletypes";
         }
         model.addAttribute("vehicletypes", vehicleTypes);
-        
-        User users = getLoggedInUser();
-        List<Notification> notifications = new ArrayList<>();
-        
-        if(!(users == null)) {
-            notifications = NotificationController.fetchUnreadNotifications(users);
-        }
-        
-        model.addAttribute("notifications",notifications);
         
         return "/delete/deletevehicletypeconfirm";
     }
@@ -238,6 +182,7 @@ public class VehicleTypesController {
   	          .orElseThrow(() -> new IllegalArgumentException("Invalid vehicle type Id:" + id));
   		
   		User loggedInUser = getLoggedInUser();
+  		model = NotificationController.loadNotificationsIntoModel(loggedInUser, model);
   		Logger.info("{} successfully deleted the Vehicle type with ID {}.", loggedInUser.getUsername(),vehicleTypes.getId());
   		vehicleTypesRepository.delete(vehicleTypes);
         return "redirect:/vehicletypes";
@@ -257,14 +202,8 @@ public class VehicleTypesController {
         
         model.addAttribute("vehicletypes", vehicleType);
         
-        User users = getLoggedInUser();
-        List<Notification> notifications = new ArrayList<>();
-        
-        if(!(users == null)) {
-            notifications = NotificationController.fetchUnreadNotifications(users);
-        }
-        
-        model.addAttribute("notifications",notifications);
+        User user = getLoggedInUser();
+        model = NotificationController.loadNotificationsIntoModel(user, model);
         
         return "vehicletypes";
     }
@@ -283,14 +222,8 @@ public class VehicleTypesController {
         
 		model.addAttribute("vehicleTypes", vehicleTypes);
 		
-		User users = getLoggedInUser();
-        List<Notification> notifications = new ArrayList<>();
-        
-        if(!(users == null)) {
-            notifications = NotificationController.fetchUnreadNotifications(users);
-        }
-        
-        model.addAttribute("notifications",notifications);
+		User user = getLoggedInUser();
+		model = NotificationController.loadNotificationsIntoModel(user, model);
 		
         return "/update/update-vehicletype";
     }
@@ -311,6 +244,7 @@ public class VehicleTypesController {
 		userValidator.addition(vehicleType, result);
 		
 		User loggedInUser = getLoggedInUser();
+		model = NotificationController.loadNotificationsIntoModel(loggedInUser, model);
 		
         if (result.hasErrors()) {
         	vehicleType.setId(id);
@@ -342,6 +276,9 @@ public class VehicleTypesController {
         return "redirect:/vehicletypes";
     }
 	
+	/**
+	 *
+	 */
 	public User getLoggedInUser() {
     	if (securityService.isAuthenticated()) {
     		org.springframework.security.core.userdetails.User user = 

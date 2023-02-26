@@ -98,14 +98,7 @@ public class BidsController {
         	 return (String) session.getAttribute("redirectLocation");
         }
         
-        User users = getLoggedInUser();
-        List<Notification> notifications = new ArrayList<>();
-        
-        if(!(users == null)) {
-            notifications = NotificationController.fetchUnreadNotifications(users);
-        }
-        
-        model.addAttribute("notifications",notifications);
+        model = NotificationController.loadNotificationsIntoModel(loggedInUser, model);
         
         return "/add/add-bid";
     }
@@ -181,7 +174,8 @@ public class BidsController {
     public String deleteBid(@PathVariable("id") long id, Model model, HttpSession session) {
         Bids bid = bidsRepository.findById(id)
         		 .orElseThrow(() -> new IllegalArgumentException("Invalid bid Id:" + id));
-        User user = getLoggedInUser();
+  		User user = getLoggedInUser();
+        model = NotificationController.loadNotificationsIntoModel(user, model);
         String redirectLocation = (String) session.getAttribute("redirectLocation");
         
 		 if (bid.getShipment().getFullFreightTerms().toString().equals("FROZEN") && !user.getRole().toString().equals("MASTERLIST")) {
@@ -194,25 +188,8 @@ public class BidsController {
         	model.addAttribute("bids", bid);
         	model.addAttribute("redirectLocation",redirectLocation);
         	
-        	User users = getLoggedInUser();
-            List<Notification> notifications = new ArrayList<>();
-            
-            if(!(users == null)) {
-                notifications = NotificationController.fetchUnreadNotifications(users);
-            }
-            
-            model.addAttribute("notifications",notifications);
-        	
         	return "/delete/deletebidconfirm";
         }
-        User users = getLoggedInUser();
-	        List<Notification> notifications = new ArrayList<>();
-	        
-	        if(!(users == null)) {
-	            notifications = NotificationController.fetchUnreadNotifications(users);
-	        }
-	        
-	        model.addAttribute("notifications",notifications);
 	        
         return "redirect:" + redirectLocation;
     }
@@ -229,6 +206,7 @@ public class BidsController {
   		Bids bid = bidsRepository.findById(id)
        		 .orElseThrow(() -> new IllegalArgumentException("Invalid bid Id:" + id));
   		User user = getLoggedInUser();
+        model = NotificationController.loadNotificationsIntoModel(user, model);
   		User bidUser = CarriersController.getUserFromCarrier(bid.getCarrier());
   		
   		if(user.getId() != bidUser.getId()) {
@@ -257,14 +235,8 @@ public class BidsController {
   		model.addAttribute("shipment",shipment);
   		model.addAttribute("redirectLocation",session.getAttribute("redirectLocation"));
   		
-  		User users = getLoggedInUser();
-        List<Notification> notifications = new ArrayList<>();
-        
-        if(!(users == null)) {
-            notifications = NotificationController.fetchUnreadNotifications(users);
-        }
-        
-        model.addAttribute("notifications",notifications);
+  		User user = getLoggedInUser();
+        model = NotificationController.loadNotificationsIntoModel(user, model);
   		
   		return "/reset/resetshipmentbidsconfirm";
   	}
@@ -280,7 +252,9 @@ public class BidsController {
   	public String resetShipmentBidsConfirmation(@PathVariable("id") long id, Model model, HttpSession session) {
   		Shipments shipment = shipmentsRepository.findById(id)
   	  		.orElseThrow(() -> new IllegalArgumentException("Invalid shipment Id:" + id));
+		
   		User user = getLoggedInUser();
+        model = NotificationController.loadNotificationsIntoModel(user, model);
   		User bidUser;
   		
   		if (!user.getRole().toString().equals("MASTERLIST")) {
@@ -312,7 +286,9 @@ public class BidsController {
 	public String acceptBid(@PathVariable("id") long id, Model model) {
 		Bids bid = bidsRepository.findById(id)
 		.orElseThrow(() -> new IllegalArgumentException("Invalid bid Id: " + id));
-		User user = getLoggedInUser();
+		
+  		User user = getLoggedInUser();
+        model = NotificationController.loadNotificationsIntoModel(user, model);
 		User bidUser;
 		
 		 if (bid.getShipment().getFullFreightTerms().toString().equals("FROZEN") && !user.getRole().toString().equals("MASTERLIST")) {
@@ -351,7 +327,9 @@ public class BidsController {
     public String showEditForm(@PathVariable("id") long id, Model model) {
 		Bids bid = bidsRepository.findById(id)
           .orElseThrow(() -> new IllegalArgumentException("Invalid Bid Id:" + id));
-		 User user = getLoggedInUser();
+		
+  		 User user = getLoggedInUser();
+  		 model = NotificationController.loadNotificationsIntoModel(user, model);
 		 User bidUser;
 		 
 		 if (bid.getShipment().getFullFreightTerms().toString().equals("FROZEN") && !user.getRole().toString().equals("MASTERLIST")) {
@@ -364,15 +342,6 @@ public class BidsController {
 			 model.addAttribute("bids", bid);
 			 model.addAttribute("shipments", shipmentsRepository.findAll());  
 			 model.addAttribute("carriers", carriersRepository.findAll());
-			 
-			 User users = getLoggedInUser();
-		        List<Notification> notifications = new ArrayList<>();
-		        
-		        if(!(users == null)) {
-		            notifications = NotificationController.fetchUnreadNotifications(users);
-		        }
-		        
-		        model.addAttribute("notifications",notifications);
 			 
 			 return "/update/update-bid";
 	    }
@@ -413,6 +382,7 @@ public class BidsController {
   		LocalDateTime now = LocalDateTime.now();
   		
   		User user = getLoggedInUser();
+        model = NotificationController.loadNotificationsIntoModel(user, model);
   		
   		if(user.getRole().getName().equals("MASTERLIST")) {
   			bid.setCarrier(carrier);

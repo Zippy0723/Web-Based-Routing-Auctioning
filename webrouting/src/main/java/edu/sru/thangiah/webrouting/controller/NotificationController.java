@@ -167,6 +167,21 @@ public class NotificationController {
 	}
 	
 	/**
+	 * 
+	 */
+	public static Model loadNotificationsIntoModel(User user, Model model) {
+        List<Notification> notifications = new ArrayList<>();
+        
+        if(!(user == null)) {
+            notifications = NotificationController.fetchUnreadNotifications(user);
+        }
+        
+        model.addAttribute("notifications",notifications);
+        
+        return model;
+	}
+	
+	/**
 	 * Returns the user that is currently logged into the system. <br>
 	 * If there is no user logged in, null is returned.
 	 * @return user2 or null
