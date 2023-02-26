@@ -34,6 +34,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import edu.sru.thangiah.webrouting.domain.Bids;
 import edu.sru.thangiah.webrouting.domain.Carriers;
+import edu.sru.thangiah.webrouting.domain.Notification;
 import edu.sru.thangiah.webrouting.domain.Shipments;
 import edu.sru.thangiah.webrouting.domain.User;
 import edu.sru.thangiah.webrouting.repository.BidsRepository;
@@ -100,6 +101,16 @@ public class ShipmentsController {
 	 */
 	@GetMapping("/shipmentshomeshipper")
 	public String shipmentsHomeShipper(Model model) {
+		
+		User users = getLoggedInUser();
+        List<Notification> notifications = new ArrayList<>();
+        
+        if(!(users == null)) {
+            notifications = NotificationController.fetchUnreadNotifications(users);
+        }
+        
+        model.addAttribute("notifications",notifications);
+		
 		return "shipmentshomeshipper";
 	}
 	
@@ -110,6 +121,16 @@ public class ShipmentsController {
 	 */
 	@GetMapping("/shipmentshomecarrier")
 	public String shipmentsHomeCarrier(Model model) {
+		
+		User users = getLoggedInUser();
+        List<Notification> notifications = new ArrayList<>();
+        
+        if(!(users == null)) {
+            notifications = NotificationController.fetchUnreadNotifications(users);
+        }
+        
+        model.addAttribute("notifications",notifications);
+		
 		return "shipmentshomecarrier";
 	}
 	
@@ -120,6 +141,16 @@ public class ShipmentsController {
 	 */
 	@GetMapping("/shipmentshomemaster")
 	public String shipmentsHomeMaster(Model model) {
+		
+		User users = getLoggedInUser();
+        List<Notification> notifications = new ArrayList<>();
+        
+        if(!(users == null)) {
+            notifications = NotificationController.fetchUnreadNotifications(users);
+        }
+        
+        model.addAttribute("notifications",notifications);
+		
 		return "shipmentshomemaster";
 	}
 
@@ -140,7 +171,16 @@ public class ShipmentsController {
 		} else {
 			model.addAttribute("shipments", shipmentsRepository.findAll());
 		}
-       
+		
+		User users = getLoggedInUser();
+        List<Notification> notifications = new ArrayList<>();
+        
+        if(!(users == null)) {
+            notifications = NotificationController.fetchUnreadNotifications(users);
+        }
+        
+        model.addAttribute("notifications",notifications);
+		
         return "shipments";
     }
 	
@@ -184,7 +224,16 @@ public class ShipmentsController {
 				model.addAttribute("shipments", shipmentsWOCarrier);     
 			}
 		}
-       
+		
+		User users = getLoggedInUser();
+        List<Notification> notifications = new ArrayList<>();
+        
+        if(!(users == null)) {
+            notifications = NotificationController.fetchUnreadNotifications(users);
+        }
+        
+        model.addAttribute("notifications",notifications);
+		
         return "createdshipments";
     }
 	
@@ -251,6 +300,15 @@ public class ShipmentsController {
 			}
 		}
 		
+		User users = getLoggedInUser();
+        List<Notification> notifications = new ArrayList<>();
+        
+        if(!(users == null)) {
+            notifications = NotificationController.fetchUnreadNotifications(users);
+        }
+        
+        model.addAttribute("notifications",notifications);
+		
         return "acceptedshipments";
     }
 	
@@ -293,6 +351,14 @@ public class ShipmentsController {
 			model.addAttribute("shipments", shipmentsFrozen);   
 		}
 			
+		User users = getLoggedInUser();
+        List<Notification> notifications = new ArrayList<>();
+        
+        if(!(users == null)) {
+            notifications = NotificationController.fetchUnreadNotifications(users);
+        }
+        
+        model.addAttribute("notifications",notifications);
 		
 		return "frozenshipments";
 	}
@@ -334,6 +400,14 @@ public class ShipmentsController {
 			model.addAttribute("shipments", shipmentsPending);   
 		}
 		
+		User users = getLoggedInUser();
+        List<Notification> notifications = new ArrayList<>();
+        
+        if(!(users == null)) {
+            notifications = NotificationController.fetchUnreadNotifications(users);
+        }
+        
+        model.addAttribute("notifications",notifications);
 		
 		return "pendingshipments";
 	}
@@ -348,9 +422,19 @@ public class ShipmentsController {
 	 * @return "/add/add-shipments"
 	 */
 	@GetMapping({"/add-shipments"})
-	public String showList(Model model, Shipments shipment, BindingResult result) { 
+	public String showList(Model model, Shipments shipment, BindingResult result) {
 		model.addAttribute("carriers", carriersRepository.findAll());
 		model.addAttribute("vehicles", vehiclesRepository.findAll());
+		
+		User users = getLoggedInUser();
+        List<Notification> notifications = new ArrayList<>();
+        
+        if(!(users == null)) {
+            notifications = NotificationController.fetchUnreadNotifications(users);
+        }
+        
+        model.addAttribute("notifications",notifications);
+		
         return "/add/add-shipments";
     }
 
@@ -369,6 +453,16 @@ public class ShipmentsController {
   	public String addShipment(@Validated Shipments shipment, BindingResult result, Model model) {
 		userValidator.addition(shipment, result);
   		if (result.hasErrors()) {
+  			
+  			User users = getLoggedInUser();
+            List<Notification> notifications = new ArrayList<>();
+            
+            if(!(users == null)) {
+                notifications = NotificationController.fetchUnreadNotifications(users);
+            }
+            
+            model.addAttribute("notifications",notifications);
+  			
   			return "/add/add-shipments";
 		}
   		
@@ -407,6 +501,16 @@ public class ShipmentsController {
   				}
   			     
   			}
+  			
+  			User users = getLoggedInUser();
+            List<Notification> notifications = new ArrayList<>();
+            
+            if(!(users == null)) {
+                notifications = NotificationController.fetchUnreadNotifications(users);
+            }
+            
+            model.addAttribute("notifications",notifications);
+  			
   			return "pendingshipments";
   		}
 
@@ -418,7 +522,17 @@ public class ShipmentsController {
   		shipment.setFullFreightTerms("PENDING");
   		shipment.setUser(getLoggedInUser());
   		shipmentsRepository.save(shipment);
-  		Logger.info("{} has successfully added a new shipment with ID {}.",user.getUsername(), shipment.getId());
+  		Logger.info("{} has successfully added a new shipment with ID {}.",user.getUsername(), shipment.getId());       
+  		
+  		User users = getLoggedInUser();
+        List<Notification> notifications = new ArrayList<>();
+        
+        if(!(users == null)) {
+            notifications = NotificationController.fetchUnreadNotifications(users);
+        }
+        
+        model.addAttribute("notifications",notifications);
+  		
   		return "redirect:/pendingshipments";
   	}
 
@@ -444,6 +558,16 @@ public class ShipmentsController {
         
         model.addAttribute("shipments", shipment);
         model.addAttribute("redirectLocation",redirectLocation); //Needed so confirmation html page can redirect to the right place if the user clicks no
+        
+        User users = getLoggedInUser();
+        List<Notification> notifications = new ArrayList<>();
+        
+        if(!(users == null)) {
+            notifications = NotificationController.fetchUnreadNotifications(users);
+        }
+        
+        model.addAttribute("notifications",notifications);
+        
         return "/delete/deleteshipmentconfirm";
     }
 	
@@ -494,6 +618,16 @@ public class ShipmentsController {
           .orElseThrow(() -> new IllegalArgumentException("Invalid shipment Id:" + id));
         
         model.addAttribute("shipments", shipment);
+        
+        User users = getLoggedInUser();
+        List<Notification> notifications = new ArrayList<>();
+        
+        if(!(users == null)) {
+            notifications = NotificationController.fetchUnreadNotifications(users);
+        }
+        
+        model.addAttribute("notifications",notifications);
+        
         return "viewfullshipment";
     }
   	
@@ -514,8 +648,28 @@ public class ShipmentsController {
         model.addAttribute("bids", shipment.getBids());
         
         if (shipment.getCarrier() != null) {
+        	
+        	User users = getLoggedInUser();
+            List<Notification> notifications = new ArrayList<>();
+            
+            if(!(users == null)) {
+                notifications = NotificationController.fetchUnreadNotifications(users);
+            }
+            
+            model.addAttribute("notifications",notifications);
+        	
         	return "viewbidscomplete"; //TODO: rework this system, i dont like there being two separate bids.html pages, it makes things confusing. 
         }
+        
+        User users = getLoggedInUser();
+        List<Notification> notifications = new ArrayList<>();
+        
+        if(!(users == null)) {
+            notifications = NotificationController.fetchUnreadNotifications(users);
+        }
+        
+        model.addAttribute("notifications",notifications);
+        
         return "bids";
     }
 	
@@ -533,6 +687,15 @@ public class ShipmentsController {
         
 		model.addAttribute("vehicles", vehiclesRepository.findAll());
 	    model.addAttribute("shipments", shipment);
+	    
+	    User users = getLoggedInUser();
+        List<Notification> notifications = new ArrayList<>();
+        
+        if(!(users == null)) {
+            notifications = NotificationController.fetchUnreadNotifications(users);
+        }
+        
+        model.addAttribute("notifications",notifications);
 	    
 	    User user = getLoggedInUser();
 	    
@@ -566,6 +729,16 @@ public class ShipmentsController {
 		
 		model.addAttribute("redirectLocation",redirectLocation);
 		model.addAttribute("shipments", shipment);
+		
+		User users = getLoggedInUser();
+        List<Notification> notifications = new ArrayList<>();
+        
+        if(!(users == null)) {
+            notifications = NotificationController.fetchUnreadNotifications(users);
+        }
+        
+        model.addAttribute("notifications",notifications);
+		
 		return "/freeze/freezeshipmentconfirm";
 	}
 	
@@ -614,6 +787,16 @@ public class ShipmentsController {
 		.orElseThrow(() -> new IllegalArgumentException("Invalid Shipment Id:" + id));
 		
 		model.addAttribute("shipments", shipment);
+		
+		User users = getLoggedInUser();
+        List<Notification> notifications = new ArrayList<>();
+        
+        if(!(users == null)) {
+            notifications = NotificationController.fetchUnreadNotifications(users);
+        }
+        
+        model.addAttribute("notifications",notifications);
+		
 		return "/freeze/unfreezeshipmentconfirm";
 	}
 	
@@ -787,6 +970,16 @@ public class ShipmentsController {
   	 */
 	@GetMapping("/uploadshipments")
 	public String ListFromExcelData(Model model){
+		
+		User users = getLoggedInUser();
+        List<Notification> notifications = new ArrayList<>();
+        
+        if(!(users == null)) {
+            notifications = NotificationController.fetchUnreadNotifications(users);
+        }
+        
+        model.addAttribute("notifications",notifications);
+		
 		return "/uploadshipments";	
 	}
 	

@@ -2,6 +2,7 @@ package edu.sru.thangiah.webrouting.controller;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.http.HttpSession;
@@ -22,6 +23,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import edu.sru.thangiah.webrouting.domain.Bids;
 import edu.sru.thangiah.webrouting.domain.Carriers;
+import edu.sru.thangiah.webrouting.domain.Notification;
 import edu.sru.thangiah.webrouting.domain.Shipments;
 import edu.sru.thangiah.webrouting.domain.User;
 import edu.sru.thangiah.webrouting.repository.BidsRepository;
@@ -95,6 +97,15 @@ public class BidsController {
         	 Logger.error("{} attempted to place a bid on a shipment that was not in auction", loggedInUser.getUsername());
         	 return (String) session.getAttribute("redirectLocation");
         }
+        
+        User users = getLoggedInUser();
+        List<Notification> notifications = new ArrayList<>();
+        
+        if(!(users == null)) {
+            notifications = NotificationController.fetchUnreadNotifications(users);
+        }
+        
+        model.addAttribute("notifications",notifications);
         
         return "/add/add-bid";
     }
@@ -177,9 +188,27 @@ public class BidsController {
         if (bid.getCarrier().equals(user.getCarrier()) || user.getRole().toString().equals("MASTERLIST")) {
         	model.addAttribute("bids", bid);
         	model.addAttribute("redirectLocation",redirectLocation);
+        	
+        	User users = getLoggedInUser();
+            List<Notification> notifications = new ArrayList<>();
+            
+            if(!(users == null)) {
+                notifications = NotificationController.fetchUnreadNotifications(users);
+            }
+            
+            model.addAttribute("notifications",notifications);
+        	
         	return "/delete/deletebidconfirm";
         }
-        
+        User users = getLoggedInUser();
+	        List<Notification> notifications = new ArrayList<>();
+	        
+	        if(!(users == null)) {
+	            notifications = NotificationController.fetchUnreadNotifications(users);
+	        }
+	        
+	        model.addAttribute("notifications",notifications);
+	        
         return "redirect:" + redirectLocation;
     }
 	
@@ -222,6 +251,15 @@ public class BidsController {
   		
   		model.addAttribute("shipment",shipment);
   		model.addAttribute("redirectLocation",session.getAttribute("redirectLocation"));
+  		
+  		User users = getLoggedInUser();
+        List<Notification> notifications = new ArrayList<>();
+        
+        if(!(users == null)) {
+            notifications = NotificationController.fetchUnreadNotifications(users);
+        }
+        
+        model.addAttribute("notifications",notifications);
   		
   		return "/reset/resetshipmentbidsconfirm";
   	}
@@ -321,6 +359,16 @@ public class BidsController {
 			 model.addAttribute("bids", bid);
 			 model.addAttribute("shipments", shipmentsRepository.findAll());  
 			 model.addAttribute("carriers", carriersRepository.findAll());
+			 
+			 User users = getLoggedInUser();
+		        List<Notification> notifications = new ArrayList<>();
+		        
+		        if(!(users == null)) {
+		            notifications = NotificationController.fetchUnreadNotifications(users);
+		        }
+		        
+		        model.addAttribute("notifications",notifications);
+			 
 			 return "/update/update-bid";
 	    }
         
@@ -348,7 +396,6 @@ public class BidsController {
 		Bids oldbid = bidsRepository.findById(id)
 				.orElseThrow(() -> new IllegalArgumentException("Invalid Bid Id:" + id));;
 		Carriers carrier = oldbid.getCarrier();
-		
 		userValidator.addition(bid, result);
         if (result.hasErrors()) {
         	bid.setId(id);

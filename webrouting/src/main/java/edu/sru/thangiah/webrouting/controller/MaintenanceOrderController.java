@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import edu.sru.thangiah.webrouting.domain.MaintenanceOrders;
+import edu.sru.thangiah.webrouting.domain.Notification;
 import edu.sru.thangiah.webrouting.domain.User;
 import edu.sru.thangiah.webrouting.repository.MaintenanceOrdersRepository;
 import edu.sru.thangiah.webrouting.repository.TechniciansRepository;
@@ -68,6 +69,16 @@ public class MaintenanceOrderController {
 		User user = getLoggedInUser();
 		
         model.addAttribute("maintenanceOrder", user.getCarrier().getOrders());
+        
+        User users = getLoggedInUser();
+        List<Notification> notifications = new ArrayList<>();
+        
+        if(!(users == null)) {
+            notifications = NotificationController.fetchUnreadNotifications(users);
+        }
+        
+        model.addAttribute("notifications",notifications);
+        
         return "maintenanceorders";
     }
 	
@@ -84,6 +95,16 @@ public class MaintenanceOrderController {
 		model.addAttribute("technicians", techniciansRepository.findAll());
 		model.addAttribute("drivers", user.getCarrier().getDrivers());
 		model.addAttribute("vehicles", user.getCarrier().getVehicles());
+		
+		User users = getLoggedInUser();
+        List<Notification> notifications = new ArrayList<>();
+        
+        if(!(users == null)) {
+            notifications = NotificationController.fetchUnreadNotifications(users);
+        }
+        
+        model.addAttribute("notifications",notifications);
+		
         return "/add/add-maintenance";
     }
 	
@@ -143,6 +164,16 @@ public class MaintenanceOrderController {
           .orElseThrow(() -> new IllegalArgumentException("Invalid maintenance Id:" + id));
 
 		model.addAttribute("maintenanceorders", maintenanceOrder);
+		
+		User users = getLoggedInUser();
+        List<Notification> notifications = new ArrayList<>();
+        
+        if(!(users == null)) {
+            notifications = NotificationController.fetchUnreadNotifications(users);
+        }
+        
+        model.addAttribute("notifications",notifications);
+		
 		return "/delete/deleteorderconfirm";
     }
     
@@ -181,7 +212,16 @@ public class MaintenanceOrderController {
 		model.addAttribute("technicians", techniciansRepository.findAll());
 		model.addAttribute("vehicles", user.getCarrier().getVehicles());
 	    model.addAttribute("maintenanceOrders", maintenanceOrder);
-	     
+	    
+	    User users = getLoggedInUser();
+        List<Notification> notifications = new ArrayList<>();
+        
+        if(!(users == null)) {
+            notifications = NotificationController.fetchUnreadNotifications(users);
+        }
+        
+        model.addAttribute("notifications",notifications);
+	    
         return "/update/update-maintenance";
     }
 	

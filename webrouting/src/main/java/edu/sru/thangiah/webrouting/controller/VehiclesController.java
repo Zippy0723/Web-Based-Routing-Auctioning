@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import edu.sru.thangiah.webrouting.domain.Notification;
 import edu.sru.thangiah.webrouting.domain.User;
 import edu.sru.thangiah.webrouting.domain.Vehicles;
 import edu.sru.thangiah.webrouting.repository.VehicleTypesRepository;
@@ -74,9 +75,29 @@ public class VehiclesController {
 		if (user.getRole().toString().equals("CARRIER")) {
 			
 			 model.addAttribute("vehicles", user.getCarrier().getVehicles());
+			 
+			 User users = getLoggedInUser();
+		        List<Notification> notifications = new ArrayList<>();
+		        
+		        if(!(users == null)) {
+		            notifications = NotificationController.fetchUnreadNotifications(users);
+		        }
+		        
+		        model.addAttribute("notifications",notifications);
+			 
 			 return "vehicles";
 		}
         model.addAttribute("vehicles", vehiclesRepository.findAll());
+        
+        User users = getLoggedInUser();
+        List<Notification> notifications = new ArrayList<>();
+        
+        if(!(users == null)) {
+            notifications = NotificationController.fetchUnreadNotifications(users);
+        }
+        
+        model.addAttribute("notifications",notifications);
+        
         return "vehicles";
     }
 	
@@ -95,6 +116,16 @@ public class VehiclesController {
 			model.addAttribute("carriers", user.getCarrier());
 			model.addAttribute("vehicleTypes", vehicleTypesRepository.findAll()); 
 		    model.addAttribute("locations", user.getCarrier().getLocations()); 
+		    
+		    User users = getLoggedInUser();
+	        List<Notification> notifications = new ArrayList<>();
+	        
+	        if(!(users == null)) {
+	            notifications = NotificationController.fetchUnreadNotifications(users);
+	        }
+	        
+	        model.addAttribute("notifications",notifications);
+		    
 	        return "/add/add-vehicle";
 		
 		/**
@@ -118,6 +149,16 @@ public class VehiclesController {
   	public String addVehicle(@Validated Vehicles vehicles, BindingResult result, Model model) {
 		userValidator.addition(vehicles, result);
   		if (result.hasErrors()) {
+  			
+  			User users = getLoggedInUser();
+	        List<Notification> notifications = new ArrayList<>();
+	        
+	        if(!(users == null)) {
+	            notifications = NotificationController.fetchUnreadNotifications(users);
+	        }
+	        
+	        model.addAttribute("notifications",notifications);
+  			
   			return "/add/add-vehicle";
 		}
   		
@@ -138,11 +179,31 @@ public class VehiclesController {
   			model.addAttribute("error", "Unable to add Vehicle. Vehicle VIN or Plate Number already exists");
   			Logger.error("{} was unable to add Vehicle because VIN or Plate Number already exists.", user.getUsername());
   			model.addAttribute("vehicles", user.getCarrier().getVehicles());
+  			
+  			User users = getLoggedInUser();
+	        List<Notification> notifications = new ArrayList<>();
+	        
+	        if(!(users == null)) {
+	            notifications = NotificationController.fetchUnreadNotifications(users);
+	        }
+	        
+	        model.addAttribute("notifications",notifications);
+  			
   			return "vehicles";
   		}
   		
   		vehiclesRepository.save(vehicles);
   		Logger.error("{} successfully added vehicle with ID {}.", user.getUsername(), vehicles.getId());
+  		
+  		User users = getLoggedInUser();
+        List<Notification> notifications = new ArrayList<>();
+        
+        if(!(users == null)) {
+            notifications = NotificationController.fetchUnreadNotifications(users);
+        }
+        
+        model.addAttribute("notifications",notifications);
+  		
   		return "redirect:/vehicles";
   	}
 	
@@ -163,9 +224,29 @@ public class VehiclesController {
         	model.addAttribute("error", "Unable to delete due to dependency conflict.");
         	Logger.error("{} was unable to delete due to dependency conflict.", user.getUsername());
         	model.addAttribute("vehicles", vehiclesRepository.findAll());
+        	
+        	User users = getLoggedInUser();
+            List<Notification> notifications = new ArrayList<>();
+            
+            if(!(users == null)) {
+                notifications = NotificationController.fetchUnreadNotifications(users);
+            }
+            
+            model.addAttribute("notifications",notifications);
+        	
        	 	return "vehicles";
         }
         model.addAttribute("vehicles", vehicle);
+        
+        User users = getLoggedInUser();
+        List<Notification> notifications = new ArrayList<>();
+        
+        if(!(users == null)) {
+            notifications = NotificationController.fetchUnreadNotifications(users);
+        }
+        
+        model.addAttribute("notifications",notifications);
+        
         return "/delete/deletevehicleconfirm";
     }
 	
@@ -205,6 +286,16 @@ public class VehiclesController {
           .orElseThrow(() -> new IllegalArgumentException("Invalid vehicle Id:" + id));
         
         model.addAttribute("vehicles", vehicle);
+        
+        User users = getLoggedInUser();
+        List<Notification> notifications = new ArrayList<>();
+        
+        if(!(users == null)) {
+            notifications = NotificationController.fetchUnreadNotifications(users);
+        }
+        
+        model.addAttribute("notifications",notifications);
+        
         return "vehicles";
     }
 	
@@ -226,6 +317,16 @@ public class VehiclesController {
 				model.addAttribute("vehicleTypes", vehicleTypesRepository.findAll()); 
 			    model.addAttribute("locations", user.getCarrier().getLocations());
 			    model.addAttribute("vehicles", vehicle);
+			    
+			    User users = getLoggedInUser();
+		        List<Notification> notifications = new ArrayList<>();
+		        
+		        if(!(users == null)) {
+		            notifications = NotificationController.fetchUnreadNotifications(users);
+		        }
+		        
+		        model.addAttribute("notifications",notifications);
+			    
 			    return "/update/update-vehicle";
 			}
         /**
@@ -251,6 +352,16 @@ public class VehiclesController {
           .orElseThrow(() -> new IllegalArgumentException("Invalid vehicle Id:" + id));
         
         model.addAttribute("drivers", vehicle.getDrivers());
+        
+        User users = getLoggedInUser();
+        List<Notification> notifications = new ArrayList<>();
+        
+        if(!(users == null)) {
+            notifications = NotificationController.fetchUnreadNotifications(users);
+        }
+        
+        model.addAttribute("notifications",notifications);
+        
         return "drivers";
     }
   	
@@ -267,6 +378,16 @@ public class VehiclesController {
           .orElseThrow(() -> new IllegalArgumentException("Invalid vehicle Id:" + id));
         
         model.addAttribute("shipments", vehicle.getShipments());
+        
+        User users = getLoggedInUser();
+        List<Notification> notifications = new ArrayList<>();
+        
+        if(!(users == null)) {
+            notifications = NotificationController.fetchUnreadNotifications(users);
+        }
+        
+        model.addAttribute("notifications",notifications);
+        
         return "shipments";
     }
 	

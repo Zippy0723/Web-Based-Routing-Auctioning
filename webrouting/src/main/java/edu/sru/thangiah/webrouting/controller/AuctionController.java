@@ -1,5 +1,6 @@
 package edu.sru.thangiah.webrouting.controller;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.http.HttpSession;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import edu.sru.thangiah.webrouting.domain.Bids;
 import edu.sru.thangiah.webrouting.domain.Carriers;
+import edu.sru.thangiah.webrouting.domain.Notification;
 import edu.sru.thangiah.webrouting.domain.Shipments;
 import edu.sru.thangiah.webrouting.domain.User;
 import edu.sru.thangiah.webrouting.repository.ShipmentsRepository;
@@ -58,6 +60,15 @@ public class AuctionController {
 		
 		model.addAttribute("shipments", allShipments);
 		
+		User users = getLoggedInUser();
+        List<Notification> notifications = new ArrayList<>();
+        
+        if(!(users == null)) {
+            notifications = NotificationController.fetchUnreadNotifications(users);
+        }
+        
+        model.addAttribute("notifications",notifications);
+		
 		return "auctioninghome";
 	}
 	
@@ -90,6 +101,15 @@ public class AuctionController {
 		model.addAttribute("shipments", shipment);
         model.addAttribute("redirectLocation",redirectLocation);
         
+        User users = getLoggedInUser();
+        List<Notification> notifications = new ArrayList<>();
+        
+        if(!(users == null)) {
+            notifications = NotificationController.fetchUnreadNotifications(users);
+        }
+        
+        model.addAttribute("notifications",notifications);
+        
 		return "/force/forceendauctionconfirm";
 	}
 	/**
@@ -109,6 +129,15 @@ public class AuctionController {
         }
         
         model.addAttribute("shipments", shipment);
+        
+        User users = getLoggedInUser();
+        List<Notification> notifications = new ArrayList<>();
+        
+        if(!(users == null)) {
+            notifications = NotificationController.fetchUnreadNotifications(users);
+        }
+        
+        model.addAttribute("notifications",notifications);
         
 		return "/push/pushshipmentconfirm";
 	}
@@ -217,12 +246,32 @@ public class AuctionController {
 		catch (NumberFormatException e) {
 			System.out.println("Caught an exception, invalid price format for bids. Does a shipment have a non numeric character in its bid price?");
 			Logger.error("{} entered an invalid price format for bids.", user.getUsername());//TODO: replace with proper error logging
+			
+			User users = getLoggedInUser();
+            List<Notification> notifications = new ArrayList<>();
+            
+            if(!(users == null)) {
+                notifications = NotificationController.fetchUnreadNotifications(users);
+            }
+            
+            model.addAttribute("notifications",notifications);
+			
 			return "redirect:" + redirectLocation;
 		}
 		
 		if (winningBid == null){
 			System.out.println("Unable to select a winning bid");
 			Logger.error("{} was unable to select a winning bid.", user.getUsername());//TODO: replace with proper error logging
+			
+			User users = getLoggedInUser();
+            List<Notification> notifications = new ArrayList<>();
+            
+            if(!(users == null)) {
+                notifications = NotificationController.fetchUnreadNotifications(users);
+            }
+            
+            model.addAttribute("notifications",notifications);
+			
 			return "redirect:" + redirectLocation;
 		}
 		
@@ -245,6 +294,16 @@ public class AuctionController {
 		
 		shipmentsRepository.save(shipment);
 		Logger.info("{} has successfully ended the auction for shipment with ID {}.", user.getUsername(), shipment.getId());
+		
+		User users = getLoggedInUser();
+        List<Notification> notifications = new ArrayList<>();
+        
+        if(!(users == null)) {
+            notifications = NotificationController.fetchUnreadNotifications(users);
+        }
+        
+        model.addAttribute("notifications",notifications);
+		
 		return "redirect:" + redirectLocation;
 	}
 	
@@ -266,6 +325,15 @@ public class AuctionController {
 		
 		model.addAttribute("user",user);
 		model.addAttribute("redirectLocation",redirectLocation);
+		
+		User users = getLoggedInUser();
+        List<Notification> notifications = new ArrayList<>();
+        
+        if(!(users == null)) {
+            notifications = NotificationController.fetchUnreadNotifications(users);
+        }
+        
+        model.addAttribute("notifications",notifications);
 		
 		return "/toggle/toggleauctioningconfirm";
 	}
