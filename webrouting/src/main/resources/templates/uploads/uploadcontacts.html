@@ -38,7 +38,7 @@
                             <a class="navlink" id="nav_users" href="/ShipperAdministrationPage">Shipper Page</a>
                         </li>
                         <li sec:authorize="hasAuthority('CARRIER')" class="navitem">
-                            <a class="selected" id="nav_contacts" href="/contacts">Contacts</a>
+                            <a class="navlink" id="nav_contacts" href="/contacts">Contacts</a>
                         </li>
                         <li sec:authorize="hasAuthority('CARRIER')" class="navitem">
                             <a class="navlink" id="nav_locations" href="/locations">Locations</a>
@@ -62,13 +62,13 @@
                             <a class="navlink" id="nav_carriers" href="/carriers">Carriers</a>
                         </li>
                         <li sec:authorize="hasAuthority('MASTERLIST')" class="navitem">
-                            <a class="navlink" id="nav_shipments_home_masterlist" href="/shipmentshomemaster">Shipments</a>
+                           <a class="navlink" id="nav_shipments_home_masterlist" href="/shipmentshomemaster">Shipments</a>
                         </li>
                         <li sec:authorize="hasAuthority('SHIPPER')" class="navitem">
-                            <a class="navlink" id="nav_shipments_home_shipper" href="/shipmentshomeshipper">Shipments</a>
+                            <a class="selected" id="nav_shipments_home_shipper" href="/shipmentshomeshipper">Shipments</a>
                         </li>
                         <li sec:authorize="hasAuthority('CARRIER')" class="navitem">
-                            <a class="navlink" id="nav_shipments_home_carrier" href="/shipmentshomecarrier">Shipments</a>
+                            <a class="selected" id="nav_shipments_home_carrier" href="/shipmentshomecarrier">Shipments</a>
                         </li>
                         <li sec:authorize="hasAnyAuthority('CARRIER', 'MASTERLIST', 'SHIPPER')" class="navitem">
                             <a class="navlink" id="nav_shipments_home_carrier" href="/auctioninghome">Auctioning</a>
@@ -86,7 +86,7 @@
                     </ul>
                 </div>
             </div>
-            <div sec:authorize="!isAuthenticated()" class = "navSideBar" id="mySidebar">
+            <div sec:authorize="!isAuthenticated()" class = "navSideBar" sid="mySidebar">
                 <button onclick="nav_close()" class="bar-item">...</button>
                 <ul class="navbar">
                     <li class="navitem">
@@ -116,66 +116,34 @@
                     </div>
                 </div>
             </div>
-			
-			<div id="content">
-				<span class="nav-expand">
-  					<button class=""  id="hamburger" style="display:none" onclick="nav_open()">☰</button>
-				</span>
-				<br><br>
-				<div th:switch="${contacts}">
-                    <h2 th:case="null">No contacts yet!</h2>
-                    <div th:case="*">
-                        <h2>Contacts</h2>
-                        <br>
-                        <span type="hidden" th:text="${error}" class="loginError"></span>
-                        <br>
-                        <table class="dataTable">
-                            <thead>
-                                <tr>
-                                    <th>Contact ID</th>
-                                    <th>First Name</th>
-                                    <th>Last Name</th>
-                                    <th>Middle Initial</th>
-                                    <th>Email</th>
-                                    <th>Street Address 1</th>
-                                    <th>Street Address 2</th>
-                                    <th>City</th>
-                                    <th>State</th>
-                                    <th>Zip Code</th>
-                                    <th>Primary Phone</th>
-                                    <th>Work Phone</th>
-                                    <th>Edit</th>
-                                    <th>Delete</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr th:each="contact : ${contacts}">
-                                    <td th:text="${contact.id}"></td>
-                                    <td th:text="${contact.firstName}"></td>
-                                    <td th:text="${contact.lastName}"></td>
-                                    <td th:text="${contact.middleInitial}"></td>
-                                    <td th:text="${contact.emailAddress}"></td>
-                                    <td th:text="${contact.streetAddress1}"></td>
-                                    <td th:text="${contact.streetAddress2}"></td>
-                                    <td th:text="${contact.city}"></td>
-                                    <td th:text="${contact.state}"></td>
-                                    <td th:text="${contact.zip}"></td>
-                                    <td th:text="${contact.primaryPhone}"></td>
-                                    <td th:text="${contact.workPhone}"></td>
-                                    <td><a th:href="@{/editcontact/{id}(id=${contact.id})}">Edit</a></td>
-                                    <td><a th:href="@{/deletecontact/{id}(id=${contact.id})}">Delete</a></td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div> 
-              		<br>
-                      <p sec:authorize="hasAuthority('CARRIER')"><button class="buttons6" onclick="window.location.href='./add-contact';">Add New Contact</button>
-                      		<button class="buttons6" onclick="window.location.href='./uploadcontacts';">Upload an Excel File</button></p>
-                	 <!-- <p sec:authorize="hasAuthority('CARRIER')"><button class="buttons7" onclick="window.location.href='./carriershome';">Back</button></p> -->   
-          
-                </div>
-            </div>
-        </div>
+		<div id="content">
+			<span class="nav-expand">
+  				<button class=""  id="hamburger" style="display:none" onclick="nav_open()">☰</button>
+			</span>
+			<br><br>
+        	<h2>Upload file</h2>
+	        <br><br>
+	            	*** Warning: Upload time varies with file size; larger files take more time.
+	       	<br><br>
+	            	*** The Excel must match the template on the Contacts page. To download a template Excel file <a href="/documents/Contacts - SAMPLE.xlsx" download>Click Here!</a>
+	        <br><br>
+	        <a href="/contacts">Cancel</a>
+			<br><br>
+			<hr>
+			<form th:action="@{/upload-contact}" enctype="multipart/form-data" method="POST">
+			<div class="form-group2">
+				<br>
+				<h2> Choose Excel File to Upload</h2>
+				<br>
+				<input type="file" name="file" />
+				<br><br><br><br>
+				<button type="submit" class="buttons6">Upload File</button>
+			<br>
+			</div>
+			</form>
+	      	<br><br><br><br>
+		</div>
+    </div>
 
 		<div class="footer">
             Copyright &copy; Slippery Rock University 2022
@@ -195,4 +163,4 @@
 		}
 		</script>
 	</body>
-</html>
+</html>   

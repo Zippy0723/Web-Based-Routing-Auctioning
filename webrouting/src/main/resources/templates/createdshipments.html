@@ -15,14 +15,21 @@
                 const response = confirm("Remove from Auction");
 
                 if (response) {
-                    alert("Ok was pressed");
+                	
+                    alert("Shipment removed from Auction");
                 } else {
-                    alert("Cancel was pressed");
+                    alert("action cancelled");
                 }
             }
         </script>
 	</head>
 	<body>
+	
+	
+	 <label for="cars">Choose a car:</label>
+
+
+            
 		<div id="wrapper">
 
             <div id="heading">
@@ -191,8 +198,7 @@
                                     <td sec:authorize="hasAuthority('MASTERLIST')"><a th:href="@{/forceendauction/{id}(id=${shipment.id})}">Force End Auction</a></td>
                            			<td sec:authorize="hasAnyAuthority('SHIPPER','MASTERLIST')"><a th:href="@{/removefromauction/{id}(id=${shipment.id})}"><button onclick="confirmAction()">Remove from Auction</button> </a></td>
                            	
-                                    
-                                </tr>
+                    </tr>
                             </tbody>
                         </table>
                     </div>

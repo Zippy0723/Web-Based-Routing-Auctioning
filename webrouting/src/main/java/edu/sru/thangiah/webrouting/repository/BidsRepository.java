@@ -10,4 +10,8 @@ import edu.sru.thangiah.webrouting.domain.Bids;
  * @since 4/10/2022
  */
 
-public interface BidsRepository extends CrudRepository<Bids, Long> {}
+public interface BidsRepository extends CrudRepository<Bids, Long> {
+
+
+		
+	}

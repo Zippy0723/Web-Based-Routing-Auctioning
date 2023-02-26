@@ -316,7 +316,7 @@ public class ShipmentsController {
 		else if (user.getRole().toString().equals("MASTERLIST")) {
 			shipments = (List<Shipments>) shipmentsRepository.findAll();
 		}
-		else { //Carriers shouldnt be able to see this page
+		else { //Carriers shouldn't be able to see this page
 			session.setAttribute("redirectLocation", "/index");
 			return "/index"; 
 		}
@@ -787,7 +787,7 @@ public class ShipmentsController {
   	 */
 	@GetMapping("/uploadshipments")
 	public String ListFromExcelData(Model model){
-		return "/uploadshipments";	
+		return "/uploads/uploadshipments";	
 	}
 	
 	/**
