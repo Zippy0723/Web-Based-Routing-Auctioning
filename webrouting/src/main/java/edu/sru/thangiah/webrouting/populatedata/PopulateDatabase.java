@@ -217,7 +217,7 @@ public class PopulateDatabase implements ApplicationRunner{
 	public void populateRolesTable(Statement statement)  {
 		try {
 			statement.executeUpdate("INSERT INTO role " + "VALUES (1,'ADMIN'),"
-					+ "(2,'SHIPPER'),(3,'CARRIER'),(4,'MASTERLIST')");
+					+ "(2,'SHIPPER'),(3,'CARRIER'),(4,'MASTERLIST'),(5,'SHADOWADMIN')");
 			}
 		catch(SQLException Roles){
 			System.out.println(Roles + " Roles have been already added");
@@ -238,7 +238,8 @@ public class PopulateDatabase implements ApplicationRunner{
 					+ "(3,TRUE,'carrier@gmail.com',1,NULL,'$2a$10$EVBsfb2HGqaMlI9z443kR.zM.Tn66fT.7nbvsVhDeqAw.fc4HyXOG','Carrier',NULL,1,3),"
 					+ "(4,TRUE,'shipper@gmail.com',1,NULL,'$2a$10$j4JWTe7EP6vPiptRf1WP1ujvRRNVPzvuQXkO7KH9Ot.YBY0znyKam','Shipper',NULL,NULL,2),"
 					+ "(5,TRUE,'wonka@gmail.com',1,NULL,'$2a$10$xcIr8bwuPpCA5/dRvIOmMuVpmFZ.i18oFA5qnaQ8eiNgVKp/L.T9K','WillyWonka',NULL,2,3),"
-					+ "(6,TRUE,'ship4u@gmail.com',1,NULL,'$2a$10$0mjUJWe24cNS.XoMLb/Ybur3EK0ps.787omMxs4y3DbGB2y6StgNC','Ship4U',NULL,3,3)");
+					+ "(6,TRUE,'ship4u@gmail.com',1,NULL,'$2a$10$0mjUJWe24cNS.XoMLb/Ybur3EK0ps.787omMxs4y3DbGB2y6StgNC','Ship4U',NULL,3,3),"
+					+ "(7,TRUE,'ShadowAdmin@gmail.com',1,NULL,'$2a$10$0mjUJWe24cNS.XoMLb/Ybur3EK0ps.787omMxs4y3DbGB2y6StgNC','ShadowAdmin',NULL,NULL,5)");
 		}
 		catch(SQLException Users) {
 			System.out.println(Users + " Users have already been created");
