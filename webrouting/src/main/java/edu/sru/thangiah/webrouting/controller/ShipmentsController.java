@@ -157,6 +157,7 @@ public class ShipmentsController {
 		List<Shipments> shipmentsWOCarrier = new ArrayList<>();
 		User user = getLoggedInUser();
 		session.setAttribute("redirectLocation", "/createdshipments");
+		
 		if (user.getRole().toString().equals("SHIPPER")) {
 			List<Shipments> shipments = user.getShipments();
 			if (shipments.size() != 0 && shipments != null) {
@@ -463,8 +464,11 @@ public class ShipmentsController {
       
         if(!shipment.getBids().isEmpty()) {
         	List<Bids> bids = (List<Bids>) shipment.getBids();
+        	User bidUser;
         	for (Bids bid : bids) 
         	{ 
+        		bidUser = CarriersController.getUserFromCarrier(bid.getCarrier());
+        		NotificationController.addNotification(bidUser, "ALERT: Your bid with ID " + bid.getId() + " placed on shipment with ID " + bid.getShipment().getId() + " was deleted because the shipment was deleted");
         		bidsRepository.delete(bid); 
         	}
         	Logger.info("{} successfully deleted bids.", user.getUsername());

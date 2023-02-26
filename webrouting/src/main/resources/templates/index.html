@@ -71,10 +71,13 @@
                             <a class="navlink" id="nav_shipments_home_carrier" href="/shipmentshomecarrier">Shipments</a>
                         </li>
                         <li sec:authorize="hasAnyAuthority('CARRIER', 'MASTERLIST', 'SHIPPER')" class="navitem">
-                            <a class="navlink" id="nav_shipments_home_carrier" href="/auctioninghome">Auctioning</a>
+                            <a class="navlink" id="nav_auctioning" href="/auctioninghome">Auctioning</a>
                         </li>
                         <li sec:authorize="hasAnyAuthority('CARRIER','MASTERLIST')" class="navitem">
                             <a class="navlink" id="nav_routes" href="/routes">Routes</a>
+                        </li>
+                         <li sec:authorize="hasAnyAuthority('ADMIN')" class="navitem">
+                            <a class="navlink" id="nav_database" href="/database">Database</a>
                         </li>
                          <li sec:authorize="hasAnyAuthority('SHADOWADMIN')" class="navitem">
                             <a class="navlink" id="nav_log_home" href="/loghome">Logs</a>

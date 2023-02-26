@@ -48,9 +48,9 @@ public class PopulateDatabase implements ApplicationRunner{
 	 */
 	public void populateBids(Statement statement) {
 		try {
-			statement.executeUpdate("INSERT INTO bids " + "VALUES (1,'2022-04-20','$50.00','11:03:58',1,3),"
-					+ "(2,'2022-04-20','$150.00','11:52:58',1,2),"
-					+ "(3,'2022-04-20','$700.00','12:23:58',1,1)");
+			statement.executeUpdate("INSERT INTO bids " + "VALUES (1,'2022-04-20','50.00','11:03:58',1,3),"
+					+ "(2,'2022-04-20','150.00','11:52:58',1,2),"
+					+ "(3,'2022-04-20','700.00','12:23:58',1,1)");
 		}
 		catch(SQLException bids) {
 			System.out.println(bids + " Bids have already been added");

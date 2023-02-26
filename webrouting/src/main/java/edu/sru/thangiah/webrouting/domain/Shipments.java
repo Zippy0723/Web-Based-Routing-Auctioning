@@ -511,4 +511,44 @@ public class Shipments {
 	public String toString() {
 		return shipperCity + ", " + shipperState + " to " + consigneeCity + ", " + consigneeState + " created by " + user.getUsername();
 	}
+	
+	public Bids getLowestBid(){
+		Bids winningBid = null;
+		Double lowestBidValue = Double.POSITIVE_INFINITY;
+		Double bidValue;
+		List<Bids> bids = this.getBids();
+		
+		for (Bids b : bids) {
+			bidValue = Double.parseDouble(b.getPrice());
+			if(bidValue < lowestBidValue) {
+				lowestBidValue = bidValue;
+				winningBid = b;
+			}
+		}
+		
+		return winningBid;
+		
+	}
+	
+	public Double getLowestBidValue(){
+		Bids winningBid = null;
+		Double lowestBidValue = Double.POSITIVE_INFINITY;
+		Double bidValue;
+		List<Bids> bids = this.getBids();
+		
+		for (Bids b : bids) {
+			bidValue = Double.parseDouble(b.getPrice());
+			if(bidValue < lowestBidValue) {
+				lowestBidValue = bidValue;
+				winningBid = b;
+			}
+		}
+		
+		if (lowestBidValue.equals(Double.POSITIVE_INFINITY)) {
+			lowestBidValue = (double) 0;
+		}
+		
+		return lowestBidValue;
+		
+	}
 }
