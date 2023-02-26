@@ -32,6 +32,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import edu.sru.thangiah.webrouting.domain.Bids;
 import edu.sru.thangiah.webrouting.domain.Carriers;
 import edu.sru.thangiah.webrouting.domain.Notification;
 import edu.sru.thangiah.webrouting.domain.Role;
@@ -39,8 +40,11 @@ import edu.sru.thangiah.webrouting.domain.Shipments;
 import edu.sru.thangiah.webrouting.domain.User;
 import edu.sru.thangiah.webrouting.mailsending.Emailing;
 import edu.sru.thangiah.webrouting.mailsending.MailSending;
+import edu.sru.thangiah.webrouting.repository.BidsRepository;
 import edu.sru.thangiah.webrouting.repository.CarriersRepository;
+import edu.sru.thangiah.webrouting.repository.NotificationRepository;
 import edu.sru.thangiah.webrouting.repository.RoleRepository;
+import edu.sru.thangiah.webrouting.repository.ShipmentsRepository;
 import edu.sru.thangiah.webrouting.repository.UserRepository;
 import edu.sru.thangiah.webrouting.services.SecurityService;
 import edu.sru.thangiah.webrouting.services.UserService;
@@ -71,6 +75,12 @@ public class UserController {
 	
 	private CarriersRepository carriersRepository;
 	
+	private ShipmentsRepository shipmentsRepository;
+	
+	private BidsRepository bidsRepository;
+	
+	private NotificationRepository notficationRepository;
+	
 	@Autowired
     private Emailing emailImpl;
 	
@@ -90,10 +100,13 @@ public class UserController {
 	 * @param roleRepository Used to interact with the roles in the database
 	 * @param carriersRepository Used to interact with the carriers in the database
 	 */
-    public UserController(UserRepository userRepository, RoleRepository roleRepository, CarriersRepository carriersRepository) {
+    public UserController(UserRepository userRepository, RoleRepository roleRepository, CarriersRepository carriersRepository, ShipmentsRepository shipmentsRepository, BidsRepository bidsRepository, NotificationRepository notificationRepository) {
 		this.userRepository = userRepository;
 		this.roleRepository = roleRepository;
 		this.carriersRepository = carriersRepository;
+		this.shipmentsRepository = shipmentsRepository;
+		this.bidsRepository = bidsRepository;
+		this.notficationRepository = notificationRepository;
 	}
     
     /**
@@ -425,28 +438,8 @@ public class UserController {
     public String deleteUser(@PathVariable("id") long id, Model model) {
         User user = userRepository.findById(id)
           .orElseThrow(() -> new IllegalArgumentException("Invalid user Id:" + id));
-        
-        User loggedInUser = getLoggedInUser();
-        if (!user.getShipments().isEmpty()) {
-        	model.addAttribute("error", "Unable to delete due to dependency conflict.");
-        	Logger.error("{} was unable to delete user with ID {} due to depedency conflict.", loggedInUser.getUsername(), user.getId());
-        	model.addAttribute("userstable", userRepository.findAll());
-        	
-        	User users = getLoggedInUser();
-	        List<Notification> notifications = new ArrayList<>();
-	        
-	        if(!(users == null)) {
-	            notifications = NotificationController.fetchUnreadNotifications(users);
-	        }
-	        
-	        model.addAttribute("notifications",notifications);
-        	
-        	return "users";
-        	
-        }
-        model.addAttribute("users", user);
-        
-        User users = getLoggedInUser();
+          
+         User users = getLoggedInUser();
         List<Notification> notifications = new ArrayList<>();
         
         if(!(users == null)) {
@@ -455,6 +448,7 @@ public class UserController {
         
         model.addAttribute("notifications",notifications);
         
+        model.addAttribute("users", user);
         return "/delete/deleteuserconfirm";
     }
   	
@@ -470,19 +464,48 @@ public class UserController {
           .orElseThrow(() -> new IllegalArgumentException("Invalid user Id:" + id));
         
         User loggedInUser = getLoggedInUser();
-        userRepository.delete(user);
-      if(user.getRole().toString().equals("SHIPPER")){
-    	  return "redirect:/ShipperAdministrationPage";
-      }
+        
+      if (!user.getShipments().isEmpty()) {
+        	
+        	for(Shipments shipment: user.getShipments()) {
+        		
+        		List<Bids> bids = (List<Bids>) shipment.getBids();
+            	User bidUser;
+            	for (Bids bid : bids) 
+            	{ 
+            		bidUser = CarriersController.getUserFromCarrier(bid.getCarrier());
+            		NotificationController.addNotification(bidUser, "ALERT: Your bid with ID " + bid.getId() + " placed on shipment with ID " + bid.getShipment().getId() + " was deleted because the shipment was deleted");
+            		bidsRepository.delete(bid); 
+            	}
+        		
+        		Logger.info("{} successfully deleted a shipment with ID {}.", user.getUsername(), shipment.getId());
+        		shipmentsRepository.delete(shipment);
+        	}
+        	
+        	model.addAttribute("userstable", userRepository.findAll());
+        	
+        }
       
-      if(user.getRole().toString().equals("CARRIER")){
-    	  return "redirect:/CarrierAdministrationPage";
-      }
-      
-      else {
+      	List<Notification> notifications = user.getNotifications();
+  		for(Notification n: notifications)
+  		{
+  			notficationRepository.delete(n);
+  		}
+        
+       
         Logger.info("{} successfully deleted the user {}.", loggedInUser.getUsername(), user.getUsername());
+        userRepository.delete(user);
+         
+         User users = getLoggedInUser();
+        List<Notification> notifications = new ArrayList<>();
+        
+        if(!(users == null)) {
+            notifications = NotificationController.fetchUnreadNotifications(users);
+        }
+        
+        model.addAttribute("notifications",notifications);
+         
         return "redirect:/users";
-      }
     }
   	
   	/**

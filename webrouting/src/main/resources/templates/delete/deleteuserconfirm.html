@@ -131,6 +131,9 @@
                     <h2 th:text="${user}"></h2>
                     <br>
                     <br>
+                    <h3>WARNING: Deleting a user will also delete all of their shipments. Proceed with caution.</h3>
+                    <br>
+                    <br>
                     <h2><a th:href="|/deleteuserconfirmation/${user.id}|">Yes</a></h2>
                     <br>
                     <h2><a href="/users">No</a></h2>

@@ -152,10 +152,13 @@
                                     <th>Consignee State</th>
                                     <th>Consignee Zip</th>
                                     <th>View Bids</th>
+                                    <th>Winning Bid</th>
+                                    
                                     <th sec:authorize="hasAnyAuthority('MASTERLIST')">Edit</th>
                                     <th sec:authorize="hasAnyAuthority('MASTERLIST')">Delete</th>
                                     <th sec:authorize="hasAuthority('MASTERLIST')">Unfreeze</th>
                                     <th sec:authorize="hasAuthority('MASTERLIST')">Reset Bids</th>
+                                    <th sec:authorize="hasAuthority('MASTERLIST')">Force End Auction</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -174,11 +177,13 @@
                                     <td th:text="${shipment.consigneeCity}"></td>
                                     <td th:text="${shipment.consigneeState}"></td>
                                     <td th:text="${shipment.consigneeZip}"></td>
-                                    <td><a th:href="@{/viewshipmentbids/{id}(id=${shipment.id})}">View Bids</a></td>
+                                    <td><a th:href="@{/viewshipmentbids/{id}(id=${shipment.id})}" th:inline="text">View Bids ([[${shipment.getBids().size()}]])</a></td>
+                                    <td><p th:inline="text">[[${shipment.getLowestBidValue()}]]</p></td>
                                     <td sec:authorize="hasAnyAuthority('MASTERLIST')"><a th:href="@{/editshipment/{id}(id=${shipment.id})}">Edit</a></td>
                                     <td sec:authorize="hasAnyAuthority('MASTERLIST')"><a th:href="@{/deleteshipment/{id}(id=${shipment.id})}">Delete</a></td>
                                     <td sec:authorize="hasAuthority('MASTERLIST')"><a th:href="@{/unfreezeshipment/{id}(id=${shipment.id})}">Unfreeze</a></td>
                                     <td sec:authorize="hasAuthority('MASTERLIST')"><a th:href="@{/resetshipmentbids/{id}(id=${shipment.id})}">Reset Bids</a></td>
+                                    <td sec:authorize="hasAuthority('MASTERLIST')"><a th:href="@{/forceendauction/{id}(id=${shipment.id})}">Force End Auction</a></td>
                                     
                                 </tr>
                             </tbody>

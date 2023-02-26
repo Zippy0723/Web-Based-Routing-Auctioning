@@ -11,11 +11,11 @@
 
         <link rel="stylesheet" type="text/css" href="/styles/smoothness/jquery-ui-1.10.2.css" />
  		<script>
-            const confirmAction = () => {
+            const confirmAction = (id) => {
                 const response = confirm("Remove from Auction");
 
                 if (response) {
-                    alert("Ok was pressed");
+                	alert("Okay was pressed");
                 } else {
                     alert("Cancel was pressed");
                 }
@@ -155,13 +155,13 @@
                                     <th>Consignee State</th>
                                     <th>Consignee Zip</th>
                                     <th>View Bids</th>
+                                    <th>Winning Bid</th>
                                   
                                     <th sec:authorize="hasAuthority('CARRIER')">Add Bid</th>
                                     <th sec:authorize="hasAnyAuthority('SHIPPER','MASTERLIST')">Edit</th>
                                     <th sec:authorize="hasAnyAuthority('SHIPPER','MASTERLIST')">Delete</th>
                                     <th sec:authorize="hasAuthority('MASTERLIST')">Freeze</th>
                                     <th sec:authorize="hasAuthority('MASTERLIST')">Reset Bids</th>
-                                    <th sec:authorize="hasAuthority('MASTERLIST')">Force End Auction</th>
                                     <th sec:authorize="hasAuthority('MASTERLIST')">Force End Auction</th>
                                     <th sec:authorize="hasAnyAuthority('SHIPPER','MASTERLIST')">Remove From Auction</th>
                                     
@@ -185,14 +185,15 @@
                                     <td th:text="${shipment.consigneeCity}"></td>
                                     <td th:text="${shipment.consigneeState}"></td>
                                     <td th:text="${shipment.consigneeZip}"></td>
-                                    <td><a th:href="@{/viewshipmentbids/{id}(id=${shipment.id})}">View Bids</a></td>
+                                    <td><a th:href="@{/viewshipmentbids/{id}(id=${shipment.id})}" th:inline="text">View Bids ([[${shipment.getBids().size()}]])</a></td>
+                                    <td><p th:inline="text">[[${shipment.getLowestBidValue()}]]</p></td>
                                     <td sec:authorize="hasAuthority('CARRIER')"><a th:href="@{/add-bid/{id}(id=${shipment.id})}">Add Bid</a></td>
                                     <td sec:authorize="hasAnyAuthority('SHIPPER','MASTERLIST')"><a th:href="@{/editshipment/{id}(id=${shipment.id})}">Edit</a></td>
                                     <td sec:authorize="hasAnyAuthority('SHIPPER','MASTERLIST')"><a th:href="@{/deleteshipment/{id}(id=${shipment.id})}">Delete</a></td>
                                     <td sec:authorize="hasAuthority('MASTERLIST')"><a th:href="@{/freezeshipment/{id}(id=${shipment.id})}">Freeze</a></td>
                                     <td sec:authorize="hasAuthority('MASTERLIST')"><a th:href="@{/resetshipmentbids/{id}(id=${shipment.id})}">Reset Bids</a></td>
                                     <td sec:authorize="hasAuthority('MASTERLIST')"><a th:href="@{/forceendauction/{id}(id=${shipment.id})}">Force End Auction</a></td>
-                           			<td sec:authorize="hasAnyAuthority('SHIPPER','MASTERLIST')"><a th:href="@{/removefromauction/{id}(id=${shipment.id})}"><button onclick="confirmAction()">Remove from Auction</button> </a></td>
+                           			<td sec:authorize="hasAnyAuthority('SHIPPER','MASTERLIST')"><a th:href="@{/removefromauction/{id}(id=${shipment.id})}"><button th:onclick="confirmAction(${shipment.id})">Remove from Auction</button> </a></td>
                            	
                                     
                                 </tr>

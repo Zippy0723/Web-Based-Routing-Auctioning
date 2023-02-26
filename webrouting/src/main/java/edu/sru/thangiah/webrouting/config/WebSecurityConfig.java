@@ -109,6 +109,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 					
 					.antMatchers("/freezeshipment/**").hasAuthority("MASTERLIST")
 					
+					.antMatchers("/database").hasAuthority("ADMIN")
+					
 					//.antMatchers("/**").hasAnyAuthority("ADMIN", "CARRIER", "SHIPPER", "MASTERLIST")
 					.antMatchers("/verify","/verified", "/verificationfail","/forgotpasswordform","/forgotpassword", "/resetpassword", "/resetpasswordform").permitAll()
 					.anyRequest().authenticated()

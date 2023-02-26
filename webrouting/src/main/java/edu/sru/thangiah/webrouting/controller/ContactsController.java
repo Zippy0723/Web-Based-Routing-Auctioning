@@ -68,11 +68,11 @@ public class ContactsController {
     public String showContactList(Model model) {
         model.addAttribute("contacts", getLoggedInUser().getCarrier().getContacts());
         
-        User users = getLoggedInUser();
+        User user = getLoggedInUser();
         List<Notification> notifications = new ArrayList<>();
         
-        if(!(users == null)) {
-            notifications = NotificationController.fetchUnreadNotifications(users);
+        if(!(user == null)) {
+            notifications = NotificationController.fetchUnreadNotifications(user);
         }
         
         model.addAttribute("notifications",notifications);
