@@ -313,7 +313,7 @@ public class ContactsController {
 	    		String workPhone = row.getCell(10).toString();
 	   
 	    		
-	    		if (!(firstName.length() < 32 && firstName.length() > 0) || (firstName.matches("^[a-zA-Z]+$"))) { 
+	    		if (!(firstName.length() < 32 && firstName.length() > 0) || !(firstName.matches("^[a-zA-Z]+$"))) { 
 	    			workbook.close();
 	    			Logger.info("Contact first name field must be between 0 and 32 characters and alphabetic.");
 	    			continue;
