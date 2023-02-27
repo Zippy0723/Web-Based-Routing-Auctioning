@@ -27,9 +27,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
-import edu.sru.thangiah.webrouting.domain.Carriers;
+
 import edu.sru.thangiah.webrouting.domain.Contacts;
-import edu.sru.thangiah.webrouting.domain.Shipments;
+
 import edu.sru.thangiah.webrouting.domain.User;
 import edu.sru.thangiah.webrouting.repository.ContactsRepository;
 import edu.sru.thangiah.webrouting.services.SecurityService;
@@ -293,9 +293,8 @@ public class ContactsController {
 		        XSSFRow row = worksheet.getRow(i);
 		        
 		        if(row.getCell(0).getStringCellValue().isEmpty() || row.getCell(0)== null ) {
-		        	break;
+		        	break;	
 		        }
-		        
 		        
 		        List<String> states = Arrays.asList("Alabama", "Alaska", "Arizona", "Arkansas", "California", "Colorado", "Connecticut", "Delaware", "Florida", "Georgia", "Hawaii", "Idaho", "Illinois", "Indiana", "Iowa", "Kansas", "Kentucky", "Louisiana", "Maine", "Maryland", "Massachusetts", "Michigan", "Minnesota", "Mississippi", "Missouri", "Montana", "Nebraska", "Nevada", "New Hampshire", "New Jersey", "New Mexico", "New York", "North Carolina", "North Dakota", "Ohio", "Oklahoma", "Oregon", "Pennsylvania", "Rhode Island", "South Carolina", "South Dakota", "Tennessee", "Texas", "Utah", "Vermont", "Virginia", "Washington", "West Virginia", "Wisconsin", "Wyoming");
 				List<String> stateAbbreviations = Arrays.asList("AL", "AK", "AZ", "AR", "CA", "CO", "CT", "DE", "FL", "GA", "HI", "ID", "IL", "IN", "IA", "KS", "KY", "LA", "ME", "MD", "MA", "MI", "MN", "MS", "MO", "MT", "NE", "NV", "NH", "NJ", "NM", "NY", "NC", "ND", "OH", "OK", "OR", "PA", "RI", "SC", "SD", "TN", "TX", "UT", "VT", "VA", "WA", "WV", "WI", "WY");
@@ -314,69 +313,67 @@ public class ContactsController {
 	    		String workPhone = row.getCell(10).toString();
 	   
 	    		
-		    	
-	    		
-	    		if (!(firstName.length() < 32 && firstName.length() > 0) || (firstName.matches("^[A-Z][a-z]*$"))) {
+	    		if (!(firstName.length() < 32 && firstName.length() > 0) || (firstName.matches("^[a-zA-Z]+$"))) { 
 	    			workbook.close();
 	    			Logger.info("Contact first name field must be between 0 and 32 characters and alphabetic.");
 	    			continue;
 	    		}
 	    		
-	    		if(!(lastName.length() < 32 && firstName.length() > 0) || (lastName.matches("^[A-Za-z][A-Za-z]$"))) {
+	    		if(!(lastName.length() < 32 && lastName.length() > 0) || !(lastName.matches("^[a-zA-Z]+$"))) {//Validation working
 	    			workbook.close();
 	    			Logger.info("Contact last name field must be between 0 and 32 characters and alphbetic");
 	    			continue;
 	    		}
 	    		
-	    		if(!(middleInitial.length() < 16 && middleInitial.length() > 0) || (middleInitial.matches("^[A-Z]\\.$"))) {
+	    		if(!(middleInitial.length() < 16 && middleInitial.length() > 0) || !(middleInitial.matches("^[A-Za-z]{1}$"))) { //validation working
 	    			workbook.close();
 	    			Logger.info("Contact Middle initial must be 1 character and alphabetic.");
 	    			continue;
 	    		}
 	    		
-	    		if(!(emailAddress.length() < 64 && emailAddress.length() > 0) || (emailAddress.matches("^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+$"))){
+	    		if(!(emailAddress.length() < 64 && emailAddress.length() > 0) || !(emailAddress.matches("^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+$"))){//Validation working
 	    			workbook.close();
 	    			Logger.info("Contact email address must be between 0 and 64 characters that are alpahnumeric.");
 	    			continue;
 	    		}
 	    		
-	    		if(!(streetAddress1.length() < 64 && streetAddress1.length() > 0) || !(streetAddress1.matches("\\d+\\s+([a-zA-Z]+\\s?)+"))) {
+	    		if(!(streetAddress1.length() < 64 && streetAddress1.length() > 0) || !(streetAddress1.matches("\\d+\\s+([a-zA-Z]+\\s?)+"))) { //validation working
 	    			workbook.close();
 	    			Logger.info("Contact street address must be between 0 and 128 characters that are alphanumeric.");
 	    			continue;
 	    		}
 	    		
-	    		if(!(streetAddress2.length() < 64 && streetAddress2.length() > 0) || (streetAddress2.matches("\\d+\\s+([a-zA-Z]+\\s?)+"))) {
+	    		if(!(streetAddress2.length() < 64 && streetAddress2.length() > 0) || !(streetAddress2.matches("^[A-Za-z0-9.-]+(?:[\\s-][A-Za-z0-9.-]+)*$"))) { //Validation working
 	    			workbook.close();
 	    			Logger.info("Contact street address 2 must be between 0 and 64 characters that are alphanumeric.");
 	    			continue;
 	    		}
 	    		
-	    		if(!(city.length() < 64 && city.length() > 0) || (city.matches("^[a-zA-Z]+$"))) {
+	    		if(!(city.length() < 64 && city.length() > 0) || !(city.matches("^[A-Za-z]+(?:[\\s-][A-Za-z]+)*$"))) { //Validation for a city made up of one or two words.
 	    			workbook.close();
-	    			Logger.info("Shipper City must be between 0 and 64 characters and is alphabetic.");
+	    			Logger.info("Contact City must be between 0 and 64 characters and is alphabetic.");
 	    			continue;
 	    		}
 	    		
-	    		if(!(states.contains(state) || stateAbbreviations.contains(state))) {
+	    		if(!(states.contains(state) || stateAbbreviations.contains(state))) {  
 	    			workbook.close();
 	    			Logger.info("Contact state must be a state or state abbreviation.");
 	    			continue;
 	    		}
 	    		
-	    		if(!(zip.length() < 12 && zip.length() > 0) || !(zip.matches("^[0-9.]+$"))){
+	    		if(!(zip.length() < 12 && zip.length() > 0) || !(zip.matches("^[0-9.]+$"))){ //validation working
 	    			workbook.close();
-	    			Logger.info("Contact Zip must be between 0 and 12 characters and is numeric.");
+	    			Logger.info("Contact Zip must be between 0 and 12 characters and is numeric."); 
 	    			continue;
 	    		}
 	    		
-	    		if(!(primaryPhone.length() < 13 && primaryPhone.length() > 0) || !(primaryPhone.matches("\\d{3}-\\d{3}-\\d{4}"))){
+	    		if(!(primaryPhone.length() < 13 && primaryPhone.length() > 0) || !(primaryPhone.matches("\\d{3}-\\d{3}-\\d{4}"))){ //validation working
 	    			workbook.close();
 	    			Logger.info("Contact primary phone must be between 0 and 12 characters and is numeric.");
 	    			continue;
 	    		}
 	    		
-	    		if(!(workPhone.length() < 13 && workPhone.length() > 0) || !(workPhone.matches("\\d{3}-\\d{3}-\\d{4}"))){
+	    		if(!(workPhone.length() < 13 && workPhone.length() > 0) || !(workPhone.matches("\\d{3}-\\d{3}-\\d{4}"))){ //validation working
 	    			workbook.close();
 	    			Logger.info("Contact work phone must be between 0 and 12 characters and is numeric.");
 	    			continue;
@@ -395,7 +392,7 @@ public class ContactsController {
 	    		contact.setPrimaryPhone(primaryPhone);
 	    		contact.setWorkPhone(workPhone);
 		    	
-	    	
+	    		contact.setCarrier(getLoggedInUser().getCarrier());
 		        contactsRepository.save(contact);
 		        Logger.info("{} successfully saved contact with ID {}.", user.getUsername(), contact.getId());
 			 		
@@ -403,7 +400,8 @@ public class ContactsController {
 			 
 			 workbook.close();
 		 
-		} 
+			
+		}
 		catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
