@@ -356,10 +356,93 @@ public class ShipmentsController {
 			model.addAttribute("shipments", shipmentsPending);   
 		}
 		
+		
+		
 		return "pendingshipments";
 	}
 	
-
+	@GetMapping("/allshipments")
+	public String allShipments(Model model) {
+		List<Shipments> shipmentsPending = new ArrayList<>();
+		List<Shipments> shipmentsAccepted = new ArrayList<>();
+		List<Shipments> shipmentsFrozen = new ArrayList<>();
+		List<Shipments> shipmentsAvailable = new ArrayList<>();
+		List<Shipments> masterShipments = new ArrayList<>();
+		List<Shipments> shipperShipments = new ArrayList<>();
+		List<Shipments> carrierAllShipments = new ArrayList<>();
+		List<Shipments> carrierOwnShipments = new ArrayList<>();
+		User user = getLoggedInUser();
+		model = NotificationController.loadNotificationsIntoModel(user, model);
+		
+		if (user.getRole().toString().equals("SHIPPER")) {  
+			shipperShipments = user.getShipments();
+				for (int i = 0; i < shipperShipments.size(); i++) {
+					if (shipperShipments.get(i).getFullFreightTerms().equals("FROZEN")) {
+						shipmentsFrozen.add(shipperShipments.get(i));
+							
+					}
+					if (shipperShipments.get(i).getFullFreightTerms().equals("PENDING")) {
+						shipmentsPending.add(shipperShipments.get(i));
+							
+					}
+					if (shipperShipments.get(i).getFullFreightTerms().equals("BID ACCEPTED")) {
+						shipmentsAccepted.add(shipperShipments.get(i));
+						
+					}
+					if (shipperShipments.get(i).getFullFreightTerms().equals("AVAILABLE SHIPMENT")) {
+						shipmentsAvailable.add(shipperShipments.get(i));
+						
+					}
+				}
+				
+			}
+		else if (user.getRole().toString().equals("MASTERLIST")) {
+			masterShipments = (List<Shipments>) shipmentsRepository.findAll();
+			for (int i = 0; i < masterShipments.size(); i++) {
+				if (masterShipments.get(i).getFullFreightTerms().equals("FROZEN")) {
+					shipmentsFrozen.add(masterShipments.get(i));
+						
+				}
+				if (masterShipments.get(i).getFullFreightTerms().equals("PENDING")) {
+					shipmentsPending.add(masterShipments.get(i));
+						
+				}
+				if (masterShipments.get(i).getFullFreightTerms().equals("BID ACCEPTED")) {
+					shipmentsAccepted.add(masterShipments.get(i));
+					
+				}
+				if (masterShipments.get(i).getFullFreightTerms().equals("AVAILABLE SHIPMENT")) {
+					shipmentsAvailable.add(masterShipments.get(i));
+					
+				}
+			}
+		}
+		else if (user.getRole().toString().equals("CARRIER")) {  
+			carrierOwnShipments = user.getCarrier().getShipments();
+			carrierAllShipments = (List<Shipments>) shipmentsRepository.findAll();
+			//carrier all available
+			for (int i = 0; i < carrierAllShipments.size(); i++) {
+				if (carrierAllShipments.get(i).getFullFreightTerms().equals("AVAILABLE SHIPMENT")) {
+					shipmentsAvailable.add(carrierAllShipments.get(i));
+				}
+			}
+			//Carrier own bid accepted
+			for (int i = 0; i < carrierOwnShipments.size(); i++) {
+				if (carrierOwnShipments.get(i).getFullFreightTerms().equals("BID ACCEPTED")) {
+					shipmentsAccepted.add(carrierOwnShipments.get(i));
+				}
+			}
+			
+		}
+			model.addAttribute("shipmentsAvailable", shipmentsAvailable);
+			model.addAttribute("shipmentsFrozen", shipmentsFrozen);   
+			model.addAttribute("shipmentsPending", shipmentsPending);
+			model.addAttribute("shipmentsAccepted", shipmentsAccepted);
+			return "/allshipments";
+			
+	}
+		
+		
 	/**
 	 * Redirects user to the /add/add-shipments page <br>
 	 * Adds carriers and vehicles to the model.
@@ -872,6 +955,7 @@ public class ShipmentsController {
 		
 		return "/uploadshipments";	
 	}
+	
 	
 	/**
   	 * Reads an excel file containing shipments and adds it to the shipments repository. <br>
