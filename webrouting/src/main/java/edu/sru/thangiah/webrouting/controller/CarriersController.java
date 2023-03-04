@@ -73,6 +73,7 @@ public class CarriersController {
 		
   		User user = getLoggedInUser();
         model = NotificationController.loadNotificationsIntoModel(user, model);
+        String redirectLocation = "/carriers";
         
 		if (user.getRole().toString().equals("CARRIER")) {
 			
@@ -82,7 +83,8 @@ public class CarriersController {
 			model.addAttribute("carriers", carriersRepository.findAll());
 		}
 	
-		session.setAttribute("redirectLocation", "/carriers");
+		session.setAttribute("redirectLocation", redirectLocation);
+		model.addAttribute("redirectLocation", redirectLocation);
 		
         return "carriers";
     }
