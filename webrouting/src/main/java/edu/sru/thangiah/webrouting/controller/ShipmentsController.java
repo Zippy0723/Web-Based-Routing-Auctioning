@@ -26,6 +26,7 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -661,7 +662,7 @@ public class ShipmentsController {
         else if (shipment.getFullFreightTerms().equals("BID ACCEPTED")){  
         	redirectLocation = "redirect:/acceptedshipments";
         } 
-        else if (shipment.getFullFreightTerms().equals("BID ACCEPTED")) {
+        else if (shipment.getFullFreightTerms().equals("PENDING")) {
         	redirectLocation = "redirect:/pendingshipments";
         }
 		
@@ -721,6 +722,45 @@ public class ShipmentsController {
 		
 		return "redirect:/frozenshipments";
 	}
+	
+	/**
+	 * 
+	 */
+	@GetMapping("/directassignshipment/{id}")
+	public String directAssignShipment(@PathVariable("id") long id, Model model) {
+		Shipments shipment = shipmentsRepository.findById(id)
+			     .orElseThrow(() -> new IllegalArgumentException("Invalid Shipment Id:" + id));
+		ArrayList<Carriers> carriers = (ArrayList<Carriers>) carriersRepository.findAll();
+		
+		User user = getLoggedInUser();
+		model = NotificationController.loadNotificationsIntoModel(user, model);
+		
+		model.addAttribute("shipment",shipment);
+		model.addAttribute("shipmentId",shipment.getId());
+		model.addAttribute("carriers",carriers);
+		model.addAttribute("selectedCarrierId", 1);
+		
+		
+		return "directassignshipment";
+	}
+	
+	@PostMapping("/selectcarrier")
+	public String selectCarrier(@RequestParam("selectedCarrierId") Long selectedCarrierId, 
+			@RequestParam("inputPrice") String inputPrice,
+			@RequestParam("shipmentId") Long shipmentId ,Model model) {
+		Carriers carrier = carriersRepository.findById(selectedCarrierId)
+				.orElseThrow(() -> new IllegalArgumentException("Invalid Carrier Id:" + selectedCarrierId));
+		Shipments shipment = shipmentsRepository.findById(shipmentId)
+			     .orElseThrow(() -> new IllegalArgumentException("Invalid Shipment Id:" + shipmentId));
+		
+		model.addAttribute("selectedCarrierId",selectedCarrierId);
+		System.out.println(carrier.getCarrierName());
+		System.out.println(shipment.getId());
+		System.out.println(inputPrice);
+		
+		return "redirect:/directassignshipment/" + shipment.getId();
+	}
+	
 	
 	/**
   	 * Updates a shipment to the database. Checks if there are errors in the form. <br>
