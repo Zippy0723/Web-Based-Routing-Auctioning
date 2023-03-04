@@ -105,8 +105,9 @@ public class AuctionController {
 		Shipments shipment = shipmentsRepository.findById(id)
         		.orElseThrow(() -> new IllegalArgumentException("Invalid shipment Id:" + id));
         User user = getLoggedInUser();
-        model = NotificationController.loadNotificationsIntoModel(user, model);
         String redirectLocation = (String) session.getAttribute("redirectLocation");
+		model.addAttribute("redirectLocation", redirectLocation);
+        model = NotificationController.loadNotificationsIntoModel(user, model);
         
         if (!shipment.getFullFreightTerms().equals("PENDING")) {
         	System.out.println("Error: Non-pending shipment attempted to be moved to auction.");
@@ -123,7 +124,9 @@ public class AuctionController {
 	 * 
 	 */
 	@RequestMapping("/pushshipmentconfirmation/{id}")
-	public String pushShipmentConfirmation(@PathVariable("id") long id, Model model) {
+	public String pushShipmentConfirmation(@PathVariable("id") long id, Model model, HttpSession session) {
+		String redirectLocation = (String) session.getAttribute("redirectLocation");
+		model.addAttribute("redirectLocation", redirectLocation);
 		Shipments shipment = shipmentsRepository.findById(id)
 	     .orElseThrow(() -> new IllegalArgumentException("Invalid Shipment Id:" + id));
         User user = getLoggedInUser();
@@ -132,7 +135,7 @@ public class AuctionController {
 		if (user.getRole().toString().equals("CARRIER") || (user.getRole().toString().equals("SHIPPER") && !user.getShipments().contains(shipment))) {
 			System.out.println("Error: Invalid permissions for pushing shipment");
 			Logger.error("{} attempted to push a shipment and they do not have permission", user.getUsername());
-			return "redirect:/pendingshipments";
+			return "redirect:" + redirectLocation;
 		}
 		
 		if(shipment.getUser().getId() != user.getId()) {
@@ -144,7 +147,7 @@ public class AuctionController {
 		shipmentsRepository.save(shipment);
 		Logger.info("{} successfully pushed the shipment with ID {} to auction.", user.getUsername(), shipment.getId());
 		
-		return "redirect:/pendingshipments";
+		return "redirect:" + redirectLocation;
 	}
 	
 	/**

@@ -115,21 +115,31 @@ public class UserController {
 	 * @param model Used to add data to the model
 	 * @return "users"
 	 */
-    @RequestMapping({"/users"})
+    @GetMapping({"/users"})
     public String showUserList(Model model, HttpSession session) {
     	List<User> userList = userRepository.findAll();
-    	List<User> finalUserList = new ArrayList<User>();
+    	List<User> userShipperList = new ArrayList<User>();
+    	List<User> userCarrierList = new ArrayList<User>();
     	
     	session.setAttribute("redirectLocation", "/users");
     	
+    	
     	for (User user : userList) {
-    		if (!user.getRole().toString().equals("ADMIN") && !user.getRole().toString().equals("MASTERLIST") && !user.getRole().toString().equals("SHADOWADMIN")) {
-    			finalUserList.add(user);
+    		if (user.getRole().toString().equals("SHIPPER"))  {
+    			userShipperList.add(user);
+    		}
+    	}
+    	
+    	for (User user : userList) {
+    		if (user.getRole().toString().equals("CARRIER"))  {
+    			userCarrierList.add(user);
     		}
     	}
     	
     	
-        model.addAttribute("userstable", finalUserList);
+    	model.addAttribute("shippers", userShipperList);
+    	model.addAttribute("carriers", userCarrierList);
+        
         
         User user = getLoggedInUser();
         model = NotificationController.loadNotificationsIntoModel(user, model);
@@ -137,19 +147,18 @@ public class UserController {
         return "users";
     }
     
-    @RequestMapping("/CarrierAdministrationPage")
+    @GetMapping("/CarrierAdministrationPage")
     public String carrierAdministrationPage(Model model) {
     	List<User> userList = userRepository.findAll();
-    	List<User> finalUserList = new ArrayList<User>();
+    	List<User> userCarrierList = new ArrayList<User>();
     	
     	for (User user : userList) {
     		if (user.getRole().toString().equals("CARRIER")) {
-    			finalUserList.add(user);
+    			userCarrierList.add(user);
     		}
     	}
     	
-    	
-        model.addAttribute("userstable", finalUserList);
+        model.addAttribute("carriers", userCarrierList);
         
         User user = getLoggedInUser();
         model = NotificationController.loadNotificationsIntoModel(user, model);

@@ -1,8 +1,14 @@
 package edu.sru.thangiah.webrouting.controller;
 
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
+import org.apache.poi.xssf.usermodel.XSSFRow;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,10 +21,18 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 
+import edu.sru.thangiah.webrouting.domain.Carriers;
+import edu.sru.thangiah.webrouting.domain.Locations;
 import edu.sru.thangiah.webrouting.domain.Notification;
+import edu.sru.thangiah.webrouting.domain.Shipments;
 import edu.sru.thangiah.webrouting.domain.User;
+import edu.sru.thangiah.webrouting.domain.VehicleTypes;
 import edu.sru.thangiah.webrouting.domain.Vehicles;
+import edu.sru.thangiah.webrouting.repository.CarriersRepository;
+import edu.sru.thangiah.webrouting.repository.LocationsRepository;
 import edu.sru.thangiah.webrouting.repository.VehicleTypesRepository;
 import edu.sru.thangiah.webrouting.repository.VehiclesRepository;
 import edu.sru.thangiah.webrouting.services.SecurityService;
@@ -38,6 +52,10 @@ public class VehiclesController {
 	private VehiclesRepository vehiclesRepository;
 	
 	private VehicleTypesRepository vehicleTypesRepository;
+	
+	private CarriersRepository carriersRepository;
+	
+	private LocationsRepository locationsRepository;
 	
 	@Autowired
     private UserService userService;
@@ -129,16 +147,123 @@ public class VehiclesController {
     }
 	
 	/**
-     * Redirects user to the /uploadvehicles page when clicking "Upload an excel file" button in the vehicles section of Carrier login
+     * Redirects user to the /upload-vehicles page when clicking "Upload an excel file" button in the vehicles section of Carrier login
      * @param model used to add data to the model
-     * @return "/uploadvehicles"
+     * @return "/upload-vehicles"
      */
     
-    @RequestMapping({"/uploadvehicles"})
-    public String showAddVehiclesExcel(Model model) {
- 	   return "/uploadvehicles";
-    }
+	@PostMapping("/upload-vehicles")
+	public String LoadFromExcelData(@RequestParam("file") MultipartFile excelData){
+		XSSFWorkbook workbook;
+		try {
+			User user = getLoggedInUser();
+			workbook = new XSSFWorkbook(excelData.getInputStream());
 	
+		
+			XSSFSheet worksheet = workbook.getSheetAt(0);
+			
+			List<Carriers> carriersList;
+			carriersList = (List<Carriers>) carriersRepository.findAll();
+			
+			
+			List<VehicleTypes> vehicleTypeList;
+			vehicleTypeList = (List<VehicleTypes>) vehicleTypesRepository.findAll();
+			
+			List<Long> vehicleTypeIdList = new ArrayList<Long>();
+			
+			for (VehicleTypes v: vehicleTypeList) {
+				vehicleTypeIdList.add(v.getId());
+			}
+			
+			
+			List<Locations> locationsList;
+			locationsList = (List<Locations>) locationsRepository.findAll();
+			
+			List<Long> locationIdList = new ArrayList<Long>();
+			
+			for (Locations l: locationsList) {
+				locationIdList.add(l.getId());
+			}
+			
+			
+			for(int i=1; i<worksheet.getPhysicalNumberOfRows(); i++) {
+				
+				
+				 
+				Vehicles vehicle = new Vehicles();
+		        XSSFRow row = worksheet.getRow(i);
+		        
+		        if(row.getCell(0).getStringCellValue().isEmpty() || row.getCell(0)== null ) {
+		        	break;
+		        }
+	    		
+	    		
+	    		String manufacturedYear = row.getCell(0).toString().strip();
+			    String plateNumber = row.getCell(1).toString().strip();
+			    String vinNumber = row.getCell(2).toString().strip();
+			    
+	    		String location = row.getCell(3).toString().strip();
+	    		long locationID = Long.parseLong(location);			//May need to be in try catch
+	    		
+	    		String vehicleType = row.getCell(4).toString().strip();
+	    		long vehicleTypeID = Long.parseLong(vehicleType);
+	    	
+	    		
+
+	    		if (!(manufacturedYear.length() == 4) || !(manufacturedYear.matches("^[0-9]+$"))) {
+	    			workbook.close();
+	    			Logger.error("{} attempted to upload a vehicle but the Manufactured Year must be 4 numeric characters.",user.getUsername());
+	    			continue;
+	    		}
+	    		
+	    		
+	    		if(!(plateNumber.length() < 12 && plateNumber.length() > 0 && plateNumber.matches("^[a-zA-Z0-9.]+$"))) { 
+	    			workbook.close();
+	    			Logger.error("{} attempted to upload a vehicle but the Plate Number must be between 0 and 12 alphanumeric characters.",user.getUsername());
+	    			continue;
+	    		}
+	    		
+	    		if(!(vinNumber.length() < 17 && vinNumber.length() > 0) || !(vinNumber.matches("^[a-zA-Z0-9]+$"))) {
+	    			workbook.close();
+	    			Logger.error("{} attempted to upload a vehicle but the Vin Number must be between 0 and 17 alphanumeric characters.",user.getUsername());
+	    			continue;
+	    		}
+	    		
+	    		if(!(vehicleTypeIdList.contains(vehicleTypeID))) {
+	    			workbook.close();
+	    			Logger.error("{} attempted to upload a vehicle but the Vehicle Type ID does not exist.",user.getUsername());
+	    			continue;
+	    		}
+	    		
+	    		if(!(locationIdList.contains(locationID))) {
+	    			workbook.close();
+	    			Logger.error("{} attempted to upload a vehicle but the Vehicle Type ID does not exist.",user.getUsername());
+	    			continue;
+	    		}
+	    		
+	    		
+	    		
+	    		vehicle.setManufacturedYear(manufacturedYear);
+	    		vehicle.setVinNumber(vinNumber);
+	    		vehicle.setVehicleType(vehicleTypesRepository.findById(vehicleTypeID).orElseThrow(() -> new IllegalArgumentException("Invalid vehicleType Id:" + vehicleTypeID)));
+	    		vehicle.setLocation(locationsRepository.findById(locationID).orElseThrow(() -> new IllegalArgumentException("Invalid location Id:" + locationID)));
+	    		
+	    		
+		        vehiclesRepository.save(vehicle);
+		        Logger.info("{} successfully saved vehicle with ID {}.", user.getUsername(), vehicle.getId());
+			 		
+			 }
+			 
+			 workbook.close();
+		 
+		} 
+		catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return "redirect:/pendingshipments";
+	}
 	/**
   	 * Adds a vehicle to the database. Checks if there are errors in the form. <br>
   	 * If there are no errors, the vehicle is saved in the vehiclesRepository. and the user is redirect to /vehicles <br>

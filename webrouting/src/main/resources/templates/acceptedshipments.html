@@ -156,7 +156,6 @@
 	                                    <th>Winning Bid</th>
 	                                    <th sec:authorize="hasAuthority('MASTERLIST')">Edit</th>
                                     	<th sec:authorize="hasAuthority('MASTERLIST')">Delete</th>
-                                    	<th sec:authorize="hasAuthority('MASTERLIST')">Reset Bids</th>
 	                                </tr>
 	                            </thead>
 	                            <tbody>
@@ -184,7 +183,6 @@
 	                                    <td><p th:inline="text">[[${shipment.getLowestBidValue()}]]</p></td>
                                         <td sec:authorize="hasAuthority('MASTERLIST')"><a th:href="@{/editshipment/{id}(id=${shipment.id})}">Edit</a></td>
                                         <td sec:authorize="hasAuthority('MASTERLIST')"><a th:href="@{/deleteshipment/{id}(id=${shipment.id})}">Delete</a></td>
-                                        <td sec:authorize="hasAuthority('MASTERLIST')"><a th:href="@{/resetshipmentbids/{id}(id=${shipment.id})}">Reset Bids</a></td>
                                         
 	                                </tr>
 	                            </tbody>
