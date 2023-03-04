@@ -870,7 +870,7 @@ public class ShipmentsController {
 		User user = getLoggedInUser();
         model = NotificationController.loadNotificationsIntoModel(user, model);
 		
-		return "/uploadshipments";	
+		return "/uploads/uploadshipments";	
 	}
 	
 	/**

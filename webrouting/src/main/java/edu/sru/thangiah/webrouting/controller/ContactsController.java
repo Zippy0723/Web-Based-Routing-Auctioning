@@ -1,11 +1,20 @@
 package edu.sru.thangiah.webrouting.controller;
 
+import java.io.IOException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 
+import org.apache.poi.xssf.usermodel.XSSFRow;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.expression.AccessException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -15,9 +24,12 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
+
 
 import edu.sru.thangiah.webrouting.domain.Contacts;
-import edu.sru.thangiah.webrouting.domain.Notification;
+
 import edu.sru.thangiah.webrouting.domain.User;
 import edu.sru.thangiah.webrouting.repository.ContactsRepository;
 import edu.sru.thangiah.webrouting.services.SecurityService;
@@ -137,17 +149,7 @@ public class ContactsController {
   		return "redirect:/contacts";
   	}
   	
-  	/**
-     * Redirects user to the /uploadcontacts page when clicking "Upload an excel file" button in the contacts section of Carrier login
-     * @param model used to add data to the model
-     * @return "/uploadcontacts"
-     */
-    
-    @RequestMapping({"/uploadcontacts"})
-    public String showAddContactsExcel(Model model) {
- 	   return "/uploadcontacts";
-    }
-  	
+ 
   	/**
   	 * Finds a contact using the id parameter and if found, redirects user to delete confirmation page
   	 * Checks if dependencies are empty before deleting it.
@@ -280,6 +282,172 @@ public class ContactsController {
         Logger.info("{} successfully updated the contact with ID {}.", user.getUsername(), contact.getId());
         return "redirect:/contacts";
     }
+  	/**
+  	 * Uploads an excel file containing new contact info
+  	 * @param model Used to add data to the model 
+  	 * @return "/uploadcontacts" 
+  	 */
+	@GetMapping("/uploadcontacts")
+	public String ListFromExcelData(Model model){
+		return "/uploads/uploadcontacts";	
+	}
+	
+	/**
+  	 * Reads an excel file containing contact information, validates the input, and adds it to the contacts repository. <br>
+  	 * After the file is uploaded and added to the database, user is redirected to the contacts page
+  	 * @param excelData Excel file that is being added to the database
+  	 * @return "redirect:contacts/"
+	 * @throws AccessException 
+  	 */
+	@SuppressWarnings("unused")
+	@PostMapping("/upload-contact")
+	public String LoadFromExcelData(@RequestParam("file") MultipartFile excelData) throws AccessException{
+		XSSFWorkbook workbook;
+		try {
+			User user = getLoggedInUser();
+			workbook = new XSSFWorkbook(excelData.getInputStream());
+			System.out.println("Test1");
+		
+			XSSFSheet worksheet = workbook.getSheetAt(0);
+			List<Contacts> contactsList;
+			contactsList = (List<Contacts>) contactsRepository.findAll();
+			
+			List<String> states = Arrays.asList("Alabama", "Alaska", "Arizona", "Arkansas", "California", "Colorado", "Connecticut", "Delaware", "Florida", "Georgia", "Hawaii", "Idaho", "Illinois", "Indiana", "Iowa", "Kansas", "Kentucky", "Louisiana", "Maine", "Maryland", "Massachusetts", "Michigan", "Minnesota", "Mississippi", "Missouri", "Montana", "Nebraska", "Nevada", "New Hampshire", "New Jersey", "New Mexico", "New York", "North Carolina", "North Dakota", "Ohio", "Oklahoma", "Oregon", "Pennsylvania", "Rhode Island", "South Carolina", "South Dakota", "Tennessee", "Texas", "Utah", "Vermont", "Virginia", "Washington", "West Virginia", "Wisconsin", "Wyoming");
+			List<String> stateAbbreviations = Arrays.asList("AL", "AK", "AZ", "AR", "CA", "CO", "CT", "DE", "FL", "GA", "HI", "ID", "IL", "IN", "IA", "KS", "KY", "LA", "ME", "MD", "MA", "MI", "MN", "MS", "MO", "MT", "NE", "NV", "NH", "NJ", "NM", "NY", "NC", "ND", "OH", "OK", "OR", "PA", "RI", "SC", "SD", "TN", "TX", "UT", "VT", "VA", "WA", "WV", "WI", "WY");
+			
+			for(int i=1; i<worksheet.getPhysicalNumberOfRows(); i++) {
+				 
+				Contacts contact = new Contacts();
+		        XSSFRow row = worksheet.getRow(i);
+		        
+		        Boolean fieldIsNull = false;
+		    	System.out.println("Test2");
+		        for(int j=0; j<11; j++ ) {
+		        	if (row.getCell(j) == null) {
+		        		Logger.error("{} attempted to upload a contact but a required field was left null",user.getUsername());
+		        		fieldIsNull = true;
+		        		break;
+		        	}
+		        }
+		        	
+		        if (fieldIsNull == true) {
+		        	continue;
+		        }
+		        
+		        
+	    		
+	    		String firstName = row.getCell(0).toString().strip();
+			    String lastName = row.getCell(1).toString().strip();
+			    String middleInitial = row.getCell(2).toString().strip();
+	    		String emailAddress = row.getCell(3).toString().strip();
+	    		String streetAddress1 = row.getCell(4).toString().strip();
+	    		String streetAddress2 = row.getCell(5).toString().strip();
+	    		String city = row.getCell(6).toString().strip();
+	    		String state = row.getCell(7).toString().strip();
+	    		String zip = row.getCell(8).toString().strip();
+	    		String primaryPhone = row.getCell(9).toString().strip();
+	    		String workPhone = row.getCell(10).toString().strip();
+	    		
+		        
+		       
+	    		
+	    		if (!(firstName.length() < 32 && firstName.length() > 0) || !(firstName.matches("^[a-zA-Z]+$"))) { 
+	    			workbook.close();
+	    			Logger.info("{} attempted to upload a contact but Contact first name field must be between 0 and 32 characters and alphabetic.",user.getUsername());
+	    			continue;
+	    		}
+	    		
+	    		if(!(lastName.length() < 32 && lastName.length() > 0) || !(lastName.matches("^[a-zA-Z]+$"))) {//Validation working
+	    			workbook.close();
+	    			Logger.info("{} attempted to upload a contact but Contact last name field must be between 0 and 32 characters and alphbetic",user.getUsername());
+	    			continue;
+	    		}
+	    		
+	    		if(!(middleInitial.length() < 16 && middleInitial.length() > 0) || !(middleInitial.matches("^[A-Za-z]{1}$"))) { //validation working
+	    			workbook.close();
+	    			Logger.info("{} attempted to upload a contact but Contact Middle initial must be 1 character and alphabetic.",user.getUsername());
+	    			continue;
+	    		}
+	    		
+	    		if(!(emailAddress.length() < 64 && emailAddress.length() > 0) || !(emailAddress.matches("^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+$"))){//Validation working
+	    			workbook.close();
+	    			Logger.info("{} attempted to upload a contact but Contact email address must be between 0 and 64 characters that are alpahnumeric.",user.getUsername());
+	    			continue;
+	    		}
+	    		
+	    		if(!(streetAddress1.length() < 64 && streetAddress1.length() > 0) || !(streetAddress1.matches("\\d+\\s+([a-zA-Z.]+\\s?)+"))) { //validation working
+	    			workbook.close();
+	    			Logger.info("{} attempted to upload a contact but Contact street address must be between 0 and 128 characters that are alphanumeric.",user.getUsername());
+	    			continue;
+	    		}
+	    		
+	    		if(!(streetAddress2.length() < 64 && streetAddress2.length() > 0) || !(streetAddress2.matches("^[A-Za-z0-9./-]+(?:[\\s-][A-Za-z0-9.-]+)*$"))) { //Validation working
+	    			workbook.close();
+	    			Logger.info("{} attempted to upload a contact but Contact street address 2 must be between 0 and 64 characters that are alphanumeric.",user.getUsername());
+	    			continue;
+	    		}
+	    		
+	    		if(!(city.length() < 64 && city.length() > 0) || !(city.matches("^[A-Za-z]+(?:[\\s-][A-Za-z]+)*$"))) { //Validation for a city made up of one or two words.
+	    			workbook.close();
+	    			Logger.info("{} attempted to upload a contact but Contact City must be between 0 and 64 characters and is alphabetic.",user.getUsername());
+	    			continue;
+	    		}
+	    		
+	    		if(!(states.contains(state) || stateAbbreviations.contains(state))) {  
+	    			workbook.close();
+	    			Logger.info("{} attempted to upload a contact but Contact state must be a state or state abbreviation.",user.getUsername());
+	    			continue;
+	    		}
+	    		
+	    		if(!(zip.length() < 12 && zip.length() > 0) || !(zip.matches("^[0-9.]+$"))){ //validation working
+	    			workbook.close();
+	    			Logger.info("{} attempted to upload a contact but Contact Zip must be between 0 and 12 characters and is numeric.",user.getUsername());
+	    			continue;
+	    		}
+	    		
+	    		if(!(primaryPhone.length() < 13 && primaryPhone.length() > 0) || !(primaryPhone.matches("\\d{3}-\\d{3}-\\d{4}"))){ //validation working
+	    			workbook.close();
+	    			Logger.info("{} attempted to upload a contact but Contact primary phone must be between 0 and 12 characters and is numeric.",user.getUsername());
+	    			continue;
+	    		}
+	    		
+	    		if(!(workPhone.length() < 13 && workPhone.length() > 0) || !(workPhone.matches("\\d{3}-\\d{3}-\\d{4}"))){ //validation working
+	    			workbook.close();
+	    			Logger.info("{} attempted to upload a contact but Contact work phone must be between 0 and 12 characters and is numeric.",user.getUsername());
+	    			continue;
+	    		}
+	    	 
+	    
+	    		contact.setFirstName(firstName);
+	    		contact.setLastName(lastName);
+	    		contact.setMiddleInitial(middleInitial);
+	    		contact.setEmailAddress(emailAddress);
+	    		contact.setStreetAddress1(streetAddress1);
+	    		contact.setStreetAddress2(streetAddress2);
+	    		contact.setCity(city);
+	    		contact.setState(state);
+	    		contact.setZip(zip);
+	    		contact.setPrimaryPhone(primaryPhone);
+	    		contact.setWorkPhone(workPhone);
+		    	
+	    		contact.setCarrier(getLoggedInUser().getCarrier());
+		        contactsRepository.save(contact);
+		        Logger.info("{} successfully saved contact with ID {}.", user.getUsername(), contact.getId());
+			 		
+			 }
+			 
+			 workbook.close();
+		 
+			
+		}
+		catch (IOException|NullPointerException  e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			
+		}
+		
+		return "redirect:/contacts";
+	}
   	
   	/**
 	 * Returns the user that is currently logged into the system. <br>
@@ -300,3 +468,5 @@ public class ContactsController {
     	}
     }
 }
+
+  
