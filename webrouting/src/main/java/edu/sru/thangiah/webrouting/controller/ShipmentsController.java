@@ -734,7 +734,7 @@ public class ShipmentsController {
 		
 		User user = getLoggedInUser();
 		model = NotificationController.loadNotificationsIntoModel(user, model);
-		
+
 		model.addAttribute("shipment",shipment);
 		model.addAttribute("shipmentId",shipment.getId());
 		model.addAttribute("carriers",carriers);
@@ -753,10 +753,20 @@ public class ShipmentsController {
 		Shipments shipment = shipmentsRepository.findById(shipmentId)
 			     .orElseThrow(() -> new IllegalArgumentException("Invalid Shipment Id:" + shipmentId));
 		
+		Double paidAmount;
+		
 		model.addAttribute("selectedCarrierId",selectedCarrierId);
+		
+		try {
+			paidAmount = Double.parseDouble(inputPrice);
+		} catch (NumberFormatException e) {
+			model.addAttribute("message","Error: Please input a valid price for this shipment");
+			return "redirect:/directassignshipment/" + shipment.getId();
+		}
+		
 		System.out.println(carrier.getCarrierName());
 		System.out.println(shipment.getId());
-		System.out.println(inputPrice);
+		System.out.println(paidAmount);
 		
 		return "redirect:/directassignshipment/" + shipment.getId();
 	}

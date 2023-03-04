@@ -135,12 +135,15 @@
                         <span type="hidden" th:text="${error}" class="loginError"></span>
                         <br>
                         <form th:action="@{/selectcarrier}" method="post">
+							<span th:if="${message}" th:text="${message}" class="error"></span>
                         	<input type="hidden" th:field="${selectedCarrierId}" th:value="${selectedCarrierId}"/>
                         	<input type="hidden" th:name="shipmentId" th:value="${shipmentId}"/>
-    				 		<div th:each="carrier, carrierIndex : ${carriers}">
-       					  		<input type="radio" th:name="selectedCarrierId" th:value="${carrier.id}" th:checked="${carrier.id == selectedCarrierId}"/>
-       					  		<label th:for="'selectedCarrierId_' + ${carrier.id}" th:text="${carrier.carrierName} + ' (' + ${carrier.scac} + ')'"></label>
-       				      		<br/>
+    				 		<div th:each="carrier, carrierIndex : ${carriers}" class="carrier-box">
+    				 			<div class="radio-container">
+       					  			<input type="radio" th:name="selectedCarrierId" th:value="${carrier.id}" th:checked="${carrier.id == selectedCarrierId}"/>
+       					  			<label th:for="'selectedCarrierId_' + ${carrier.id}" th:text="${carrier.carrierName} + ' (' + ${carrier.scac} + ')'"></label>
+       				      			<br/>
+       				      		</div>
     			        	</div>
     			        <label for="inputPrice">Enter the price of the shipment:</label>
 						<input type="text" id="inputPrice" name="inputPrice">
