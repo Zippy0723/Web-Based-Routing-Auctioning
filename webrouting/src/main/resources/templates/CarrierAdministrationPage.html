@@ -37,6 +37,9 @@
                         <li sec:authorize="hasAuthority('ADMIN')" class="navitem">
                             <a class="navlink" id="nav_users" href="/ShipperAdministrationPage">Shipper Page</a>
                         </li>
+                        <li sec:authorize="hasAuthority('ADMIN')" class="navitem">
+                            <a class="navlink" id="nav_users" href="/viewavailableroles">Available Roles</a>
+                        </li>
                         <li sec:authorize="hasAuthority('CARRIER')" class="navitem">
                             <a class="navlink" id="nav_contacts" href="/contacts">Contacts</a>
                         </li>
@@ -72,9 +75,6 @@
                         </li>
                         <li sec:authorize="hasAnyAuthority('CARRIER','MASTERLIST')" class="navitem">
                             <a class="navlink" id="nav_routes" href="/routes">Routes</a>
-                        </li>
-                        <li sec:authorize="hasAnyAuthority('ADMIN')" class="navitem">
-                            <a class="navlink" id="nav_database" href="/database">Database</a>
                         </li>
 						<br><br><br><br><br>
 						<li sec:authorize="hasAnyAuthority('CARRIER', 'MASTERLIST', 'ADMIN','SHIPPER')">
@@ -143,7 +143,12 @@
                                     <th>UserName</th>
                                     <th>Email</th>
                                     <th>Role</th>
-                                    <th>Carrier</th>
+                                    <th>Carrier Name</th>
+                                    <th>SCAC</th>
+                                    <th>LTL</th>
+                                    <th>FTL</th>
+                                    <th>Pallets</th>
+                                    <th>Weight</th>
                                     <th>Enabled</th>
                                     <th>Auctioning Enabled</th>
                                     <th>Edit</th>
@@ -158,7 +163,36 @@
                                     <td th:text="${user.username}"></td>
                                     <td th:text="${user.email}"></td>
                                     <td th:text="${user.role}"></td>
-                                    <td th:text="${user.carrier}"></td>
+                                    <td>
+                                    <ul>
+                                    <li th:each="carrier : ${user.carrier}" th:text="${carrier.carrierName}"></li>
+                                    </ul>
+                                    </td>
+                                    <td>
+                                    <ul>
+                                    <li th:each="carrier : ${user.carrier}" th:text="${carrier.scac}"></li>
+                                    </ul>
+                                    </td>
+                                    <td>
+                                    <ul>
+                                    <li th:each="carrier : ${user.carrier}" th:text="${carrier.ltl}"></li>
+                                    </ul>
+                                    </td>
+                                    <td>
+                                    <ul>
+                                    <li th:each="carrier : ${user.carrier}" th:text="${carrier.ftl}"></li>
+                                    </ul>
+                                    </td>
+                                    <td>
+                                    <ul>
+                                    <li th:each="carrier : ${user.carrier}" th:text="${carrier.pallets}"></li>
+                                    </ul>
+                                    </td>
+                                    <td>
+                                    <ul>
+                                    <li th:each="carrier : ${user.carrier}" th:text="${carrier.weight}"></li>
+                                    </ul>
+                                    </td>
                                     <td th:text= "${user.enabled}"></td>
                                     <td th:text="${user.enabled}"></td>
                                     <td><a th:href="@{/edituser/{id}(id=${user.id})}">Edit</a></td>
@@ -168,7 +202,7 @@
                         </table>
                     </div>      
                     <p><button class="buttons6" onclick="window.location.href='./carriersignup';">Add New User</button>
-                    	<button class="buttons6" onclick="window.location.href='./uploadcarrier';">Upload an Excel File</button></p>
+                    	<button class="buttons6" onclick="">Upload an Excel File</button></p>
                     <p><button class="buttons6" onclick="window.location.href='./roles';">View Available Roles</button></p>
                 </div>
             </div>
