@@ -727,7 +727,7 @@ public class ShipmentsController {
 	 * 
 	 */
 	@GetMapping("/directassignshipment/{id}")
-	public String directAssignShipment(@PathVariable("id") long id, Model model) {
+	public String directAssignShipment(@PathVariable("id") long id, Model model, HttpSession session) {
 		Shipments shipment = shipmentsRepository.findById(id)
 			     .orElseThrow(() -> new IllegalArgumentException("Invalid Shipment Id:" + id));
 		ArrayList<Carriers> carriers = (ArrayList<Carriers>) carriersRepository.findAll();
@@ -735,6 +735,13 @@ public class ShipmentsController {
 		User user = getLoggedInUser();
 		model = NotificationController.loadNotificationsIntoModel(user, model);
 
+		try {
+			model.addAttribute("message",session.getAttribute("message"));
+		} catch (Exception e){
+			//do nothing if there is no error mssage
+		}
+		session.removeAttribute("message");
+		
 		model.addAttribute("shipment",shipment);
 		model.addAttribute("shipmentId",shipment.getId());
 		model.addAttribute("carriers",carriers);
@@ -747,7 +754,7 @@ public class ShipmentsController {
 	@PostMapping("/selectcarrier")
 	public String selectCarrier(@RequestParam("selectedCarrierId") Long selectedCarrierId, 
 			@RequestParam("inputPrice") String inputPrice,
-			@RequestParam("shipmentId") Long shipmentId ,Model model) {
+			@RequestParam("shipmentId") Long shipmentId ,Model model, HttpSession session) {
 		Carriers carrier = carriersRepository.findById(selectedCarrierId)
 				.orElseThrow(() -> new IllegalArgumentException("Invalid Carrier Id:" + selectedCarrierId));
 		Shipments shipment = shipmentsRepository.findById(shipmentId)
@@ -760,15 +767,26 @@ public class ShipmentsController {
 		try {
 			paidAmount = Double.parseDouble(inputPrice);
 		} catch (NumberFormatException e) {
-			model.addAttribute("message","Error: Please input a valid price for this shipment");
+			session.setAttribute("message","Error: Please input a valid price for this shipment");
 			return "redirect:/directassignshipment/" + shipment.getId();
 		}
 		
-		System.out.println(carrier.getCarrierName());
-		System.out.println(shipment.getId());
-		System.out.println(paidAmount);
+		assignShipment(shipment, paidAmount, carrier);
 		
-		return "redirect:/directassignshipment/" + shipment.getId();
+		return "redirect:" + session.getAttribute("redirectLocation");
+	}
+	
+	public void assignShipment(Shipments shipment, Double paidAmount, Carriers carrier) {
+		
+		User user = CarriersController.getUserFromCarrier(carrier);
+		NotificationController.addNotification(user, "Shipper " + shipment.getUser().getUsername() + " has requested that you pick up a shipment with a value of " + paidAmount +
+				". You may accept from the 'AWAITING ACCEPTANCE' menu under the shipments.");
+		
+		shipment.setCarrier(carrier);
+		shipment.setPaidAmount(paidAmount.toString());
+		shipment.setScac(carrier.getScac());
+		shipment.setFullFreightTerms("AWAITING ACCEPTANCE");
+		shipmentsRepository.save(shipment);
 	}
 	
 	
