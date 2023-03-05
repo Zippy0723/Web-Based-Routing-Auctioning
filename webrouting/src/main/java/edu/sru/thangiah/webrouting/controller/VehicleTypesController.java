@@ -66,9 +66,11 @@ public class VehicleTypesController {
 	 */
 	@RequestMapping({"/vehicletypes"})
     public String showVehicleTypeList(Model model, HttpSession session) {
-		String redirectLocation = "/vehicletypes";
-		session.setAttribute("redirectLocation", redirectLocation);
-		model.addAttribute("redirectLocation", redirectLocation);
+
+		    String redirectLocation = "/vehicletypes";
+		    session.setAttribute("redirectLocation", redirectLocation);
+		    model.addAttribute("redirectLocation", redirectLocation);
+
         model.addAttribute("vehicletypes", vehicleTypesRepository.findAll());
         
         try {

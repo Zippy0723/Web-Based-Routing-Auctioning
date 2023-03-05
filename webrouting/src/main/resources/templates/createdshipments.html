@@ -8,19 +8,8 @@
         <link rel="stylesheet" type="text/css" href="/styles/login.css">
         <link rel="stylesheet" type="text/css" href="/styles/menubar.css">
         <link rel="stylesheet" type="text/css" href="/styles/tables.css">
-
         <link rel="stylesheet" type="text/css" href="/styles/smoothness/jquery-ui-1.10.2.css" />
- 		<script>
-            const confirmAction = (id) => {
-                const response = confirm("Remove from Auction");
-
-                if (response) {
-                	alert("Okay was pressed");
-                } else {
-                    alert("Cancel was pressed");
-                }
-            }
-        </script>
+        
 	</head>
 	<body>
 		<div id="wrapper">
@@ -135,6 +124,9 @@
                     <div th:case="*">
                         <h2>Created Shipments</h2>
                         <br>
+                        <div class="alert alert-info" th:if="${message}">
+       		            <span th:text="${message}"></span>
+       	                </div>
                         <span type="hidden" th:text="${error}" class="loginError"></span>
                         <br>
                         <table class="dataTable">
@@ -163,9 +155,7 @@
                                     <th sec:authorize="hasAuthority('MASTERLIST')">Freeze</th>
                                     <th sec:authorize="hasAuthority('MASTERLIST')">Reset Bids</th>
                                     <th sec:authorize="hasAuthority('MASTERLIST')">Force End Auction</th>
-                                   <!--  <th sec:authorize="hasAnyAuthority('SHIPPER','MASTERLIST')">Remove From Auction</th> -->
-                                    
-                              
+                                    <th sec:authorize="hasAnyAuthority('SHIPPER','MASTERLIST')">Remove From Auction</th>
 									
 								</tr>
                             </thead>
@@ -193,7 +183,7 @@
                                     <td sec:authorize="hasAuthority('MASTERLIST')"><a th:href="@{/freezeshipment/{id}(id=${shipment.id})}">Freeze</a></td>
                                     <td sec:authorize="hasAuthority('MASTERLIST')"><a th:href="@{/resetshipmentbids/{id}(id=${shipment.id})}">Reset Bids</a></td>
                                     <td sec:authorize="hasAuthority('MASTERLIST')"><a th:href="@{/forceendauction/{id}(id=${shipment.id})}">Force End Auction</a></td>
-                           			<!-- <td sec:authorize="hasAnyAuthority('SHIPPER','MASTERLIST')"><a th:href="@{/removefromauction/{id}(id=${shipment.id})}"><button th:onclick="confirmAction(${shipment.id})">Remove from Auction</button> </a></td> -->
+                           			<td sec:authorize="hasAnyAuthority('SHIPPER','MASTERLIST')"><a th:href="@{/removefromauction/{id}(id=${shipment.id})}">Remove From Auction</a></td>
                            	
                                     
                                 </tr>

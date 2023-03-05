@@ -20,6 +20,7 @@ import edu.sru.thangiah.webrouting.domain.Carriers;
 import edu.sru.thangiah.webrouting.domain.Notification;
 import edu.sru.thangiah.webrouting.domain.Shipments;
 import edu.sru.thangiah.webrouting.domain.User;
+import edu.sru.thangiah.webrouting.repository.BidsRepository;
 import edu.sru.thangiah.webrouting.repository.ShipmentsRepository;
 import edu.sru.thangiah.webrouting.repository.UserRepository;
 import edu.sru.thangiah.webrouting.services.SecurityService;
@@ -41,11 +42,14 @@ public class AuctionController {
 	
 	private UserRepository userRepository;
 	
+	private BidsRepository bidsRepository;
+	
 	private static final Logger Logger = LoggerFactory.getLogger(AuctionController.class);
 	
-	public AuctionController (ShipmentsRepository sr, UserRepository ur) {
+	public AuctionController (ShipmentsRepository sr, UserRepository ur, BidsRepository br) {
 		this.shipmentsRepository = sr;
 		this.userRepository = ur;
+		this.bidsRepository  = br;
 	}
 	
 	/**
@@ -87,7 +91,7 @@ public class AuctionController {
 		}
 		
 		if (bids.size() < 1) {
-			System.out.println("This shipment has no bids on it, cannot end an auction with no bids");
+			session.setAttribute("message","Error: Cannot force end an auction that has no bids on it.");
 			Logger.error("{} attempted to end an auction without any bids on shipment ID {}", user.getUsername(), shipment.getId());///TODO: Replace this with an html pop in page if possible
 			return "redirect:" + redirectLocation;
 		}
@@ -158,45 +162,57 @@ public class AuctionController {
 		Shipments shipment = shipmentsRepository.findById(id)
 			     .orElseThrow(() -> new IllegalArgumentException("Invalid Shipment Id:" + id));
 		User user = getLoggedInUser();
+		model = NotificationController.loadNotificationsIntoModel(user, model);
 		String redirectLocation = (String) session.getAttribute("redirectLocation");
+		model.addAttribute("redirectLocation",redirectLocation);
 		
-		if (!user.getRole().toString().equals("MASTER") || !user.getRole().toString().equals("SHIPPER")) {
+		if (!user.getRole().toString().equals("MASTERLIST") && !user.getRole().toString().equals("SHIPPER")) {
 			System.out.println("User with invalid role " + user.getRole().toString() + " attempted to remove shipment from auction");
-			return redirectLocation;
+			return "redirect:" + redirectLocation;
 		}
 		
 		if(user.getRole().toString().equals("SHIPPER")) {
 			if (shipment.getUser().getId() != user.getId()) {
 				System.out.println("Shipper attempted to remove a shipment that wasn't their own from auction");
-				return redirectLocation;
+				return "redirect:" + redirectLocation;
 			}
 		}
 		
 		model.addAttribute("shipments",shipment);
-		return "/createdshipments";
+		return "/reset/removefromauctionconfirm";
 	}
 	
-	
+	/**
+	 * 
+	 * @param id
+	 * @param model
+	 * @return
+	 */
 	@RequestMapping("/removefromauctionconfirmation/{id}")
-	public String removeFromAuctionConfirmation(@PathVariable("id") long id, Model model) {
+	public String removeFromAuctionConfirmation(@PathVariable("id") long id, Model model, HttpSession session) {
 		Shipments shipment = shipmentsRepository.findById(id)
 	     .orElseThrow(() -> new IllegalArgumentException("Invalid Shipment Id:" + id));
-		User user = getLoggedInUser();		
+		User user = getLoggedInUser();
+		model = NotificationController.loadNotificationsIntoModel(user, model);
 		
-		if (user.getRole().toString().equals("CARRIER") || (user.getRole().toString().equals("SHIPPER") && !user.getShipments().contains(shipment))) {
-			System.out.println("Error: Invalid permissions for pushing shipment");
-			return "redirect:/pendingshipments";
+		if(user.getRole().toString().equals("MASTERLIST")) {
+			NotificationController.addNotification(shipment.getUser(), "Your shipment with id " + shipment.getId() + " was removed from auction by " + user.getUsername());
 		}
 		
-		if(shipment.getUser().getId() != user.getId()) {
-			NotificationController.addNotification(shipment.getUser(), 
-					"ALERT: Your shipment with ID " + shipment.getId() + " and Client " + shipment.getClient() + " was pushed to auction by " + user.getUsername());
+		List<Bids> bids = shipment.getBids();
+
+		while (!bids.isEmpty()) {
+		    Bids bid = bids.get(0);
+		    NotificationController.addNotification(CarriersController.getUserFromCarrier(bid.getCarrier()), 
+		            "Your bid with id " + bid.getId() + " on shipment with id " + shipment.getId() + " was deleted as the shipment was removed from auction");
+		    bidsRepository.delete(bid);
+		    bids.remove(bid);
 		}
 		
-		shipment.setFullFreightTerms("AVAILABLE SHIPMENT");
+		shipment.setFullFreightTerms("PENDING");
 		shipmentsRepository.save(shipment);
 		
-		return "redirect:/pendingshipments";
+		return "redirect:" + (String) session.getAttribute("redirectLocation");
 	}
 	
 	/**

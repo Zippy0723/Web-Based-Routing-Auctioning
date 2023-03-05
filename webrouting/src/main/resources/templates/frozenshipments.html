@@ -132,6 +132,9 @@
                     <div th:case="*">
                         <h2>Frozen Shipments</h2>
                         <br>
+                        <div class="alert alert-info" th:if="${message}">
+       		            <span th:text="${message}"></span>
+       	                </div>
                         <span type="hidden" th:text="${error}" class="loginError"></span>
                         <br>
                         <table class="dataTable">
@@ -159,6 +162,7 @@
                                     <th sec:authorize="hasAuthority('MASTERLIST')">Unfreeze</th>
                                     <th sec:authorize="hasAuthority('MASTERLIST')">Reset Bids</th>
                                     <th sec:authorize="hasAuthority('MASTERLIST')">Force End Auction</th>
+                                    <th sec:authorize="hasAuthority('MASTERLIST')">Remove From Auction</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -184,6 +188,7 @@
                                     <td sec:authorize="hasAuthority('MASTERLIST')"><a th:href="@{/unfreezeshipment/{id}(id=${shipment.id})}">Unfreeze</a></td>
                                     <td sec:authorize="hasAuthority('MASTERLIST')"><a th:href="@{/resetshipmentbids/{id}(id=${shipment.id})}">Reset Bids</a></td>
                                     <td sec:authorize="hasAuthority('MASTERLIST')"><a th:href="@{/forceendauction/{id}(id=${shipment.id})}">Force End Auction</a></td>
+                                    <td sec:authorize="hasAuthority('MASTERLIST')"><a th:href="@{/removefromauction/{id}(id=${shipment.id})}">Remove From Auction</a></td>
                                     
                                 </tr>
                             </tbody>
