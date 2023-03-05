@@ -3,6 +3,8 @@ package edu.sru.thangiah.webrouting.controller;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.servlet.http.HttpSession;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -59,7 +61,12 @@ public class DriverController {
 	 * @return "drivers"
 	 */
 	@RequestMapping({"/drivers"})
-    public String showDriversList(Model model) {
+    public String showDriversList(Model model, HttpSession session) {
+		
+		String redirectLocation = "/drivers";  
+		session.setAttribute("redirectLocation", redirectLocation);         
+		model.addAttribute("redirectLocation", redirectLocation);
+		
 		User user = getLoggedInUser();
         model = NotificationController.loadNotificationsIntoModel(user, model);
 		if (user.getRole().toString().equals("CARRIER")) {
@@ -83,13 +90,14 @@ public class DriverController {
 	 * @return "/add/add-driver"
 	 */
 	@GetMapping({"/add-driver"})
-    public String showLists(Model model, Driver drivers, BindingResult result) {
+    public String showLists(Model model, Driver drivers, BindingResult result, HttpSession session) {
 		User user = getLoggedInUser();
         model = NotificationController.loadNotificationsIntoModel(user, model);
 		
 		model.addAttribute("carriers", user.getCarrier());
 		model.addAttribute("contacts", user.getCarrier().getContacts());
 		model.addAttribute("vehicles", user.getCarrier().getVehicles());
+		model.addAttribute("redirectLocation", (String) session.getAttribute("redirectLocation"));
 		
         return "/add/add-driver";
     }
@@ -104,9 +112,12 @@ public class DriverController {
   	 * @return "redirect:/drivers" or "/add/add-driver"
   	 */
 	@RequestMapping({"/adddriver"})
-  	public String addDriver(@Validated Driver drivers, BindingResult result, Model model) {
+  	public String addDriver(@Validated Driver drivers, BindingResult result, Model model, HttpSession session) {
 		User user = getLoggedInUser();
         model = NotificationController.loadNotificationsIntoModel(user, model);
+        
+        String redirectLocation = (String) session.getAttribute("redirectLocation");
+		model.addAttribute("redirectLocation", (String) session.getAttribute("redirectLocation"));
 		
   		if (result.hasErrors()) {
   			return "/add/add-driver";
@@ -128,13 +139,13 @@ public class DriverController {
   			Logger.error("{} was unable to add a driver because lisence number already exists or contact already in use for driver with ID {}.", user.getUsername(), drivers.getId());
   			model.addAttribute("drivers", user.getCarrier().getDrivers());
   			
-  			return "drivers";
+  			return "/drivers";
   		}
   		
   		driverRepository.save(drivers);
   		Logger.info("{} sucessfully added new driver with ID {}.", user.getUsername(), drivers.getId());
   		
-  		return "redirect:/drivers";
+  		return "redirect:" + redirectLocation;
   	}
 	
 	/**
@@ -212,7 +223,7 @@ public class DriverController {
   	 * @return "update/update-driver"
   	 */
 	@GetMapping("/editdriver/{id}")
-    public String showEditForm(@PathVariable("id") long id, Model model) {
+    public String showEditForm(@PathVariable("id") long id, Model model, HttpSession session) {
 		Driver drivers = driverRepository.findById(id)
           .orElseThrow(() -> new IllegalArgumentException("Invalid Driver Id:" + id));
 		
@@ -221,6 +232,7 @@ public class DriverController {
 		 model.addAttribute("carriers", user.getCarrier());
 		 model.addAttribute("contacts", user.getCarrier().getContacts());
 	     model.addAttribute("driver", drivers);
+	     model.addAttribute("redirectLocation", (String) session.getAttribute("redirectLocation"));
 	     
 	     model = NotificationController.loadNotificationsIntoModel(user, model);
 	     
@@ -239,7 +251,11 @@ public class DriverController {
   	 */
 	@PostMapping("/updatedriver/{id}")
     public String updateDriver(@PathVariable("id") long id, @Validated Driver driver, 
-      BindingResult result, Model model) {
+      BindingResult result, Model model, HttpSession session) {
+		
+		String redirectLocation = (String) session.getAttribute("redirectLocation");
+		model.addAttribute("redirectLocation", (String) session.getAttribute("redirectLocation"));
+		
         if (result.hasErrors()) {
         	driver.setId(id);
             return "/update/update-driver";
@@ -265,12 +281,12 @@ public class DriverController {
   			model.addAttribute("error", "Unable to update Driver. Lisence number already exists or Contact already in use");
   			Logger.error("{} attempted to update driver with ID {}.Update failed due to lisence number already exists or contact already in use.", user.getUsername(), driver.getId());
   			model.addAttribute("drivers", user.getCarrier().getDrivers());
-  			return "drivers";
+  			return "/drivers";
 			 
   		}
         driverRepository.save(driver);
         Logger.info("{} successfully updated driver with ID {}", user.getUsername(), driver.getId());
-        return "redirect:/drivers";
+        return "redirect:" + redirectLocation;
     }
 	/**
 	 * Returns the user that is currently logged into the system. <br>

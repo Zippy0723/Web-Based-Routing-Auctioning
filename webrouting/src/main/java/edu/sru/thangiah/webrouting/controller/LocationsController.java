@@ -3,6 +3,8 @@ package edu.sru.thangiah.webrouting.controller;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.servlet.http.HttpSession;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -63,7 +65,12 @@ public class LocationsController {
 	 * @return "locations"
 	 */
 	@RequestMapping({"/locations"})
-    public String showLocationsList(Model model) {
+    public String showLocationsList(Model model, HttpSession session) {
+		
+		String redirectLocation = "/locations";         
+		session.setAttribute("redirectLocation", redirectLocation);         
+		model.addAttribute("redirectLocation", redirectLocation);
+
 		User user = getLoggedInUser();
 		model = NotificationController.loadNotificationsIntoModel(user, model);
 		if (user.getRole().toString().equals("CARRIER")) {
@@ -86,12 +93,13 @@ public class LocationsController {
 	 * @return "/add/add-location"
 	 */
 	@GetMapping({"/add-location"})
-    public String showCarriersList(Model model, Locations location, BindingResult result) {
+    public String showCarriersList(Model model, Locations location, BindingResult result, HttpSession session) {
 		
 		User user = getLoggedInUser();
 		
 		model.addAttribute("carriers", user.getCarrier());  
         model = NotificationController.loadNotificationsIntoModel(user, model);
+        model.addAttribute("redirectLocation", (String) session.getAttribute("redirectLocation"));
         
 	    return "/add/add-location";
 		
@@ -107,8 +115,12 @@ public class LocationsController {
   	 * @return "redirect:/locations" or "/add/add-location"
   	 */
 	@RequestMapping({"/addlocations"})
-  	public String addLocation(@Validated Locations location, BindingResult result, Model model) {
+  	public String addLocation(@Validated Locations location, BindingResult result, Model model, HttpSession session) {
 		userValidator.addition(location, result);
+		
+		String redirectLocation = (String) session.getAttribute("redirectLocation");
+		model.addAttribute("redirectLocation", (String) session.getAttribute("redirectLocation"));
+		
   		if (result.hasErrors()) {
   			return "/add/add-location";
   		}
@@ -130,12 +142,12 @@ public class LocationsController {
   			model.addAttribute("error", "Unable to add Location. Location address or name already exists");
   			Logger.error("{} was unable to add location {} because the address or name already exists.", user.getUsername(), location.getName());
   			model.addAttribute("locations", user.getCarrier().getLocations());
-  			return "locations";
+  			return "/locations";
 			 
   		}
   		locationsRepository.save(location);
   		Logger.info("{} successfully saved location with ID {}.", user.getUsername(), location.getId());
-  		return "redirect:/locations";
+  		return "redirect:" + redirectLocation;
   	}
 	
 	/**
@@ -220,16 +232,17 @@ public class LocationsController {
   	 * @return "update/update-location"
   	 */
 	@GetMapping("/editlocations/{id}")
-    public String showEditForm(@PathVariable("id") long id, Model model) {
+    public String showEditForm(@PathVariable("id") long id, Model model, HttpSession session) {
 		Locations location = locationsRepository.findById(id)
           .orElseThrow(() -> new IllegalArgumentException("Invalid Location Id:" + id));
+		
 		
 		User user = getLoggedInUser();
         model = NotificationController.loadNotificationsIntoModel(user, model);
         
-		model.addAttribute("carriers", user.getCarrier());
+    	model.addAttribute("carriers", user.getCarrier());
 		model.addAttribute("locations", location);
-			
+		model.addAttribute("redirectLocation", (String) session.getAttribute("redirectLocation"));
 		return "/update/update-location";
 		
     }
@@ -246,7 +259,14 @@ public class LocationsController {
   	 */
 	@PostMapping("/updatelocation/{id}")
     public String updateLocation(@PathVariable("id") String idString, @Validated Locations location, 
-      BindingResult result, Model model) {
+      BindingResult result, Model model,HttpSession session) {
+		
+		String redirectLocation = (String) session.getAttribute("redirectLocation");
+		model.addAttribute("redirectLocation", (String) session.getAttribute("redirectLocation"));
+		
+		User user = getLoggedInUser();
+	    model = NotificationController.loadNotificationsIntoModel(user, model);
+
 		long id = Long.parseLong(idString);
 		userValidator.addition(location, result);
         if (result.hasErrors()) {
@@ -255,8 +275,7 @@ public class LocationsController {
         }
         
         Boolean deny = false;
-        User user = getLoggedInUser();
-        model = NotificationController.loadNotificationsIntoModel(user, model);
+       
   		List<Locations> checkLocation = new ArrayList<>();
   		checkLocation = (List<Locations>) locationsRepository.findAll();
   		
@@ -271,12 +290,12 @@ public class LocationsController {
   			model.addAttribute("error", "Unable to update Location. Location address already exists");
   			Logger.error("{} attempted to update location. Update failed due to location already existing.", user.getUsername());
   			model.addAttribute("locations", user.getCarrier().getLocations());
-  			return "locations";
+  			return "/locations";
 			 
   		}
         locationsRepository.save(location);
         Logger.info("{} successfully updated location with ID {}.", user.getUsername(), location.getId());
-        return "redirect:/locations";
+        return "redirect:" + redirectLocation;
     }
 	
 	/**

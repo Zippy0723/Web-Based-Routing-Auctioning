@@ -3,6 +3,8 @@ package edu.sru.thangiah.webrouting.controller;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.servlet.http.HttpSession;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -69,16 +71,20 @@ public class VehiclesController {
 	 * @return "vehicles"
 	 */
 	@RequestMapping({"/vehicles"})
-    public String showVehicleList(Model model) {
+    public String showVehicleList(Model model, HttpSession session) {
 		
 		User user = getLoggedInUser();
 		if (user.getRole().toString().equals("CARRIER")) {
 			
-			 model.addAttribute("vehicles", user.getCarrier().getVehicles());
+			String redirectLocation = "/vehicles";         
+			session.setAttribute("redirectLocation", redirectLocation);         
+			model.addAttribute("redirectLocation", redirectLocation);
+			 
 			 
 			 User users = getLoggedInUser();
-		        List<Notification> notifications = new ArrayList<>();
-		        
+			 model.addAttribute("vehicles", user.getCarrier().getVehicles());
+		     List<Notification> notifications = new ArrayList<>();
+		  
 		        if(!(users == null)) {
 		            notifications = NotificationController.fetchUnreadNotifications(users);
 		        }
@@ -109,7 +115,7 @@ public class VehiclesController {
 	 * @return "/add/add-vehicle"
 	 */
 	@GetMapping({"/add-vehicle"})
-    public String showLists(Model model, Vehicles vehicles, BindingResult result) {
+    public String showLists(Model model, Vehicles vehicles, BindingResult result, HttpSession session) {
 		
 		User user = getLoggedInUser();
 		model = NotificationController.loadNotificationsIntoModel(user, model);
@@ -117,6 +123,7 @@ public class VehiclesController {
 			model.addAttribute("carriers", user.getCarrier());
 			model.addAttribute("vehicleTypes", vehicleTypesRepository.findAll()); 
 		    model.addAttribute("locations", user.getCarrier().getLocations()); 
+		    model.addAttribute("redirectLocation", (String) session.getAttribute("redirectLocation"));
 		    
 	        return "/add/add-vehicle";
 		
@@ -283,9 +290,10 @@ public class VehiclesController {
   	 * @return "update/update-vehicle"
   	 */
 	@GetMapping("/editvehicles/{id}")
-    public String showEditForm(@PathVariable("id") long id, Model model) {
+    public String showEditForm(@PathVariable("id") long id, Model model, HttpSession session) {
 		 Vehicles vehicle = vehiclesRepository.findById(id)
           .orElseThrow(() -> new IllegalArgumentException("Invalid Vehicle Id:" + id));
+		 
 		 User user = getLoggedInUser();
 		 model = NotificationController.loadNotificationsIntoModel(user, model);
 		 
@@ -294,7 +302,7 @@ public class VehiclesController {
 				model.addAttribute("vehicleTypes", vehicleTypesRepository.findAll()); 
 			    model.addAttribute("locations", user.getCarrier().getLocations());
 			    model.addAttribute("vehicles", vehicle);
-			    
+			    model.addAttribute("redirectLocation", (String) session.getAttribute("redirectLocation"));
 			    return "/update/update-vehicle";
 			}
         /**
@@ -359,7 +367,11 @@ public class VehiclesController {
   	 */
 	@PostMapping("/updatevehicle/{id}")
     public String updateVehicle(@PathVariable("id") long id, @Validated Vehicles vehicle, 
-      BindingResult result, Model model) {
+      BindingResult result, Model model, HttpSession session) {
+		
+		String redirectLocation = (String) session.getAttribute("redirectLocation");
+		model.addAttribute("redirectLocation", (String) session.getAttribute("redirectLocation"));
+		
 		userValidator.addition(vehicle, result);
 		User loggedInUser = getLoggedInUser();
 		model = NotificationController.loadNotificationsIntoModel(loggedInUser, model);
@@ -386,11 +398,11 @@ public class VehiclesController {
   			model.addAttribute("error", "Unable to update Vehicle. Vehicle VIN or Plate Number already exists");
   			model.addAttribute("vehicles", user.getCarrier().getVehicles());
   			Logger.error("{} was unable to update Vehicle because VIN or Plate Number already exists.", user.getUsername());
-  			return "vehicles";
+  			return "/vehicles";
   		}
   		vehiclesRepository.save(vehicle);
   		Logger.info("{} successfully updated vehicle with ID {}.",loggedInUser.getUsername(),vehicle.getId());
-  		return "redirect:/vehicles";
+  		return "redirect" + redirectLocation;
             
        
     }

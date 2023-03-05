@@ -129,9 +129,9 @@
 				<div th:switch="${carriers}">
                     <h2 th:case="null">No carriers yet!</h2>
                     <div th:case="*">
+                    	<button class="buttons7" th:attr="onclick=|window.location.href='${redirectLocation}'|">Back</button>  
                         <h2>Carriers</h2>
                         <form action="/">
-							<button class="buttons6" type="submit">Back</button>
 						</form>
 						<br>
                         <hr>

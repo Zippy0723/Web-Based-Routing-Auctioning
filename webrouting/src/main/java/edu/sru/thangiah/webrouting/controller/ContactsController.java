@@ -8,6 +8,8 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
+import javax.servlet.http.HttpSession;
+
 import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
@@ -77,11 +79,15 @@ public class ContactsController {
 	 * @return "contacts"
 	 */
 	@RequestMapping({"/contacts"})
-    public String showContactList(Model model) {
-        model.addAttribute("contacts", getLoggedInUser().getCarrier().getContacts());
-        
+    public String showContactList(Model model, HttpSession session) {
+		
+		String redirectLocation = "/contacts"; 
+		session.setAttribute("redirectLocation", redirectLocation);         
+		model.addAttribute("redirectLocation", redirectLocation);
+		
         User user = getLoggedInUser();
         model = NotificationController.loadNotificationsIntoModel(user, model);
+        model.addAttribute("contacts", getLoggedInUser().getCarrier().getContacts());
         
         return "contacts";
     }
@@ -95,10 +101,12 @@ public class ContactsController {
 	 * @return "/add/add-contact"
 	 */
   	@RequestMapping({"/signupcontact"})
-      public String showContactSignUpForm(Model model, Contacts contact, BindingResult result) {
+      public String showContactSignUpForm(Model model, Contacts contact, BindingResult result, HttpSession session) {
   		
   		User user = getLoggedInUser();
         model = NotificationController.loadNotificationsIntoModel(user, model);
+        
+        model.addAttribute("redirectLocation", (String) session.getAttribute("redirectLocation"));
   		
         return "/add/add-contact";
     }
@@ -113,12 +121,14 @@ public class ContactsController {
   	 * @return "redirect:/contacts" or "/add/add-contact"
   	 */
   	@RequestMapping({"/addcontact"})
-  	public String addContact(@Validated Contacts contacts, BindingResult result, Model model) {
+  	public String addContact(@Validated Contacts contacts, BindingResult result, Model model, HttpSession session) {
   		userValidator.addition(contacts, result);
   		contacts.setCarrier(getLoggedInUser().getCarrier());
   		User user = getLoggedInUser();
         model = NotificationController.loadNotificationsIntoModel(user, model);
-  		
+        
+        String redirectLocation = (String) session.getAttribute("redirectLocation");
+		model.addAttribute("redirectLocation", (String) session.getAttribute("redirectLocation"));
   		if (result.hasErrors()) {
   			return "/add/add-contact";
 		}
@@ -139,14 +149,14 @@ public class ContactsController {
   			Logger.error("{} attempted to add contact and it failed because the email address {} is already in use.", user.getUsername(), contacts.getEmailAddress().toString());
   			model.addAttribute("contacts", getLoggedInUser().getCarrier().getContacts());
   			
-  			return "contacts";
+  			return "/contacts";
 			 
   		}
   		
   		contactsRepository.save(contacts);
   		Logger.info("{} successfully added a new contact with ID {}.", user.getUsername(), contacts.getId());
   		
-  		return "redirect:/contacts";
+  		return "redirect:" + redirectLocation;
   	}
   	
  
@@ -204,7 +214,7 @@ public class ContactsController {
   	 * @return "/view/view-contact"
   	 */
   	@GetMapping("/viewcontact/{id}")
-    public String viewContact(@PathVariable("id") long id, Model model) {
+    public String viewContact(@PathVariable("id") long id, Model model, HttpSession session) {
         Contacts contacts = contactsRepository.findById(id)
           .orElseThrow(() -> new IllegalArgumentException("Invalid contact Id:" + id));
         
@@ -212,6 +222,7 @@ public class ContactsController {
         
   		User user = getLoggedInUser();
         model = NotificationController.loadNotificationsIntoModel(user, model);
+    	model.addAttribute("redirectLocation", (String) session.getAttribute("redirectLocation"));
         
         return "contacts";
     }
@@ -224,15 +235,15 @@ public class ContactsController {
   	 * @return "update/update-contact"
   	 */
   	@GetMapping("/editcontact/{id}")
-    public String showEditForm(@PathVariable("id") long id, Model model) {
+    public String showEditForm(@PathVariable("id") long id, Model model, HttpSession session) {
         Contacts contacts = contactsRepository.findById(id)
           .orElseThrow(() -> new IllegalArgumentException("Invalid contact Id:" + id));
-        
-        model.addAttribute("contacts", contacts);
-        
-  		User user = getLoggedInUser();
+      
+        User user = getLoggedInUser();
         model = NotificationController.loadNotificationsIntoModel(user, model);
         
+        model.addAttribute("contacts", contacts);
+        model.addAttribute("redirectLocation", (String) session.getAttribute("redirectLocation"));
         return "/update/update-contact";
     }
   	
@@ -248,12 +259,17 @@ public class ContactsController {
   	 */
   	@PostMapping("/updatecontact/{id}")
     public String updateContact(@PathVariable("id") long id, @Validated Contacts contact, 
-      BindingResult result, Model model) {
+      BindingResult result, Model model, HttpSession session) {
+  		
+
+		String redirectLocation = (String) session.getAttribute("redirectLocation");
+		model.addAttribute("redirectLocation", (String) session.getAttribute("redirectLocation"));
+		
   		userValidator.addition(contact, result);
   		contact.setCarrier(getLoggedInUser().getCarrier());
   		User user = getLoggedInUser();
         model = NotificationController.loadNotificationsIntoModel(user, model);
-  		
+   
   		if (result.hasErrors()) {
             contact.setId(id);
             return "/update/update-contact";
@@ -274,13 +290,13 @@ public class ContactsController {
   			model.addAttribute("error", "Unable to add Contact. Contact Email already in use");
   			Logger.error("{} failed to add contact with email {} because the email is already in use.",user.getUsername(), contact.getEmailAddress());
   			model.addAttribute("contacts", getLoggedInUser().getCarrier().getContacts());
-  			return "contacts";
+  			return "/contacts";
 			 
   		}
-            
+  		
         contactsRepository.save(contact);
         Logger.info("{} successfully updated the contact with ID {}.", user.getUsername(), contact.getId());
-        return "redirect:/contacts";
+        return "redirect:" + redirectLocation;
     }
   	/**
   	 * Uploads an excel file containing new contact info
