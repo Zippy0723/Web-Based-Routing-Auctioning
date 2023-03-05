@@ -95,6 +95,13 @@ public class VehiclesController {
 		session.setAttribute("redirectLocation", redirectLocation);
 		model.addAttribute("redirectLocation", redirectLocation);
 		
+		try {
+			model.addAttribute("error",session.getAttribute("error"));
+		} catch(Exception e) {
+			//do nothing
+		}
+		session.removeAttribute("error");
+		
 		User user = getLoggedInUser();
 		if (user.getRole().toString().equals("CARRIER")) {
 			
@@ -344,18 +351,18 @@ public class VehiclesController {
   	 * @return "redirect:/vehicles"
   	 */
 	@GetMapping("/deletevehicles/{id}")
-    public String deleteVehicle(@PathVariable("id") long id, Model model) {
+    public String deleteVehicle(@PathVariable("id") long id, Model model, HttpSession session) {
         Vehicles vehicle = vehiclesRepository.findById(id)
           .orElseThrow(() -> new IllegalArgumentException("Invalid vehicle Id:" + id));
         
         User user = getLoggedInUser();
         model = NotificationController.loadNotificationsIntoModel(user, model);
         if (!vehicle.getOrders().isEmpty() || !vehicle.getShipments().isEmpty() || !vehicle.getDrivers().isEmpty()){
-        	model.addAttribute("error", "Unable to delete due to dependency conflict.");
+        	session.setAttribute("error", "Unable to delete due to dependency conflict.");
         	Logger.error("{} was unable to delete due to dependency conflict.", user.getUsername());
         	model.addAttribute("vehicles", vehiclesRepository.findAll());
         	
-       	 	return "vehicles";
+       	 	return "redirect:/vehicles";
         }
         model.addAttribute("vehicles", vehicle);
         
