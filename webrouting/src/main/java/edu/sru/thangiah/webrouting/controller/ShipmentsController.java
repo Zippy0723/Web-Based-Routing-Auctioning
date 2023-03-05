@@ -818,6 +818,7 @@ public class ShipmentsController {
 		model.addAttribute("shipmentId",shipment.getId());
 		model.addAttribute("carriers",carriers);
 		model.addAttribute("selectedCarrierId", 1);
+		model.addAttribute("redirectLocation",(String)session.getAttribute("redirectLocation"));
 		
 		
 		return "directassignshipment";
