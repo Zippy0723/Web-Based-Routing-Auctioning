@@ -126,7 +126,7 @@
 				</span>
 				<br><br>
                 <h2>Add Bid</h2>
-                <a href="/createdshipments">Back</a>
+                <p><button class="buttons7" th:attr="onclick=|window.location.href='${redirectLocation}'|">Back</button>
                 <br><br>
                 <span type="hidden" th:text="${error}" class="loginError"></span>
                 <form action="#" th:action="@{/addbid}" th:object="${bids}" method="post">

@@ -3,6 +3,8 @@ package edu.sru.thangiah.webrouting.controller;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.servlet.http.HttpSession;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -59,7 +61,19 @@ public class DriverController {
 	 * @return "drivers"
 	 */
 	@RequestMapping({"/drivers"})
-    public String showDriversList(Model model) {
+    public String showDriversList(Model model, HttpSession session) {
+		
+		
+        try {
+            model.addAttribute("error",session.getAttribute("error"));
+        } catch(Exception e){
+            //do nothing
+        }
+        session.removeAttribute("error");
+        
+		String redirectLocation = "/drivers";
+		session.setAttribute("redirectLocation", redirectLocation);
+		model.addAttribute("redirectLocation", redirectLocation);
 		User user = getLoggedInUser();
         model = NotificationController.loadNotificationsIntoModel(user, model);
 		if (user.getRole().toString().equals("CARRIER")) {

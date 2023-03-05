@@ -384,9 +384,94 @@ public class ShipmentsController {
 			model.addAttribute("shipments", shipmentsPending);   
 		}
 		
+		
+		
 		return "pendingshipments";
 	}
 	
+	@GetMapping("/allshipments")
+	public String allShipments(Model model, HttpSession session) {
+		session.setAttribute("redirectLocation", "/allshipments");
+		List<Shipments> shipmentsPending = new ArrayList<>();
+		List<Shipments> shipmentsAccepted = new ArrayList<>();
+		List<Shipments> shipmentsFrozen = new ArrayList<>();
+		List<Shipments> shipmentsAvailable = new ArrayList<>();
+		List<Shipments> allShipments = new ArrayList<>();
+		List<Shipments> ownShipments = new ArrayList<>();
+		User user = getLoggedInUser();
+		String status = "";	
+		model = NotificationController.loadNotificationsIntoModel(user, model);
+		
+		if (user.getRole().toString().equals("SHIPPER")) {  
+			ownShipments = user.getShipments();
+				for (int i = 0; i < ownShipments.size(); i++) {
+					if (ownShipments.get(i).getFullFreightTerms().equals("FROZEN")) {
+						shipmentsFrozen.add(ownShipments.get(i));
+							
+					}
+					if (ownShipments.get(i).getFullFreightTerms().equals("PENDING")) {
+						shipmentsPending.add(ownShipments.get(i));
+							
+					}
+					if (ownShipments.get(i).getFullFreightTerms().equals("BID ACCEPTED")) {
+						shipmentsAccepted.add(ownShipments.get(i));
+						
+					}
+					if (ownShipments.get(i).getFullFreightTerms().equals("AVAILABLE SHIPMENT")) {
+						shipmentsAvailable.add(ownShipments.get(i));
+						
+					}
+				}
+				
+			}
+		else if (user.getRole().toString().equals("MASTERLIST")) {
+			allShipments = (List<Shipments>) shipmentsRepository.findAll();
+			for (int i = 0; i < allShipments.size(); i++) {
+				if (allShipments.get(i).getFullFreightTerms().equals("FROZEN")) {
+					shipmentsFrozen.add(allShipments.get(i));
+						
+				}
+				if (allShipments.get(i).getFullFreightTerms().equals("PENDING")) {
+					shipmentsPending.add(allShipments.get(i));
+						
+				}
+				if (allShipments.get(i).getFullFreightTerms().equals("BID ACCEPTED")) {
+					shipmentsAccepted.add(allShipments.get(i));
+					
+				}
+				if (allShipments.get(i).getFullFreightTerms().equals("AVAILABLE SHIPMENT")) {
+					shipmentsAvailable.add(allShipments.get(i));
+					
+				}
+			}
+		}
+		else if (user.getRole().toString().equals("CARRIER")) {
+			status = "CARRIER";
+			ownShipments = user.getCarrier().getShipments();
+			allShipments = (List<Shipments>) shipmentsRepository.findAll();
+			
+			for (int i = 0; i < allShipments.size(); i++) {
+				if (allShipments.get(i).getFullFreightTerms().equals("AVAILABLE SHIPMENT")) {
+					shipmentsAvailable.add(allShipments.get(i));
+				}
+			}
+			
+			for (int i = 0; i < ownShipments.size(); i++) {
+				if (ownShipments.get(i).getFullFreightTerms().equals("BID ACCEPTED")) {
+					shipmentsAccepted.add(ownShipments.get(i));
+				}
+			}
+			
+		}
+			model.addAttribute("shipmentsAvailable", shipmentsAvailable);
+			model.addAttribute("shipmentsFrozen", shipmentsFrozen);   
+			model.addAttribute("shipmentsPending", shipmentsPending);
+			model.addAttribute("shipmentsAccepted", shipmentsAccepted);
+			model.addAttribute("status", status);
+			return "/allshipments";
+			
+	}
+		
 	@RequestMapping({"/awaitingshipments"})
 	public String showAwaitingShipmentsList(Model model, HttpSession session) {
 		List<Shipments> shipmentsAwaitingAcceptance = new ArrayList<>();
@@ -431,8 +516,7 @@ public class ShipmentsController {
 		
 		return "awaitingshipments";
 	}
-	
-	
+
 	/**
 	 * Redirects user to the /add/add-shipments page <br>
 	 * Adds carriers and vehicles to the model.
@@ -611,10 +695,11 @@ public class ShipmentsController {
   	 * @return "shipments"
   	 */
   	@GetMapping("/viewshipment/{id}")
-    public String viewCarrierShipments(@PathVariable("id") long id, Model model) {
+    public String viewCarrierShipments(@PathVariable("id") long id, Model model, HttpSession session) {
         Shipments shipment = shipmentsRepository.findById(id)
           .orElseThrow(() -> new IllegalArgumentException("Invalid shipment Id:" + id));
-        
+        String redirectLocation = (String) session.getAttribute("redirectLocation");
+        model.addAttribute("redirectLocation", redirectLocation);
         model.addAttribute("shipments", shipment);
         
         User user = getLoggedInUser();
@@ -667,12 +752,13 @@ public class ShipmentsController {
   	 * @return for Master: "/update/update-shipments" for Shipper: "/update/update-shipments-shipper"
   	 */
 	@GetMapping("/editshipment/{id}")
-    public String showEditForm(@PathVariable("id") long id, Model model) {
+    public String showEditForm(@PathVariable("id") long id, Model model, HttpSession session) {
 		Shipments shipment = shipmentsRepository.findById(id)
           .orElseThrow(() -> new IllegalArgumentException("Invalid Shipment Id:" + id));
         
 		model.addAttribute("vehicles", vehiclesRepository.findAll());
 	    model.addAttribute("shipments", shipment);
+	    model.addAttribute("redirectLocation", session.getAttribute("redirectLocation"));
 	    
 	    User user = getLoggedInUser();
         model = NotificationController.loadNotificationsIntoModel(user, model);
@@ -721,22 +807,12 @@ public class ShipmentsController {
   	 * @return "redirect:/createdshipments" or "redirect:/acceptedshipments" or "redirect:/pendingshipments"
 	 */
 	@GetMapping("/freezeshipmentconfirmation/{id}")
-	public String freezeShipmentConfirmation(@PathVariable("id") long id, Model model) {
-		String redirectLocation = "redirect:/";
+	public String freezeShipmentConfirmation(@PathVariable("id") long id, Model model, HttpSession session) {
+		String redirectLocation = "redirect:" + (String) session.getAttribute("redirectLocation");
 		Shipments shipment = shipmentsRepository.findById(id)
 	     .orElseThrow(() -> new IllegalArgumentException("Invalid Shipment Id:" + id));
 		User user = getLoggedInUser();
         model = NotificationController.loadNotificationsIntoModel(user, model);
-		
-        if (shipment.getFullFreightTerms().equals("AVAILABLE SHIPMENT")) {
-        	redirectLocation = "redirect:/createdshipments";
-        }
-        else if (shipment.getFullFreightTerms().equals("BID ACCEPTED")){  
-        	redirectLocation = "redirect:/acceptedshipments";
-        } 
-        else if (shipment.getFullFreightTerms().equals("PENDING")) {
-        	redirectLocation = "redirect:/pendingshipments";
-        }
 		
         NotificationController.addNotification(shipment.getUser(), 
         		"ALERT: Your shipment with ID " + shipment.getId() + " and Client " + shipment.getClient() + " was frozen by " + user.getUsername());
@@ -755,7 +831,9 @@ public class ShipmentsController {
   	 * @return "/freeze/unfreezeshipmentconfirm"
 	 */
 	@GetMapping("/unfreezeshipment/{id}")
-	public String unfreezeShipment(@PathVariable("id") long id, Model model) {
+	public String unfreezeShipment(@PathVariable("id") long id, Model model, HttpSession session) {
+		String redirectLocation = (String) session.getAttribute("redirectLocation");
+		model.addAttribute("redirectLocation", redirectLocation);
 		Shipments shipment = shipmentsRepository.findById(id)
 		.orElseThrow(() -> new IllegalArgumentException("Invalid Shipment Id:" + id));
 		
@@ -774,7 +852,7 @@ public class ShipmentsController {
   	 * @return "redirect:/frozenshipments"
 	 */
 	@GetMapping("/unfreezeshipmentconfirmation/{id}")
-	public String unfreezeShipmentConfirmation(@PathVariable("id") long id, Model model) {
+	public String unfreezeShipmentConfirmation(@PathVariable("id") long id, Model model, HttpSession session) {
 		Shipments shipment = shipmentsRepository.findById(id)
 	     .orElseThrow(() -> new IllegalArgumentException("Invalid Shipment Id:" + id));
 		User user = getLoggedInUser();
@@ -792,7 +870,7 @@ public class ShipmentsController {
 		shipmentsRepository.save(shipment);
 		Logger.info("{} successsfully unfroze shipment with ID {}.", user.getUsername(), shipment.getId());
 		
-		return "redirect:/frozenshipments";
+		return "redirect:"+(String) session.getAttribute("redirectLocation");
 	}
 	
 	/**
@@ -920,7 +998,8 @@ public class ShipmentsController {
   	 */
 	@PostMapping("/updateshipment/{id}")
     public String updateShipment(@PathVariable("id") long id, @Validated Shipments shipment, 
-      BindingResult result, Model model) {
+      BindingResult result, Model model, HttpSession session) {
+		String redirectLocation = (String) session.getAttribute("redirectLocation");
 		userValidator.addition(shipment, result);
 		User user = getLoggedInUser();
         model = NotificationController.loadNotificationsIntoModel(user, model);
@@ -973,7 +1052,7 @@ public class ShipmentsController {
       				}
       			     
       			}
-      			return "createdshipments";
+      			return redirectLocation;
       		}
         	
         	shipment.setUser(getLoggedInUser());
@@ -987,7 +1066,7 @@ public class ShipmentsController {
       		shipmentsRepository.save(shipment);
       		Logger.info("{} successfully saved shipment with ID {}", user.getUsername(), shipment.getId());
       		
-      		return "redirect:/createdshipments";
+      		return "redirect:" + redirectLocation;
         }
         else if (getLoggedInUser().getRole().toString().equals("CARRIER")) {
         	Shipments s = shipmentsRepository.findById(id)
@@ -1036,12 +1115,12 @@ public class ShipmentsController {
       		
         	shipmentsRepository.save(shipment);
         	Logger.info("{} successfully saved shipment with ID {}.", user.getUsername(), shipment.getId());
-        	return "redirect:/acceptedshipments";
+        	return "redirect:" + redirectLocation;
         }
         else {
         	shipmentsRepository.save(shipment);
         	Logger.info("{} successfully saved shipment with ID {}.", user.getUsername(), shipment.getId());
-        	return "redirect:/shipments";
+        	return "redirect:" + redirectLocation;
         }
     }
 	
@@ -1051,13 +1130,15 @@ public class ShipmentsController {
   	 * @return "/uploadshipments" 
   	 */
 	@GetMapping("/uploadshipments")
-	public String ListFromExcelData(Model model){
+	public String ListFromExcelData(Model model, HttpSession session){
+		model.addAttribute("redirectLocation", session.getAttribute("redirectLocation"));
 		
 		User user = getLoggedInUser();
         model = NotificationController.loadNotificationsIntoModel(user, model);
 		
 		return "/uploadshipments";	
 	}
+	
 	
 	/**
   	 * Reads an excel file containing shipments and adds it to the shipments repository. <br>
@@ -1068,7 +1149,8 @@ public class ShipmentsController {
   	 */
 	@SuppressWarnings("unused")
 	@PostMapping("/upload-shipment")
-	public String LoadFromExcelData(@RequestParam("file") MultipartFile excelData){
+	public String LoadFromExcelData(@RequestParam("file") MultipartFile excelData, HttpSession session){
+		String redirectLocation = (String) session.getAttribute("redirectLocation");
 		XSSFWorkbook workbook;
 		try {
 			User user = getLoggedInUser();
@@ -1118,6 +1200,15 @@ public class ShipmentsController {
 	    		String consigneeLatitude = row.getCell(14).toString().strip();
 	    		String consigneeLongitude = row.getCell(15).toString().strip();
 	    		
+	    		commodityClass = commodityClass.substring(0, commodityClass.length() - 2);
+	    		commodityPieces = commodityPieces.substring(0, commodityPieces.length() - 2);
+	    		commodityPaidWeight = commodityPaidWeight.substring(0, commodityPaidWeight.length() - 2);
+	    		shipperZip = shipperZip.substring(0, shipperZip.length() - 2);
+	    		shipperLatitude = shipperLatitude.substring(0, shipperLatitude.length() - 2);
+	    		shipperLongitude = shipperLongitude.substring(0, shipperLongitude.length() - 2);
+	    		consigneeZip = consigneeZip.substring(0, consigneeZip.length() - 2);
+	    		consigneeLatitude = consigneeLatitude.substring(0, consigneeLatitude.length() - 2);
+	    		consigneeLongitude = consigneeLongitude.substring(0, consigneeLongitude.length() - 2);
 
 	    		if (!(clientName.length() < 64 && clientName.length() > 0) || !(clientName.matches("^[a-zA-Z0-9.]+$"))) {
 	    			workbook.close();
@@ -1275,7 +1366,7 @@ public class ShipmentsController {
 			e.printStackTrace();
 		}
 		
-		return "redirect:/pendingshipments";
+		return "redirect:" + redirectLocation;
 	}
 	
 	/**

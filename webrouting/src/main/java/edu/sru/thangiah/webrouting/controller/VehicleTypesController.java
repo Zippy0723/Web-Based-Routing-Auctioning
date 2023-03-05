@@ -66,9 +66,19 @@ public class VehicleTypesController {
 	 */
 	@RequestMapping({"/vehicletypes"})
     public String showVehicleTypeList(Model model, HttpSession session) {
-		session.setAttribute("redirectLocation", "/vehicletypes");
-		model.addAttribute("redirectLocation", "/vehicletypes");
+
+		    String redirectLocation = "/vehicletypes";
+		    session.setAttribute("redirectLocation", redirectLocation);
+		    model.addAttribute("redirectLocation", redirectLocation);
+
         model.addAttribute("vehicletypes", vehicleTypesRepository.findAll());
+        
+        try {
+        	model.addAttribute("error",session.getAttribute("error"));
+        } catch(Exception e){
+        	//do nothing
+        }
+        session.removeAttribute("error");
         
         User user = getLoggedInUser();
         model = NotificationController.loadNotificationsIntoModel(user, model);
@@ -156,18 +166,18 @@ public class VehicleTypesController {
   	 * @return "redirect:/vehicletypes"
   	 */
 	@GetMapping("/deletevehicletype/{id}")
-    public String deleteVehicleType(@PathVariable("id") long id, Model model) {
+    public String deleteVehicleType(@PathVariable("id") long id, Model model, HttpSession session) {
         VehicleTypes vehicleTypes = vehicleTypesRepository.findById(id)
           .orElseThrow(() -> new IllegalArgumentException("Invalid vehicle type Id:" + id));
         
         User loggedInUser = getLoggedInUser();
         model = NotificationController.loadNotificationsIntoModel(loggedInUser, model);
         if(!vehicleTypes.getVehicles().isEmpty()) {
-        	model.addAttribute("error", "Unable to delete due to dependency conflict.");
+        	session.setAttribute("error", "Unable to delete due to dependency conflict.");
         	Logger.error("{} failed to delete the vehicle type due to dependency conflict.", loggedInUser.getUsername());
         	model.addAttribute("vehicletypes", vehicleTypesRepository.findAll());
             
-        	return "vehicletypes";
+        	return "redirect:" + (String) session.getAttribute("redirectLocation");
         }
         model.addAttribute("vehicletypes", vehicleTypes);
         
@@ -200,9 +210,11 @@ public class VehicleTypesController {
   	 * @return "locations"
   	 */
   	@GetMapping("/viewvehicletype/{id}")
-    public String viewVehicleType(@PathVariable("id") long id, Model model) {
+    public String viewVehicleType(@PathVariable("id") long id, Model model, HttpSession session) {
         VehicleTypes vehicleType = vehicleTypesRepository.findById(id)
           .orElseThrow(() -> new IllegalArgumentException("Invalid vehicle type Id:" + id));
+        
+        model.addAttribute("redirectLocation", (String) session.getAttribute("redirectLocation"));
         
         model.addAttribute("vehicletypes", vehicleType);
         

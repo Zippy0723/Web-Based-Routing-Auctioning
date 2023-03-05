@@ -3,6 +3,8 @@ package edu.sru.thangiah.webrouting.controller;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.servlet.http.HttpSession;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -63,7 +65,19 @@ public class LocationsController {
 	 * @return "locations"
 	 */
 	@RequestMapping({"/locations"})
-    public String showLocationsList(Model model) {
+    public String showLocationsList(Model model, HttpSession session) {
+		
+		   try {
+	            model.addAttribute("error",session.getAttribute("error"));
+	        } catch(Exception e){
+	            //do nothing
+	        }
+	        session.removeAttribute("error");
+		
+		String redirectLocation = "/locations";
+		session.setAttribute("redirectLocation", redirectLocation);
+		model.addAttribute("redirectLocation", redirectLocation);
+		
 		User user = getLoggedInUser();
 		model = NotificationController.loadNotificationsIntoModel(user, model);
 		if (user.getRole().toString().equals("CARRIER")) {
@@ -157,17 +171,17 @@ public class LocationsController {
   	 * @return "redirect:/locations"
   	 */
 	@GetMapping("/deletelocations/{id}")
-    public String deleteLocation(@PathVariable("id") long id, Model model) {
+    public String deleteLocation(@PathVariable("id") long id, Model model, HttpSession session ) {
         Locations location = locationsRepository.findById(id)
           .orElseThrow(() -> new IllegalArgumentException("Invalid location Id:" + id));
         User user = getLoggedInUser();
         model = NotificationController.loadNotificationsIntoModel(user, model);
         if (!location.getVehicles().isEmpty()) {
-        	model.addAttribute("error", "Unable to delete due to dependency conflict.");
+        	session.setAttribute("error", "Unable to delete due to dependency conflict.");
         	Logger.error("Unable to delete location due to dependecy conflict.");
         	model.addAttribute("locations", user.getCarrier().getLocations());
         	
-        	return "locations";
+        	return "redirect:" + (String) session.getAttribute("redirectLocation");
         }
         model.addAttribute("locations", location);
         
@@ -200,11 +214,12 @@ public class LocationsController {
   	 * @return "locations"
   	 */
   	@GetMapping("/viewlocation/{id}")
-    public String viewLocation(@PathVariable("id") long id, Model model) {
+    public String viewLocation(@PathVariable("id") long id, Model model, HttpSession session) {
         Locations location = locationsRepository.findById(id)
           .orElseThrow(() -> new IllegalArgumentException("Invalid location Id:" + id));
         
         model.addAttribute("locations", location);
+        model.addAttribute("redirectLocation", (String) session.getAttribute("redirectLocation"));
         
         User user = getLoggedInUser();
         model = NotificationController.loadNotificationsIntoModel(user, model);
@@ -220,12 +235,15 @@ public class LocationsController {
   	 * @return "update/update-location"
   	 */
 	@GetMapping("/editlocations/{id}")
-    public String showEditForm(@PathVariable("id") long id, Model model) {
-		Locations location = locationsRepository.findById(id)
-          .orElseThrow(() -> new IllegalArgumentException("Invalid Location Id:" + id));
+    public String showEditForm(@PathVariable("id") long id, Model model, HttpSession session) {
 		
 		User user = getLoggedInUser();
         model = NotificationController.loadNotificationsIntoModel(user, model);
+		        
+		model.addAttribute("redirectLocation", (String) session.getAttribute("redirectLocation")); 
+		Locations location = locationsRepository.findById(id)
+          .orElseThrow(() -> new IllegalArgumentException("Invalid Location Id:" + id));
+		
         
 		model.addAttribute("carriers", user.getCarrier());
 		model.addAttribute("locations", location);
@@ -246,7 +264,14 @@ public class LocationsController {
   	 */
 	@PostMapping("/updatelocation/{id}")
     public String updateLocation(@PathVariable("id") String idString, @Validated Locations location, 
-      BindingResult result, Model model) {
+      BindingResult result, Model model, HttpSession session) {
+		
+		String redirectLocation = (String) session.getAttribute("redirectLocation");           
+		model.addAttribute("redirectLocation", (String) session.getAttribute("redirectLocation"));
+		
+		User user = getLoggedInUser();
+	    model = NotificationController.loadNotificationsIntoModel(user, model);
+		
 		long id = Long.parseLong(idString);
 		userValidator.addition(location, result);
         if (result.hasErrors()) {
@@ -255,8 +280,6 @@ public class LocationsController {
         }
         
         Boolean deny = false;
-        User user = getLoggedInUser();
-        model = NotificationController.loadNotificationsIntoModel(user, model);
   		List<Locations> checkLocation = new ArrayList<>();
   		checkLocation = (List<Locations>) locationsRepository.findAll();
   		
@@ -271,12 +294,12 @@ public class LocationsController {
   			model.addAttribute("error", "Unable to update Location. Location address already exists");
   			Logger.error("{} attempted to update location. Update failed due to location already existing.", user.getUsername());
   			model.addAttribute("locations", user.getCarrier().getLocations());
-  			return "locations";
+  			return "/locations";
 			 
   		}
         locationsRepository.save(location);
         Logger.info("{} successfully updated location with ID {}.", user.getUsername(), location.getId());
-        return "redirect:/locations";
+        return "redirect:" + redirectLocation;
     }
 	
 	/**

@@ -123,6 +123,9 @@
 				<span class="nav-expand">
   					<button class=""  id="hamburger" style="display:none" onclick="nav_open()">☰</button>
 				</span>
+				<div th:if="${redirectLocation != '/drivers'}">
+				<p><button class="buttons7" th:attr="onclick=|window.location.href='${redirectLocation}'|">Back</button></p>
+				</div>
 				<br><br>
 				<div th:switch="${drivers}">
                     <h2 th:case="null">No drivers yet!</h2>

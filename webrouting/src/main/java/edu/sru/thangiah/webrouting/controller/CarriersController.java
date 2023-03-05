@@ -71,8 +71,11 @@ public class CarriersController {
 	@RequestMapping({"/carriers"})
 	public String showCarriersList(Model model, HttpSession session) {
 		
+		
+		
   		User user = getLoggedInUser();
         model = NotificationController.loadNotificationsIntoModel(user, model);
+        String redirectLocation = "/carriers";
         
 		if (user.getRole().toString().equals("CARRIER")) {
 			
@@ -82,7 +85,8 @@ public class CarriersController {
 			model.addAttribute("carriers", carriersRepository.findAll());
 		}
 	
-		session.setAttribute("redirectLocation", "/carriers");
+		session.setAttribute("redirectLocation", redirectLocation);
+		model.addAttribute("redirectLocation", redirectLocation);
 		
         return "carriers";
     }
@@ -128,9 +132,11 @@ public class CarriersController {
   	 * @return "shipments"
   	 */
   	@GetMapping("/viewcarriershipments/{id}")
-    public String viewCarrierShipments(@PathVariable("id") long id, Model model) {
+    public String viewCarrierShipments(@PathVariable("id") long id, Model model, HttpSession session) {
         Carriers carrier = carriersRepository.findById(id)
           .orElseThrow(() -> new IllegalArgumentException("Invalid carrier Id:" + id));
+        String redirectLocation = (String) session.getAttribute("redirectLocation");
+  		model.addAttribute("redirectLocation", redirectLocation);
         
         model.addAttribute("shipments", carrier.getShipments());
         
@@ -183,7 +189,10 @@ public class CarriersController {
   	 * @return "carriers"
   	 */
   	@GetMapping("/viewcarrier/{id}")
-    public String viewCarrier(@PathVariable("id") long id, Model model) {
+    public String viewCarrier(@PathVariable("id") long id, Model model, HttpSession session) {
+  		
+  		String redirectLocation = (String) session.getAttribute("redirectLocation");
+  		model.addAttribute("redirectLocation", redirectLocation);
         Carriers carrier = carriersRepository.findById(id)
           .orElseThrow(() -> new IllegalArgumentException("Invalid carrier Id:" + id));
         
