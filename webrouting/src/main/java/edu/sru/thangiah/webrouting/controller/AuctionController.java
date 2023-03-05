@@ -87,7 +87,7 @@ public class AuctionController {
 		}
 		
 		if (bids.size() < 1) {
-			System.out.println("This shipment has no bids on it, cannot end an auction with no bids");
+			session.setAttribute("message","Error: Cannot force end an auction that has no bids on it.");
 			Logger.error("{} attempted to end an auction without any bids on shipment ID {}", user.getUsername(), shipment.getId());///TODO: Replace this with an html pop in page if possible
 			return "redirect:" + redirectLocation;
 		}

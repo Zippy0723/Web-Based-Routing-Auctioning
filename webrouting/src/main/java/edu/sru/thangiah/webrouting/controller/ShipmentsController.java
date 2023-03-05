@@ -173,6 +173,12 @@ public class ShipmentsController {
 		List<Shipments> shipmentsWOCarrier = new ArrayList<>();
 		User user = getLoggedInUser();
 		session.setAttribute("redirectLocation", "/createdshipments");
+		try {
+			model.addAttribute("message",session.getAttribute("message"));
+		} catch (Exception e) {
+			//do nothing
+		}
+		session.removeAttribute("message");
 		
 		if (user.getRole().toString().equals("SHIPPER")) {
 			List<Shipments> shipments = user.getShipments();
@@ -220,6 +226,13 @@ public class ShipmentsController {
 		List<Shipments> shipmentsWCarrier = new ArrayList<>();
 		User user = getLoggedInUser();
 		session.setAttribute("redirectLocation", "/acceptedshipments");
+		try {
+			model.addAttribute("message",session.getAttribute("message"));
+		} catch (Exception e) {
+			//do nothing
+		}
+		session.removeAttribute("message");
+		
 		if (user.getRole().toString().equals("SHIPPER")) {
 			List<Shipments> shipments = user.getShipments();
 			if (shipments.size() != 0 && shipments != null) {
@@ -290,6 +303,13 @@ public class ShipmentsController {
 		session.setAttribute("redirectLocation", "/frozenshipments");
 		List<Shipments> shipments;
 		
+		try {
+			model.addAttribute("message",session.getAttribute("message"));
+		} catch (Exception e) {
+			//do nothing
+		}
+		session.removeAttribute("message");
+		
 		if (user.getRole().toString().equals("SHIPPER")) {  
 			shipments = user.getShipments();
 		}
@@ -333,6 +353,13 @@ public class ShipmentsController {
 		session.setAttribute("redirectLocation", "/pendingshipments");
 		List<Shipments> shipments;
 		
+		try {
+			model.addAttribute("message",session.getAttribute("message"));
+		} catch (Exception e) {
+			//do nothing
+		}
+		session.removeAttribute("message");
+		
 		if (user.getRole().toString().equals("SHIPPER")) {  
 			shipments = user.getShipments();
 		}
@@ -367,6 +394,13 @@ public class ShipmentsController {
         model = NotificationController.loadNotificationsIntoModel(user, model);
 		session.setAttribute("redirectLocation", "/awaitingshipments");
 		List<Shipments> shipments;
+		
+		try {
+			model.addAttribute("message",session.getAttribute("message"));
+		} catch (Exception e) {
+			//do nothing
+		}
+		session.removeAttribute("message");
 		
 		if(user.getRole().toString().equals("CARRIER")) {
 			shipments = user.getCarrier().getShipments();
