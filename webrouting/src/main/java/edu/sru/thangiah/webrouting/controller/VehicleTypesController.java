@@ -3,6 +3,8 @@ package edu.sru.thangiah.webrouting.controller;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.servlet.http.HttpSession;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -63,7 +65,9 @@ public class VehicleTypesController {
 	 * @return "locations"
 	 */
 	@RequestMapping({"/vehicletypes"})
-    public String showVehicleTypeList(Model model) {
+    public String showVehicleTypeList(Model model, HttpSession session) {
+		session.setAttribute("redirectLocation", "/vehicletypes");
+		model.addAttribute("redirectLocation", "/vehicletypes");
         model.addAttribute("vehicletypes", vehicleTypesRepository.findAll());
         
         User user = getLoggedInUser();
