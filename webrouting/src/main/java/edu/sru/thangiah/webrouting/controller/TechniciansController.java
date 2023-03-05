@@ -62,6 +62,14 @@ public class TechniciansController {
 	 */
 	@RequestMapping({"/technicians"})
     public String showTechList(Model model, HttpSession session) {
+		
+	      try {
+	            model.addAttribute("error",session.getAttribute("error"));
+	        } catch(Exception e){
+	            //do nothing
+	        }
+	        session.removeAttribute("error");
+	        
 		String redirectLocation = "/technicians";
 		session.setAttribute("redirectLocation", redirectLocation);
 		model.addAttribute("redirectLocation", redirectLocation);
@@ -149,18 +157,18 @@ public class TechniciansController {
   	 * @return "redirect:/technicians"
   	 */
 	@GetMapping("/deletetechnician/{id}")
-    public String deletetechnician(@PathVariable("id") long id, Model model) {
+    public String deletetechnician(@PathVariable("id") long id, Model model, HttpSession session) {
         Technicians technician = techniciansRepository.findById(id)
           .orElseThrow(() -> new IllegalArgumentException("Invalid technicians Id:" + id));
         User loggedInUser = getLoggedInUser();
         model = NotificationController.loadNotificationsIntoModel(loggedInUser, model);
         
         if(!technician.getOrders().isEmpty()) {
-        	model.addAttribute("error", "Unable to delete due to dependency conflict."); 
+        	session.setAttribute("error", "Unable to delete due to dependency conflict."); 
         	Logger.error("{} was unable to delete Technician with ID {} due to a dependecy conflict.", loggedInUser.getUsername(), technician.getId());
         	model.addAttribute("technicians", techniciansRepository.findAll());
         	
-        	return "technicians";
+        	return "redirect:" + (String) session.getAttribute("redirectLocation");
         }
         model.addAttribute("technicians", technician);
         

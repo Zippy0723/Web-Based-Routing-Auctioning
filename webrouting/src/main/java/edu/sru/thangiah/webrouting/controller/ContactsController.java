@@ -68,6 +68,15 @@ public class ContactsController {
 	 */
 	@RequestMapping({"/contacts"})
     public String showContactList(Model model, HttpSession session) {
+		
+		
+		  try {
+	            model.addAttribute("error",session.getAttribute("error"));
+	        } catch(Exception e){
+	            //do nothing
+	        }
+	        session.removeAttribute("error");
+	        
 		String redirectLocation = "/contacts";
 		session.setAttribute("redirectLocation", redirectLocation);
 		model.addAttribute("redirectLocation", redirectLocation);
@@ -162,7 +171,7 @@ public class ContactsController {
   	 * @return "contacts" or "/delete/deletecontactconfirm"
   	 */
   	@GetMapping("/deletecontact/{id}")
-    public String deleteContact(@PathVariable("id") long id, Model model) {
+    public String deleteContact(@PathVariable("id") long id, Model model, HttpSession session) {
         Contacts contacts = contactsRepository.findById(id)
           .orElseThrow(() -> new IllegalArgumentException("Invalid contact Id:" + id));
         
@@ -170,11 +179,11 @@ public class ContactsController {
         model = NotificationController.loadNotificationsIntoModel(user, model);
         
         if(!contacts.getDrivers().isEmpty() || !contacts.getTechnicians().isEmpty()) {
-        	model.addAttribute("error", "Unable to delete due to dependency conflict."); 
+        	session.setAttribute("error", "Unable to delete due to dependency conflict."); 
         	Logger.error("{} attmpted to delete contact. Deletion failed due to dependency conflict.", user.getUsername());
         	model.addAttribute("contacts", getLoggedInUser().getCarrier().getContacts());
         	
-        	return "contacts";
+        	return "redirect:" + (String) session.getAttribute("redirectLocation");
         }
         
         model.addAttribute("contacts", contacts);

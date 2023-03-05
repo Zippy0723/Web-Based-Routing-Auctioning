@@ -62,6 +62,15 @@ public class DriverController {
 	 */
 	@RequestMapping({"/drivers"})
     public String showDriversList(Model model, HttpSession session) {
+		
+		
+        try {
+            model.addAttribute("error",session.getAttribute("error"));
+        } catch(Exception e){
+            //do nothing
+        }
+        session.removeAttribute("error");
+        
 		String redirectLocation = "/drivers";
 		session.setAttribute("redirectLocation", redirectLocation);
 		model.addAttribute("redirectLocation", redirectLocation);

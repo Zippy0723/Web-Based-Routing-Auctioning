@@ -68,6 +68,15 @@ public class MaintenanceOrderController {
 	 */
 	@RequestMapping({"/maintenanceorders"})
     public String showMaintenanceOrdersList(Model model, HttpSession session) {
+		
+		
+		   try {
+	            model.addAttribute("error",session.getAttribute("error"));
+	        } catch(Exception e){
+	            //do nothing
+	        }
+	        session.removeAttribute("error");
+	        
 		String redirectLocation = "/maintenanceorders";
 		session.setAttribute("redirectLocation", redirectLocation);
 		model.addAttribute("redirectLocation", redirectLocation);

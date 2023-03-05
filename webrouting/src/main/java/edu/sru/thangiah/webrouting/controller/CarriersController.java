@@ -71,6 +71,8 @@ public class CarriersController {
 	@RequestMapping({"/carriers"})
 	public String showCarriersList(Model model, HttpSession session) {
 		
+		
+		
   		User user = getLoggedInUser();
         model = NotificationController.loadNotificationsIntoModel(user, model);
         String redirectLocation = "/carriers";

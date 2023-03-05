@@ -362,7 +362,7 @@ public class VehiclesController {
         	Logger.error("{} was unable to delete due to dependency conflict.", user.getUsername());
         	model.addAttribute("vehicles", vehiclesRepository.findAll());
         	
-       	 	return "redirect:/vehicles";
+        	return "redirect:" + (String) session.getAttribute("redirectLocation");
         }
         model.addAttribute("vehicles", vehicle);
         

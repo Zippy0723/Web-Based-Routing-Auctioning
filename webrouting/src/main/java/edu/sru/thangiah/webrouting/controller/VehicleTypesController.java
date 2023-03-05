@@ -175,7 +175,7 @@ public class VehicleTypesController {
         	Logger.error("{} failed to delete the vehicle type due to dependency conflict.", loggedInUser.getUsername());
         	model.addAttribute("vehicletypes", vehicleTypesRepository.findAll());
             
-        	return "redirect:/vehicletypes";
+        	return "redirect:" + (String) session.getAttribute("redirectLocation");
         }
         model.addAttribute("vehicletypes", vehicleTypes);
         
