@@ -3,6 +3,8 @@ package edu.sru.thangiah.webrouting.controller;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.servlet.http.HttpSession;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -59,7 +61,10 @@ public class TechniciansController {
 	 * @return "technicians"
 	 */
 	@RequestMapping({"/technicians"})
-    public String showTechList(Model model) {
+    public String showTechList(Model model, HttpSession session) {
+		String redirectLocation = "/technicians";
+		session.setAttribute("redirectLocation", redirectLocation);
+		model.addAttribute("redirectLocation", redirectLocation);
         model.addAttribute("technicians", techniciansRepository.findAll());
         
         User user = getLoggedInUser();
@@ -188,9 +193,11 @@ public class TechniciansController {
   	 * @return "technicians"
   	 */
   	@GetMapping("/viewtechnician/{id}")
-    public String viewTechnician(@PathVariable("id") long id, Model model) {
+    public String viewTechnician(@PathVariable("id") long id, Model model, HttpSession session) {
         Technicians technician = techniciansRepository.findById(id)
           .orElseThrow(() -> new IllegalArgumentException("Invalid technician Id:" + id));
+        
+        model.addAttribute("redirectLocation", (String) session.getAttribute("redirectLocation"));
         
         model.addAttribute("technicians", technician);
         
@@ -207,10 +214,11 @@ public class TechniciansController {
   	 * @return "maintenanceorders"
   	 */
   	@GetMapping("/viewmaintenanceorders/{id}")
-    public String viewMaintenanceOrders(@PathVariable("id") long id, Model model) {
+    public String viewMaintenanceOrders(@PathVariable("id") long id, Model model, HttpSession session) {
   	  Technicians technician = techniciansRepository.findById(id)
   	          .orElseThrow(() -> new IllegalArgumentException("Invalid technician Id:" + id));
   	  	
+  	  	model.addAttribute("redirectLocation", (String) session.getAttribute("redirectLocation"));
         model.addAttribute("maintenanceOrder", technician.getOrders());
         
         User user = getLoggedInUser();

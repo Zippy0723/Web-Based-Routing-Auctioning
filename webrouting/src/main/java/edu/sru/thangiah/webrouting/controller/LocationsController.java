@@ -3,6 +3,8 @@ package edu.sru.thangiah.webrouting.controller;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.servlet.http.HttpSession;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -63,7 +65,11 @@ public class LocationsController {
 	 * @return "locations"
 	 */
 	@RequestMapping({"/locations"})
-    public String showLocationsList(Model model) {
+    public String showLocationsList(Model model, HttpSession session) {
+		
+		String redirectLocation = "/locations";
+		session.setAttribute("redirectLocation", redirectLocation);
+		model.addAttribute("redirectLocation", redirectLocation);
 		User user = getLoggedInUser();
 		model = NotificationController.loadNotificationsIntoModel(user, model);
 		if (user.getRole().toString().equals("CARRIER")) {
@@ -200,11 +206,12 @@ public class LocationsController {
   	 * @return "locations"
   	 */
   	@GetMapping("/viewlocation/{id}")
-    public String viewLocation(@PathVariable("id") long id, Model model) {
+    public String viewLocation(@PathVariable("id") long id, Model model, HttpSession session) {
         Locations location = locationsRepository.findById(id)
           .orElseThrow(() -> new IllegalArgumentException("Invalid location Id:" + id));
         
         model.addAttribute("locations", location);
+        model.addAttribute("redirectLocation", (String) session.getAttribute("redirectLocation"));
         
         User user = getLoggedInUser();
         model = NotificationController.loadNotificationsIntoModel(user, model);

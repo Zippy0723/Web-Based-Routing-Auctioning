@@ -3,6 +3,8 @@ package edu.sru.thangiah.webrouting.controller;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.servlet.http.HttpSession;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -63,7 +65,10 @@ public class VehicleTypesController {
 	 * @return "locations"
 	 */
 	@RequestMapping({"/vehicletypes"})
-    public String showVehicleTypeList(Model model) {
+    public String showVehicleTypeList(Model model, HttpSession session) {
+		String redirectLocation = "/vehicletypes";
+		session.setAttribute("redirectLocation", redirectLocation);
+		model.addAttribute("redirectLocation", redirectLocation);
         model.addAttribute("vehicletypes", vehicleTypesRepository.findAll());
         
         User user = getLoggedInUser();
@@ -196,9 +201,11 @@ public class VehicleTypesController {
   	 * @return "locations"
   	 */
   	@GetMapping("/viewvehicletype/{id}")
-    public String viewVehicleType(@PathVariable("id") long id, Model model) {
+    public String viewVehicleType(@PathVariable("id") long id, Model model, HttpSession session) {
         VehicleTypes vehicleType = vehicleTypesRepository.findById(id)
           .orElseThrow(() -> new IllegalArgumentException("Invalid vehicle type Id:" + id));
+        
+        model.addAttribute("redirectLocation", (String) session.getAttribute("redirectLocation"));
         
         model.addAttribute("vehicletypes", vehicleType);
         

@@ -3,6 +3,8 @@ package edu.sru.thangiah.webrouting.controller;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.servlet.http.HttpSession;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -65,7 +67,10 @@ public class MaintenanceOrderController {
 	 * @return "maintenanceorders"
 	 */
 	@RequestMapping({"/maintenanceorders"})
-    public String showMaintenanceOrdersList(Model model) {
+    public String showMaintenanceOrdersList(Model model, HttpSession session) {
+		String redirectLocation = "/maintenanceorders";
+		session.setAttribute("redirectLocation", redirectLocation);
+		model.addAttribute("redirectLocation", redirectLocation);
 		User user = getLoggedInUser();
 		
         model.addAttribute("maintenanceOrder", user.getCarrier().getOrders());

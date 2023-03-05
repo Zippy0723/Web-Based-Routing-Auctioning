@@ -6,6 +6,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
+import javax.servlet.http.HttpSession;
+
 import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
@@ -87,7 +89,11 @@ public class VehiclesController {
 	 * @return "vehicles"
 	 */
 	@RequestMapping({"/vehicles"})
-    public String showVehicleList(Model model) {
+    public String showVehicleList(Model model, HttpSession session) {
+		
+		String redirectLocation = "/vehicles";
+		session.setAttribute("redirectLocation", redirectLocation);
+		model.addAttribute("redirectLocation", redirectLocation);
 		
 		User user = getLoggedInUser();
 		if (user.getRole().toString().equals("CARRIER")) {
@@ -388,7 +394,9 @@ public class VehiclesController {
   	 * @return "vehicles"
   	 */
   	@GetMapping("/viewvehicle/{id}")
-    public String viewVehicle(@PathVariable("id") long id, Model model) {
+    public String viewVehicle(@PathVariable("id") long id, Model model, HttpSession session) {
+  		
+  		model.addAttribute("redirectLocation", (String) session.getAttribute("redirectLocation"));
         Vehicles vehicle = vehiclesRepository.findById(id)
           .orElseThrow(() -> new IllegalArgumentException("Invalid vehicle Id:" + id));
         
@@ -440,11 +448,12 @@ public class VehiclesController {
   	 * @return "drivers"
   	 */
   	@GetMapping("/viewvehicledrivers/{id}")
-    public String viewVehicleDrivers(@PathVariable("id") long id, Model model) {
+    public String viewVehicleDrivers(@PathVariable("id") long id, Model model, HttpSession session) {
         Vehicles vehicle = vehiclesRepository.findById(id)
           .orElseThrow(() -> new IllegalArgumentException("Invalid vehicle Id:" + id));
         
         model.addAttribute("drivers", vehicle.getDrivers());
+        model.addAttribute("redirectLocation", (String) session.getAttribute("redirectLocation"));
         
         User user = getLoggedInUser();
         model = NotificationController.loadNotificationsIntoModel(user, model);
@@ -460,11 +469,12 @@ public class VehiclesController {
   	 * @return "shipments"
   	 */
   	@GetMapping("/viewvehicleshipments/{id}")
-    public String viewVehicleShipments(@PathVariable("id") long id, Model model) {
+    public String viewVehicleShipments(@PathVariable("id") long id, Model model, HttpSession session) {
         Vehicles vehicle = vehiclesRepository.findById(id)
           .orElseThrow(() -> new IllegalArgumentException("Invalid vehicle Id:" + id));
         
         model.addAttribute("shipments", vehicle.getShipments());
+        model.addAttribute("redirectLocation", (String) session.getAttribute("redirectLocation"));
         
         User user = getLoggedInUser();
         model = NotificationController.loadNotificationsIntoModel(user, model);
