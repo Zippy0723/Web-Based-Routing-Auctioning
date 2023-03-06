@@ -49,6 +49,8 @@ import edu.sru.thangiah.webrouting.repository.UserRepository;
 import edu.sru.thangiah.webrouting.services.SecurityService;
 import edu.sru.thangiah.webrouting.services.UserService;
 import edu.sru.thangiah.webrouting.web.UserValidator;
+import edu.sru.thangiah.webrouting.controller.CarriersController;
+
 
 /**
  * Handles the Thymeleaf controls for the pages
@@ -233,9 +235,13 @@ public class UserController {
   	@RequestMapping({"/addotheruser"})
       public String showOtherPage(User user, Model model) {
   		List<Role> roles = (List<Role>) roleRepository.findAll();
-  		roles.remove(1);
-  		roles.remove(2);
-  		model.addAttribute("roles", roles);
+  		List<Role> result = new ArrayList<Role>();
+  		for(Role r : roles){
+  		  if(!r.getName().equals("ADMIN") && !r.getName().equals("MASTERLIST")){
+  		    result.add(r);
+  		  }
+  		}
+  		model.addAttribute("roles", result);
   		
   		return "/add/add-user";
     }
@@ -582,6 +588,27 @@ public class UserController {
   		model.addAttribute("message", "Information Updated! If you changed your email please re-verify your account!");
   		return "/index";
   	}
+  	
+  	
+  	@RequestMapping({"/viewavailableroles"})
+    public String showAvailableRoleList(Model model) {
+        model.addAttribute("role", roleRepository.findAll());
+        return "viewavailableroles";
+    }
+  	
+  	@RequestMapping({"/rolesignup"})
+    public String shownAddRolePage(Model model) {
+ 	   return "/add/add-role";
+    }
+  	
+  	@PostMapping({"/addrole"})
+  	public String addRole(@RequestParam("roleName") String roleName, Model model) {
+  		Role role = new Role(roleName);
+  		roleRepository.save(role);
+  		return "redirect:/viewavailableroles";
+  	}
+
+
   	/**
 	 * Returns the user that is currently logged into the system. <br>
 	 * If there is no user logged in, null is returned.
