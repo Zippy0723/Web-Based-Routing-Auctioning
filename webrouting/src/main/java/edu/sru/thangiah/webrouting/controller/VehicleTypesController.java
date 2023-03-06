@@ -94,11 +94,11 @@ public class VehicleTypesController {
 	 * @return "/add/add-vehicletype"
 	 */
 	@RequestMapping({"/signupvehicletype"})
-    public String showVehicleTypeSignUpForm(Model model, VehicleTypes vehicleTypes, BindingResult result) {
+    public String showVehicleTypeSignUpForm(Model model, VehicleTypes vehicleTypes, BindingResult result, HttpSession session) {
         
 		User user = getLoggedInUser();
 		model = NotificationController.loadNotificationsIntoModel(user, model);
-		
+		model.addAttribute("redirectLocation", (String) session.getAttribute("redirectLocation"));
 		return "/add/add-vehicletype";
 	}
 	
@@ -112,11 +112,13 @@ public class VehicleTypesController {
   	 * @return "redirect:/vehicletypes" or "/add/add-vehicletype"
   	 */
 	@RequestMapping({"/addvehicletypes"})
-  	public String addVehicleType(@Validated VehicleTypes vehicleTypes, BindingResult result, Model model) {
+  	public String addVehicleType(@Validated VehicleTypes vehicleTypes, BindingResult result, Model model, HttpSession session) {
 		userValidator.addition(vehicleTypes, result);
 		User loggedInUser = getLoggedInUser();
 		model = NotificationController.loadNotificationsIntoModel(loggedInUser, model);
-		
+		String redirectLocation = (String) session.getAttribute("redirectLocation");
+		model.addAttribute("redirectLocation", session.getAttribute("redirectLocation")); 
+
   		if (result.hasErrors()) {	
   			return "/add/add-vehicletype";
 		}
@@ -143,7 +145,7 @@ public class VehicleTypesController {
   		vehicleTypesRepository.save(vehicleTypes);
   		Logger.info("{} successfully saved the Vehicle type with ID {}.",loggedInUser.getUsername(), vehicleTypes.getId());
   		
-  		return "redirect:/vehicletypes";
+  		return "redirect:" + redirectLocation;
   	}
 	
 
@@ -232,12 +234,12 @@ public class VehicleTypesController {
   	 * @return "update/update-vehicletype"
   	 */
 	@GetMapping("/editvehicletype/{id}")
-    public String showEditForm(@PathVariable("id") long id, Model model) {
+    public String showEditForm(@PathVariable("id") long id, Model model, HttpSession session) {
 		VehicleTypes vehicleTypes = vehicleTypesRepository.findById(id)
           .orElseThrow(() -> new IllegalArgumentException("Invalid vechile type Id:" + id));
         
 		model.addAttribute("vehicleTypes", vehicleTypes);
-		
+		model.addAttribute("redirectLocation", (String) session.getAttribute("redirectLocation"));
 		User user = getLoggedInUser();
 		model = NotificationController.loadNotificationsIntoModel(user, model);
 		
@@ -256,12 +258,13 @@ public class VehicleTypesController {
   	 */
 	@PostMapping("/updatevehicletype/{id}")
     public String updateVehicleType(@PathVariable("id") long id, @Validated VehicleTypes vehicleType, 
-      BindingResult result, Model model) {
+      BindingResult result, Model model, HttpSession session) {
 		userValidator.addition(vehicleType, result);
 		
 		User loggedInUser = getLoggedInUser();
 		model = NotificationController.loadNotificationsIntoModel(loggedInUser, model);
-		
+		String redirectLocation = (String) session.getAttribute("redirectLocation");
+		model.addAttribute("redirectLocation", session.getAttribute("redirectLocation"));
         if (result.hasErrors()) {
         	vehicleType.setId(id);
             return "/update/update-vehicletype";
@@ -289,7 +292,7 @@ public class VehicleTypesController {
         
         vehicleTypesRepository.save(vehicleType);
         Logger.info("{} successfully updated the Vehicle Type with ID {}.",loggedInUser.getUsername(),vehicleType.getId());
-        return "redirect:/vehicletypes";
+        return "redirect:" + redirectLocation;
     }
 	
 	/**

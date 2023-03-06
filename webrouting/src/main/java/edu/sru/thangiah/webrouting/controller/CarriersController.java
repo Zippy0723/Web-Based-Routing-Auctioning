@@ -71,8 +71,6 @@ public class CarriersController {
 	@RequestMapping({"/carriers"})
 	public String showCarriersList(Model model, HttpSession session) {
 		
-		
-		
   		User user = getLoggedInUser();
         model = NotificationController.loadNotificationsIntoModel(user, model);
         String redirectLocation = "/carriers";
@@ -110,13 +108,15 @@ public class CarriersController {
   	 * @return "update/update-carrier"
   	 */
 	@GetMapping("/editcarrier/{id}")
-    public String showEditForm(@PathVariable("id") long id, Model model) {
+    public String showEditForm(@PathVariable("id") long id, Model model, HttpSession session) {
 		Carriers carrier = carriersRepository.findById(id)
           .orElseThrow(() -> new IllegalArgumentException("Invalid carrier Id:" + id));
   		User user = getLoggedInUser();
         model = NotificationController.loadNotificationsIntoModel(user, model);
+        model.addAttribute("redirectLocation", (String) session.getAttribute("redirectLocation"));
         if (carrier.equals(user.getCarrier())) {
-        	 model.addAttribute("carriers", carrier); 
+        	model.addAttribute("carriers", carrier); 
+   
              return "/update/update-carriers";
              
         } else {
@@ -137,7 +137,6 @@ public class CarriersController {
           .orElseThrow(() -> new IllegalArgumentException("Invalid carrier Id:" + id));
         String redirectLocation = (String) session.getAttribute("redirectLocation");
   		model.addAttribute("redirectLocation", redirectLocation);
-        
         model.addAttribute("shipments", carrier.getShipments());
         
   		User user = getLoggedInUser();
@@ -216,14 +215,17 @@ public class CarriersController {
   	 */
 	@PostMapping("/updatecarrier/{id}")
     public String updateCarrier(@PathVariable("id") long id, @Validated Carriers carrier, 
-      BindingResult result, Model model) {
+      BindingResult result, Model model, HttpSession session) {
+		User user = getLoggedInUser();
+        model = NotificationController.loadNotificationsIntoModel(user, model);
+        String redirectLocation = (String) session.getAttribute("redirectLocation");
+        model.addAttribute("redirectLocation", (String) session.getAttribute("redirectLocation"));
+
         if (result.hasErrors()) {
         	carrier.setId(id);
             return "/update/update-carriers";
         }
 		
-  		User user = getLoggedInUser();
-        model = NotificationController.loadNotificationsIntoModel(user, model);
         Boolean deny = false;
   		List<Carriers> checkCarriers = new ArrayList<>();
   		checkCarriers = (List<Carriers>) carriersRepository.findAll();
@@ -241,12 +243,12 @@ public class CarriersController {
   			model.addAttribute("error", "Unable to update Carrier. Carrier name or SCAC code already exists");
   			model.addAttribute("carriers", user.getCarrier());
   			Logger.error("{} attempted to update {}, carrier. Update failed because Carrier name or SCAC code already exists.", user.getUsername(), carrier.getCarrierName());
-  			return "carriers";	 
+  			return "redirect:" + redirectLocation;
   		}
             
         carriersRepository.save(carrier);
         Logger.info("{} successfully updated the carrier with ID {}.", user.getUsername() , carrier.getId());
-        return "redirect:/carriers";
+        return "redirect:" + redirectLocation;
     }
 	
 	/**

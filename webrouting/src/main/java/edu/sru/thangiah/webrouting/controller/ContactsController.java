@@ -98,11 +98,12 @@ public class ContactsController {
 	 * @return "/add/add-contact"
 	 */
   	@RequestMapping({"/signupcontact"})
-      public String showContactSignUpForm(Model model, Contacts contact, BindingResult result) {
+      public String showContactSignUpForm(Model model, Contacts contact, BindingResult result, HttpSession session) {
   		
   		User user = getLoggedInUser();
         model = NotificationController.loadNotificationsIntoModel(user, model);
-  		
+        model.addAttribute("redirectLocation", (String) session.getAttribute("redirectLocation"));
+        
         return "/add/add-contact";
     }
       
@@ -116,11 +117,13 @@ public class ContactsController {
   	 * @return "redirect:/contacts" or "/add/add-contact"
   	 */
   	@RequestMapping({"/addcontact"})
-  	public String addContact(@Validated Contacts contacts, BindingResult result, Model model) {
+  	public String addContact(@Validated Contacts contacts, BindingResult result, Model model, HttpSession session) {
   		userValidator.addition(contacts, result);
   		contacts.setCarrier(getLoggedInUser().getCarrier());
   		User user = getLoggedInUser();
         model = NotificationController.loadNotificationsIntoModel(user, model);
+        String redirectLocation = (String) session.getAttribute("redirectLocation");
+        model.addAttribute("redirectLocation", session.getAttribute("redirectLocation")); 
   		
   		if (result.hasErrors()) {
   			return "/add/add-contact";
@@ -149,7 +152,7 @@ public class ContactsController {
   		contactsRepository.save(contacts);
   		Logger.info("{} successfully added a new contact with ID {}.", user.getUsername(), contacts.getId());
   		
-  		return "redirect:/contacts";
+  		return "redirect:" + redirectLocation;
   	}
   	
   	/**
@@ -239,12 +242,12 @@ public class ContactsController {
   	 * @return "update/update-contact"
   	 */
   	@GetMapping("/editcontact/{id}")
-    public String showEditForm(@PathVariable("id") long id, Model model) {
+    public String showEditForm(@PathVariable("id") long id, Model model, HttpSession session) {
         Contacts contacts = contactsRepository.findById(id)
           .orElseThrow(() -> new IllegalArgumentException("Invalid contact Id:" + id));
         
         model.addAttribute("contacts", contacts);
-        
+        model.addAttribute("redirectLocation", (String) session.getAttribute("redirectLocation"));
   		User user = getLoggedInUser();
         model = NotificationController.loadNotificationsIntoModel(user, model);
         
@@ -292,7 +295,7 @@ public class ContactsController {
   			model.addAttribute("error", "Unable to add Contact. Contact Email already in use");
   			Logger.error("{} failed to add contact with email {} because the email is already in use.",user.getUsername(), contact.getEmailAddress());
   			model.addAttribute("contacts", getLoggedInUser().getCarrier().getContacts());
-  			return "contacts";
+  			return "/contacts";
 			 
   		}
             

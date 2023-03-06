@@ -90,9 +90,9 @@ public class TechniciansController {
 	 * @return "/add/add-technician"
 	 */
 	@GetMapping({"/add-technician"})
-    public String showContactList(Model model, Technicians technician, BindingResult result) {
+    public String showContactList(Model model, Technicians technician, BindingResult result, HttpSession session) {
         model.addAttribute("contacts", getLoggedInUser().getCarrier().getContacts()); 
-        
+        model.addAttribute("redirectLocation", (String) session.getAttribute("redirectLocation"));
         User user = getLoggedInUser();
         model = NotificationController.loadNotificationsIntoModel(user, model);
         
@@ -109,13 +109,15 @@ public class TechniciansController {
   	 * @return "redirect:/technicians" or "/add/add-technician"
   	 */
 	@RequestMapping({"/addtechnician"})
-  	public String addtechnician(@Validated Technicians technician, BindingResult result, Model model) {
+  	public String addtechnician(@Validated Technicians technician, BindingResult result, Model model, HttpSession session) {
   		if (result.hasErrors()) {
   			return "/add/add-technician";
 		}
   		Boolean deny = false;
   		User loggedInUser = getLoggedInUser();
   		model = NotificationController.loadNotificationsIntoModel(loggedInUser, model);
+  		String redirectLocation = (String) session.getAttribute("redirectLocation");
+  		model.addAttribute("redirectLocation", session.getAttribute("redirectLocation")); 
   		
   		List<Technicians> checkTech = new ArrayList<>();
   		checkTech = (List<Technicians>) techniciansRepository.findAll();
@@ -135,7 +137,7 @@ public class TechniciansController {
   		
   		techniciansRepository.save(technician);
   		Logger.info("{} successfully saved Technician with ID {}.",loggedInUser.getUsername(), technician.getId());
-  		return "redirect:/technicians";
+  		return "redirect:" + redirectLocation;
   	}
 	
 	/**
@@ -243,13 +245,13 @@ public class TechniciansController {
   	 * @return "update/update-technician"
   	 */
 	@GetMapping("/edittechnician/{id}")
-    public String showEditForm(@PathVariable("id") long id, Model model) {
+    public String showEditForm(@PathVariable("id") long id, Model model, HttpSession session) {
 		Technicians technician = techniciansRepository.findById(id)
           .orElseThrow(() -> new IllegalArgumentException("Invalid Technician Id:" + id));
-        
-		
+     	
 		 model.addAttribute("contacts", getLoggedInUser().getCarrier().getContacts());  
 	     model.addAttribute("technicians", technician);
+	     model.addAttribute("redirectLocation", (String) session.getAttribute("redirectLocation"));
 	     
 	     User user = getLoggedInUser();
 	     model = NotificationController.loadNotificationsIntoModel(user, model);
@@ -269,13 +271,16 @@ public class TechniciansController {
   	 */
 	@PostMapping("/updatetechnician/{id}")
     public String updateTechnician(@PathVariable("id") long id, @Validated Technicians technician, 
-      BindingResult result, Model model) {
+      BindingResult result, Model model, HttpSession session) {
         if (result.hasErrors()) {
         	technician.setId(id);
             return "/update/update-technician";
         }
         User user = getLoggedInUser();
         model = NotificationController.loadNotificationsIntoModel(user, model);
+        String redirectLocation = (String) session.getAttribute("redirectLocation");
+        model.addAttribute("redirectLocation", session.getAttribute("redirectLocation")); 
+        
         Boolean deny = false;
   		List<Technicians> checkTech = new ArrayList<>();
   		checkTech = (List<Technicians>) techniciansRepository.findAll();
@@ -298,7 +303,7 @@ public class TechniciansController {
   		
         techniciansRepository.save(technician);
         Logger.info("{} successfully updated Technician with ID {}", user.getUsername(), technician.getId());
-        return "redirect:/technicians";
+        return "redirect:" + redirectLocation;
     }
 	
 	/**
