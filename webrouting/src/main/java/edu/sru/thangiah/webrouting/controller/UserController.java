@@ -541,6 +541,13 @@ public class UserController {
   	 */
   	@GetMapping("/update-user-details")
   	public String showUserDetailsForm(Model model) {
+  		
+  		User user = getLoggedInUser();
+  		String status = "CARRIER";
+  		if(user.getRole().toString().equals("CARRIER")) {
+  			model.addAttribute("status", status);
+  		}
+  		
   		model.addAttribute("user", getLoggedInUser());
   		dtoUser = new User();
   		dtoUser = getLoggedInUser();
