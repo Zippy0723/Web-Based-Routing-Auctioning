@@ -125,9 +125,9 @@
   					<button class=""  id="hamburger" style="display:none" onclick="nav_open()">☰</button>
 				</span>
 				<br><br>
+				<button class="buttons7" th:attr="onclick=|window.location.href='${redirectLocation}'|">Back</button>
                 <h2>Update Driver</h2>
                 <br>
-                <a href="/drivers">Cancel</a>
                 <br>
                 <form action="#" th:action="@{/updatedriver/{id}(id=${driver.id})}" th:object="${driver}" method="post">
                 <br>

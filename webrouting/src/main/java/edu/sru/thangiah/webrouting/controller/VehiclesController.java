@@ -140,11 +140,11 @@ public class VehiclesController {
 	 * @return "/add/add-vehicle"
 	 */
 	@GetMapping({"/add-vehicle"})
-    public String showLists(Model model, Vehicles vehicles, BindingResult result) {
+    public String showLists(Model model, Vehicles vehicles, BindingResult result, HttpSession session) {
 		
 		User user = getLoggedInUser();
 		model = NotificationController.loadNotificationsIntoModel(user, model);
-		
+		model.addAttribute("redirectLocation", (String) session.getAttribute("redirectLocation"));
 			model.addAttribute("carriers", user.getCarrier());
 			model.addAttribute("vehicleTypes", vehicleTypesRepository.findAll()); 
 		    model.addAttribute("locations", user.getCarrier().getLocations()); 
@@ -287,19 +287,20 @@ public class VehiclesController {
   	 * @return "redirect:/vehicles" or "/add/add-vehicle"
   	 */
 	@RequestMapping({"/addvehicles"})
-  	public String addVehicle(@Validated Vehicles vehicles, BindingResult result, Model model) {
+  	public String addVehicle(@Validated Vehicles vehicles, BindingResult result, Model model, HttpSession session) {
 		userValidator.addition(vehicles, result);
-  		if (result.hasErrors()) {
-  			
-  			User user = getLoggedInUser();
-  			model = NotificationController.loadNotificationsIntoModel(user, model);
-  			
+		User user = getLoggedInUser();
+  		model = NotificationController.loadNotificationsIntoModel(user, model);
+		String redirectLocation = (String) session.getAttribute("redirectLocation");
+		model.addAttribute("redirectLocation", session.getAttribute("redirectLocation")); 
+
+  		if (result.hasErrors()) {			
+
   			return "/add/add-vehicle";
 		}
   		
   		Boolean deny = false;
-  		User user = getLoggedInUser();
-  		model = NotificationController.loadNotificationsIntoModel(user, model);
+  		
   		List<Vehicles> checkVehicles = new ArrayList<>();
   		checkVehicles = (List<Vehicles>) vehiclesRepository.findAll();
   		
@@ -340,7 +341,7 @@ public class VehiclesController {
         
         model.addAttribute("notifications",notifications);
   		
-  		return "redirect:/vehicles";
+  		return "redirect:" + redirectLocation;
   	}
 	
 	/**
@@ -423,12 +424,12 @@ public class VehiclesController {
   	 * @return "update/update-vehicle"
   	 */
 	@GetMapping("/editvehicles/{id}")
-    public String showEditForm(@PathVariable("id") long id, Model model) {
+    public String showEditForm(@PathVariable("id") long id, Model model, HttpSession session) {
 		 Vehicles vehicle = vehiclesRepository.findById(id)
           .orElseThrow(() -> new IllegalArgumentException("Invalid Vehicle Id:" + id));
 		 User user = getLoggedInUser();
 		 model = NotificationController.loadNotificationsIntoModel(user, model);
-		 
+		 model.addAttribute("redirectLocation", (String) session.getAttribute("redirectLocation"));
 			
 				model.addAttribute("carriers", user.getCarrier());
 				model.addAttribute("vehicleTypes", vehicleTypesRepository.findAll()); 
@@ -501,10 +502,12 @@ public class VehiclesController {
   	 */
 	@PostMapping("/updatevehicle/{id}")
     public String updateVehicle(@PathVariable("id") long id, @Validated Vehicles vehicle, 
-      BindingResult result, Model model) {
+      BindingResult result, Model model, HttpSession session) {
 		userValidator.addition(vehicle, result);
 		User loggedInUser = getLoggedInUser();
 		model = NotificationController.loadNotificationsIntoModel(loggedInUser, model);
+		String redirectLocation = (String) session.getAttribute("redirectLocation");
+		model.addAttribute("redirectLocation", session.getAttribute("redirectLocation")); 
         if (result.hasErrors()) {
         	vehicle.setId(id);
             return "/update/update-vehicle";
@@ -532,7 +535,7 @@ public class VehiclesController {
   		}
   		vehiclesRepository.save(vehicle);
   		Logger.info("{} successfully updated vehicle with ID {}.",loggedInUser.getUsername(),vehicle.getId());
-  		return "redirect:/vehicles";
+  		return "redirect:" + redirectLocation;
             
        
     }

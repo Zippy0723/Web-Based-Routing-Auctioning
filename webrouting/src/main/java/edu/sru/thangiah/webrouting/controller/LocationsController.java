@@ -100,13 +100,12 @@ public class LocationsController {
 	 * @return "/add/add-location"
 	 */
 	@GetMapping({"/add-location"})
-    public String showCarriersList(Model model, Locations location, BindingResult result) {
+    public String showCarriersList(Model model, Locations location, BindingResult result, HttpSession session) {
 		
 		User user = getLoggedInUser();
-		
 		model.addAttribute("carriers", user.getCarrier());  
         model = NotificationController.loadNotificationsIntoModel(user, model);
-        
+        model.addAttribute("redirectLocation", (String) session.getAttribute("redirectLocation"));
 	    return "/add/add-location";
 		
     }
@@ -121,14 +120,18 @@ public class LocationsController {
   	 * @return "redirect:/locations" or "/add/add-location"
   	 */
 	@RequestMapping({"/addlocations"})
-  	public String addLocation(@Validated Locations location, BindingResult result, Model model) {
+  	public String addLocation(@Validated Locations location, BindingResult result, Model model, HttpSession session) {
 		userValidator.addition(location, result);
+		User user = getLoggedInUser();
+        model = NotificationController.loadNotificationsIntoModel(user, model);
+        String redirectLocation = (String) session.getAttribute("redirectLocation");
+        model.addAttribute("redirectLocation", session.getAttribute("redirectLocation"));
+
   		if (result.hasErrors()) {
   			return "/add/add-location";
   		}
   		Boolean deny = false;
-  		User user = getLoggedInUser();
-        model = NotificationController.loadNotificationsIntoModel(user, model);
+  	
   		List<Locations> checkLocation = new ArrayList<>();
   		checkLocation = (List<Locations>) locationsRepository.findAll();
   		
@@ -149,7 +152,7 @@ public class LocationsController {
   		}
   		locationsRepository.save(location);
   		Logger.info("{} successfully saved location with ID {}.", user.getUsername(), location.getId());
-  		return "redirect:/locations";
+  		return "redirect:" + redirectLocation;
   	}
 	
 	/**
