@@ -67,6 +67,9 @@
                         <li sec:authorize="hasAnyAuthority('CARRIER','MASTERLIST')" class="navitem">
                             <a class="navlink" id="nav_routes" href="/routes">Routes</a>
                         </li>
+                        <li sec:authorize="hasAnyAuthority('ADMIN')" class="navitem">
+                            <a class="navlink" id="nav_database" href="/database">Database</a>
+                        </li>
                           <li sec:authorize="hasAnyAuthority('CARRIER','SHIPPER','MASTERLIST')" class="navitem">
                             <a class="navlink" id="nav_bids" href="/bids">Bids</a>
                         </li>

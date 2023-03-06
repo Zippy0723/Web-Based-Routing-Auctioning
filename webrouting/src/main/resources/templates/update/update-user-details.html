@@ -68,6 +68,9 @@
 					<li sec:authorize="hasAnyAuthority('CARRIER','MASTERLIST')"
 						class="navitem"><a class="navlink" id="nav_routes"
 						href="/routes">Routes</a></li>
+					<li sec:authorize="hasAnyAuthority('ADMIN')" class="navitem">
+                            <a class="navlink" id="nav_database" href="/database">Database</a>
+                    </li>
 						<br><br><br><br><br>
 						<li sec:authorize="hasAnyAuthority('CARRIER', 'MASTERLIST', 'ADMIN','SHIPPER')">
                             <a class= "navlink" id= "nav_notifications" href="/unreadnotifications" th:inline="text">Notifications ([[${notifications.size()}]])</a>
