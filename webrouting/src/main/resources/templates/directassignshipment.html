@@ -1,7 +1,7 @@
 <!doctype html>
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
 	<head>
-		<title>Shipments</title>
+		<title>Direct Assign Shipments</title>
 
 		<link rel="stylesheet" type="text/css" href="/styles/reset.css" />
         <link rel="stylesheet" type="text/css" href="/styles/main.css" />
@@ -21,7 +21,7 @@
             <div id="menu-wrapper">
             	<br><br>
             </div>
-            <div sec:authorize="isAuthenticated()" class = "navSideBar" id="mySidebar">
+            <div sec:authorize="isAuthenticated()" class = "navSideBar"  id="mySidebar">
                 <button onclick="nav_close()" class="bar-item">...</button>
                 <div id="menu">
                     <ul class="navbar">
@@ -77,6 +77,9 @@
                             <a class="navlink" id="nav_routes" href="/routes">Routes</a>
                         </li>
 						<br><br><br><br><br>
+						<li sec:authorize="hasAnyAuthority('CARRIER', 'MASTERLIST', 'ADMIN','SHIPPER')">
+                            <a class= "navlink" id= "nav_notifications" href="/unreadnotifications" th:inline="text">Notifications ([[${notifications.size()}]])</a>
+                        </li>
                         <li sec:authorize="isAuthenticated()" class="navitem">
                             <form id="logoutForm" method="POST" th:action="@{/logout}">
                                 <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
@@ -86,21 +89,23 @@
                     </ul>
                 </div>
             </div>
-            <div sec:authorize="!isAuthenticated()" class = "navSideBar" sid="mySidebar">
+            <div sec:authorize="!isAuthenticated()" class = "navSideBar"  id="mySidebar">
                 <button onclick="nav_close()" class="bar-item">...</button>
-                <ul class="navbar">
-                    <li class="navitem">
-                        <a class="selected" id="nav_home" href="/">Home</a>
-                    </li>
-                    <br>
-                    <li sec:authorize="!isAuthenticated()" class="navitem">
-                        <a class="navlink" id="nav_login" href="login">Login</a>
-                    </li>
-                    <br>
-                    <li sec:authorize="!isAuthenticated()" class="navitem">
-                        <a class="navlink" id="nav_registration" href="/registrationhome">Register</a>
-                    </li>
-                </ul>
+                <div id="menu">
+                    <ul class="navbar">
+                        <li class="navitem">
+                            <a class="selected" id="nav_home" href="/">Home</a>
+                        </li>
+                        <br>
+                        <li sec:authorize="!isAuthenticated()" class="navitem">
+                            <a class="navlink" id="nav_login" href="login">Login</a>
+                        </li>
+                        <br>
+                        <li sec:authorize="!isAuthenticated()" class="navitem">
+                            <a class="navlink" id="nav_registration" href="/registrationhome">Register</a>
+                        </li>
+                    </ul>
+                </div>
             </div>
 
             <div id="sub_heading">
@@ -116,34 +121,40 @@
                     </div>
                 </div>
             </div>
-		<div id="content">
-			<span class="nav-expand">
-  				<button class=""  id="hamburger" style="display:none" onclick="nav_open()">☰</button>
-			</span>
-			<br><br>
-        	<h2>Upload file</h2>
-	        <br><br>
-	            	*** Warning: Upload time varies with file size; larger files take more time.
-	       	<br><br>
-	            	*** The Excel file must match the template on the Technicians page. To download a template Excel file, <a href="">Click Here!</a>
-	        <br><br>
-	        <a href="/technicians">Cancel</a>
-			<br><br>
-			<hr>
-			<form th:action="@{/upload-shipment}" enctype="multipart/form-data" method="POST">
-			<div class="form-group2">
-				<br>
-				<h2> Choose Excel File to Upload</h2>
-				<br>
-				<input type="file" name="file" />
-				<br><br><br><br>
-				<button type="submit" class="buttons6">Upload File</button>
-			<br>
-			</div>
-			</form>
-	      	<br><br><br><br>
-		</div>
-    </div>
+			
+			<div id="content">
+				<span class="nav-expand">
+  					<button class="expander"  id="hamburger" style="display:none" onclick="nav_open()">☰</button>
+				</span>
+				<br></br>
+				<div th:switch="${carriers.size()}">
+					<h2 th:case="0">No Carriers Currently in System</h2>
+					<div th:case="*">
+						<a th:href="${redirectLocation}">Back</a>
+						<h2>Select a carrier to assign your shipment to: </h2>
+						<br>
+                        <span type="hidden" th:text="${error}" class="loginError"></span>
+                        <br>
+                        <form th:action="@{/selectcarrier}" method="post">
+							<span th:if="${message}" th:text="${message}" class="error"></span>
+                        	<input type="hidden" th:field="${selectedCarrierId}" th:value="${selectedCarrierId}"/>
+                        	<input type="hidden" th:name="shipmentId" th:value="${shipmentId}"/>
+    				 		<div th:each="carrier, carrierIndex : ${carriers}" class="carrier-box">
+    				 			<div class="radio-container">
+       					  			<input type="radio" th:name="selectedCarrierId" th:value="${carrier.id}" th:checked="${carrier.id == selectedCarrierId}"/>
+       					  			<label th:for="'selectedCarrierId_' + ${carrier.id}" th:text="${carrier.carrierName} + ' (' + ${carrier.scac} + ')'"></label>
+       				      			<br/>
+       				      		</div>
+    			        	</div>
+    			        <label for="inputPrice">Enter the price of the shipment:</label>
+						<input type="text" id="inputPrice" name="inputPrice">
+    			        <br></br>
+    				    <button type="submit">Select this Carrier</button>
+				      </form>
+					</div>
+				</div>
+            </div>
+        </div>
 
 		<div class="footer">
             Copyright &copy; Slippery Rock University 2022
@@ -157,9 +168,9 @@
 		}
 		
 		function nav_close() {
-		  	document.getElementById("content").style.marginLeft = "0%";
-		  	document.getElementById("mySidebar").style.display = "none";
-		  	document.getElementById("hamburger").style.display = "block";
+		  document.getElementById("content").style.marginLeft = "0%";
+		  document.getElementById("mySidebar").style.display = "none";
+		  document.getElementById("hamburger").style.display = "block";
 		}
 		</script>
 	</body>

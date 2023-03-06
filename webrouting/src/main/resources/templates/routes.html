@@ -124,11 +124,11 @@
 				<span class="nav-expand">
   					<button class=""  id="hamburger" style="display:none" onclick="nav_open()">☰</button>
 				</span>
-                <br> <br>
+				<div th:if="${redirectLocation != '/routes'}">
+				<p><button class="buttons7" th:attr="onclick=|window.location.href='${redirectLocation}'|">Back</button></p>
+				</div>
+                <br><br>
                 <h2>Routes</h2>
-                <form action="/">
-					<button class="buttons6" type="submit">Back</button>
-				</form>
 				<br>
 				<hr>
 				<br>

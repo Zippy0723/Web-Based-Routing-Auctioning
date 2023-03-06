@@ -3,6 +3,8 @@ package edu.sru.thangiah.webrouting.controller;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.servlet.http.HttpSession;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
@@ -108,7 +110,10 @@ public class RoutesController {
 	 * @return "routes"
 	 */
 	@RequestMapping({"/routes"})
-    public String showVehiclesList(Model model) {
+    public String showVehiclesList(Model model, HttpSession session) {
+		String redirectLocation = "/routes";
+		session.setAttribute("redirectLocation", redirectLocation);
+		model.addAttribute("redirectLocation", redirectLocation);
 		if (getLoggedInUser().getRole().getName().equals("CARRIER")) {
 			model.addAttribute("vehicle", getVehiclesWithShipmentsFromList(getLoggedInUser().getCarrier().getVehicles()));
 		}

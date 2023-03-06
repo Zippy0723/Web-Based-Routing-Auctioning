@@ -86,6 +86,8 @@ public class BidsController {
 	 */
 	@GetMapping({"/add-bid/{id}"})
     public String showBidList(@PathVariable("id") long id, Model model, Bids bid, BindingResult result, HttpSession session) {
+		String redirectLocation = (String) session.getAttribute("redirectLocation");
+		model.addAttribute("redirectLocation", redirectLocation);
 		Shipments shipment = shipmentsRepository.findById(id)
 				.orElseThrow(() -> new IllegalArgumentException("Invalid shipment Id: " + id));
         model.addAttribute("shipments", shipment);
@@ -113,7 +115,9 @@ public class BidsController {
   	 * @return "redirect:/createdshipments" or "/add/add-bid"
   	 */
 	@RequestMapping({"/addbid"})
-  	public String addBid(@Validated Bids bid, BindingResult result, Model model) {
+  	public String addBid(@Validated Bids bid, BindingResult result, Model model, HttpSession session) {
+		String redirectLocation = (String) session.getAttribute("redirectLocation");
+		model.addAttribute("redirectLocation", redirectLocation);
 		userValidator.addition(bid, result);
 		User user = getLoggedInUser();
 		model = NotificationController.loadNotificationsIntoModel(user, model);
@@ -155,7 +159,7 @@ public class BidsController {
        NotificationController.addNotification(bid.getShipment().getUser(), 
   				"ALERT: A new bid as been added on your shipment with ID " + bid.getShipment().getId() + " and Client " + bid.getShipment().getClient());
           
-  		return "redirect:/createdshipments";
+  		return "redirect:" + redirectLocation;
   	}
 	
 	/**
@@ -278,10 +282,13 @@ public class BidsController {
 	 * @return "redirect:/shipmentshomeshipper"
 	 */
 	@GetMapping("/acceptbid/{id}")
-	public String acceptBid(@PathVariable("id") long id, Model model) {
+	public String acceptBid(@PathVariable("id") long id, Model model, HttpSession session) {
 		Bids bid = bidsRepository.findById(id)
 		.orElseThrow(() -> new IllegalArgumentException("Invalid bid Id: " + id));
 		
+		
+		String redirectLocation = (String) session.getAttribute("redirectLocation");
+		model.addAttribute("redirectLocation", redirectLocation);
   		User user = getLoggedInUser();
         model = NotificationController.loadNotificationsIntoModel(user, model);
 		User bidUser;
@@ -289,7 +296,7 @@ public class BidsController {
 		 if (bid.getShipment().getFullFreightTerms().toString().equals("FROZEN") && !user.getRole().toString().equals("MASTERLIST")) {
 			 System.out.println("User attempted to accept a bid on a frozen shipment");
 			 Logger.error("{} attempted to accept a bid on a frozen shipment.", user.getUsername());//Replace this with a proper error message and redirect, for now it just dumps shippers out of the accept menu
-			 return "redirect:/createdshipments";
+			 return "redirect:" + redirectLocation;
 		 }
 		
 		Carriers carrier = bid.getCarrier();
@@ -307,7 +314,7 @@ public class BidsController {
 		shipmentsRepository.save(shipment);
 		Logger.info("{} successfully created a new bid with ID {}", user.getUsername(), bid.getId());
 		
-		return "redirect:/shipmentshomeshipper";
+		return "redirect:" + redirectLocation;
 	}
 	
 	/**
@@ -319,10 +326,12 @@ public class BidsController {
   	 * @return "/update/update-bid" or "redirect:/createdshipments"
   	 */
 	@GetMapping("/editbid/{id}")
-    public String showEditForm(@PathVariable("id") long id, Model model) {
+    public String showEditForm(@PathVariable("id") long id, Model model, HttpSession session) {
 		Bids bid = bidsRepository.findById(id)
           .orElseThrow(() -> new IllegalArgumentException("Invalid Bid Id:" + id));
 		
+		String redirectLocation = (String) session.getAttribute("redirectLocation");
+		model.addAttribute("redirectLocation", redirectLocation);
   		 User user = getLoggedInUser();
   		 model = NotificationController.loadNotificationsIntoModel(user, model);
 		 User bidUser;
@@ -346,7 +355,7 @@ public class BidsController {
 				 "Your bid with Id " + bid.getId() + " on shipment with id " + bid.getShipment().getId() + " was edited by " + user.getUsername());
 	     
         
-        return "redirect:/createdshipments";
+        return "redirect:"+ redirectLocation;
     }
 	
 	/**
@@ -361,7 +370,9 @@ public class BidsController {
   	 */
 	@PostMapping("/updatebid/{id}")
     public String updateBid(@PathVariable("id") long id, @Validated Bids bid, //TODO: rewrite this to work with MASTERLIST able to edit bids. 
-      BindingResult result, Model model) {
+      BindingResult result, Model model, HttpSession session) {
+		String redirectLocation = (String) session.getAttribute("redirectLocation");
+		model.addAttribute("redirectLocation", redirectLocation);
 		Bids oldbid = bidsRepository.findById(id)
 				.orElseThrow(() -> new IllegalArgumentException("Invalid Bid Id:" + id));;
 		Carriers carrier = oldbid.getCarrier();
@@ -420,7 +431,7 @@ public class BidsController {
 
         bidsRepository.save(bid);
         Logger.info("{} successfully updated the bid with ID {}", user.getUsername(), bid.getId());
-        return "redirect:/createdshipments";
+        return "redirect:" + redirectLocation;
     }
 	
 	/**

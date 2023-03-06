@@ -125,6 +125,7 @@
   					<button class=""  id="hamburger" style="display:none" onclick="nav_open()">☰</button>
 				</span>
 				<br><br>
+				<p><button class="buttons7" th:attr="onclick=|window.location.href='${redirectLocation}'|">Back</button>
 				<div th:switch="${bids}">
                     <h2 th:case="null">No bids yet!</h2>
                     <div th:case="*">

@@ -125,6 +125,7 @@
   					<button class=""  id="hamburger" style="display:none" onclick="nav_open()">☰</button>
 				</span>
 				<br><br>
+				<button class="buttons7" th:attr="onclick=|window.location.href='${redirectLocation}'|">Back</button>
                 <h2>Update Vehicle Type</h2>
                     <form action="#" th:action="@{/updatevehicletype/{id}(id=${vehicleTypes.id})}" th:object="${vehicleTypes}" method="post">
 						<hr>
@@ -194,7 +195,6 @@
 	                        <span th:if="${#fields.hasErrors('maximumCubicWeight')}" th:errors="*{maximumCubicWeight}"></span>
 	                        <br>  
 	                        <br>
-                        	<button class="buttons2" onclick="window.location.href='./vehicletypes';">Back</button>
 							<button class="buttons4" type="submit">Update Type</button>
 	                    </div>   
                    </form>

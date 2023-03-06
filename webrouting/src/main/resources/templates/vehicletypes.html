@@ -125,6 +125,9 @@
   					<button class=""  id="hamburger" style="display:none" onclick="nav_open()">☰</button>
 				</span>
 				<br><br>
+				<div th:if="${redirectLocation != '/vehicletypes'}">
+				<p><button class="buttons7" th:attr="onclick=|window.location.href='${redirectLocation}'|">Back</button></p>
+				</div>
 				<div th:switch="${vehicletypes}">
                     <h2 th:case="null">No vehicle types yet!</h2>
                     <div th:case="*">
@@ -179,8 +182,7 @@
                             </tbody>
                         </table>
                     </div>      
-                    <p><button class="buttons6" onclick="window.location.href='./signupvehicletype';">Add New Type</button>
-                    	<button class="buttons6" onclick="window.location.href='./uploadvehicletypes';">Upload an Excel File</button></p>
+                    <p><button class="buttons6" onclick="window.location.href='/signupvehicletype';">Add New Type</button>
                 </div>
             </div>
         </div>

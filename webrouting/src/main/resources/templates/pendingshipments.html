@@ -132,6 +132,9 @@
                     <div th:case="*">
                         <h2>Pending Shipments</h2>
                         <br>
+                        <div class="alert alert-info" th:if="${message}">
+       		            <span th:text="${message}"></span>
+       	                </div>
                         <span type="hidden" th:text="${error}" class="loginError"></span>
                         <br>
                         <table class="dataTable">
@@ -155,6 +158,7 @@
                                     <th sec:authorize="hasAnyAuthority('SHIPPER','MASTERLIST')">Delete</th>
                                     <th sec:authorize="hasAuthority('MASTERLIST')">Freeze</th>
                                     <th sec:authorize="hasAnyAuthority('SHIPPER','MASTERLIST')">Push to Auction</th>
+                                    <th sec:authorize="hasAnyAuthority('SHIPPER','MASTERLIST')">Direct Assign</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -177,7 +181,7 @@
                                     <td sec:authorize="hasAnyAuthority('SHIPPER','MASTERLIST')"><a th:href="@{/deleteshipment/{id}(id=${shipment.id})}">Delete</a></td>
                                     <td sec:authorize="hasAuthority('MASTERLIST')"><a th:href="@{/freezeshipment/{id}(id=${shipment.id})}">Freeze</a></td>
                                     <td sec:authorize="hasAnyAuthority('SHIPPER','MASTERLIST')"><a th:href="@{/pushshipment/{id}(id=${shipment.id})}">Push to Auction</a></td>
-                                    
+                                    <td sec:authorize="hasAnyAuthority('SHIPPER','MASTERLIST')"><a th:href="@{/directassignshipment/{id}(id=${shipment.id})}">Direct Assign</a></td>
                                     
                                 </tr>
                             </tbody>

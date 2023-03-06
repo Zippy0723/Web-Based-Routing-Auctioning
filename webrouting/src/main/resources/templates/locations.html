@@ -124,6 +124,9 @@
 				<span class="nav-expand">
   					<button class=""  id="hamburger" style="display:none" onclick="nav_open()">☰</button>
 				</span>
+				<div th:if="${redirectLocation != '/locations'}">
+				<p><button class="buttons7" th:attr="onclick=|window.location.href='${redirectLocation}'|">Back</button></p>
+				</div>
 				<br><br>
 				<div th:switch="${locations}">
                     <h2 th:case="null">No locations yet!</h2>
@@ -169,8 +172,7 @@
                             </tbody>
                         </table>
                     </div>      
-                    <p><button class="buttons6" onclick="window.location.href='./add-location';">Add Location</button>
-                    	<button class="buttons6" onclick="window.location.href='./uploadlocations';">Upload an Excel File</button></p>
+                    <p><button class="buttons6" onclick="window.location.href='/add-location';">Add Location</button>
                 </div>
             </div>
         </div>

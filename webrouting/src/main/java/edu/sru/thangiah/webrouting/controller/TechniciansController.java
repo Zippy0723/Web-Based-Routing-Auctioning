@@ -3,6 +3,8 @@ package edu.sru.thangiah.webrouting.controller;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.servlet.http.HttpSession;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -59,7 +61,18 @@ public class TechniciansController {
 	 * @return "technicians"
 	 */
 	@RequestMapping({"/technicians"})
-    public String showTechList(Model model) {
+    public String showTechList(Model model, HttpSession session) {
+		
+	      try {
+	            model.addAttribute("error",session.getAttribute("error"));
+	        } catch(Exception e){
+	            //do nothing
+	        }
+	        session.removeAttribute("error");
+	        
+		String redirectLocation = "/technicians";
+		session.setAttribute("redirectLocation", redirectLocation);
+		model.addAttribute("redirectLocation", redirectLocation);
         model.addAttribute("technicians", techniciansRepository.findAll());
         
         User user = getLoggedInUser();
@@ -77,9 +90,9 @@ public class TechniciansController {
 	 * @return "/add/add-technician"
 	 */
 	@GetMapping({"/add-technician"})
-    public String showContactList(Model model, Technicians technician, BindingResult result) {
+    public String showContactList(Model model, Technicians technician, BindingResult result, HttpSession session) {
         model.addAttribute("contacts", getLoggedInUser().getCarrier().getContacts()); 
-        
+        model.addAttribute("redirectLocation", (String) session.getAttribute("redirectLocation"));
         User user = getLoggedInUser();
         model = NotificationController.loadNotificationsIntoModel(user, model);
         
@@ -96,13 +109,15 @@ public class TechniciansController {
   	 * @return "redirect:/technicians" or "/add/add-technician"
   	 */
 	@RequestMapping({"/addtechnician"})
-  	public String addtechnician(@Validated Technicians technician, BindingResult result, Model model) {
+  	public String addtechnician(@Validated Technicians technician, BindingResult result, Model model, HttpSession session) {
   		if (result.hasErrors()) {
   			return "/add/add-technician";
 		}
   		Boolean deny = false;
   		User loggedInUser = getLoggedInUser();
   		model = NotificationController.loadNotificationsIntoModel(loggedInUser, model);
+  		String redirectLocation = (String) session.getAttribute("redirectLocation");
+  		model.addAttribute("redirectLocation", session.getAttribute("redirectLocation")); 
   		
   		List<Technicians> checkTech = new ArrayList<>();
   		checkTech = (List<Technicians>) techniciansRepository.findAll();
@@ -122,7 +137,7 @@ public class TechniciansController {
   		
   		techniciansRepository.save(technician);
   		Logger.info("{} successfully saved Technician with ID {}.",loggedInUser.getUsername(), technician.getId());
-  		return "redirect:/technicians";
+  		return "redirect:" + redirectLocation;
   	}
 	
 	/**
@@ -144,18 +159,18 @@ public class TechniciansController {
   	 * @return "redirect:/technicians"
   	 */
 	@GetMapping("/deletetechnician/{id}")
-    public String deletetechnician(@PathVariable("id") long id, Model model) {
+    public String deletetechnician(@PathVariable("id") long id, Model model, HttpSession session) {
         Technicians technician = techniciansRepository.findById(id)
           .orElseThrow(() -> new IllegalArgumentException("Invalid technicians Id:" + id));
         User loggedInUser = getLoggedInUser();
         model = NotificationController.loadNotificationsIntoModel(loggedInUser, model);
         
         if(!technician.getOrders().isEmpty()) {
-        	model.addAttribute("error", "Unable to delete due to dependency conflict."); 
+        	session.setAttribute("error", "Unable to delete due to dependency conflict."); 
         	Logger.error("{} was unable to delete Technician with ID {} due to a dependecy conflict.", loggedInUser.getUsername(), technician.getId());
         	model.addAttribute("technicians", techniciansRepository.findAll());
         	
-        	return "technicians";
+        	return "redirect:" + (String) session.getAttribute("redirectLocation");
         }
         model.addAttribute("technicians", technician);
         
@@ -188,9 +203,11 @@ public class TechniciansController {
   	 * @return "technicians"
   	 */
   	@GetMapping("/viewtechnician/{id}")
-    public String viewTechnician(@PathVariable("id") long id, Model model) {
+    public String viewTechnician(@PathVariable("id") long id, Model model, HttpSession session) {
         Technicians technician = techniciansRepository.findById(id)
           .orElseThrow(() -> new IllegalArgumentException("Invalid technician Id:" + id));
+        
+        model.addAttribute("redirectLocation", (String) session.getAttribute("redirectLocation"));
         
         model.addAttribute("technicians", technician);
         
@@ -207,10 +224,11 @@ public class TechniciansController {
   	 * @return "maintenanceorders"
   	 */
   	@GetMapping("/viewmaintenanceorders/{id}")
-    public String viewMaintenanceOrders(@PathVariable("id") long id, Model model) {
+    public String viewMaintenanceOrders(@PathVariable("id") long id, Model model, HttpSession session) {
   	  Technicians technician = techniciansRepository.findById(id)
   	          .orElseThrow(() -> new IllegalArgumentException("Invalid technician Id:" + id));
   	  	
+  	  	model.addAttribute("redirectLocation", (String) session.getAttribute("redirectLocation"));
         model.addAttribute("maintenanceOrder", technician.getOrders());
         
         User user = getLoggedInUser();
@@ -227,13 +245,13 @@ public class TechniciansController {
   	 * @return "update/update-technician"
   	 */
 	@GetMapping("/edittechnician/{id}")
-    public String showEditForm(@PathVariable("id") long id, Model model) {
+    public String showEditForm(@PathVariable("id") long id, Model model, HttpSession session) {
 		Technicians technician = techniciansRepository.findById(id)
           .orElseThrow(() -> new IllegalArgumentException("Invalid Technician Id:" + id));
-        
-		
+     	
 		 model.addAttribute("contacts", getLoggedInUser().getCarrier().getContacts());  
 	     model.addAttribute("technicians", technician);
+	     model.addAttribute("redirectLocation", (String) session.getAttribute("redirectLocation"));
 	     
 	     User user = getLoggedInUser();
 	     model = NotificationController.loadNotificationsIntoModel(user, model);
@@ -253,13 +271,16 @@ public class TechniciansController {
   	 */
 	@PostMapping("/updatetechnician/{id}")
     public String updateTechnician(@PathVariable("id") long id, @Validated Technicians technician, 
-      BindingResult result, Model model) {
+      BindingResult result, Model model, HttpSession session) {
         if (result.hasErrors()) {
         	technician.setId(id);
             return "/update/update-technician";
         }
         User user = getLoggedInUser();
         model = NotificationController.loadNotificationsIntoModel(user, model);
+        String redirectLocation = (String) session.getAttribute("redirectLocation");
+        model.addAttribute("redirectLocation", session.getAttribute("redirectLocation")); 
+        
         Boolean deny = false;
   		List<Technicians> checkTech = new ArrayList<>();
   		checkTech = (List<Technicians>) techniciansRepository.findAll();
@@ -282,7 +303,7 @@ public class TechniciansController {
   		
         techniciansRepository.save(technician);
         Logger.info("{} successfully updated Technician with ID {}", user.getUsername(), technician.getId());
-        return "redirect:/technicians";
+        return "redirect:" + redirectLocation;
     }
 	
 	/**

@@ -130,7 +130,7 @@
 	       	<br><br>
 	            	*** The Excel must match the template on the Shipments page. To download a template Excel file <a href="/documents/Shipments - SAMPLE.xlsx" download>Click Here!</a>
 	        <br><br>
-	        <a href="/pendingshipments">Cancel</a>
+	        <p><button class="buttons7" th:attr="onclick=|window.location.href='${redirectLocation}'|">Back</button>
 			<br><br>
 			<hr>
 			<form th:action="@{/upload-shipment}" enctype="multipart/form-data" method="POST">
@@ -138,7 +138,7 @@
 				<br>
 				<h2> Choose Excel File to Upload</h2>
 				<br>
-				<input type="file" name="file" />
+				<input required type="file" name="file" />
 				<br><br><br><br>
 				<button type="submit" class="buttons6">Upload File</button>
 			<br>

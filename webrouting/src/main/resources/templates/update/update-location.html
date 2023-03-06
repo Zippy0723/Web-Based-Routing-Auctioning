@@ -125,6 +125,7 @@
   					<button class=""  id="hamburger" style="display:none" onclick="nav_open()">☰</button>
 				</span>
 				<br><br>
+				<p><button class="buttons7" th:attr="onclick=|window.location.href='${redirectLocation}'|">Back</button>
                 <h2>Update Location</h2>
                     <form action="#" th:action="@{/updatelocation/{id}(id=${locations.id})}" th:object="${locations}" method="post">
                 	<hr>
@@ -230,8 +231,7 @@
                         <span th:if="${#fields.hasErrors('locationType')}" th:errors="*{locationType}"></span>   
                     	<br>
 					<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
-					<br>
-					<button class="buttons3" onclick="window.location.href='./locations';">Back</button>
+					<br> 
                 	<button class="buttons4" type="submit">Update Location</button>
                 	<br>
                     </div>

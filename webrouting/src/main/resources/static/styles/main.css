@@ -703,6 +703,22 @@ child elements*/
 	color: #134b33;
 	cursor: pointer;
 }
+
+.carrier-box {
+  border: 1px solid #ccc;
+  padding: 10px;
+  margin-bottom: 10px;
+}
+
+.radio-container {
+  display: flex;
+  align-items: center;
+}
+
+.radio-container input {
+  margin-right: 10px;
+}
+
 /*
 Author- Josh Gearhart	jjg1018@sru.edu
 Simple Class Style For Displaying the Email Message

@@ -125,6 +125,7 @@
   					<button class=""  id="hamburger" style="display:none" onclick="nav_open()">☰</button>
 				</span>
 				<br><br>
+				<button class="buttons7" th:attr="onclick=|window.location.href='${redirectLocation}'|">Back</button>
                 <h2>Add Location</h2>
                 <small>Coordinates must begin with a negative symbol or number followed by 2-3 digits, a decimal point and 7 trailing digits</small>
                 <form action="#" th:action="@{/addlocations}" th:object="${locations}" method="post">
@@ -232,7 +233,6 @@
                     	<br>
 					<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
 					<br>
-					<button class="buttons3" onclick="window.location.href='./locations';">Back</button>
                 	<button class="buttons4" type="submit">Add Location</button>
                 	<br>
                     </div>

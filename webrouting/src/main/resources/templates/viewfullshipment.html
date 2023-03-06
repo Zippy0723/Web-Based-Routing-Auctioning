@@ -128,7 +128,7 @@
 				<div th:switch="${shipments}">
                     <h2 th:case="null">No shipments yet!</h2>
                     <div th:case="*">
-                        <button onclick="history.back()">Go Back</button>
+                        <p><button class="buttons7" th:attr="onclick=|window.location.href='${redirectLocation}'|">Back</button>
                         <br>
                         <br>
                         <hr>

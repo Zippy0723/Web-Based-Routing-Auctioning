@@ -3,6 +3,8 @@ package edu.sru.thangiah.webrouting.controller;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.servlet.http.HttpSession;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -65,7 +67,19 @@ public class MaintenanceOrderController {
 	 * @return "maintenanceorders"
 	 */
 	@RequestMapping({"/maintenanceorders"})
-    public String showMaintenanceOrdersList(Model model) {
+    public String showMaintenanceOrdersList(Model model, HttpSession session) {
+		
+		
+		   try {
+	            model.addAttribute("error",session.getAttribute("error"));
+	        } catch(Exception e){
+	            //do nothing
+	        }
+	        session.removeAttribute("error");
+	        
+		String redirectLocation = "/maintenanceorders";
+		session.setAttribute("redirectLocation", redirectLocation);
+		model.addAttribute("redirectLocation", redirectLocation);
 		User user = getLoggedInUser();
 		
         model.addAttribute("maintenanceOrder", user.getCarrier().getOrders());
@@ -90,8 +104,9 @@ public class MaintenanceOrderController {
 	 * @return "/add/add-maintenance"
 	 */
 	@GetMapping({"/add-maintenance"})
-    public String showOrderList(Model model, MaintenanceOrders maintenanceOrder, BindingResult result) {
+    public String showOrderList(Model model, MaintenanceOrders maintenanceOrder, BindingResult result, HttpSession session) {
 		User user = getLoggedInUser();
+		model.addAttribute("redirectLocation", (String) session.getAttribute("redirectLocation"));
 		model.addAttribute("technicians", techniciansRepository.findAll());
 		model.addAttribute("drivers", user.getCarrier().getDrivers());
 		model.addAttribute("vehicles", user.getCarrier().getVehicles());
@@ -111,12 +126,14 @@ public class MaintenanceOrderController {
   	 * @return "redirect:/maintenanceorders" or "/add/add-maintenance"
   	 */
 	@RequestMapping({"/addmaintenance"})
-  	public String addMaintenanceOrder(@Validated MaintenanceOrders maintenanceOrder, BindingResult result, Model model) {
+  	public String addMaintenanceOrder(@Validated MaintenanceOrders maintenanceOrder, BindingResult result, Model model, HttpSession session) {
 		maintenanceOrder.setCarrier(getLoggedInUser().getCarrier());
 		
 		User loggedInUser = getLoggedInUser();
         model = NotificationController.loadNotificationsIntoModel(loggedInUser, model);
-		
+        String redirectLocation = (String) session.getAttribute("redirectLocation");
+        model.addAttribute("redirectLocation", session.getAttribute("redirectLocation")); 
+
 		if (result.hasErrors()) {
   			return "/add/add-maintenance";
 		}
@@ -143,7 +160,7 @@ public class MaintenanceOrderController {
   		}
   		maintenanceOrderRepository.save(maintenanceOrder);
   		Logger.info("{} successfully saved the maintenance order with ID {}", loggedInUser.getUsername(), maintenanceOrder.getId());
-  		return "redirect:/maintenanceorders";
+  		return "redirect:" + redirectLocation;
   	}
 	
 	/**
@@ -204,7 +221,7 @@ public class MaintenanceOrderController {
   	 * @return "update/update-maintenance"
   	 */
 	@GetMapping("/editorder/{id}")
-    public String showEditForm(@PathVariable("id") long id, Model model) {
+    public String showEditForm(@PathVariable("id") long id, Model model, HttpSession session ) {
 		MaintenanceOrders maintenanceOrder = maintenanceOrderRepository.findById(id)
           .orElseThrow(() -> new IllegalArgumentException("Invalid maintenance Id:" + id));
 		User user = getLoggedInUser();
@@ -212,7 +229,7 @@ public class MaintenanceOrderController {
 		model.addAttribute("technicians", techniciansRepository.findAll());
 		model.addAttribute("vehicles", user.getCarrier().getVehicles());
 	    model.addAttribute("maintenanceOrders", maintenanceOrder);
-	    
+	    model.addAttribute("redirectLocation", (String) session.getAttribute("redirectLocation"));
         model = NotificationController.loadNotificationsIntoModel(user, model);
 	    
         return "/update/update-maintenance";
@@ -230,10 +247,12 @@ public class MaintenanceOrderController {
   	 */
 	@PostMapping("/updateorder/{id}")
     public String updateOrder(@PathVariable("id") long id, @Validated MaintenanceOrders maintenanceOrder, 
-      BindingResult result, Model model) {
+      BindingResult result, Model model, HttpSession session) {
         maintenanceOrder.setCarrier(getLoggedInUser().getCarrier());
         User loggedInUser = getLoggedInUser();
         model = NotificationController.loadNotificationsIntoModel(loggedInUser, model);
+        String redirectLocation = (String) session.getAttribute("redirectLocation");
+        model.addAttribute("redirectLocation", session.getAttribute("redirectLocation")); 
 		
 		if (result.hasErrors()) {
         	maintenanceOrder.setId(id);
@@ -262,7 +281,7 @@ public class MaintenanceOrderController {
   		
         maintenanceOrderRepository.save(maintenanceOrder);
         Logger.info("{} successfully updated the maintenance order with ID {}",loggedInUser.getUsername(), maintenanceOrder.getId());
-        return "redirect:/maintenanceorders";
+        return "redirect:" + redirectLocation;
     }
 	/**
 	 * Returns the user that is currently logged into the system. <br>

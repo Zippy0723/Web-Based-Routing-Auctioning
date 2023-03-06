@@ -125,6 +125,7 @@
   					<button class=""  id="hamburger" style="display:none" onclick="nav_open()">☰</button>
 				</span>
 				<br><br>
+				<button class="buttons7" th:attr="onclick=|window.location.href='${redirectLocation}'|">Back</button>
                 <h2>Update Carrier</h2>
                 <br>
                 <a href="/carriers">Cancel</a>
@@ -133,6 +134,7 @@
                     <hr>
                         <div class="form-group2">
 	                        <br>
+	                        <button class="buttons7" onclick="window.location.href='./contacts';">Back</button>
 	                        <h2> Enter Carrier Information</h2>
 	                        <br>
 	                        <label for="carrierName">Carrier Name: </label>

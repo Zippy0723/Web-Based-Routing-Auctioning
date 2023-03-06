@@ -111,7 +111,7 @@
 				</span>
 				<div id="content">
 				<h2>Update Shipment</h2>
-				<a href="/acceptedshipments">Cancel</a>
+				<p><button class="buttons7" th:attr="onclick=|window.location.href='${redirectLocation}'|">Back</button>
                 <form action="#" th:action="@{/updateshipment/{id}(id=${shipments.id})}" th:object="${shipments}" method="post">
 				<hr>
 				<div class="form-group7">
@@ -203,9 +203,10 @@
                     <span th:if="${#fields.hasErrors('consigneeLongitude')}" th:errors="*{consigneeLongitude}"></span>
                 	<br>                         
                 	<br>
-                	<p sec:authorize="hasAnyAuthority('CARRIER')"><button class="buttons6" type="submit">Update Shipment</button></p>
+                	<p><button class="buttons6" type="submit">Update Shipment</button></p>
               	</div>
                 </form>
+			</div>
 			</div>
 		</div>
 
