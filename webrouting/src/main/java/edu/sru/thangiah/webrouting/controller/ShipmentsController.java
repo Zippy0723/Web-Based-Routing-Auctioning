@@ -42,6 +42,7 @@ import edu.sru.thangiah.webrouting.repository.BidsRepository;
 import edu.sru.thangiah.webrouting.repository.CarriersRepository;
 import edu.sru.thangiah.webrouting.repository.ShipmentsRepository;
 import edu.sru.thangiah.webrouting.repository.VehiclesRepository;
+import edu.sru.thangiah.webrouting.services.NotificationService;
 import edu.sru.thangiah.webrouting.services.SecurityService;
 import edu.sru.thangiah.webrouting.services.UserService;
 import edu.sru.thangiah.webrouting.web.UserValidator;
@@ -62,6 +63,9 @@ public class ShipmentsController {
 
     @Autowired
     private SecurityService securityService;
+    
+    @Autowired
+    private NotificationService notificationService;
 
 
 	private CarriersRepository carriersRepository;
@@ -670,7 +674,7 @@ public class ShipmentsController {
         	for (Bids bid : bids) 
         	{ 
         		bidUser = CarriersController.getUserFromCarrier(bid.getCarrier());
-        		NotificationController.addNotification(bidUser, "ALERT: Your bid with ID " + bid.getId() + " placed on shipment with ID " + bid.getShipment().getId() + " was deleted because the shipment was deleted");
+        		notificationService.addNotification(bidUser, "ALERT: Your bid with ID " + bid.getId() + " placed on shipment with ID " + bid.getShipment().getId() + " was deleted because the shipment was deleted", false);
         		bidsRepository.delete(bid); 
         	}
         	Logger.info("{} successfully deleted bids.", user.getUsername());
@@ -679,8 +683,8 @@ public class ShipmentsController {
 
         Logger.info("{} successfully deleted a shipment with ID {}.", user.getUsername(), shipment.getId());
         if (user.getId() != shipment.getId()) {
-        	NotificationController.addNotification(shipment.getUser(), 
-        			"ALERT: Your shipment with ID " + shipment.getId() + " and client " + shipment.getClient() + " was deleted by " + user.getUsername());
+        	notificationService.addNotification(shipment.getUser(), 
+        			"ALERT: Your shipment with ID " + shipment.getId() + " and client " + shipment.getClient() + " was deleted by " + user.getUsername(), false);
         }
 
         shipmentsRepository.delete(shipment);
@@ -814,8 +818,8 @@ public class ShipmentsController {
 		User user = getLoggedInUser();
         model = NotificationController.loadNotificationsIntoModel(user, model);
 		
-        NotificationController.addNotification(shipment.getUser(), 
-        		"ALERT: Your shipment with ID " + shipment.getId() + " and Client " + shipment.getClient() + " was frozen by " + user.getUsername());
+        notificationService.addNotification(shipment.getUser(), 
+        		"ALERT: Your shipment with ID " + shipment.getId() + " and Client " + shipment.getClient() + " was frozen by " + user.getUsername(), false);
         
 		shipment.setFullFreightTerms("FROZEN");
 		shipmentsRepository.save(shipment);
@@ -864,8 +868,8 @@ public class ShipmentsController {
 			shipment.setFullFreightTerms("AVAILABLE SHIPMENT");
 		}
 		
-		NotificationController.addNotification(shipment.getUser(), 
-        		"ALERT: Your shipment with ID " + shipment.getId() + " and Client " + shipment.getClient() + " was unfrozen by " + user.getUsername());
+		notificationService.addNotification(shipment.getUser(), 
+        		"ALERT: Your shipment with ID " + shipment.getId() + " and Client " + shipment.getClient() + " was unfrozen by " + user.getUsername(), false);
 		
 		shipmentsRepository.save(shipment);
 		Logger.info("{} successsfully unfroze shipment with ID {}.", user.getUsername(), shipment.getId());
@@ -930,8 +934,8 @@ public class ShipmentsController {
 	public void assignShipment(Shipments shipment, Double paidAmount, Carriers carrier) {
 		
 		User user = CarriersController.getUserFromCarrier(carrier);
-		NotificationController.addNotification(user, "Shipper " + shipment.getUser().getUsername() + " has requested that you pick up a shipment with a value of " + paidAmount +
-				". You may accept from the 'AWAITING ACCEPTANCE' menu under the shipments.");
+		notificationService.addNotification(user, "Shipper " + shipment.getUser().getUsername() + " has requested that you pick up a shipment with a value of " + paidAmount +
+				". You may accept from the 'AWAITING ACCEPTANCE' menu under the shipments.", true);
 		
 		shipment.setCarrier(carrier);
 		shipment.setPaidAmount(paidAmount.toString());
@@ -956,7 +960,7 @@ public class ShipmentsController {
 		shipment.setFullFreightTerms("BID ACCEPTED");
 		shipmentsRepository.save(shipment);
 		
-		NotificationController.addNotification(shipmentUser, "Your request to carrier " + shipment.getCarrier().getCarrierName() + " to take shipment with ID " + shipment.getId() + " was accpeted!");
+		notificationService.addNotification(shipmentUser, "Your request to carrier " + shipment.getCarrier().getCarrierName() + " to take shipment with ID " + shipment.getId() + " was accpeted!", true);
 		
 		return "redirect:" + (String) session.getAttribute("redirectLocation");
 	}
@@ -974,7 +978,7 @@ public class ShipmentsController {
 			     .orElseThrow(() -> new IllegalArgumentException("Invalid Shipment Id:" + id));
 		User shipmentUser = shipment.getUser();
 		
-		NotificationController.addNotification(shipmentUser, "Your request to carrier " + shipment.getCarrier().getCarrierName() + " to take shipment with ID " + shipment.getId() + " was denied!");
+		notificationService.addNotification(shipmentUser, "Your request to carrier " + shipment.getCarrier().getCarrierName() + " to take shipment with ID " + shipment.getId() + " was denied!", true);
 		
 		shipment.setCarrier(null);
 		shipment.setPaidAmount("");

@@ -23,6 +23,7 @@ import edu.sru.thangiah.webrouting.domain.User;
 import edu.sru.thangiah.webrouting.repository.BidsRepository;
 import edu.sru.thangiah.webrouting.repository.ShipmentsRepository;
 import edu.sru.thangiah.webrouting.repository.UserRepository;
+import edu.sru.thangiah.webrouting.services.NotificationService;
 import edu.sru.thangiah.webrouting.services.SecurityService;
 import edu.sru.thangiah.webrouting.services.UserService;
 
@@ -34,6 +35,9 @@ public class AuctionController {
 
     @Autowired
     private SecurityService securityService;
+    
+    @Autowired
+    private NotificationService notificationService;
 	
     /**
      * Constructor for AuctionController.
@@ -143,8 +147,8 @@ public class AuctionController {
 		}
 		
 		if(shipment.getUser().getId() != user.getId()) {
-			NotificationController.addNotification(shipment.getUser(), 
-					"ALERT: Your shipment with ID " + shipment.getId() + " and Client " + shipment.getClient() + " was pushed to auction by " + user.getUsername());
+			notificationService.addNotification(shipment.getUser(), 
+					"ALERT: Your shipment with ID " + shipment.getId() + " and Client " + shipment.getClient() + " was pushed to auction by " + user.getUsername(), false);
 		}
 		
 		shipment.setFullFreightTerms("AVAILABLE SHIPMENT");
@@ -196,15 +200,15 @@ public class AuctionController {
 		model = NotificationController.loadNotificationsIntoModel(user, model);
 		
 		if(user.getRole().toString().equals("MASTERLIST")) {
-			NotificationController.addNotification(shipment.getUser(), "Your shipment with id " + shipment.getId() + " was removed from auction by " + user.getUsername());
+			notificationService.addNotification(shipment.getUser(), "Your shipment with id " + shipment.getId() + " was removed from auction by " + user.getUsername(), false);
 		}
 		
 		List<Bids> bids = shipment.getBids();
 
 		while (!bids.isEmpty()) {
 		    Bids bid = bids.get(0);
-		    NotificationController.addNotification(CarriersController.getUserFromCarrier(bid.getCarrier()), 
-		            "Your bid with id " + bid.getId() + " on shipment with id " + shipment.getId() + " was deleted as the shipment was removed from auction");
+		    notificationService.addNotification(CarriersController.getUserFromCarrier(bid.getCarrier()), 
+		            "Your bid with id " + bid.getId() + " on shipment with id " + shipment.getId() + " was deleted as the shipment was removed from auction", false);
 		    bidsRepository.delete(bid);
 		    bids.remove(bid);
 		}
@@ -243,14 +247,14 @@ public class AuctionController {
 		shipment.setFullFreightTerms("BID ACCEPTED");
 		
 		if(shipment.getUser().getId() != user.getId()) {
-			NotificationController.addNotification(shipment.getUser(), 
-					"ALERT: Your shipment with ID " + shipment.getId() + " and Client " + shipment.getClient() + " had its auction forcefully ended. It was given to carrer" + shipment.getCarrier().getCarrierName());
+			notificationService.addNotification(shipment.getUser(), 
+					"ALERT: Your shipment with ID " + shipment.getId() + " and Client " + shipment.getClient() + " had its auction forcefully ended. It was given to carrer" + shipment.getCarrier().getCarrierName(), false);
 			
 		}
 		
 		bidUser = CarriersController.getUserFromCarrier(winningBid.getCarrier());
-		NotificationController.addNotification(bidUser, 
-				"ALERT: You have won the auction on shipment with ID " + shipment.getId() + " with a final bid value of " + winningBid.getPrice());
+		notificationService.addNotification(bidUser, 
+				"ALERT: You have won the auction on shipment with ID " + shipment.getId() + " with a final bid value of " + winningBid.getPrice(), true);
 		
 		shipmentsRepository.save(shipment);
 		Logger.info("{} has successfully ended the auction for shipment with ID {}.", user.getUsername(), shipment.getId());
@@ -291,14 +295,14 @@ public class AuctionController {
 		if (user.getAuctioningAllowed()) {
 			user.setAuctioningAllowed(false);
 			Logger.info("Auctioning is not allowed for {}", user.getUsername());
-      NotificationController.addNotification(user, 
-					"ALERT: Your auctioning abilites have been disabled. Please contact your system Master to regain access.");
+			notificationService.addNotification(user, 
+					"ALERT: Your auctioning abilites have been disabled. Please contact your system Master to regain access.", true);
 		}
 		else {
 			user.setAuctioningAllowed(true);
 			Logger.info("Auctioning is allowed for {}", user.getUsername());
-      NotificationController.addNotification(user, 
-					"ALERT: Your auctioning abilites have been re-eneabled. Thank you!");
+			notificationService.addNotification(user, 
+					"ALERT: Your auctioning abilites have been re-eneabled. Thank you!", true);
 		}
 		Logger.info("{} has successfully changed auctioning permissions for {}.", loggedInUser.getUsername() , user.getUsername());
 		userRepository.save(user);

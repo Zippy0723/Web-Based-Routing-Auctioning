@@ -199,6 +199,17 @@ public class EmailingImpl implements Emailing {
 		setMimeMessage(email,sender,user.getEmail(),heading,emailBody);
 		sendMail.send(email);
 	}
+	
+	@Async
+	public void notificationEmailFunction(String message, String reciverEmail) {
+		heading = "You have recived a new notification from the web routing system";
+		sender = "Enterprise Routing Admin";
+		emailBody = message;
+		email = sendMail.createMimeMessage();
+		setMimeMessage(email,sender,reciverEmail,heading,emailBody);
+		sendMail.send(email);
+	}
+	
 	/**
 	 * Sends a message to the users old email address to alert of the change
 	 * @param previousEmail - Users past email 

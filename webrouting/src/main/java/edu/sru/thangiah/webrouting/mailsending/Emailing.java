@@ -39,6 +39,7 @@ public interface Emailing{
 	void alertPreviousEmail(String previousEmail, String webUrl);
 	
 	void updateUsersEmail(String userEmail, String webUrl, String previousEmail);
-	 
 
+	void notificationEmailFunction(String message, String reciverEmail);
+	 
 }
