@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import edu.sru.thangiah.webrouting.domain.Notification;
 import edu.sru.thangiah.webrouting.domain.User;
+import edu.sru.thangiah.webrouting.mailsending.Emailing;
 import edu.sru.thangiah.webrouting.repository.NotificationRepository;
 import edu.sru.thangiah.webrouting.repository.UserRepository;
 import edu.sru.thangiah.webrouting.services.SecurityService;
@@ -26,7 +27,7 @@ public class NotificationController {
 	
     @Autowired
     private SecurityService securityService;
-	
+    
     /**
      * Constructor for NotificationController.
      */
@@ -121,18 +122,7 @@ public class NotificationController {
 		
 	}
 	
-	/**
-	 * Creates a new notification with the specified parameters
-	 */
-	public static void addNotification(User user, String message) {
-		LocalDateTime now = LocalDateTime.now();
-		String time = now.toString();
-		
-		Notification notification = new Notification(user, time, message);
-		
-		notificationRepository.save(notification);
-		
-	}
+	//TODO: these static methods should be refactored to be a part of NotificationService, that way they wont have to be static and dont have potential to cause weird issues
 	
 	/**
 	 * 

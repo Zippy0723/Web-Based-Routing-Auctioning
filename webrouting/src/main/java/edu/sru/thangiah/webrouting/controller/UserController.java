@@ -46,6 +46,7 @@ import edu.sru.thangiah.webrouting.repository.NotificationRepository;
 import edu.sru.thangiah.webrouting.repository.RoleRepository;
 import edu.sru.thangiah.webrouting.repository.ShipmentsRepository;
 import edu.sru.thangiah.webrouting.repository.UserRepository;
+import edu.sru.thangiah.webrouting.services.NotificationService;
 import edu.sru.thangiah.webrouting.services.SecurityService;
 import edu.sru.thangiah.webrouting.services.UserService;
 import edu.sru.thangiah.webrouting.web.UserValidator;
@@ -70,6 +71,9 @@ public class UserController {
 
     @Autowired
     private UserValidator userValidator;
+    
+    @Autowired  
+    NotificationService notificationService;
 	
 	private UserRepository userRepository;
 	
@@ -422,7 +426,7 @@ public class UserController {
             	for (Bids bid : bids) 
             	{ 
             		bidUser = CarriersController.getUserFromCarrier(bid.getCarrier());
-            		NotificationController.addNotification(bidUser, "ALERT: Your bid with ID " + bid.getId() + " placed on shipment with ID " + bid.getShipment().getId() + " was deleted because the shipment was deleted");
+            		notificationService.addNotification(bidUser, "ALERT: Your bid with ID " + bid.getId() + " placed on shipment with ID " + bid.getShipment().getId() + " was deleted because the shipment was deleted", false);
             		bidsRepository.delete(bid); 
             	}
         		

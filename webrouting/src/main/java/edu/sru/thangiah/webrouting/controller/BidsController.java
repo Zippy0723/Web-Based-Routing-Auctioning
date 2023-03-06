@@ -29,6 +29,7 @@ import edu.sru.thangiah.webrouting.domain.User;
 import edu.sru.thangiah.webrouting.repository.BidsRepository;
 import edu.sru.thangiah.webrouting.repository.CarriersRepository;
 import edu.sru.thangiah.webrouting.repository.ShipmentsRepository;
+import edu.sru.thangiah.webrouting.services.NotificationService;
 import edu.sru.thangiah.webrouting.services.SecurityService;
 import edu.sru.thangiah.webrouting.services.UserService;
 import edu.sru.thangiah.webrouting.web.UserValidator;
@@ -48,6 +49,9 @@ public class BidsController {
 
     @Autowired
     private SecurityService securityService;
+    
+    @Autowired
+    private NotificationService notificationService;
     
 	private BidsRepository bidsRepository;
 	
@@ -156,8 +160,8 @@ public class BidsController {
   		  	
   		bidsRepository.save(bid);
   		Logger.info("{} successfully created a new bid with ID {}", user.getUsername(), bid.getId());
-       NotificationController.addNotification(bid.getShipment().getUser(), 
-  				"ALERT: A new bid as been added on your shipment with ID " + bid.getShipment().getId() + " and Client " + bid.getShipment().getClient());
+  		notificationService.addNotification(bid.getShipment().getUser(), 
+  				"ALERT: A new bid as been added on your shipment with ID " + bid.getShipment().getId() + " and Client " + bid.getShipment().getClient(), false);
           
   		return "redirect:" + redirectLocation;
   	}
@@ -209,8 +213,8 @@ public class BidsController {
   		User bidUser = CarriersController.getUserFromCarrier(bid.getCarrier());
   		
   		if(user.getId() != bidUser.getId()) {
-  			NotificationController.addNotification(bidUser,
-  					"ALERT: Your bid with ID " + bid.getId() + " placed on shipment with ID " + bid.getShipment().getId() + " was deleted by " + user.getUsername());
+  			notificationService.addNotification(bidUser,
+  					"ALERT: Your bid with ID " + bid.getId() + " placed on shipment with ID " + bid.getShipment().getId() + " was deleted by " + user.getUsername(), false);
   		}
         
   		User loggedInUser = getLoggedInUser();
@@ -264,8 +268,8 @@ public class BidsController {
   		
   		for (Bids bid : shipment.getBids()) {
   			bidUser = CarriersController.getUserFromCarrier(bid.getCarrier());
-  			NotificationController.addNotification(bidUser,
-  					"ALERT: Your bid with ID " + bid.getId() + " placed on shipment with ID " + bid.getShipment().getId() + " was deleted by " + user.getUsername());
+  			notificationService.addNotification(bidUser,
+  					"ALERT: Your bid with ID " + bid.getId() + " placed on shipment with ID " + bid.getShipment().getId() + " was deleted by " + user.getUsername(), false);
   			
   			bidsRepository.delete(bid);
   		}
@@ -308,8 +312,8 @@ public class BidsController {
 		shipment.setFullFreightTerms("BID ACCEPTED");
 		
 		bidUser = CarriersController.getUserFromCarrier(carrier);
-		NotificationController.addNotification(bidUser, 
-				"ALERT: You have won the auction on shipment with ID " + shipment.getId() + " with a final bid value of " + bid.getPrice());
+		notificationService.addNotification(bidUser, 
+				"ALERT: You have won the auction on shipment with ID " + shipment.getId() + " with a final bid value of " + bid.getPrice(), false);
 		
 		shipmentsRepository.save(shipment);
 		Logger.info("{} successfully created a new bid with ID {}", user.getUsername(), bid.getId());
@@ -351,8 +355,8 @@ public class BidsController {
 	    }
         
 		 bidUser = CarriersController.getUserFromCarrier(bid.getCarrier());
-		 NotificationController.addNotification(bidUser, 
-				 "Your bid with Id " + bid.getId() + " on shipment with id " + bid.getShipment().getId() + " was edited by " + user.getUsername());
+		 notificationService.addNotification(bidUser, 
+				 "Your bid with Id " + bid.getId() + " on shipment with id " + bid.getShipment().getId() + " was edited by " + user.getUsername(), false);
 	     
         
         return "redirect:"+ redirectLocation;
@@ -425,8 +429,8 @@ public class BidsController {
   		User carrierUser = CarriersController.getUserFromCarrier(carrier);
   		
   		if(user.getId() != carrierUser.getId()) {
-  			NotificationController.addNotification(carrierUser, 
-  					"ALERT: Your bid with ID " + bid.getId() + " was editing by user " + user.getUsername());
+  			notificationService.addNotification(carrierUser, 
+  					"ALERT: Your bid with ID " + bid.getId() + " was editing by user " + user.getUsername(), false);
   		}
 
         bidsRepository.save(bid);

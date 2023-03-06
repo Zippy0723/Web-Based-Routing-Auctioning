@@ -37,6 +37,7 @@ import edu.sru.thangiah.webrouting.repository.CarriersRepository;
 import edu.sru.thangiah.webrouting.repository.LocationsRepository;
 import edu.sru.thangiah.webrouting.repository.VehicleTypesRepository;
 import edu.sru.thangiah.webrouting.repository.VehiclesRepository;
+import edu.sru.thangiah.webrouting.services.NotificationService;
 import edu.sru.thangiah.webrouting.services.SecurityService;
 import edu.sru.thangiah.webrouting.services.UserService;
 import edu.sru.thangiah.webrouting.web.UserValidator;
@@ -67,6 +68,9 @@ public class VehiclesController {
     
     @Autowired
     private UserValidator userValidator;
+    
+    @Autowired
+    private NotificationService notificationService;
     
     private static final Logger Logger = LoggerFactory.getLogger(VehiclesController.class);
 	
@@ -385,8 +389,8 @@ public class VehiclesController {
   		User carrierUser = CarriersController.getUserFromCarrier(vehicle.getCarrier());
   		
   		if(user.getId() != carrierUser.getId()) {
-  			NotificationController.addNotification(carrierUser, 
-  					"ALERT: Your vehicle with plate number " + vehicle.getPlateNumber() + " was deleted by " + user.getUsername());
+  			notificationService.addNotification(carrierUser, 
+  					"ALERT: Your vehicle with plate number " + vehicle.getPlateNumber() + " was deleted by " + user.getUsername(), false);
   		}
   		
   		Logger.info("{} successfully deleted the vehicle with ID {}." ,user.getUsername() ,vehicle.getId());
