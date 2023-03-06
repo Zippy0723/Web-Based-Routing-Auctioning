@@ -32,6 +32,13 @@ public class Role {
 	
 	@OneToMany(mappedBy = "role")
 	List<User> users = new ArrayList<>();
+	
+	public Role() {
+		
+	}
+	public Role(String name) {
+		this.name = name;
+	}
 
 	/**
 	 * Gets the Role ID
