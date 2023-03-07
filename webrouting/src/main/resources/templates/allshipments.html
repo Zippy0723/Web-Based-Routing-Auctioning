@@ -368,7 +368,7 @@
 	                                </tr>
 	                            </thead>
 	                            <tbody>
-	                                <tr th:each="shipment : ${shipments}">
+	                                <tr th:each="shipment : ${shipmentsAwaiting}">
 	                                    <td><a th:href="@{/viewshipment/{id}(id=${shipment.id})}">View All Details</a></td>
 	                                    <td th:text="${shipment.id}"></td>
 	                                    <td th:text="${shipment.client}"></td>
