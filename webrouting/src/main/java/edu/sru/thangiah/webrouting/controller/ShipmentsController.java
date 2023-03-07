@@ -396,6 +396,7 @@ public class ShipmentsController {
 		List<Shipments> shipmentsAccepted = new ArrayList<>();
 		List<Shipments> shipmentsFrozen = new ArrayList<>();
 		List<Shipments> shipmentsAvailable = new ArrayList<>();
+		List<Shipments> shipmentsAwaiting = new ArrayList<>();
 		List<Shipments> allShipments = new ArrayList<>();
 		List<Shipments> ownShipments = new ArrayList<>();
 		User user = getLoggedInUser();
@@ -421,6 +422,10 @@ public class ShipmentsController {
 						shipmentsAvailable.add(ownShipments.get(i));
 						
 					}
+					if (ownShipments.get(i).getFullFreightTerms().equals("AWAITING ACCEPTANCE")) {
+						shipmentsAwaiting.add(ownShipments.get(i));
+						
+					}
 				}
 				
 			}
@@ -443,6 +448,10 @@ public class ShipmentsController {
 					shipmentsAvailable.add(allShipments.get(i));
 					
 				}
+				if (allShipments.get(i).getFullFreightTerms().equals("AWAITING ACCEPTANCE")) {
+					shipmentsAwaiting.add(allShipments.get(i));
+					
+				}
 			}
 		}
 		else if (user.getRole().toString().equals("CARRIER")) {
@@ -460,6 +469,9 @@ public class ShipmentsController {
 				if (ownShipments.get(i).getFullFreightTerms().equals("BID ACCEPTED")) {
 					shipmentsAccepted.add(ownShipments.get(i));
 				}
+				if (ownShipments.get(i).getFullFreightTerms().equals("AWAITING ACCEPTANCE")) {
+					shipmentsAwaiting.add(ownShipments.get(i));
+				}
 			}
 			
 		}
@@ -467,6 +479,7 @@ public class ShipmentsController {
 			model.addAttribute("shipmentsFrozen", shipmentsFrozen);   
 			model.addAttribute("shipmentsPending", shipmentsPending);
 			model.addAttribute("shipmentsAccepted", shipmentsAccepted);
+			model.addAttribute("shipmentsAwaiting", shipmentsAwaiting);
 			model.addAttribute("status", status);
 			return "/allshipments";
 			
