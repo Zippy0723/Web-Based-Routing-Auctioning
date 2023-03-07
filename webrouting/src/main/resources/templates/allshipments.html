@@ -127,10 +127,11 @@
   					<button class="expander"  id="hamburger" style="display:none" onclick="nav_open()">☰</button>
 				</span>
 				<br><br>
-				<p sec:authorize="hasAuthority('MASTERLIST')"><button class="buttons7" onclick="window.location.href='./shipmentshomemaster';">Back</button></p>
-                <p sec:authorize="hasAuthority('CARRIER')"><button class="buttons7" onclick="window.location.href='./shipmentshomecarrier';">Back</button></p>
-                <p sec:authorize="hasAuthority('SHIPPER')"><button class="buttons7" onclick="window.location.href='./shipmentshomeshipper';">Back</button>
-                <p sec:authorize="hasAuthority('SHIPPER')"><button class="buttons7" onclick="window.location.href='./uploadshipments';">Upload From Excel</button></p>
+				<p sec:authorize="hasAuthority('MASTERLIST')"><button class="buttons7" onclick="window.location.href='/shipmentshomemaster';">Back</button></p>
+                <p sec:authorize="hasAuthority('CARRIER')"><button class="buttons7" onclick="window.location.href='/shipmentshomecarrier';">Back</button></p>
+                <p sec:authorize="hasAuthority('SHIPPER')"><button class="buttons7" onclick="window.location.href='/shipmentshomeshipper';">Back</button>
+                <p sec:authorize="hasAuthority('SHIPPER')"><button class="buttons7" onclick="window.location.href='/uploadshipments';">Upload From Excel</button></p>
+                <p sec:authorize="hasAuthority('SHIPPER')"><button class="buttons7" onclick="window.location.href='/add-shipments';">Add New Shipment</button>
                 <br>
 				<br><br>
 				<div th:if="${status != 'CARRIER'}">
@@ -162,6 +163,7 @@
                                     <th sec:authorize="hasAnyAuthority('SHIPPER','MASTERLIST')">Delete</th>
                                     <th sec:authorize="hasAuthority('MASTERLIST')">Freeze</th>
                                     <th sec:authorize="hasAnyAuthority('SHIPPER','MASTERLIST')">Push to Auction</th>
+                                    <th sec:authorize="hasAnyAuthority('SHIPPER','MASTERLIST')">Direct Assign</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -184,6 +186,7 @@
                                     <td sec:authorize="hasAnyAuthority('SHIPPER','MASTERLIST')"><a th:href="@{/deleteshipment/{id}(id=${shipment.id})}">Delete</a></td>
                                     <td sec:authorize="hasAuthority('MASTERLIST')"><a th:href="@{/freezeshipment/{id}(id=${shipment.id})}">Freeze</a></td>
                                     <td sec:authorize="hasAnyAuthority('SHIPPER','MASTERLIST')"><a th:href="@{/pushshipment/{id}(id=${shipment.id})}">Push to Auction</a></td>
+                                    <td sec:authorize="hasAnyAuthority('SHIPPER','MASTERLIST')"><a th:href="@{/directassignshipment/{id}(id=${shipment.id})}">Direct Assign</a></td>
                                 </tr>
                             </tbody>
                         </table>
@@ -325,7 +328,78 @@
                     </div>
                     </div>
                     <br><br>
-                    <br>
+                    <br><br>
+				<div th:switch="${shipmentsAwaiting.size()}">
+                    <h2 th:case="0">No Awaiting Shipments Yet!</h2>
+                    <div th:case="*">
+                        <h2>Shipments Awaiting Acceptance</h2>
+                        <br>
+                        <div class="alert alert-info" th:if="${message}">
+       		            <span th:text="${message}"></span>
+       	                </div>
+                        <span type="hidden" th:text="${error}" class="loginError"></span>
+                        <div class="longDTableWrapper">
+	                        <table class="dataTable">
+	                            <thead>
+	                                <tr>
+	                                    <th>View All Details</th>
+	                                    <th>Shipment ID</th>
+	                                    <th>Client</th>
+	                                    <th>Carrier Name</th>
+	                                    <th>Vehicle</th>
+	                                    <th>Client Mode</th>
+	                                    <th>Ship Date</th>
+	                                    <th>Freightbill Number</th>
+	                                    <th>Paid Amount</th>
+	                                    <th>Full Freight Terms</th>
+	                                    <th>Commodity Class</th>
+	                                    <th>Commodity Pieces</th>
+	                                    <th>Commodity Paid Weight</th>
+	                                    <th>Shipper City</th>
+	                                    <th>Shipper State</th>
+	                                    <th>Shipper Zip</th>
+	                                    <th>Consignee City</th>
+	                                    <th>Consignee State</th>
+	                                    <th>Consignee Zip</th>
+	                                    <th sec:authorize="hasAuthority('MASTERLIST')">Edit</th>
+                                    	<th sec:authorize="hasAuthority('MASTERLIST')">Delete</th>
+                                    	<th sec:authorize="hasAuthority('CARRIER')">Accept</th>
+                                    	<th sec:authorize="hasAuthority('CARRIER')">Deny</th>
+	                                </tr>
+	                            </thead>
+	                            <tbody>
+	                                <tr th:each="shipment : ${shipmentsAwaiting}">
+	                                    <td><a th:href="@{/viewshipment/{id}(id=${shipment.id})}">View All Details</a></td>
+	                                    <td th:text="${shipment.id}"></td>
+	                                    <td th:text="${shipment.client}"></td>
+	                                    <td><a th:text="${shipment.carrier.carrierName}"></a></td>
+	                                    <td th:text="${shipment.vehicle}"></td>
+	                                    <td th:text="${shipment.clientMode}"></td>
+	                                    <td th:text="${shipment.shipDate}"></td>
+	                                    <td th:text="${shipment.freightbillNumber}"></td>
+	                                    <td th:text="${shipment.paidAmount}"></td>
+	                                    <td th:text="${shipment.fullFreightTerms}"></td>
+	                                    <td th:text="${shipment.commodityClass}"></td>
+	                                    <td th:text="${shipment.commodityPieces}"></td>
+	                                    <td th:text="${shipment.commodityPaidWeight}"></td>
+	                                    <td th:text="${shipment.shipperCity}"></td>
+	                                    <td th:text="${shipment.shipperState}"></td>
+	                                    <td th:text="${shipment.shipperZip}"></td>
+	                                    <td th:text="${shipment.consigneeCity}"></td>
+	                                    <td th:text="${shipment.consigneeState}"></td>
+	                                    <td th:text="${shipment.consigneeZip}"></td>
+                                        <td sec:authorize="hasAuthority('MASTERLIST')"><a th:href="@{/editshipment/{id}(id=${shipment.id})}">Edit</a></td>
+                                        <td sec:authorize="hasAuthority('MASTERLIST')"><a th:href="@{/deleteshipment/{id}(id=${shipment.id})}">Delete</a></td>
+                                        <td sec:authorize="hasAuthority('CARRIER')"><a th:href="@{/acceptawaitingshipment/{id}(id=${shipment.id})}">Accept</a></td>
+                                        <td sec:authorize="hasAuthority('CARRIER')"><a th:href="@{/denyawaitingshipment/{id}(id=${shipment.id})}">Deny</a></td>                               
+	                                </tr>
+	                            </tbody>
+	                        </table>
+                        </div>
+                    </div>
+                </div>
+                    <br><br>
+                    <br><br>
                 <div th:switch="${shipmentsAccepted.size()}">
                     <h2 th:case="0">No Accepted Shipments Yet!</h2>
                     <div th:case="*">

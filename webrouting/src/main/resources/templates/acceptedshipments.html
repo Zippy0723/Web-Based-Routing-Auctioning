@@ -123,6 +123,10 @@
   					<button class="expander"  id="hamburger" style="display:none" onclick="nav_open()">☰</button>
 				</span>
 				<br><br>
+				<p sec:authorize="hasAuthority('MASTERLIST')"><button class="buttons7" onclick="window.location.href='/shipmentshomemaster';">Back</button></p>
+                <p sec:authorize="hasAuthority('CARRIER')"><button class="buttons7" onclick="window.location.href='/shipmentshomecarrier';">Back</button></p>
+                <p sec:authorize="hasAuthority('SHIPPER')"><button class="buttons7" onclick="window.location.href='/shipmentshomeshipper';">Back</button>
+                <br><br>
 				<div th:switch="${shipments}">
                     <h2 th:case="null">No shipments yet!</h2>
                     <div th:case="*">
@@ -193,9 +197,6 @@
                         </div>
                     </div>
                     <br>
-                    <p sec:authorize="hasAuthority('MASTERLIST')"><a href="/shipmentshomemaster">Shipment selection</a></p>
-                    <p sec:authorize="hasAuthority('SHIPPER')"><a href="/shipmentshomeshipper">Shipment selection</a></p>
-                    <p sec:authorize="hasAuthority('CARRIER')"><a href="/shipmentshomecarrier">Shipment selection</a></p>
                 </div>
             </div>
         </div>
