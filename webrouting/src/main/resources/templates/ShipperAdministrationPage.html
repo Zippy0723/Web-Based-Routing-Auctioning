@@ -37,6 +37,9 @@
                         <li sec:authorize="hasAuthority('ADMIN')" class="navitem">
                             <a class="selected" id="nav_users" href="/ShipperAdministrationPage">Shipper Page</a>
                         </li>
+                        <li sec:authorize="hasAuthority('ADMIN')" class="navitem">
+                            <a class="navlink" id="nav_users" href="/viewavailableroles">Available Roles</a>
+                        </li>
                         <li sec:authorize="hasAuthority('CARRIER')" class="navitem">
                             <a class="navlink" id="nav_contacts" href="/contacts">Contacts</a>
                         </li>
@@ -151,6 +154,7 @@
                                     <th>Auctioning Enabled</th>
                                     <th>Edit</th>
                                     <th>Delete</th>
+                                    <th>Toggle Auctioning Allowed</th>
                                     
                                 </tr>
                             </thead>
@@ -165,12 +169,13 @@
                                     <td th:text= "${user.enabled}"></td>
                                     <td th:text="${user.enabled}"></td>
                                     <td><a th:href="@{/edituser/{id}(id=${user.id})}">Edit</a></td>
-                                    <td><a th:href="@{/deleteuser/{id}(id=${user.id})}">Delete</a></td>                         
+                                    <td><a th:href="@{/deleteuser/{id}(id=${user.id})}">Delete</a></td> 
+                                    <td><a th:href="@{/toggleauctioning/{id}(id=${user.id})}">Toggle Auctioning Allowed</a></td>                        
                                 </tr>
                             </tbody>
                         </table>
                     </div>      
-                    <p><button class="buttons6" onclick="window.location.href='./shippersignup';">Add New User</button>
+                    <p><button class="buttons6" onclick="window.location.href='./addshipperuser';">Add New User</button>
                     	<button class="buttons6" onclick="">Upload an Excel File</button></p>
                     <p><button class="buttons6" onclick="window.location.href='./roles';">View Available Roles</button></p>
                 </div>

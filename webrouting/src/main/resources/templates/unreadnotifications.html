@@ -37,6 +37,9 @@
                         <li sec:authorize="hasAuthority('ADMIN')" class="navitem">
                             <a class="navlink" id="nav_users" href="/ShipperAdministrationPage">Shipper Page</a>
                         </li>
+                        <li sec:authorize="hasAuthority('ADMIN')" class="navitem">
+                            <a class="navlink" id="nav_users" href="/viewavailableroles">Available Roles</a>
+                        </li>
                         <li sec:authorize="hasAuthority('CARRIER')" class="navitem">
                             <a class="navlink" id="nav_contacts" href="/contacts">Contacts</a>
                         </li>

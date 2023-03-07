@@ -202,16 +202,6 @@ public class UserController {
    public String shownAddHomePage(Model model) {
 	   return "/add/add-user-home";
    }
-   @RequestMapping({"/shippersignup"})
-   public String shownShipperAddHomePage(Model model) {
-	   return "/add/add-user-shipper-home";
-   }
-   
-   @RequestMapping({"/carriersignup"})
-   public String shownCarrierAddHomePage(Model model) {
-	   return "/add/add-user-carrier-home";
-   }
-   
    /**
     * Redirects user to the /add/add-user-carrier page. <br>
     * Adds instance of user to the userForm. <br>
