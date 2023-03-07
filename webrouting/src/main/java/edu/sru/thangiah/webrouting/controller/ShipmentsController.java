@@ -1161,7 +1161,7 @@ public class ShipmentsController {
 	 * @throws AccessException 
   	 */
 	@SuppressWarnings("unused")
-	@PostMapping("/blank")
+	@PostMapping("/break")
 	public String LoadFromExcelData(@RequestParam("file") MultipartFile excelData, HttpSession session){
 		String redirectLocation = (String) session.getAttribute("redirectLocation");
 		XSSFWorkbook workbook;

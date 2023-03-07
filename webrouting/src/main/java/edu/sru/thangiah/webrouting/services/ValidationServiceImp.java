@@ -64,19 +64,10 @@ public class ValidationServiceImp {
 		        XSSFRow row = worksheet.getRow(i);
 		        
 		        
-		        Boolean NULLFIELD = false;
-		        for(int j = 0; j <= 15; j++) {
-		        	
-		       
-		        if (row.getCell(j) == null || row.getCell(j).getCellType() == Cell.CELL_TYPE_BLANK) {
-		        	NULLFIELD = true;
-		        	break;
-		        }}
-		        if (NULLFIELD == true) {
-		        	Logger.error("{} attempted to upload a shipment but left a required cell empty", user.getUsername());
+		        if(row.getCell(0)== null) {
 		        	break;
 		        }
-		        //Still saves shipments that worked before the broken one
+		        
 		        
 		        String scac = "";											//Not Set By Upload
 	    		String freightBillNumber = "0.00";							//Not Set By Upload
@@ -101,6 +92,7 @@ public class ValidationServiceImp {
 	    		String consigneeLatitude = row.getCell(14).toString().strip();
 	    		String consigneeLongitude = row.getCell(15).toString().strip();
 	    		
+	    		/*
 	    		commodityClass = commodityClass.substring(0, commodityClass.length() - 2);
 	    		commodityPieces = commodityPieces.substring(0, commodityPieces.length() - 2);
 	    		commodityPaidWeight = commodityPaidWeight.substring(0, commodityPaidWeight.length() - 2);
@@ -110,7 +102,7 @@ public class ValidationServiceImp {
 	    		consigneeZip = consigneeZip.substring(0, consigneeZip.length() - 2);
 	    		consigneeLatitude = consigneeLatitude.substring(0, consigneeLatitude.length() - 2);
 	    		consigneeLongitude = consigneeLongitude.substring(0, consigneeLongitude.length() - 2);
-	    		
+	    		*/
 	    		
 	    		Hashtable<String, String> hashtable = new Hashtable<>();
 	    		
@@ -140,7 +132,6 @@ public class ValidationServiceImp {
 	    		
 	    		shipment = validateShipment(hashtable);
 	    		if (shipment == null) {
-	    			System.out.println("THIS FIRED");
 	    			return null;
 	    		}
 	    		
