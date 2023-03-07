@@ -64,7 +64,7 @@ public class ValidationServiceImp {
 		        XSSFRow row = worksheet.getRow(i);
 		        
 		        
-		        if(row.getCell(0)== null) {
+		        if(row.getCell(0)== null || row.getCell(0).toString().equals("")) {
 		        	break;
 		        }
 		        
