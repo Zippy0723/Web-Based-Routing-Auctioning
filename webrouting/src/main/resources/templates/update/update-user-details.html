@@ -1,93 +1,104 @@
 <!doctype html>
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
-<head>
-<title>Update User</title>
+	<head>
+		<title>Enterprise Routing System</title>
 
-<link rel="stylesheet" type="text/css" href="/styles/reset.css" />
-<link rel="stylesheet" type="text/css" href="/styles/main.css" />
-<link rel="stylesheet" type="text/css" href="/styles/login.css">
-<link rel="stylesheet" type="text/css" href="/styles/menubar.css">
-<link rel="stylesheet" type="text/css" href="/styles/tables.css">
+		<link rel="stylesheet" type="text/css" href="/styles/reset.css" />
+        <link rel="stylesheet" type="text/css" href="/styles/main.css" />
+        <link rel="stylesheet" type="text/css" href="/styles/login.css">
+        <link rel="stylesheet" type="text/css" href="/styles/menubar.css">
+        <link rel="stylesheet" type="text/css" href="/styles/tables.css">
 
-<link rel="stylesheet" type="text/css"
-	href="/styles/smoothness/jquery-ui-1.10.2.css" />
+        <link rel="stylesheet" type="text/css" href="/styles/smoothness/jquery-ui-1.10.2.css" />
 
-</head>
-<body>
-	<div id="wrapper">
+	</head>
+	<body>
+		<div id="wrapper">
 
-		<div id="heading">
+            <div id="heading">
                 <h1>Enterprise Routing System &nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;Customer Service: 1 (800) 778-9111</h1>
-		</div>
-		<div id="menu-wrapper">
-            <br><br>
-        </div>
-        <div sec:authorize="isAuthenticated()" class = "navSideBar" id="mySidebar">
-            <button onclick="nav_close()" class="bar-item">...</button>
-			<div id="menu">
-				<ul class="navbar">
-					<li class="navitem"><a class="navlink" id="nav_home" href="/">Home</a>
-					</li>
-					<li sec:authorize="hasAuthority('ADMIN')" class="navitem"><a
-						class="selected" id="nav_users" href="/users">Users</a></li>
-					<li sec:authorize="hasAuthority('ADMIN')" class="navitem"><a 
-						class="navlink" id="nav_users" href="/CarrierAdministrationPage">Carrier Page</a></li>
-                    <li sec:authorize="hasAuthority('ADMIN')" class="navitem"><a 
-                    	class="navlink" id="nav_users" href="/ShipperAdministrationPage">Shipper Page</a></li>
-                    <li sec:authorize="hasAuthority('ADMIN')" class="navitem">
-                            <a class="navlink" id="nav_users" href="/viewavailableroles">Available Roles</a>
-                    </li>
-					<li sec:authorize="hasAuthority('CARRIER')" class="navitem"><a
-						class="navlink" id="nav_contacts" href="/contacts">Contacts</a></li>
-					<li sec:authorize="hasAuthority('CARRIER')" class="navitem"><a
-						class="navlink" id="nav_locations" href="/locations">Locations</a>
-					</li>
-					<li sec:authorize="hasAuthority('CARRIER')" class="navitem"><a
-						class="navlink" id="nav_vehicles" href="/vehicles">Vehicles</a></li>
-					<li sec:authorize="hasAuthority('CARRIER')" class="navitem"><a
-						class="navlink" id="nav_vehicletypes" href="/vehicletypes">Vehicle
-							Types</a></li>
-					<li sec:authorize="hasAuthority('CARRIER')" class="navitem"><a
-						class="navlink" id="nav_drivers" href="/drivers">Drivers</a></li>
-					<li sec:authorize="hasAuthority('CARRIER')" class="navitem"><a
-						class="navlink" id="nav_technicians" href="/technicians">Technicians</a>
-					</li>
-					<li sec:authorize="hasAuthority('CARRIER')" class="navitem"><a
-						class="navlink" id="nav_maintenanceorders"
-						href="/maintenanceorders">Maintenance</a></li>
-					<li sec:authorize="hasAnyAuthority('CARRIER','MASTERLIST')"
-						class="navitem"><a class="navlink" id="nav_carriers"
-						href="/carriers">Carriers</a></li>
-					<li sec:authorize="hasAuthority('MASTERLIST')" class="navitem">
-						<a class="navlink" id="nav_shipments_home_masterlist"
-						href="/shipmentshomemaster">Shipments</a>
-					</li>
-					<li sec:authorize="hasAuthority('SHIPPER')" class="navitem"><a
-						class="navlink" id="nav_shipments_home_shipper"
-						href="/shipmentshomeshipper">Shipments</a></li>
-					<li sec:authorize="hasAuthority('CARRIER')" class="navitem"><a
-						class="navlink" id="nav_shipments_home_carrier"
-						href="/shipmentshomecarrier">Shipments</a></li>
-					<li sec:authorize="hasAnyAuthority('CARRIER','MASTERLIST')"
-						class="navitem"><a class="navlink" id="nav_routes"
-						href="/routes">Routes</a></li>
-					<li sec:authorize="hasAnyAuthority('ADMIN')" class="navitem">
+            </div>
+            <div id="menu-wrapper">
+            	<br><br>
+            </div>
+            <div sec:authorize="isAuthenticated()" class = "navSideBar" id="mySidebar">
+                  <button onclick="nav_close()" class="bar-item">...</button>
+                <div id="menu">
+                    <ul class="navbar">
+                        <li class="navitem">
+                            <a class="navlink" id="nav_home" href="/">Home</a>
+                        </li>
+                        <li sec:authorize="hasAuthority('ADMIN')" class="navitem">
+                            <a class="navlink" id="nav_users" href="/users">Users</a>
+                        </li>
+                        <li sec:authorize="hasAuthority('ADMIN')" class="navitem">
+                            <a class="navlink" id="nav_users" href="/CarrierAdministrationPage">Carrier Page</a>
+                        </li>
+                        <li sec:authorize="hasAuthority('ADMIN')" class="navitem">
+                            <a class="navlink" id="nav_users" href="/ShipperAdministrationPage">Shipper Page</a>
+                        </li>
+                        <li sec:authorize="hasAuthority('CARRIER')" class="navitem">
+                            <a class="navlink" id="nav_contacts" href="/contacts">Contacts</a>
+                        </li>
+                        <li sec:authorize="hasAuthority('CARRIER')" class="navitem">
+                            <a class="navlink" id="nav_locations" href="/locations">Locations</a>
+                        </li>
+                        <li sec:authorize="hasAuthority('CARRIER')" class="navitem">
+                            <a class="navlink" id="nav_vehicles" href="/vehicles">Vehicles</a>
+                        </li>
+                        <li sec:authorize="hasAuthority('CARRIER')" class="navitem">
+                            <a class="navlink" id="nav_vehicletypes" href="/vehicletypes">Vehicle Types</a>
+                        </li>
+                        <li sec:authorize="hasAuthority('CARRIER')" class="navitem">
+                            <a class="navlink" id="nav_drivers" href="/drivers">Drivers</a>
+                        </li>
+                        <li sec:authorize="hasAuthority('CARRIER')" class="navitem">
+                            <a class="navlink" id="nav_technicians" href="/technicians">Technicians</a>
+                        </li>
+                        <li sec:authorize="hasAuthority('CARRIER')" class="navitem">
+                            <a class="navlink" id="nav_maintenanceorders" href="/maintenanceorders">Maintenance</a>
+                        </li>
+                        <li sec:authorize="hasAnyAuthority('CARRIER','MASTERLIST')" class="navitem">
+                            <a class="navlink" id="nav_carriers" href="/carriers">Carriers</a>
+                        </li>
+                        <li sec:authorize="hasAuthority('MASTERLIST')" class="navitem">
+                            <a class="navlink" id="nav_shipments_home_masterlist" href="/shipmentshomemaster">Shipments</a>
+                        </li>
+                        <li sec:authorize="hasAuthority('SHIPPER')" class="navitem">
+                            <a class="navlink" id="nav_shipments_home_shipper" href="/shipmentshomeshipper">Shipments</a>
+                        </li>
+                        <li sec:authorize="hasAuthority('CARRIER')" class="navitem">
+                            <a class="navlink" id="nav_shipments_home_carrier" href="/shipmentshomecarrier">Shipments</a>
+                        </li>
+                        <li sec:authorize="hasAnyAuthority('CARRIER', 'MASTERLIST', 'SHIPPER')" class="navitem">
+                            <a class="navlink" id="nav_auctioning" href="/auctioninghome">Auctioning</a>
+                        </li>
+                        <li sec:authorize="hasAnyAuthority('CARRIER','MASTERLIST')" class="navitem">
+                            <a class="navlink" id="nav_routes" href="/routes">Routes</a>
+                        </li>
+                         <li sec:authorize="hasAnyAuthority('ADMIN')" class="navitem">
                             <a class="navlink" id="nav_database" href="/database">Database</a>
-                    </li>
+                        </li>
+                         <li sec:authorize="hasAnyAuthority('SHADOWADMIN')" class="navitem">
+                            <a class="navlink" id="nav_log_home" href="/loghome">Logs</a>
+                        </li>
+
 						<br><br><br><br><br>
 						<li sec:authorize="hasAnyAuthority('CARRIER', 'MASTERLIST', 'ADMIN','SHIPPER')">
-                            <a class= "navlink" id= "nav_notifications" href="/unreadnotifications" th:inline="text">Notifications ([[${notifications.size()}]])</a>
+							<a class= "navlink" id= "nav_notifications" href="/unreadnotifications" th:inline="text">Notifications ([[${notifications.size()}]])</a>
+						</li>
+						<li sec:authorize="hasAnyAuthority('CARRIER', 'MASTERLIST', 'ADMIN','SHIPPER')">
+							<a class= "selected" id= "nav_update_user_details" href="/update-user-details">Update User</a>
+						</li>
+                        <li sec:authorize="isAuthenticated()" class="navitem">
+                            <form id="logoutForm" method="POST" th:action="@{/logout}">
+                                <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+                            </form>
+                            <a class="navlink" onclick="document.forms['logoutForm'].submit()">Logout</a>
                         </li>
-					<li sec:authorize="isAuthenticated()" class="navitem">
-						<form id="logoutForm" method="POST" th:action="@{/logout}">
-							<input type="hidden" name="${_csrf.parameterName}"
-								value="${_csrf.token}" />
-						</form> <a class="navlink"
-						onclick="document.forms['logoutForm'].submit()">Logout</a>
-					</li>
-				</ul>
-			</div>
-		</div>
+                    </ul>
+                </div>
+            </div>
         <div sec:authorize="!isAuthenticated()" class = "navSideBar" id="mySidebar">
             <button onclick="nav_close()" class="bar-item">...</button>
 			<ul class="navbar">
@@ -126,9 +137,6 @@
 			</span>
 			<h2>Update User</h2>
 			<br>
-			<form action="/">
-				<button class="buttons6" type="submit">Back</button>
-			</form>
 			<br>
 			<form action="#" th:action="@{/updatedetails}" th:object="${user}"method="post">
 			<hr>
@@ -154,10 +162,28 @@
 				<br><br>
 				<button class="buttons4" type="submit">Update User Details</button>
 				<br><br>
+			</div> 
+		</form>
+			<br>
+			<div th:if="${status == 'CARRIER'}">
+			<form th:action="@{/upload-carrier-excel}" enctype="multipart/form-data" method="POST">
+			<div class="form-group">
+				<br>
+				<h2> Choose Excel File to Upload Carrier Information</h2>
+				<br>
+				<br>
+	            <h3> The Excel File must match <a href="/documents/Carrier - SAMPLE.xlsx">this template!</a></h3>
+				<br>
+				<br>
+				<input required type="file" name="file"/>
+				<br><br><br>
+				<button type="submit" class="buttons4">Upload</button>
+				<br><br>
 			</div>
-			</form>
-		</div>
-	</div>
+		</form>
+	</div>	
+</div>
+</div>
 
 	<div class="footer">Copyright &copy; Slippery Rock University
 		2022

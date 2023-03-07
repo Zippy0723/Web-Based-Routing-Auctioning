@@ -82,6 +82,11 @@
                         <li sec:authorize="hasAnyAuthority('ADMIN')" class="navitem">
                             <a class="navlink" id="nav_database" href="/database">Database</a>
                         </li>
+
+                        <li sec:authorize="hasAnyAuthority('CARRIER', 'MASTERLIST', 'ADMIN','SHIPPER')">
+							<a class= "navlink" id= "nav_update_user_details" href="/update-user-details">Update User</a>
+						</li>
+
 						<br><br><br><br><br>
                         <li sec:authorize="isAuthenticated()" class="navitem">
                             <form id="logoutForm" method="POST" th:action="@{/logout}">
