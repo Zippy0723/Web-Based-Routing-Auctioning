@@ -3,6 +3,7 @@ package edu.sru.thangiah.webrouting.controller;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Hashtable;
 import java.util.List;
 
 import javax.servlet.http.HttpSession;
@@ -140,6 +141,10 @@ public class ExcelController {
 	
 	@PostMapping("/upload-carrier")
 	public String LoadCarrierExcelForm(@RequestParam("file") MultipartFile excelData, HttpSession session, Model model){
+		
+		Hashtable<String, Long> vehicleTypeNameToId = new Hashtable<>();
+		Hashtable<String, Long> locationNameToId = new Hashtable<>();
+		
 		String redirectLocation = (String) session.getAttribute("redirectLocation");
 		XSSFWorkbook workbook;
 		User user = getLoggedInUser();
@@ -165,71 +170,84 @@ public class ExcelController {
 			List<MaintenanceOrders> maintenanceOrders = new ArrayList<>();
 			
 			vehicleTypes = validationServiceImp.validateVehicleTypesSheet(vehicleTypesSheet);
+			//locations = validationServiceImp.validateLocationsSheet(locationsSheet);
+			contacts = validationServiceImp.validateContactsSheet(contactsSheet);
+			technicians = validationServiceImp.validateTechniciansSheet(techniciansSheet);
+			drivers = validationServiceImp.validateDriverSheet(driversSheet);
+			maintenanceOrders = validationServiceImp.validateMaintenanceOrdersSheet(maintenanceOrdersSheet);
+			drivers = validationServiceImp.validateDriverSheet(driversSheet);
 			
 			if (vehicleTypes == null) {
 				Logger.info("{} attempted to save Vehicle Types but failed.",user.getUsername());
 				return "redirect:" + redirectLocation; 
 			}
 			
-			/*
-			locations = validationServiceImp.validateLocationsSheet(locationsSheet);
+
 			
-			if (locations == null) {
-				Logger.info("{} attempted to save Vehicle Types but failed.",user.getUsername());
-				return "redirect:" + redirectLocation; 
-			}
+			//if (locations == null) {
+			//		Logger.info("{} attempted to save Vehicle Types but failed.",user.getUsername());
+			//	return "redirect:" + redirectLocation; 
+			//}
 			
-			contacts = validationServiceImp.validateContactsSheet(contactsSheet);
 			
 			if (contacts == null) {
 				Logger.info("{} attempted to save Contacts but failed.",user.getUsername());
 				return "redirect:" + redirectLocation; 
 			}
 			
-			vehicles = validationServiceImp.validateVehiclesSheet(vehiclesSheet);
-			
-			if (vehicles == null) {
-				Logger.info("{} attempted to save Vehicle but failed.",user.getUsername());
-				return "redirect:" + redirectLocation; 
-			}
-			
-			technicians = validationServiceImp.validateTechniciansSheet(techniciansSheet);
-			
 			if (technicians == null) {
 				Logger.info("{} attempted to save Technicians but failed.",user.getUsername());
 				return "redirect:" + redirectLocation; 
 			}
 			
-			drivers = validationServiceImp.validateDriverSheet(driversSheet);
 			
 			if (drivers == null) {
 				Logger.info("{} attempted to save Drivers but failed.",user.getUsername());
 				return "redirect:" + redirectLocation; 
 			}
 			
-			maintenanceOrders = validationServiceImp.validateMaintenanceOrdersSheet(maintenanceOrdersSheet);
 			
 			if (maintenanceOrders == null) {
 				Logger.info("{} attempted to save Maintenance Orders but failed.",user.getUsername());
 				return "redirect:" + redirectLocation; 
 			}
 			
-			*/
+			for(Locations location: locations) {
+				locationsRepository.save(location);
+				if(locationNameToId.containsKey(location.getName())){
+					Logger.error("{} saved Location with ID the same ID.",user.getUsername(),location.getId());
+					//ToDo: kick these fuckers out for this bullshit
+				}
+				
+				locationNameToId.put(location.getName(), location.getId());
+				Logger.info("{} saved Location with ID {}.",user.getUsername(),location.getId());
 			
-			//Validation for dependencies
-			
+			}
+				
 			
 			for(VehicleTypes vehicleType: vehicleTypes) {
 				vehicleTypesRepository.save(vehicleType);
+				if(vehicleTypeNameToId.containsKey(vehicleType.getMake() + " " + vehicleType.getModel())){
+					Logger.error("{} saved Vehicle Type with ID the same ID.",user.getUsername(),vehicleType.getId());
+					//ToDo: kick these fuckers out for this bullshit
+				}
+				vehicleTypeNameToId.put(vehicleType.getMake() + " " + vehicleType.getModel(), vehicleType.getId());
+				
 				Logger.info("{} saved Vehicle Type with ID {}.",user.getUsername(),vehicleType.getId());
 			}
 			
-			/*
-			for(Locations location: locations) {
-				locationsRepository.save(location);
-			Logger.info("{} saved Location with ID {}.",user.getUsername(),location.getId());
+			
+			vehicles = validationServiceImp.validateVehiclesSheet(vehiclesSheet, vehicleTypeNameToId, locationNameToId);
+			
+			if (vehicles == null) {
+				Logger.info("{} attempted to save Vehicle but failed.",user.getUsername());
+				return "redirect:" + redirectLocation; 
 			}
+			
+			
 
+			
+			
 			for(Contacts contact: contacts) {
 				contactsRepository.save(contact);
 			Logger.info("{} saved Contact with ID {}.",user.getUsername(),contact.getId());
@@ -254,7 +272,7 @@ public class ExcelController {
 				maintenanceOrdersRepository.save(maintenanceorder);
 			Logger.info("{} saved Maintenance Order with ID {}.",user.getUsername(), maintenanceorder.getId());
 			}
-			*/
+			
 		}
 		catch(Exception e ) {
 			e.printStackTrace();
