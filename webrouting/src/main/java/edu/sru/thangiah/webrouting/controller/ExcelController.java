@@ -171,11 +171,11 @@ public class ExcelController {
 			
 			vehicleTypes = validationServiceImp.validateVehicleTypesSheet(vehicleTypesSheet);
 			//locations = validationServiceImp.validateLocationsSheet(locationsSheet);
-			contacts = validationServiceImp.validateContactsSheet(contactsSheet);
-			technicians = validationServiceImp.validateTechniciansSheet(techniciansSheet);
-			drivers = validationServiceImp.validateDriverSheet(driversSheet);
-			maintenanceOrders = validationServiceImp.validateMaintenanceOrdersSheet(maintenanceOrdersSheet);
-			drivers = validationServiceImp.validateDriverSheet(driversSheet);
+			//contacts = validationServiceImp.validateContactsSheet(contactsSheet);
+			//technicians = validationServiceImp.validateTechniciansSheet(techniciansSheet);
+			//drivers = validationServiceImp.validateDriverSheet(driversSheet);
+			//maintenanceOrders = validationServiceImp.validateMaintenanceOrdersSheet(maintenanceOrdersSheet);
+			//drivers = validationServiceImp.validateDriverSheet(driversSheet);
 			
 			if (vehicleTypes == null) {
 				Logger.info("{} attempted to save Vehicle Types but failed.",user.getUsername());
@@ -243,9 +243,6 @@ public class ExcelController {
 				Logger.info("{} attempted to save Vehicle but failed.",user.getUsername());
 				return "redirect:" + redirectLocation; 
 			}
-			
-			
-
 			
 			
 			for(Contacts contact: contacts) {
