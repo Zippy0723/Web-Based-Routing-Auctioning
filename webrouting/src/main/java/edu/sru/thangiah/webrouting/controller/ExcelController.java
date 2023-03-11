@@ -111,23 +111,87 @@ public class ExcelController {
 		
 	}
 	
+	/**
+	 * 
+	 * @param model
+	 * @param session
+	 * @return
+	 */
 	@PostMapping("/dump-excel-carrier")
 	public ResponseEntity<Resource> dumpExcelCarrier(Model model, HttpSession session) {
 		String redirectLocation = (String) session.getAttribute("redirectLocation");
 		XSSFWorkbook workbook = new XSSFWorkbook();
+		XSSFSheet contactsWorksheet = workbook.createSheet("Contacts");
+		XSSFSheet locationsWorksheet = workbook.createSheet("Locations");
 		XSSFSheet vehicleWorksheet = workbook.createSheet("Vehicles");
 		User user = getLoggedInUser();
 		Carriers carrier = user.getCarrier();
 		
+		List<Contacts> contacts = carrier.getContacts();
+		XSSFRow contactsHeaderRow = contactsWorksheet.createRow(0);
+		contactsHeaderRow.createCell(0).setCellValue("First Name");
+		contactsHeaderRow.createCell(1).setCellValue("Last Name");
+		contactsHeaderRow.createCell(2).setCellValue("Middle Initial");
+		contactsHeaderRow.createCell(3).setCellValue("Email");
+		contactsHeaderRow.createCell(4).setCellValue("Street Address 1");
+		contactsHeaderRow.createCell(5).setCellValue("Street Address 2");
+		contactsHeaderRow.createCell(6).setCellValue("City");
+		contactsHeaderRow.createCell(7).setCellValue("State");
+		contactsHeaderRow.createCell(8).setCellValue("Zip Code");
+		contactsHeaderRow.createCell(9).setCellValue("Primary Phone");
+		contactsHeaderRow.createCell(10).setCellValue("Work Phone");
+		
+		int rowIndex = 1;
+		for(Contacts contact : contacts) {
+			XSSFRow curRow = contactsWorksheet.createRow(rowIndex++);
+			curRow.createCell(0).setCellValue(contact.getFirstName());
+			curRow.createCell(1).setCellValue(contact.getLastName());
+			curRow.createCell(2).setCellValue(contact.getMiddleInitial());
+			curRow.createCell(3).setCellValue(contact.getEmailAddress());
+			curRow.createCell(4).setCellValue(contact.getStreetAddress1());
+			curRow.createCell(5).setCellValue(contact.getStreetAddress2());
+			curRow.createCell(6).setCellValue(contact.getCity());
+			curRow.createCell(7).setCellValue(contact.getState());
+			curRow.createCell(8).setCellValue(contact.getZip());
+			curRow.createCell(9).setCellValue(contact.getPrimaryPhone());
+			curRow.createCell(10).setCellValue(contact.getWorkPhone());
+		}
+		
+		List<Locations> locations = carrier.getLocations();
+		XSSFRow locationHeaderRow = locationsWorksheet.createRow(0);
+		locationHeaderRow.createCell(0).setCellValue("Name");
+		locationHeaderRow.createCell(1).setCellValue("Street Address 1");
+		locationHeaderRow.createCell(2).setCellValue("Street Address 2");
+		locationHeaderRow.createCell(3).setCellValue("City");
+		locationHeaderRow.createCell(4).setCellValue("State");
+		locationHeaderRow.createCell(5).setCellValue("Zip Code");
+		locationHeaderRow.createCell(6).setCellValue("Latitude");
+		locationHeaderRow.createCell(7).setCellValue("Longitude");
+		locationHeaderRow.createCell(8).setCellValue("Location Type");
+		
+		rowIndex = 1;
+		for(Locations location : locations) {
+			XSSFRow curRow = locationsWorksheet.createRow(rowIndex++);
+			curRow.createCell(0).setCellValue(location.getName());
+			curRow.createCell(1).setCellValue(location.getStreetAddress1());
+			curRow.createCell(2).setCellValue(location.getStreetAddress2());
+			curRow.createCell(3).setCellValue(location.getCity());
+			curRow.createCell(4).setCellValue(location.getState());
+			curRow.createCell(5).setCellValue(location.getZip());
+			curRow.createCell(6).setCellValue(location.getLatitude());
+			curRow.createCell(7).setCellValue(location.getLongitude());
+			curRow.createCell(8).setCellValue(location.getLocationType());
+		}
+		
 		List<Vehicles> vehicles = carrier.getVehicles();
-	    XSSFRow headerRow = vehicleWorksheet.createRow(0);
-	    headerRow.createCell(0).setCellValue("Plate Number");
-	    headerRow.createCell(1).setCellValue("VIN Number");
-	    headerRow.createCell(2).setCellValue("Manufactured Year");
-	    headerRow.createCell(3).setCellValue("Vehicle Type Model + Make");
-	    headerRow.createCell(4).setCellValue("Location + Address");
+	    XSSFRow vehicleHeaderRow = vehicleWorksheet.createRow(0);
+	    vehicleHeaderRow.createCell(0).setCellValue("Plate Number");
+	    vehicleHeaderRow.createCell(1).setCellValue("VIN Number");
+	    vehicleHeaderRow.createCell(2).setCellValue("Manufactured Year");
+	    vehicleHeaderRow.createCell(3).setCellValue("Vehicle Type Model + Make");
+	    vehicleHeaderRow.createCell(4).setCellValue("Location + Address");
 	    
-	    int rowIndex = 1;
+	    rowIndex = 1;
 	    for(Vehicles vehicle : vehicles) {
 	    	XSSFRow curRow = vehicleWorksheet.createRow(rowIndex++);
 	    	curRow.createCell(0).setCellValue(vehicle.getPlateNumber());
@@ -137,7 +201,13 @@ public class ExcelController {
 	    	curRow.createCell(4).setCellValue(vehicle.getLocation().getName() + " " + vehicle.getLocation().getStreetAddress1());
 	    }
 	    
-	    for (int i = 0; i < headerRow.getLastCellNum(); i++) {
+	    for (int i = 0; i < contactsHeaderRow.getLastCellNum(); i++) {
+	    	contactsWorksheet.autoSizeColumn(i);
+	    }
+	    for (int i = 0; i < contactsHeaderRow.getLastCellNum(); i++) {
+	    	locationsWorksheet.autoSizeColumn(i);
+	    }
+	    for (int i = 0; i < vehicleHeaderRow.getLastCellNum(); i++) {
 	    	vehicleWorksheet.autoSizeColumn(i);
 	    }
 	    
