@@ -1,11 +1,16 @@
 package edu.sru.thangiah.webrouting.controller;
 
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 import javax.servlet.http.HttpSession;
+import javax.swing.JFileChooser;
+import javax.swing.filechooser.FileNameExtensionFilter;
 
 import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
@@ -13,7 +18,13 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ByteArrayResource;
+import org.springframework.core.io.Resource;
 import org.springframework.expression.AccessException;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -100,6 +111,66 @@ public class ExcelController {
 		
 	}
 	
+	@PostMapping("/dump-excel-carrier")
+	public ResponseEntity<Resource> dumpExcelCarrier(Model model, HttpSession session) {
+		String redirectLocation = (String) session.getAttribute("redirectLocation");
+		XSSFWorkbook workbook = new XSSFWorkbook();
+		XSSFSheet vehicleWorksheet = workbook.createSheet("Vehicles");
+		User user = getLoggedInUser();
+		Carriers carrier = user.getCarrier();
+		
+		List<Vehicles> vehicles = carrier.getVehicles();
+	    XSSFRow headerRow = vehicleWorksheet.createRow(0);
+	    headerRow.createCell(0).setCellValue("Plate Number");
+	    headerRow.createCell(1).setCellValue("VIN Number");
+	    headerRow.createCell(2).setCellValue("Manufactured Year");
+	    headerRow.createCell(3).setCellValue("Vehicle Type Model + Make");
+	    headerRow.createCell(4).setCellValue("Location + Address");
+	    
+	    int rowIndex = 1;
+	    for(Vehicles vehicle : vehicles) {
+	    	XSSFRow curRow = vehicleWorksheet.createRow(rowIndex++);
+	    	curRow.createCell(0).setCellValue(vehicle.getPlateNumber());
+	    	curRow.createCell(1).setCellValue(vehicle.getVinNumber());
+	    	curRow.createCell(2).setCellValue(vehicle.getManufacturedYear());
+	    	curRow.createCell(3).setCellValue(vehicle.getVehicleType().getModel() + " " + vehicle.getVehicleType().getMake());
+	    	curRow.createCell(4).setCellValue(vehicle.getLocation().getName() + " " + vehicle.getLocation().getStreetAddress1());
+	    }
+	    
+	    for (int i = 0; i < headerRow.getLastCellNum(); i++) {
+	    	vehicleWorksheet.autoSizeColumn(i);
+	    }
+	    
+	    byte[] workbookBytes;
+	    try (ByteArrayOutputStream outputStream = new ByteArrayOutputStream()) {
+	        workbook.write(outputStream);
+	        workbookBytes = outputStream.toByteArray();
+	    } catch (IOException e) {
+	        e.printStackTrace();
+	        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+	    } finally {
+	        try {
+	            workbook.close();
+	        } catch (IOException e) {
+	            e.printStackTrace();
+	        }
+	    }
+	    
+	    // Create a Resource object from the byte array
+	    ByteArrayResource resource = new ByteArrayResource(workbookBytes);
+	    
+	    // Set the headers for the response
+	    HttpHeaders headers = new HttpHeaders();
+	    headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=vehicles.xlsx");
+	    headers.add(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_OCTET_STREAM_VALUE);
+	    
+	    // Return a ResponseEntity with the resource and headers
+	    return ResponseEntity.ok()
+	            .headers(headers)
+	            .contentLength(workbookBytes.length)
+	            .body(resource);
+	}
+	
 	
 	/**
   	 * Reads an excel file containing shipments and adds it to the shipments repository. <br>
@@ -125,8 +196,8 @@ public class ExcelController {
 				return "redirect:" + redirectLocation; 
 			}
 			for(Shipments s: shipments) {
-			shipmentsRepository.save(s);
-			Logger.info("{} saved shipment with ID {}.",user.getUsername(),s.getId());
+				shipmentsRepository.save(s);
+				Logger.info("{} saved shipment with ID {}.",user.getUsername(),s.getId());
 			}
 			
 		}
