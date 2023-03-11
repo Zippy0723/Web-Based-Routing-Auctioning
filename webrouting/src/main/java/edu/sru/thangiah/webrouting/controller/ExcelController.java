@@ -124,6 +124,11 @@ public class ExcelController {
 		XSSFSheet contactsWorksheet = workbook.createSheet("Contacts");
 		XSSFSheet locationsWorksheet = workbook.createSheet("Locations");
 		XSSFSheet vehicleWorksheet = workbook.createSheet("Vehicles");
+		XSSFSheet vehicleTypesWorksheet = workbook.createSheet("Vehicle Types");
+		XSSFSheet driversWorksheet = workbook.createSheet("Drivers");
+		XSSFSheet technicansWorksheet = workbook.createSheet("Technicans");
+		XSSFSheet maintenanceOrdersWorksheet = workbook.createSheet("Maintenance Orders");
+				
 		User user = getLoggedInUser();
 		Carriers carrier = user.getCarrier();
 		
@@ -188,7 +193,7 @@ public class ExcelController {
 	    vehicleHeaderRow.createCell(0).setCellValue("Plate Number");
 	    vehicleHeaderRow.createCell(1).setCellValue("VIN Number");
 	    vehicleHeaderRow.createCell(2).setCellValue("Manufactured Year");
-	    vehicleHeaderRow.createCell(3).setCellValue("Vehicle Type Model + Make");
+	    vehicleHeaderRow.createCell(3).setCellValue("Vehicle Type Make + Model");
 	    vehicleHeaderRow.createCell(4).setCellValue("Location + Address");
 	    
 	    rowIndex = 1;
@@ -197,8 +202,54 @@ public class ExcelController {
 	    	curRow.createCell(0).setCellValue(vehicle.getPlateNumber());
 	    	curRow.createCell(1).setCellValue(vehicle.getVinNumber());
 	    	curRow.createCell(2).setCellValue(vehicle.getManufacturedYear());
-	    	curRow.createCell(3).setCellValue(vehicle.getVehicleType().getModel() + " " + vehicle.getVehicleType().getMake());
+	    	curRow.createCell(3).setCellValue(vehicle.getVehicleType().getMake() + " " + vehicle.getVehicleType().getModel());
 	    	curRow.createCell(4).setCellValue(vehicle.getLocation().getName() + " " + vehicle.getLocation().getStreetAddress1());
+	    }
+	    
+	    //vehicle types
+	    
+	    List<Driver> drivers = carrier.getDrivers();
+	    XSSFRow driversHeaderRow = driversWorksheet.createRow(0);
+	    driversHeaderRow.createCell(0).setCellValue("Contact First + Last Name");
+	    driversHeaderRow.createCell(1).setCellValue("Vehicle Plate Number + VIN");
+	    driversHeaderRow.createCell(2).setCellValue("License Number");
+	    driversHeaderRow.createCell(3).setCellValue("License Expiration");
+	    driversHeaderRow.createCell(4).setCellValue("License Class");
+	    
+	    rowIndex = 1;
+	    for (Driver driver : drivers) {
+	    	XSSFRow curRow = driversWorksheet.createRow(rowIndex++);
+	    	curRow.createCell(0).setCellValue(driver.getContact().getFirstName() + " " + driver.getContact().getLastName());
+	    	curRow.createCell(1).setCellValue(driver.getVehicle().getPlateNumber() + " " + driver.getVehicle().getVinNumber());
+	    	curRow.createCell(2).setCellValue(driver.getLisence_number());
+	    	curRow.createCell(3).setCellValue(driver.getLisence_expiration());
+	    	curRow.createCell(4).setCellValue(driver.getLisence_class());
+	    }
+	    
+	    //technicans
+	    
+	    List<MaintenanceOrders> maintenaneOrders = carrier.getOrders();
+	    XSSFRow maintenaneOrdersHeaderRow = maintenanceOrdersWorksheet.createRow(0);
+	    maintenaneOrdersHeaderRow.createCell(0).setCellValue("Technican First + Last Name");
+	    maintenaneOrdersHeaderRow.createCell(1).setCellValue("Scheduled Date");
+	    maintenaneOrdersHeaderRow.createCell(2).setCellValue("Details");
+	    maintenaneOrdersHeaderRow.createCell(3).setCellValue("Service Type");
+	    maintenaneOrdersHeaderRow.createCell(4).setCellValue("Cost");
+	    maintenaneOrdersHeaderRow.createCell(5).setCellValue("Status");
+	    maintenaneOrdersHeaderRow.createCell(6).setCellValue("Vehicle Plate Number + Vin");
+	    maintenaneOrdersHeaderRow.createCell(7).setCellValue("Maintence Type");
+	    
+	    rowIndex = 1;
+	    for (MaintenanceOrders order : maintenaneOrders) {
+	    	XSSFRow curRow = maintenanceOrdersWorksheet.createRow(rowIndex++);
+	    	curRow.createCell(0).setCellValue(order.getTechnician().getContact().getFirstName() + " " + order.getTechnician().getContact().getLastName());
+	    	curRow.createCell(1).setCellValue(order.getScheduled_date());
+	    	curRow.createCell(2).setCellValue(order.getDetails());
+	    	curRow.createCell(3).setCellValue(order.getService_type_key());
+	    	curRow.createCell(4).setCellValue(order.getCost());
+	    	curRow.createCell(5).setCellValue(order.getStatus_key());
+	    	curRow.createCell(6).setCellValue(order.getVehicle().getPlateNumber() + " " + order.getVehicle().getVinNumber());
+	    	curRow.createCell(7).setCellValue(order.getMaintenance_type());
 	    }
 	    
 	    for (int i = 0; i < contactsHeaderRow.getLastCellNum(); i++) {
@@ -209,6 +260,12 @@ public class ExcelController {
 	    }
 	    for (int i = 0; i < vehicleHeaderRow.getLastCellNum(); i++) {
 	    	vehicleWorksheet.autoSizeColumn(i);
+	    }
+	    for (int i = 0; i < driversHeaderRow.getLastCellNum(); i++) {
+	    	driversWorksheet.autoSizeColumn(i);
+	    }
+	    for (int i = 0; i < maintenaneOrdersHeaderRow.getLastCellNum(); i++) {
+	    	maintenanceOrdersWorksheet.autoSizeColumn(i);
 	    }
 	    
 	    byte[] workbookBytes;
