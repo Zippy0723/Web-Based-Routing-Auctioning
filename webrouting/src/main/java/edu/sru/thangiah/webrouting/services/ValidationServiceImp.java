@@ -15,6 +15,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import edu.sru.thangiah.webrouting.controller.ExcelController;
 import edu.sru.thangiah.webrouting.domain.Contacts;
 import edu.sru.thangiah.webrouting.domain.Driver;
 import edu.sru.thangiah.webrouting.domain.Locations;
@@ -24,30 +25,205 @@ import edu.sru.thangiah.webrouting.domain.Technicians;
 import edu.sru.thangiah.webrouting.domain.User;
 import edu.sru.thangiah.webrouting.domain.VehicleTypes;
 import edu.sru.thangiah.webrouting.domain.Vehicles;
+import edu.sru.thangiah.webrouting.repository.BidsRepository;
+import edu.sru.thangiah.webrouting.repository.CarriersRepository;
+import edu.sru.thangiah.webrouting.repository.ContactsRepository;
+import edu.sru.thangiah.webrouting.repository.DriverRepository;
+import edu.sru.thangiah.webrouting.repository.LocationsRepository;
+import edu.sru.thangiah.webrouting.repository.MaintenanceOrdersRepository;
+import edu.sru.thangiah.webrouting.repository.ShipmentsRepository;
+import edu.sru.thangiah.webrouting.repository.TechniciansRepository;
 import edu.sru.thangiah.webrouting.repository.UserRepository;
+import edu.sru.thangiah.webrouting.repository.VehicleTypesRepository;
+import edu.sru.thangiah.webrouting.repository.VehiclesRepository;
+import edu.sru.thangiah.webrouting.web.UserValidator;
 
 
 
 @Service
 public class ValidationServiceImp {
 	
-	private static final Logger Logger = LoggerFactory.getLogger(ValidationServiceImp.class);
 
-	private SecurityService securityService;
+	@Autowired
+    private UserService userService;
+
+    @Autowired
+    private SecurityService securityService;
+    
+	@Autowired
+	private UserValidator userValidator;
+
+	private CarriersRepository carriersRepository;
 	
-	private UserService userService;
+	private ShipmentsRepository shipmentsRepository;
 	
-	private UserRepository userRepository;
+	private VehiclesRepository vehiclesRepository;
 	
-	public ValidationServiceImp(SecurityService securityService,UserRepository userRepository, UserService userService ) {
-		this.securityService = securityService;
-		this.userRepository = userRepository;
-		this.userService = userService;
+	private BidsRepository bidsRepository;
+	
+	private VehicleTypesRepository vehicleTypesRepository;
+	
+	private LocationsRepository	locationsRepository;
+	
+	private ContactsRepository contactsRepository;
+	
+	private TechniciansRepository techniciansRepository;
+	
+	private DriverRepository driverRepository;
+	
+	private MaintenanceOrdersRepository maintenanceOrdersRepository;
+	
+	private static final Logger Logger = LoggerFactory.getLogger(ValidationServiceImp.class);
+	
+	
+	public ValidationServiceImp (BidsRepository bidsRepository, ShipmentsRepository shipmentsRepository, CarriersRepository carriersRepository, VehiclesRepository vehiclesRepository, 
+			VehicleTypesRepository vehicleTypesRepository,LocationsRepository	locationsRepository, ContactsRepository contactsRepository, TechniciansRepository techniciansRepository,
+			DriverRepository driverRepository, MaintenanceOrdersRepository maintenanceOrdersRepository) {
+		this.shipmentsRepository = shipmentsRepository;
+		this.carriersRepository = carriersRepository;
+		this.vehiclesRepository = vehiclesRepository;
+		this.bidsRepository = bidsRepository;
+		this.vehicleTypesRepository = vehicleTypesRepository;
+		this.locationsRepository = locationsRepository;
+		this.contactsRepository = contactsRepository;
+		this.techniciansRepository = techniciansRepository;
+		this.driverRepository = driverRepository;
+		this.maintenanceOrdersRepository = maintenanceOrdersRepository;
+		
 	}
 	
+	public boolean validateDependenciesForExcel(List<VehicleTypes> vehicleTypes, List<Locations> locations, List<Contacts> contacts, List<Vehicles> vehicles, List<Technicians> technicians, List<Driver> drivers, List<MaintenanceOrders> maintenanceOrders) {
+		List<VehicleTypes> allRepoVehicleTypes = (List<VehicleTypes>) vehicleTypesRepository.findAll();
+		List<Locations> allRepoLocations = (List<Locations>) locationsRepository.findAll();
+		List<Contacts> allRepoContacts = (List<Contacts>) contactsRepository.findAll();
+		List<Vehicles> allRepoVehicles = (List<Vehicles>) vehiclesRepository.findAll();
+		List<Technicians> allRepoTechnicians = (List<Technicians>) techniciansRepository.findAll();
+		List<Driver> allRepoDrivers = (List<Driver>) driverRepository.findAll();
+		List<MaintenanceOrders> allRepoMaintenanceOrders = (List<MaintenanceOrders>) maintenanceOrdersRepository.findAll();
+		User user = getLoggedInUser();
+		
 	
-	
-	
+		List<String> allLocationNames = new ArrayList<>();
+		List<String> vehicleLocationNames = new ArrayList<>();
+		List<String> allVehicleTypesModelNumbers = new ArrayList<>();
+		List<String> vehicleVehicleTypesModelNumbers = new ArrayList<>();
+		
+		
+		//validate Vehicles for locations and Vehicle Type
+		
+		for (Locations location : locations) {
+			 allLocationNames.add(location.getName());
+		}
+		
+		for (Locations location : allRepoLocations) {
+			allLocationNames.add(location.getName());
+		}
+		
+		for (Vehicles vehicle : vehicles) {
+			vehicleLocationNames.add(vehicle.getLocation().getName());
+		}
+		
+		if (!(allLocationNames.containsAll(vehicleLocationNames))){
+			Logger.error("{} attmpted to save a vehicle without a existing Location", user.getUsername());
+			return false;
+		}
+		
+		for (VehicleTypes vehicletype : allRepoVehicleTypes) {
+			allVehicleTypesModelNumbers.add(vehicletype.getModel());
+		}
+		
+		for (VehicleTypes vehicletype : vehicleTypes) {
+			allVehicleTypesModelNumbers.add(vehicletype.getModel());
+		}
+		
+		for (Vehicles vehicle : vehicles) {
+			vehicleVehicleTypesModelNumbers.add(vehicle.getVehicleType().getModel());
+		}
+		
+		if (!(allVehicleTypesModelNumbers.containsAll(vehicleVehicleTypesModelNumbers))){
+			Logger.error("{} attmpted to save a vehicle without an existing Vehicle Type", user.getUsername());
+			return false;
+		}
+		
+		List<String> allContactFirstNames = new ArrayList<>();
+		List<String> technicianContactFirstNames = new ArrayList<>();
+		
+		//validate Technicians for Contact
+		
+		for (Contacts contact : contacts) {
+			allContactFirstNames.add(contact.getFirstName());
+		}
+		
+		for (Contacts contact : allRepoContacts) {
+			allContactFirstNames.add(contact.getFirstName());
+		}
+		
+		for (Technicians technician : technicians) {
+			technicianContactFirstNames.add(technician.getContact().getFirstName());
+		}
+		
+		if (!(allContactFirstNames.containsAll(technicianContactFirstNames))){
+			Logger.error("{} attmpted to save a Technician without an existing Contact", user.getUsername());
+			return false;
+		}
+		
+		List<String> driversContactFirstNames = new ArrayList<>();
+		List<String> allVehiclePlateNumbers = new ArrayList<>();
+		List<String> driversVehiclePlateNumbers = new ArrayList<>();
+		
+		//Validate Drivers for Contact and Vehicle
+		
+		for(Driver driver : drivers) {
+			driversContactFirstNames.add(driver.getContact().getFirstName());
+		}
+		
+		if (!(allContactFirstNames.containsAll(driversContactFirstNames))){
+			Logger.error("{} attmpted to save a Driver without an existing Contact", user.getUsername());
+			return false;
+		}
+		
+		for (Vehicles vehicle: allRepoVehicles) {
+			allVehiclePlateNumbers.add(vehicle.getPlateNumber());
+		}
+		
+		for (Vehicles vehicle: vehicles) {
+			allVehiclePlateNumbers.add(vehicle.getPlateNumber());
+		}
+		
+		for(Driver driver : drivers) {
+			driversVehiclePlateNumbers.add(driver.getVehicle().getPlateNumber());
+		}
+		
+		if (!(allVehiclePlateNumbers.containsAll(driversVehiclePlateNumbers))){
+			Logger.error("{} attmpted to save a Driver without an existing Vehicle", user.getUsername());
+			return false;
+		}
+		
+		//Validate Maintenance Orders for Vehicle and Technician
+		
+		List<String> maintenanceOrdersVehiclePlateNumbers = new ArrayList<>();
+		List<String> maintenanceOrdersTechnicianFirstNames = new ArrayList<>();
+		List<String> allTechnicianFirstNames = new ArrayList<>();
+		
+		for(MaintenanceOrders maintenanceOrder : maintenanceOrders) {
+			maintenanceOrdersVehiclePlateNumbers.add(maintenanceOrder.getVehicle().getPlateNumber());	
+		}
+		
+		if (!(allVehiclePlateNumbers.containsAll(maintenanceOrdersVehiclePlateNumbers))){
+			Logger.error("{} attmpted to save a Maintenance Order without an existing Vehicle", user.getUsername());
+			return false;
+		}
+		
+		for (Technicians technician : technicians) {
+		//	allTechnicianFirstNames.add(technician.getFirstName());
+		}
+		
+		
+		
+		
+		
+	return true;
+	}
 	
 	
 	public List<Shipments> validateShipmentSheet(XSSFSheet worksheet){
@@ -58,13 +234,17 @@ public class ValidationServiceImp {
 			User user = getLoggedInUser();
 			
 			for(int i=1; i<worksheet.getPhysicalNumberOfRows(); i++) {
-				
+				Boolean isNull = false;
 				 
 				Shipments shipment = new Shipments();
 		        XSSFRow row = worksheet.getRow(i);
 		        
-		        
-		        if(row.getCell(0)== null || row.getCell(0).toString().equals("")) {
+		        for (int j = 0; j<16; j++) {
+		        	if (row.getCell(j)== null || row.getCell(j).toString().equals("")) {
+		        		isNull = true;
+		        	}
+		        }
+		        if (isNull == true) {
 		        	break;
 		        }
 		        
@@ -92,7 +272,7 @@ public class ValidationServiceImp {
 	    		String consigneeLatitude = row.getCell(14).toString().strip();
 	    		String consigneeLongitude = row.getCell(15).toString().strip();
 	    		
-	    		/*
+	    		
 	    		commodityClass = commodityClass.substring(0, commodityClass.length() - 2);
 	    		commodityPieces = commodityPieces.substring(0, commodityPieces.length() - 2);
 	    		commodityPaidWeight = commodityPaidWeight.substring(0, commodityPaidWeight.length() - 2);
@@ -102,7 +282,7 @@ public class ValidationServiceImp {
 	    		consigneeZip = consigneeZip.substring(0, consigneeZip.length() - 2);
 	    		consigneeLatitude = consigneeLatitude.substring(0, consigneeLatitude.length() - 2);
 	    		consigneeLongitude = consigneeLongitude.substring(0, consigneeLongitude.length() - 2);
-	    		*/
+	    		
 	    		
 	    		Hashtable<String, String> hashtable = new Hashtable<>();
 	    		
@@ -132,7 +312,7 @@ public class ValidationServiceImp {
 	    		
 	    		shipment = validateShipment(hashtable);
 	    		if (shipment == null) {
-	    			return null;
+	    			continue;								//Change this to return null if you want the upload to fail if any are incorrect
 	    		}
 	    		
 	    		shipment.setCarrier(null);					//THIS IS DEFAULT
@@ -210,7 +390,7 @@ public class ValidationServiceImp {
 		}
 		
 		if(!(clientMode.equals("LTL") || clientMode.equals("FTL"))) {
-			Logger.error("{} attempted to upload a shipment but the Client Mode must be between 0 and 3 characters and alphanumeric.",user.getUsername());
+			Logger.error("{} attempted to upload a shipment but the Client Mode must be LTL or FTL.",user.getUsername());
 			return null;
 		}
 		
@@ -314,16 +494,213 @@ public class ValidationServiceImp {
 	}
 	
 	
-	
 	public List<VehicleTypes> validateVehicleTypesSheet(XSSFSheet worksheet){
 		List <VehicleTypes> result = new ArrayList<>();
-		/* Breaks the worksheet up into strings. Adds the strings to a hashtable 
-		sends the hashtable to validate<>
-		If the <> is valid then adds it to a list which it returns. If at any point validate<> returns null then this method should return null and not the list
-		*/
+		try {
+			
+			for(int i=1; i<worksheet.getPhysicalNumberOfRows(); i++) {
+				Boolean isNull = false;
+				 
+				VehicleTypes VehicleType = new VehicleTypes();
+		        XSSFRow row = worksheet.getRow(i);
+		        
+		        for (int j = 0; j<15; j++) {
+		        	if (row.getCell(j)== null || row.getCell(j).toString().equals("")) {
+		        		isNull = true;
+		        	}
+		        }
+		        if (isNull == true) {
+		        	break;
+		        }
+		        
+		        String type = row.getCell(0).toString().strip();
+			    String subType = row.getCell(1).toString().strip();
+	    		String description = row.getCell(2).toString().strip();
+			    String make = row.getCell(3).toString().strip();
+			    String model = row.getCell(4).toString();
+	    		String minimumWeight = row.getCell(5).toString().strip();
+	    		String maximumWeight = row.getCell(6).toString().strip();
+	    		String capacity = row.getCell(7).toString().strip();
+	    		String maximumRange = row.getCell(8).toString().strip();
+	    		String restrictions = row.getCell(9).toString().strip();
+	    		String height = row.getCell(10).toString().strip();
+	    		String emptyWeight = row.getCell(11).toString().strip();
+	    		String length = row.getCell(12).toString().strip();
+	    		String minimumCubicWeight = row.getCell(13).toString().strip();
+	    		String maximumCubicWeight = row.getCell(14).toString().strip();
+
+	    		
+	    		minimumWeight = minimumWeight.substring(0, minimumWeight.length() - 2);
+	    		maximumWeight = maximumWeight.substring(0, maximumWeight.length() - 2);
+	    		capacity = capacity.substring(0, capacity.length() - 2);
+	    		maximumRange = maximumRange.substring(0, maximumRange.length() - 2);
+	    		height = height.substring(0, height.length() - 2);
+	    		emptyWeight = emptyWeight.substring(0, emptyWeight.length() - 2);
+	    		length = length.substring(0, length.length() - 2);
+	    		minimumCubicWeight = minimumCubicWeight.substring(0, minimumCubicWeight.length() - 2);
+	    		maximumCubicWeight = maximumCubicWeight.substring(0, maximumCubicWeight.length() - 2);
+	    		
+	    		
+	    		Hashtable<String, String> hashtable = new Hashtable<>();
+	    		
+	    		hashtable.put("type", type);
+	    		hashtable.put("subType", subType);
+	    		hashtable.put("description", description);
+	    		hashtable.put("make", make);
+	    		hashtable.put("model", model);
+	    		hashtable.put("minimumWeight", minimumWeight);
+	    		hashtable.put("maximumWeight", maximumWeight);
+	    		hashtable.put("capacity", capacity);
+	    		hashtable.put("maximumRange", maximumRange);
+	    		hashtable.put("restrictions", restrictions);
+	    		hashtable.put("height", height);
+	    		hashtable.put("emptyWeight", emptyWeight);
+	    		hashtable.put("length", length);
+	    		hashtable.put("minimumCubicWeight", minimumCubicWeight);
+	    		hashtable.put("maximumCubicWeight", maximumCubicWeight);
+	    		
+	    		VehicleType = validateVehicleTypes(hashtable);
+	    		if (VehicleType == null) {
+	    			return null;								
+	    		}
+	    		
+		        result.add(VehicleType);
+			 		
+			 	}
+			}
+		catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return null;
+		}
 		return result;
-		
 	}
+	
+	public VehicleTypes validateVehicleTypes(Hashtable<String, String> hashtable) {
+		
+		User user = getLoggedInUser();
+		
+		String type = (String) hashtable.get("type");
+	    String subType = (String) hashtable.get("subType");
+		String description = (String) hashtable.get("description");
+	    String make = (String) hashtable.get("make");
+	    String model = (String) hashtable.get("model");
+		String minimumWeight = (String) hashtable.get("minimumWeight");
+		String maximumWeight = (String) hashtable.get("maximumWeight");
+		String capacity = (String) hashtable.get("capacity");
+		String maximumRange = (String) hashtable.get("maximumRange");
+		String restrictions = (String) hashtable.get("restrictions");
+		String height = (String) hashtable.get("height");
+		String emptyWeight = (String) hashtable.get("emptyWeight");
+		String length = (String) hashtable.get("length");
+		String minimumCubicWeight = (String) hashtable.get("minimumCubicWeight");
+		String maximumCubicWeight = (String) hashtable.get("maximumCubicWeight");
+		
+		if (!(type.length() <= 32 && type.length() > 0) || !(type.matches("^[a-zA-Z]+$"))) {
+			Logger.error("{} attempted to upload a Vehicle Type but the Type was not between 1 and 32 alphabetic characters long.",user.getUsername());
+			return null;	
+		}
+		
+		if (!(subType.length() <= 32 && subType.length() > 0) || !(subType.matches("^[a-zA-Z]+$"))) {
+			Logger.error("{} attempted to upload a Vehicle Type but the Sub Type was not between 1 and 32 characters long.",user.getUsername());
+			return null;	
+		}
+	
+		if (!(description.length() <= 64 && description.length() > 0) || !(description.matches("^[a-zA-Z0-9.]+$"))) {
+			Logger.error("{} attempted to upload a Vehicle Type but the Description was not between 1 and 64 characters long.",user.getUsername());
+			return null;	
+		}
+		
+		if(!(make.length() <= 32 && make.length() > 0) || !(make.matches("^[a-zA-Z0-9.-]+$"))) {
+			Logger.error("{} attempted to upload a Vehicle Type but the Make was not between 1 and 32 characters long.",user.getUsername());
+			return null;
+		}
+		
+		if(!(model.length() <= 32 && model.length() > 0) || !(model.matches("^[a-zA-Z0-9.-]+$"))) {
+			Logger.error("{} attempted to upload a Vehicle Type but the Make was not between 1 and 32 characters long.",user.getUsername());
+			return null;
+		}
+		
+		if (!(minimumWeight.length() <= 16 && minimumWeight.length() > 0) || !(minimumWeight.matches("^[0-9.]+$"))) {
+			Logger.error("{} attempted to upload a Vehicle Type but the Minimum Weight was not between 1 and 16 numeric characters long.",user.getUsername());
+			return null;
+		}
+		
+		if (!(maximumWeight.length() <= 16 && maximumWeight.length() > 0) || !(maximumWeight.matches("^[0-9.]+$"))) { 
+			Logger.error("{} attempted to upload a Vehicle Type but the Maximum Weight was not between 1 and 16 numeric characters long.",user.getUsername());
+			return null;
+		}
+		
+		if(!(capacity.length() <= 16 && capacity.length() > 0) || !(capacity.matches("^[0-9.]+$"))) {
+			Logger.error("{} attempted to upload a Vehicle Type but the Capacity was not between 1 and 16 numeric characters long.",user.getUsername());
+			return null;
+		}
+		
+		if(!(maximumRange.length() <= 16 && maximumRange.length() > 0) || !(maximumRange.matches("^[0-9.]+$"))) {
+			Logger.error("{} attempted to upload a Vehicle Type but the Maximum Range was not between 1 and 16 numeric characters long.",user.getUsername());
+			return null;
+		}
+		
+		if(!(restrictions.length() <= 128 && restrictions.length() > 0) || !(restrictions.matches("^[a-zA-Z0-9./]+$"))) {
+			Logger.error("{} attempted to upload a Vehicle Type but the Restrictions was not between 1 and 128 alphanumeric characters long.",user.getUsername());
+			return null;
+		}
+		
+		if(!(height.length() <= 16 && height.length() > 0) || !(height.matches("^[0-9.]+$"))) {
+			Logger.error("{} attempted to upload a Vehicle Type but the Height was not between 1 and 16 numeric characters long.",user.getUsername());
+			return null;
+		}
+		
+		if(!(emptyWeight.length() <= 16 && emptyWeight.length() > 0) || !(emptyWeight.matches("^[0-9.]+$"))) {
+			Logger.error("{} attempted to upload a Vehicle Type but the Empty Weight was not between 1 and 16 numeric characters long.",user.getUsername());
+			return null;
+		}
+		
+		
+		if(!(length.length() <= 16 && length.length() > 0) || !( length.matches("^[0-9.]+$"))) {
+			Logger.error("{} attempted to upload a Vehicle Type but the Length was not between 1 and 16 numeric characters long.",user.getUsername());
+			return null;
+		}
+		
+		
+		if(!(minimumCubicWeight.length() <= 16 && minimumCubicWeight.length() > 0) || !(minimumCubicWeight.matches("^[0-9.]+$"))){
+			Logger.error("{} attempted to upload a Vehicle Type but the Minimum Cubic Weight was not between 1 and 16 numeric characters long.",user.getUsername());
+			return null;
+		}
+		
+		if(!(maximumCubicWeight.length() <= 16 && maximumCubicWeight.length() > 0) || !(maximumCubicWeight.matches("^[0-9.]+$"))){
+			Logger.error("{} attempted to upload a Vehicle Type but the Maximum Cubic Weight was not between 1 and 16 numeric characters long.",user.getUsername());
+			return null;
+		}
+
+		VehicleTypes vehicleType = new VehicleTypes();
+		
+	try {
+		vehicleType.setType(type);
+		vehicleType.setSubType(subType);
+		vehicleType.setDescription(description);
+		vehicleType.setMake(make);
+		vehicleType.setModel(model);
+		vehicleType.setMinimumWeight(Integer.parseInt(minimumWeight));
+		vehicleType.setMaximumWeight(Integer.parseInt(maximumWeight));
+		vehicleType.setCapacity(capacity);
+		vehicleType.setMaximumRange(Integer.parseInt(maximumRange));
+		vehicleType.setRestrictions(restrictions);
+		vehicleType.setHeight(Integer.parseInt(height));
+		vehicleType.setEmptyWeight(Integer.parseInt(emptyWeight));
+		vehicleType.setLength(Integer.parseInt(length));
+		vehicleType.setMinimumCubicWeight(Integer.parseInt(minimumCubicWeight));
+		vehicleType.setMaximumCubicWeight(Integer.parseInt(maximumCubicWeight));
+	}
+	catch(Exception e) {
+		e.printStackTrace();
+		System.out.println("Failed to parseInt on Vehicle Types");
+		return null;
+	}
+
+		return vehicleType;
+	}
+		
 	public List<Locations> validateLocationsSheet(XSSFSheet worksheet){
 		List <Locations> result = new ArrayList<>();
 		/* Breaks the worksheet up into strings. Adds the strings to a hashtable 
@@ -373,14 +750,6 @@ public class ValidationServiceImp {
 		return result;
 	}
 	
-	public VehicleTypes validateVehicleTypes(Hashtable<String, String> hashtable) {
-		//Takes data from hashtable breaks it down into Strings
-		//Validates the strings and returns the correct datatype
-		//returns null if any field is not valid.
-		//Use proper logging EXAMPLE ' Logger.error("{} attempted to upload a shipment but the Consignee State must be a state or state abbreviation.",user.getUsername()); ' "
-		VehicleTypes vehicleType = new VehicleTypes();
-		return vehicleType;
-	}
 	
 	
 	/**

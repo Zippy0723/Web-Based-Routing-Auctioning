@@ -8,6 +8,7 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
+import javax.mail.Session;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
@@ -533,14 +534,16 @@ public class UserController {
     }
   	
   	/**
-  	 * Redirects user to the /update/update-user-details page. <br>
+  	 * Redirects user to the /update/update-user-details page.
   	 * Adds details of currently logged in user to the form.
   	 * @param model - Used to add data to the model
   	 * @return "/update/update-user-details"
   	 * @author Josh Gearhart 	jjg1018@sru.edu
   	 */
-  	@GetMapping("/update-user-details")
-  	public String showUserDetailsForm(Model model) {
+  	@GetMapping("update-user-details")
+  	public String showUserDetailsForm(Model model, HttpSession session) {
+  		session.setAttribute("redirectLocation", "/update-user-details");
+  		model.addAttribute("redirectLocation", session.getAttribute("redirectLocation"));
   		
   		User user = getLoggedInUser();
   		String status = "CARRIER";
