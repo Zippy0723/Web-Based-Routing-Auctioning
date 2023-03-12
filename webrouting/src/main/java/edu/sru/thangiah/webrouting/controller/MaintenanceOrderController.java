@@ -107,7 +107,7 @@ public class MaintenanceOrderController {
     public String showOrderList(Model model, MaintenanceOrders maintenanceOrder, BindingResult result, HttpSession session) {
 		User user = getLoggedInUser();
 		model.addAttribute("redirectLocation", (String) session.getAttribute("redirectLocation"));
-		model.addAttribute("technicians", techniciansRepository.findAll());
+		model.addAttribute("technicians", user.getCarrier().getTechnicians());
 		model.addAttribute("drivers", user.getCarrier().getDrivers());
 		model.addAttribute("vehicles", user.getCarrier().getVehicles());
 		
