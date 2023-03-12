@@ -67,6 +67,9 @@ public class Carriers {
 	
 	@OneToMany(mappedBy = "carrier")
 	private List<MaintenanceOrders> orders = new ArrayList<>();
+	
+	@OneToMany(mappedBy = "carrier")
+	private List<VehicleTypes> vehicleTypes = new ArrayList<>();
 
 	/**
 	 * Gets the Carrier ID
@@ -290,6 +293,20 @@ public class Carriers {
 	 */
 	public void setOrders(List<MaintenanceOrders> orders) {
 		this.orders = orders;
+	}
+
+	/**
+	 * @return the vehicleTypes
+	 */
+	public List<VehicleTypes> getVehicleTypes() {
+		return vehicleTypes;
+	}
+
+	/**
+	 * @param vehicleTypes the vehicleTypes to set
+	 */
+	public void setVehicleTypes(List<VehicleTypes> vehicleTypes) {
+		this.vehicleTypes = vehicleTypes;
 	}
 
 	/**

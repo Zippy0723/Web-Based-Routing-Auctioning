@@ -150,7 +150,7 @@ public class VehiclesController {
 		model = NotificationController.loadNotificationsIntoModel(user, model);
 		model.addAttribute("redirectLocation", (String) session.getAttribute("redirectLocation"));
 			model.addAttribute("carriers", user.getCarrier());
-			model.addAttribute("vehicleTypes", vehicleTypesRepository.findAll()); 
+			model.addAttribute("vehicleTypes", user.getCarrier().getVehicleTypes()); 
 		    model.addAttribute("locations", user.getCarrier().getLocations()); 
 		    
 	        return "/add/add-vehicle";
