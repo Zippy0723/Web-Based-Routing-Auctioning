@@ -283,6 +283,7 @@ public class MaintenanceOrderController {
         Logger.info("{} successfully updated the maintenance order with ID {}",loggedInUser.getUsername(), maintenanceOrder.getId());
         return "redirect:" + redirectLocation;
     }
+	
 	/**
 	 * Returns the user that is currently logged into the system. <br>
 	 * If there is no user logged in, null is returned.

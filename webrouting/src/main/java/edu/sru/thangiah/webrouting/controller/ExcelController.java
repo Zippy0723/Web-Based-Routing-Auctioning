@@ -121,12 +121,12 @@ public class ExcelController {
 	public ResponseEntity<Resource> dumpExcelCarrier(Model model, HttpSession session) {
 		String redirectLocation = (String) session.getAttribute("redirectLocation");
 		XSSFWorkbook workbook = new XSSFWorkbook();
-		XSSFSheet contactsWorksheet = workbook.createSheet("Contacts");
-		XSSFSheet locationsWorksheet = workbook.createSheet("Locations");
-		XSSFSheet vehicleWorksheet = workbook.createSheet("Vehicles");
 		XSSFSheet vehicleTypesWorksheet = workbook.createSheet("Vehicle Types");
-		XSSFSheet driversWorksheet = workbook.createSheet("Drivers");
+		XSSFSheet locationsWorksheet = workbook.createSheet("Locations");
+		XSSFSheet contactsWorksheet = workbook.createSheet("Contacts");
+		XSSFSheet vehicleWorksheet = workbook.createSheet("Vehicles");
 		XSSFSheet technicansWorksheet = workbook.createSheet("Technicans");
+		XSSFSheet driversWorksheet = workbook.createSheet("Drivers");
 		XSSFSheet maintenanceOrdersWorksheet = workbook.createSheet("Maintenance Orders");
 				
 		User user = getLoggedInUser();
@@ -206,7 +206,43 @@ public class ExcelController {
 	    	curRow.createCell(4).setCellValue(vehicle.getLocation().getName() + " " + vehicle.getLocation().getStreetAddress1());
 	    }
 	    
-	    //vehicle types
+	    List<VehicleTypes> vehicleTypes = carrier.getVehicleTypes();
+	    XSSFRow vehicleTypesHeaderRow = vehicleTypesWorksheet.createRow(0);
+	    vehicleTypesHeaderRow.createCell(0).setCellValue("Type");
+	    vehicleTypesHeaderRow.createCell(1).setCellValue("Sub Type");
+	    vehicleTypesHeaderRow.createCell(2).setCellValue("Description");
+	    vehicleTypesHeaderRow.createCell(3).setCellValue("Make");
+	    vehicleTypesHeaderRow.createCell(4).setCellValue("Model");
+	    vehicleTypesHeaderRow.createCell(5).setCellValue("Minimum Weight");
+	    vehicleTypesHeaderRow.createCell(6).setCellValue("Maximumm Weight");
+	    vehicleTypesHeaderRow.createCell(7).setCellValue("Capacity");
+	    vehicleTypesHeaderRow.createCell(8).setCellValue("Maximum Range");
+	    vehicleTypesHeaderRow.createCell(9).setCellValue("Restrictions");
+	    vehicleTypesHeaderRow.createCell(10).setCellValue("Height");
+	    vehicleTypesHeaderRow.createCell(11).setCellValue("Empty Weight");
+	    vehicleTypesHeaderRow.createCell(12).setCellValue("Length");
+	    vehicleTypesHeaderRow.createCell(13).setCellValue("Minimum Cubic Weight");
+	    vehicleTypesHeaderRow.createCell(14).setCellValue("Maximum Cubic Weight");
+	    
+	    rowIndex = 1;
+	    for (VehicleTypes type : vehicleTypes) {
+	    	XSSFRow curRow = vehicleTypesWorksheet.createRow(rowIndex++);
+	    	curRow.createCell(0).setCellValue(type.getType());
+	    	curRow.createCell(1).setCellValue(type.getSubType());
+	    	curRow.createCell(2).setCellValue(type.getDescription());
+	    	curRow.createCell(3).setCellValue(type.getMake());
+	    	curRow.createCell(4).setCellValue(type.getModel());
+	    	curRow.createCell(5).setCellValue(type.getMinimumWeight());
+	    	curRow.createCell(6).setCellValue(type.getMaximumWeight());
+	    	curRow.createCell(7).setCellValue(type.getCapacity());
+	    	curRow.createCell(8).setCellValue(type.getMaximumRange());
+	    	curRow.createCell(9).setCellValue(type.getRestrictions());
+	    	curRow.createCell(10).setCellValue(type.getHeight());
+	    	curRow.createCell(11).setCellValue(type.getEmptyWeight());
+	    	curRow.createCell(12).setCellValue(type.getLength());
+	    	curRow.createCell(13).setCellValue(type.getMinimumWeight());
+	    	curRow.createCell(14).setCellValue(type.getMaximumCubicWeight());
+	    }
 	    
 	    List<Driver> drivers = carrier.getDrivers();
 	    XSSFRow driversHeaderRow = driversWorksheet.createRow(0);
@@ -226,7 +262,17 @@ public class ExcelController {
 	    	curRow.createCell(4).setCellValue(driver.getLisence_class());
 	    }
 	    
-	    //technicans
+	    List<Technicians> technicians = carrier.getTechnicians();
+	    XSSFRow technicansHeaderRow = technicansWorksheet.createRow(0);
+	    technicansHeaderRow.createCell(0).setCellValue("Contact First + Last Name");
+	    technicansHeaderRow.createCell(1).setCellValue("Skill Grade");
+	    
+	    rowIndex = 1;
+	    for(Technicians tech : technicians) {
+	    	XSSFRow curRow = technicansWorksheet.createRow(rowIndex++);
+	    	curRow.createCell(0).setCellValue(tech.getContact().getFirstName() + " " + tech.getContact().getLastName());
+	    	curRow.createCell(1).setCellValue(tech.getSkill_grade());
+	    }
 	    
 	    List<MaintenanceOrders> maintenaneOrders = carrier.getOrders();
 	    XSSFRow maintenaneOrdersHeaderRow = maintenanceOrdersWorksheet.createRow(0);
@@ -258,11 +304,17 @@ public class ExcelController {
 	    for (int i = 0; i < contactsHeaderRow.getLastCellNum(); i++) {
 	    	locationsWorksheet.autoSizeColumn(i);
 	    }
+	    for (int i = 0; i < vehicleTypesHeaderRow.getLastCellNum(); i++) {
+	    	vehicleTypesWorksheet.autoSizeColumn(i);
+	    }
 	    for (int i = 0; i < vehicleHeaderRow.getLastCellNum(); i++) {
 	    	vehicleWorksheet.autoSizeColumn(i);
 	    }
 	    for (int i = 0; i < driversHeaderRow.getLastCellNum(); i++) {
 	    	driversWorksheet.autoSizeColumn(i);
+	    }
+	    for (int i = 0; i < technicansHeaderRow.getLastCellNum(); i++) {
+	    	technicansWorksheet.autoSizeColumn(i);
 	    }
 	    for (int i = 0; i < maintenaneOrdersHeaderRow.getLastCellNum(); i++) {
 	    	maintenanceOrdersWorksheet.autoSizeColumn(i);
