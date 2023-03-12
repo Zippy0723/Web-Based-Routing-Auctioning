@@ -107,7 +107,7 @@ public class MaintenanceOrderController {
     public String showOrderList(Model model, MaintenanceOrders maintenanceOrder, BindingResult result, HttpSession session) {
 		User user = getLoggedInUser();
 		model.addAttribute("redirectLocation", (String) session.getAttribute("redirectLocation"));
-		model.addAttribute("technicians", techniciansRepository.findAll());
+		model.addAttribute("technicians", user.getCarrier().getTechnicians());
 		model.addAttribute("drivers", user.getCarrier().getDrivers());
 		model.addAttribute("vehicles", user.getCarrier().getVehicles());
 		
@@ -283,6 +283,7 @@ public class MaintenanceOrderController {
         Logger.info("{} successfully updated the maintenance order with ID {}",loggedInUser.getUsername(), maintenanceOrder.getId());
         return "redirect:" + redirectLocation;
     }
+	
 	/**
 	 * Returns the user that is currently logged into the system. <br>
 	 * If there is no user logged in, null is returned.

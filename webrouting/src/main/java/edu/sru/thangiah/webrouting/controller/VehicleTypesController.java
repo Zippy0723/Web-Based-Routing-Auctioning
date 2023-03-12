@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import edu.sru.thangiah.webrouting.domain.Carriers;
 import edu.sru.thangiah.webrouting.domain.Notification;
 import edu.sru.thangiah.webrouting.domain.User;
 import edu.sru.thangiah.webrouting.domain.VehicleTypes;
@@ -66,12 +67,13 @@ public class VehicleTypesController {
 	 */
 	@RequestMapping({"/vehicletypes"})
     public String showVehicleTypeList(Model model, HttpSession session) {
-
-		    String redirectLocation = "/vehicletypes";
-		    session.setAttribute("redirectLocation", redirectLocation);
-		    model.addAttribute("redirectLocation", redirectLocation);
-
-        model.addAttribute("vehicletypes", vehicleTypesRepository.findAll());
+		User user = getLoggedInUser();
+		Carriers carrier = user.getCarrier();
+		String redirectLocation = "/vehicletypes";
+		
+		session.setAttribute("redirectLocation", redirectLocation);
+		model.addAttribute("redirectLocation", redirectLocation);
+        model.addAttribute("vehicletypes", carrier.getVehicleTypes());
         
         try {
         	model.addAttribute("error",session.getAttribute("error"));
@@ -80,7 +82,6 @@ public class VehicleTypesController {
         }
         session.removeAttribute("error");
         
-        User user = getLoggedInUser();
         model = NotificationController.loadNotificationsIntoModel(user, model);
         
         return "vehicletypes";
@@ -115,6 +116,7 @@ public class VehicleTypesController {
   	public String addVehicleType(@Validated VehicleTypes vehicleTypes, BindingResult result, Model model, HttpSession session) {
 		userValidator.addition(vehicleTypes, result);
 		User loggedInUser = getLoggedInUser();
+		Carriers carrier = loggedInUser.getCarrier();
 		model = NotificationController.loadNotificationsIntoModel(loggedInUser, model);
 		String redirectLocation = (String) session.getAttribute("redirectLocation");
 		model.addAttribute("redirectLocation", session.getAttribute("redirectLocation")); 
@@ -142,6 +144,7 @@ public class VehicleTypesController {
   			return "vehicletypes";
   		}
   		
+  		vehicleTypes.setCarrier(carrier);
   		vehicleTypesRepository.save(vehicleTypes);
   		Logger.info("{} successfully saved the Vehicle type with ID {}.",loggedInUser.getUsername(), vehicleTypes.getId());
   		

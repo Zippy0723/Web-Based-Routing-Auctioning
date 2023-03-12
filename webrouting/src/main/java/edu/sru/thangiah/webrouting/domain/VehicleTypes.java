@@ -7,6 +7,8 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
@@ -85,6 +87,11 @@ public class VehicleTypes {
 	
 	@OneToMany(mappedBy = "vehicleType")
 	private List<Vehicles> vehicles = new ArrayList<>();
+	
+	@ManyToOne
+	@JoinColumn(name = "carrier_id")
+	private Carriers carrier;
+
 
 	/**
 	 * Gets the Vehicle Type ID
@@ -356,6 +363,20 @@ public class VehicleTypes {
 	 */
 	public void setVehicles(List<Vehicles> vehicles) {
 		this.vehicles = vehicles;
+	}
+
+	/**
+	 * @return the carrier
+	 */
+	public Carriers getCarrier() {
+		return carrier;
+	}
+
+	/**
+	 * @param carrier the carrier to set
+	 */
+	public void setCarrier(Carriers carrier) {
+		this.carrier = carrier;
 	}
 
 	/**
