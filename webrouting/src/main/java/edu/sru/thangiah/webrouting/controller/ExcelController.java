@@ -394,6 +394,9 @@ public class ExcelController {
 		
 		Hashtable<String, Long> vehicleTypeNameToId = new Hashtable<>();
 		Hashtable<String, Long> locationNameToId = new Hashtable<>();
+		Hashtable<String, Long> contactsFullNameToId = new Hashtable<>();
+		Hashtable<String, Long> techniciansContactFullNameToId = new Hashtable<>();
+		Hashtable<String, Long> vehiclePlateAndVinToId = new Hashtable<>();
 		
 		String redirectLocation = (String) session.getAttribute("redirectLocation");
 		XSSFWorkbook workbook;
@@ -419,106 +422,151 @@ public class ExcelController {
 			List<Driver> drivers = new ArrayList<>();
 			List<MaintenanceOrders> maintenanceOrders = new ArrayList<>();
 			
+			//Start Vehicle Types
 			vehicleTypes = validationServiceImp.validateVehicleTypesSheet(vehicleTypesSheet);
-			//locations = validationServiceImp.validateLocationsSheet(locationsSheet);
-			//contacts = validationServiceImp.validateContactsSheet(contactsSheet);
-			//technicians = validationServiceImp.validateTechniciansSheet(techniciansSheet);
-			//drivers = validationServiceImp.validateDriverSheet(driversSheet);
-			//maintenanceOrders = validationServiceImp.validateMaintenanceOrdersSheet(maintenanceOrdersSheet);
-			//drivers = validationServiceImp.validateDriverSheet(driversSheet);
 			
 			if (vehicleTypes == null) {
 				Logger.info("{} attempted to save Vehicle Types but failed.",user.getUsername());
-				return "redirect:" + redirectLocation; 
+				workbook.close();
+				return "redirect:" + redirectLocation;
 			}
 			
+			
+			for(VehicleTypes vehicleType: vehicleTypes) {
+				vehicleTypesRepository.save(vehicleType);
+				if(vehicleTypeNameToId.containsKey(vehicleType.getMake() + " " + vehicleType.getModel())){
+					Logger.error("{} saved Vehicle Type with ID the same ID.",user.getUsername(),vehicleType.getId());
+					//ToDo: Reinstate database on fail
+					workbook.close();
+					return "redirect:" + redirectLocation;
+				}
+				vehicleTypeNameToId.put(vehicleType.getMake() + " " + vehicleType.getModel(), vehicleType.getId());
+				Logger.info("{} saved Vehicle Type with ID {}.",user.getUsername(),vehicleType.getId());
+			}
+			
+			//Start Locations
+			locations = validationServiceImp.validateLocationsSheet(locationsSheet);
+			
+			if (locations == null) {
+				Logger.info("{} attempted to save Vehicle Types but failed.",user.getUsername());
+				workbook.close();
+				return "redirect:" + redirectLocation;
+			}
 
-			
-			//if (locations == null) {
-			//		Logger.info("{} attempted to save Vehicle Types but failed.",user.getUsername());
-			//	return "redirect:" + redirectLocation; 
-			//}
-			
-			
-			if (contacts == null) {
-				Logger.info("{} attempted to save Contacts but failed.",user.getUsername());
-				return "redirect:" + redirectLocation; 
-			}
-			
-			if (technicians == null) {
-				Logger.info("{} attempted to save Technicians but failed.",user.getUsername());
-				return "redirect:" + redirectLocation; 
-			}
-			
-			
-			if (drivers == null) {
-				Logger.info("{} attempted to save Drivers but failed.",user.getUsername());
-				return "redirect:" + redirectLocation; 
-			}
-			
-			
-			if (maintenanceOrders == null) {
-				Logger.info("{} attempted to save Maintenance Orders but failed.",user.getUsername());
-				return "redirect:" + redirectLocation; 
-			}
-			
 			for(Locations location: locations) {
 				locationsRepository.save(location);
 				if(locationNameToId.containsKey(location.getName())){
 					Logger.error("{} saved Location with ID the same ID.",user.getUsername(),location.getId());
-					//ToDo: kick these fuckers out for this bullshit
+					//ToDo: Reinstate database on fail
+					workbook.close();
+					return "redirect:" + redirectLocation;
 				}
 				
 				locationNameToId.put(location.getName(), location.getId());
 				Logger.info("{} saved Location with ID {}.",user.getUsername(),location.getId());
 			
 			}
-				
 			
-			for(VehicleTypes vehicleType: vehicleTypes) {
-				vehicleTypesRepository.save(vehicleType);
-				if(vehicleTypeNameToId.containsKey(vehicleType.getMake() + " " + vehicleType.getModel())){
-					Logger.error("{} saved Vehicle Type with ID the same ID.",user.getUsername(),vehicleType.getId());
-					//ToDo: kick these fuckers out for this bullshit
-				}
-				vehicleTypeNameToId.put(vehicleType.getMake() + " " + vehicleType.getModel(), vehicleType.getId());
-				
-				Logger.info("{} saved Vehicle Type with ID {}.",user.getUsername(),vehicleType.getId());
+			//Start Contacts
+			contacts = validationServiceImp.validateContactsSheet(contactsSheet);
+			
+			if (contacts == null) {
+				Logger.info("{} attempted to save Contacts but failed.",user.getUsername());
+				workbook.close();
+				return "redirect:" + redirectLocation; 
 			}
 			
+			for(Contacts contact: contacts) {
+				contactsRepository.save(contact);
+				if(contactsFullNameToId.containsKey(contact.getFirstName() + " " + contact.getLastName())){
+					Logger.error("{} saved Contact with ID the same ID.",user.getUsername(),contact.getId());
+					//ToDo: Reinstate database on fail
+					workbook.close();
+					return "redirect:" + redirectLocation;
+				}
+				
+				contactsFullNameToId.put(contact.getFirstName() + " " + contact.getLastName(), contact.getId());
+				Logger.info("{} saved Contact with ID {}.",user.getUsername(),contact.getId());
 			
+			}
+			
+			//Start Vehicles
 			vehicles = validationServiceImp.validateVehiclesSheet(vehiclesSheet, vehicleTypeNameToId, locationNameToId);
 			
 			if (vehicles == null) {
 				Logger.info("{} attempted to save Vehicle but failed.",user.getUsername());
-				return "redirect:" + redirectLocation; 
-			}
-			
-			
-			for(Contacts contact: contacts) {
-				contactsRepository.save(contact);
-			Logger.info("{} saved Contact with ID {}.",user.getUsername(),contact.getId());
+				workbook.close();
+				return "redirect:" + redirectLocation;
 			}
 			
 			for(Vehicles vehicle: vehicles) {
 				vehiclesRepository.save(vehicle);
-			Logger.info("{} saved Vehicle with ID {}.",user.getUsername(),vehicle.getId());
+				if(vehiclePlateAndVinToId.containsKey(vehicle.getPlateNumber() + " " + vehicle.getVinNumber())){
+					Logger.error("{} saved Vehicle with ID the same ID.",user.getUsername(),vehicle.getId());
+					//ToDo: Reinstate database on fail
+					workbook.close();
+					return "redirect:" + redirectLocation;
+				}
+				
+				vehiclePlateAndVinToId.put(vehicle.getPlateNumber() + " " + vehicle.getVinNumber(), vehicle.getId());
+				Logger.info("{} saved Vehicle with ID {}.",user.getUsername(),vehicle.getId());
+			
+			}
+			
+			
+			//Start Technicians
+			technicians = validationServiceImp.validateTechniciansSheet(techniciansSheet, contactsFullNameToId);
+			
+			if (technicians == null) {
+				Logger.info("{} attempted to save Technicians but failed.",user.getUsername());
+				workbook.close();
+				return "redirect:" + redirectLocation; 
 			}
 			
 			for(Technicians technician: technicians) {
 				techniciansRepository.save(technician);
-			Logger.info("{} saved Technician with ID {}.",user.getUsername(),technician.getId());
+				if(techniciansContactFullNameToId.containsKey(technician.getContact().getFirstName() + " " + technician.getContact().getLastName())){
+					Logger.error("{} saved Technician with ID the same ID.",user.getUsername(),technician.getId());
+					//ToDo: Reinstate database on fail
+					workbook.close();
+					return "redirect:" + redirectLocation;
+				}
+				
+				techniciansContactFullNameToId.put(technician.getContact().getFirstName() + " " + technician.getContact().getLastName(), technician.getId());
+				Logger.info("{} saved Technician with ID {}.",user.getUsername(),technician.getId());
+			
+			}
+			
+			
+			//Start Drivers
+			drivers = validationServiceImp.validateDriverSheet(driversSheet, vehiclePlateAndVinToId, contactsFullNameToId);
+			
+			if (drivers == null) {
+				Logger.info("{} attempted to save Drivers but failed.",user.getUsername());
+				workbook.close();
+				return "redirect:" + redirectLocation;
 			}
 			
 			for(Driver driver: drivers) {
 				driverRepository.save(driver);
-			Logger.info("{} saved Driver with ID {}.",user.getUsername(),driver.getId());
+				Logger.info("{} saved Driver with ID {}.",user.getUsername(),driver.getId());
+			}
+			
+			
+			//Start MaintenanceOrders
+			maintenanceOrders = validationServiceImp.validateMaintenanceOrdersSheet(maintenanceOrdersSheet, vehiclePlateAndVinToId, techniciansContactFullNameToId);
+
+			if (maintenanceOrders == null) {
+				Logger.info("{} attempted to save Maintenance Orders but failed.",user.getUsername());
+				return "redirect:" + redirectLocation; 
 			}
 			
 			for(MaintenanceOrders maintenanceorder: maintenanceOrders) {
 				maintenanceOrdersRepository.save(maintenanceorder);
-			Logger.info("{} saved Maintenance Order with ID {}.",user.getUsername(), maintenanceorder.getId());
+				Logger.info("{} saved Maintenance Order with ID {}.",user.getUsername(), maintenanceorder.getId());
 			}
+			
+			
 			
 		}
 		catch(Exception e ) {
