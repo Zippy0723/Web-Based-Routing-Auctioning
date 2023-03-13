@@ -79,9 +79,11 @@ public class VehicleTypes {
 	@Column(name="length", columnDefinition="varchar(16)")
 	private int length;
 	
+	@NonNull
 	@Column(name="minimum_cubic_weight", nullable= false, columnDefinition="varchar(16)")
 	private int minimumCubicWeight;
 	
+	@NonNull
 	@Column(name="maximum_cubic_weight", nullable= false, columnDefinition="varchar(16)")
 	private int maximumCubicWeight;
 	

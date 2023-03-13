@@ -31,32 +31,34 @@ public class Locations {
     private long id;
 	
 	@NonNull
-	@Column(name="name",  columnDefinition="varchar(32)")
+	@Column(name="name", nullable = false, columnDefinition="varchar(32)")
 	private String name;
 	
 	@NonNull
-	@Column(name="street_address1",  columnDefinition="varchar(128)")
+	@Column(name="street_address1", nullable = false, columnDefinition="varchar(128)")
 	private String streetAddress1;
 	
 	@Column(name="street_address2", nullable= true, columnDefinition="varchar(64) default NULL")
 	private String streetAddress2;
 	
 	@NonNull
-	@Column(name="city",  columnDefinition="varchar(64)")
+	@Column(name="city", nullable = false, columnDefinition="varchar(64)")
 	private String city;
 	
 	@NonNull
-	@Column(name="state",  columnDefinition="varchar(64)")
+	@Column(name="state", nullable = false, columnDefinition="varchar(64)")
 	private String state;
 	
 	@NonNull
-	@Column(name="zip",  columnDefinition="varchar(12)")
+	@Column(name="zip", nullable = false, columnDefinition="varchar(12)")
 	private String zip;
 	
-	@Column(name="latitude", nullable= true, columnDefinition="varchar(12) default NULL")
+	@NonNull
+	@Column(name="latitude", nullable = false, columnDefinition="varchar(12)")
 	private String latitude;
 	
-	@Column(name="longitude", nullable= true, columnDefinition="varchar(12) default NULL")
+	@NonNull
+	@Column(name="longitude", nullable = false, columnDefinition="varchar(12)")
 	private String longitude;
 	
 	@ManyToOne
@@ -64,7 +66,7 @@ public class Locations {
 	private Carriers carrier;
 	
 	@NonNull
-	@Column(name="location_type", columnDefinition="varchar(64)")
+	@Column(name="location_type", nullable = false, columnDefinition="varchar(64)")
 	private String locationType;
 	
 	@OneToMany(mappedBy = "location")

@@ -448,7 +448,7 @@ public class ExcelController {
 			locations = validationServiceImp.validateLocationsSheet(locationsSheet);
 			
 			if (locations == null) {
-				Logger.info("{} attempted to save Vehicle Types but failed.",user.getUsername());
+				Logger.info("{} attempted to save Locations but failed.",user.getUsername());
 				workbook.close();
 				return "redirect:" + redirectLocation;
 			}

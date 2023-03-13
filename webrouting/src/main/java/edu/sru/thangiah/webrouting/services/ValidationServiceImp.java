@@ -235,7 +235,7 @@ public class ValidationServiceImp {
 		}
 		
 		if(!(scac.length() <= 4 && scac.length() >= 2) || !(scac.matches("^[a-zA-Z0-9]+$"))) {
-			if (!scac.equals("")) {
+			if (!(scac.equals("") || scac == null)) {
 					Logger.error("{} attempted to upload a shipment but the SCAC must be between 2 and 4 characters long or empty.",user.getUsername());
 					return null;
 				}	
@@ -463,19 +463,21 @@ public class ValidationServiceImp {
 		String minimumCubicWeight = (String) hashtable.get("minimumCubicWeight");
 		String maximumCubicWeight = (String) hashtable.get("maximumCubicWeight");
 		
-		if (!(type.length() <= 32 && type.length() > 0) || !(type.matches("^[a-zA-Z]+$"))) {
+		if (!(type.length() <= 32 && type.length() > 0) || !(type.matches("^[a-zA-Z ]+$"))) {
 			Logger.error("{} attempted to upload a Vehicle Type but the Type was not between 1 and 32 alphabetic characters long.",user.getUsername());
 			return null;	
 		}
 		
-		if (!(subType.length() <= 32 && subType.length() > 0) || !(subType.matches("^[a-zA-Z]+$"))) {
+		if (!(subType.length() <= 32 && subType.length() > 0) || !(subType.matches("^[a-zA-Z ]+$"))) {
 			Logger.error("{} attempted to upload a Vehicle Type but the Sub Type was not between 1 and 32 characters long.",user.getUsername());
 			return null;	
 		}
 	
-		if (!(description.length() <= 64 && description.length() > 0) || !(description.matches("^[a-zA-Z0-9.]+$"))) {
-			Logger.error("{} attempted to upload a Vehicle Type but the Description was not between 1 and 64 characters long.",user.getUsername());
-			return null;	
+		if (!(description == null || description.equals(""))) {
+			if (!(description.length() <= 64 && description.length() > 0)) {
+				Logger.error("{} attempted to upload a Vehicle Type but the Description was not between 1 and 64 characters long.",user.getUsername());
+				return null;	
+			}
 		}
 		
 		if(!(make.length() <= 32 && make.length() > 0) || !(make.matches("^[a-zA-Z0-9.-]+$"))) {
@@ -498,9 +500,11 @@ public class ValidationServiceImp {
 			return null;
 		}
 		
-		if(!(capacity.length() <= 16 && capacity.length() > 0) || !(capacity.matches("^[0-9.]+$"))) {
-			Logger.error("{} attempted to upload a Vehicle Type but the Capacity was not between 1 and 16 numeric characters long.",user.getUsername());
-			return null;
+		if (!(capacity == null || capacity.equals(""))) {
+			if(!(capacity.length() <= 16 && capacity.length() > 0) || !(capacity.matches("^[0-9.]+$"))) {
+				Logger.error("{} attempted to upload a Vehicle Type but the Capacity was not between 1 and 16 numeric characters long.",user.getUsername());
+				return null;
+			}
 		}
 		
 		if(!(maximumRange.length() <= 16 && maximumRange.length() > 0) || !(maximumRange.matches("^[0-9.]+$"))) {
@@ -508,9 +512,11 @@ public class ValidationServiceImp {
 			return null;
 		}
 		
-		if(!(restrictions.length() <= 128 && restrictions.length() > 0)) {
-			Logger.error("{} attempted to upload a Vehicle Type but the Restrictions was not between 1 and 128 characters long.",user.getUsername());
-			return null;
+		if (!(restrictions == null || restrictions.equals(""))) {
+			if(!(restrictions.length() <= 128 && restrictions.length() > 0)) {
+				Logger.error("{} attempted to upload a Vehicle Type but the Restrictions was not between 1 and 128 characters long.",user.getUsername());
+				return null;
+			}
 		}
 		
 		if(!(height.length() <= 16 && height.length() > 0) || !(height.matches("^[0-9.]+$"))) {
@@ -523,12 +529,10 @@ public class ValidationServiceImp {
 			return null;
 		}
 		
-		
 		if(!(length.length() <= 16 && length.length() > 0) || !( length.matches("^[0-9.]+$"))) {
 			Logger.error("{} attempted to upload a Vehicle Type but the Length was not between 1 and 16 numeric characters long.",user.getUsername());
 			return null;
 		}
-		
 		
 		if(!(minimumCubicWeight.length() <= 16 && minimumCubicWeight.length() > 0) || !(minimumCubicWeight.matches("^[0-9.]+$"))){
 			Logger.error("{} attempted to upload a Vehicle Type but the Minimum Cubic Weight was not between 1 and 16 numeric characters long.",user.getUsername());
@@ -539,6 +543,7 @@ public class ValidationServiceImp {
 			Logger.error("{} attempted to upload a Vehicle Type but the Maximum Cubic Weight was not between 1 and 16 numeric characters long.",user.getUsername());
 			return null;
 		}
+		
 
 		VehicleTypes vehicleType = new VehicleTypes();
 		
@@ -647,7 +652,7 @@ public class ValidationServiceImp {
 			String locationLongitude = (String)hashtable.get("locationLongitude");
 			String locationType = (String)hashtable.get("locationType");
 			
-			if (!(locationName.length() <= 32 && locationName.length() > 0) || !(locationName.matches("^[a-zA-Z]+$"))) { 
+			if (!(locationName.length() <= 32 && locationName.length() > 0) || !(locationName.matches("^[a-zA-Z ']+$"))) { 
     			Logger.info("{} attempted to upload a location name field must be between 1 and 32 characters and alphabetic.",user.getUsername());
     			return null;
     		}
@@ -657,9 +662,11 @@ public class ValidationServiceImp {
     			return null;
     		}
     		
-    		if(!(streetAddress2.length() <= 64 && streetAddress2.length() > 0) || !(streetAddress2.matches("^[A-Za-z0-9./-]+(?:[\\s-][A-Za-z0-9.-]+)*$"))) { 
-    			Logger.info("{} attempted to upload a location street address but it must be 2 must be between 1 and 64 characters that are alphanumeric.",user.getUsername());
-    			return null;
+    		if (!(streetAddress2 == null || streetAddress2.equals(""))) {
+    			if(!(streetAddress2.length() <= 64 && streetAddress2.length() > 0) || !(streetAddress2.matches("^[A-Za-z0-9./-]+(?:[\\s-][A-Za-z0-9.-]+)*$"))) {
+    				Logger.info("{} attempted to upload a location street address but it must be 2 must be between 1 and 64 characters that are alphanumeric.",user.getUsername());
+    				return null;
+    			}
     		}
     		
     		if(!(locationCity.length() <= 64 && locationCity.length() > 0) || !(locationCity.matches("^[A-Za-z]+(?:[\\s-][A-Za-z]+)*$"))) { 
@@ -686,7 +693,8 @@ public class ValidationServiceImp {
     			Logger.info("{} attempted to upload a location longitude must be between -180 and 180 up to 7 decimal places.",user.getUsername());
     			return null;
     		}
-    		if(!(locationType.length() <= 64 && locationType.length() > 0) || !(locationType.matches("^[a-zA-Z]+$"))){ 
+    		
+    		if(!(locationType.length() <= 64 && locationType.length() > 0) || !(locationType.matches("^[a-zA-Z ]+$"))){ 
     			Logger.info("{} attempted to upload a location type must be 1 to 32 alphabetic characters.",user.getUsername());
     			return null;
     		}
@@ -796,19 +804,20 @@ public class ValidationServiceImp {
 			String primaryPhone = (String)hashtable.get("primaryPhone");
 			String workPhone = (String)hashtable.get("workPhone");
 			
-			if (!(firstName.length() <= 32 && firstName.length() > 0) || !(firstName.matches("^[a-zA-Z]+$"))) { 
+			if (!(firstName.length() <= 32 && firstName.length() > 0) || !(firstName.matches("^[a-zA-Z ']+$"))) { 
     			Logger.info("{} attempted to upload a contact but Contact first name field must be between 1 and 32 characters and alphabetic.",user.getUsername());
     			return null;
     		}
     		
-    		if(!(lastName.length() <= 32 && lastName.length() > 0) || !(lastName.matches("^[a-zA-Z]+$"))) {
+    		if(!(lastName.length() <= 32 && lastName.length() > 0) || !(lastName.matches("^[a-zA-Z ']+$"))) {
     			Logger.info("{} attempted to upload a contact but Contact last name field must be between 1 and 32 characters and alphbetic",user.getUsername());
     			return null;
     		}
-    		
-    		if(!(middleInitial.length() <= 16 && middleInitial.length() > 0) || !(middleInitial.matches("^[A-Za-z]{1}$"))) {
-    			Logger.info("{} attempted to upload a contact but Contact Middle initial must be 1 character and alphabetic.",user.getUsername());
-    			return null;
+    		if (!(middleInitial == null || middleInitial.equals(""))) {
+    			if(!(middleInitial.length() <= 16 && middleInitial.length() > 0) || !(middleInitial.matches("^[A-Za-z]{1}$"))) {
+    				Logger.info("{} attempted to upload a contact but Contact Middle initial must be 1 character and alphabetic.",user.getUsername());
+    				return null;
+    			}
     		}
     		
     		if(!(emailAddress.length() <= 64 && emailAddress.length() > 0) || !(emailAddress.matches("^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+$"))){
@@ -821,11 +830,12 @@ public class ValidationServiceImp {
     			return null;
     		}
     		
-    		if(!(streetAddress2.length() <= 64 && streetAddress2.length() > 0) || !(streetAddress2.matches("^[A-Za-z0-9./-]+(?:[\\s-][A-Za-z0-9.-]+)*$"))) { 
-    			Logger.info("{} attempted to upload a contact but Contact street address 2 must be between 1 and 64 characters that are alphanumeric.",user.getUsername());
-    			return null;
+    		if (!(streetAddress2 == null || streetAddress2.equals(""))) {
+    			if(!(streetAddress2.length() <= 64 && streetAddress2.length() > 0) || !(streetAddress2.matches("^[A-Za-z0-9./-]+(?:[\\s-][A-Za-z0-9.-]+)*$"))) { 
+    				Logger.info("{} attempted to upload a contact but Contact street address 2 must be between 1 and 64 characters that are alphanumeric.",user.getUsername());
+    				return null;
+    			}
     		}
-    		
     		if(!(contactCity.length() <= 64 && contactCity.length() > 0) || !(contactCity.matches("^[A-Za-z]+(?:[\\s-][A-Za-z]+)*$"))) {
     			Logger.info("{} attempted to upload a contact but Contact City must be between 1 and 64 characters and is alphabetic.",user.getUsername());
     			return null;
@@ -846,9 +856,11 @@ public class ValidationServiceImp {
     			return null;
     		}
     		
-    		if(!(workPhone.length() <= 13 && workPhone.length() > 0) || !(workPhone.matches("\\d{3}-\\d{3}-\\d{4}"))){ 
-    			Logger.info("{} attempted to upload a contact but Contact work phone must be must be in format ###-###-####.",user.getUsername());
-    			return null;
+    		if (!(workPhone == null || workPhone.equals(""))) {
+    			if(!(workPhone.length() <= 13 && workPhone.length() > 0) || !(workPhone.matches("\\d{3}-\\d{3}-\\d{4}"))){ 
+    				Logger.info("{} attempted to upload a contact but Contact work phone must be must be in format ###-###-####.",user.getUsername());
+    				return null;
+    			}
     		}
     	 
     		Contacts contact = new Contacts();
@@ -1015,18 +1027,20 @@ public class ValidationServiceImp {
 		String locationName = (String) hashtable.get("locationName");
 		
 		Long vehicleTypeId = (Long) vehicleTypeNameToId.get(vehicleTypeMakeModel);
+		
 		if(vehicleTypeId == null){
 			Logger.error("{} attempted to upload Vehicle but the Vehicle Type did not exist.", user.getUsername());
 			return null;
 		}
+		
 		Long locationId = (Long) locationNameToId.get(locationName);
+
 		if(locationId == null){
 			Logger.error("{} attempted to upload Vehicle but the Location did not exist.", user.getUsername());
 			return null;
 		}
-		
-		
-		if (!(plate.length() <= 12 && plate.length() > 0) || !(plate.matches("^[a-zA-Z0-9.]+$"))) {
+			
+		if (!(plate.length() <= 12 && plate.length() > 0) || !(plate.matches("^[a-zA-Z0-9. -]+$"))) {
 			Logger.error("{} attempted to upload a Vehicle but the Plate was not between 1 and 12 alphanumeric characters long.",user.getUsername());
 			return null;	
 		}
@@ -1134,7 +1148,7 @@ public class ValidationServiceImp {
 					return null;
 				}
 
-	    		if(!(licenseNumber.length() <= 32 && licenseNumber.length() > 0) || !(licenseNumber.matches("^[A-Za-z0-9-]{6,12}$"))){
+	    		if(!(licenseNumber.length() <= 32 && licenseNumber.length() > 0) || !(licenseNumber.matches("^[A-Za-z0-9-/]$"))){
 	    			Logger.info("{} attempted to upload a Driver but the license number must be between 0 and 12 characters that are alpahnumeric.",user.getUsername());
 	    			return null;
 	    		}
@@ -1144,7 +1158,7 @@ public class ValidationServiceImp {
 	    			return null;
 	    		}
 	    		
-	    		if(!(licenseClass.length() <= 12 && licenseClass.length() > 0) || !(licenseClass.matches("^[A-Za-z]{1}$"))) { 
+	    		if(!(licenseClass.length() <= 12 && licenseClass.length() > 0) || !(licenseClass.matches("^[A-Za-z0-9-/]$"))) { 
 	    			Logger.info("{} attempted to upload a Driver but the license class must be 1 character and alphabetic.",user.getUsername());
 	    			return null;
 	    		}
@@ -1248,31 +1262,31 @@ public class ValidationServiceImp {
 			Logger.error("{} attempted to upload Maintenance Order but the Technician did not exist.", user.getUsername());
 			return null;
 		}
-
-		if(!(date.length() <= 12 && date.length() > 0 && date.matches("^\\d{2}-(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)-\\d{4}$"))) { 
-			Logger.error("{} attempted to upload a Maintenance Order but the Date must be between 1 and 12 characters and formated MM/DD/YYYY.",user.getUsername());
-			return null;
+		
+		if (!(date == null || date.equals(""))) {
+			if(!(date.length() <= 12 && date.length() > 0 && date.matches("^\\d{2}-(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)-\\d{4}$"))) { 
+				Logger.error("{} attempted to upload a Maintenance Order but the Date must be between 1 and 12 characters and formated MM/DD/YYYY.",user.getUsername());
+				return null;
+			}
 		}
 		
-		if(!(details.length() <= 128 && details.length() > 0)) {
-			Logger.error("{} attempted to upload a Maintenance Order but the Details was not between 1 and 128 characters long.",user.getUsername());
-			return null;
+		if (!(details == null || details.equals(""))) {
+			if(!(details.length() <= 128 && details.length() > 0)) {
+				Logger.error("{} attempted to upload a Maintenance Order but the Details was not between 1 and 128 characters long.",user.getUsername());
+				return null;
+			}
 		}
-		
-		if(!(date.length() <= 12 && date.length() > 0 && date.matches("^\\d{2}-(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)-\\d{4}$"))) { 
-			Logger.error("{} attempted to upload a Maintenance Order but the Date must be between 1 and 12 characters and formated MM/DD/YYYY.",user.getUsername());
-			return null;
-		}
-		
 		
 		if(!(serviceType.length() <= 12 && serviceType.length() > 0) || !(serviceType.matches("^[a-zA-Z0-9.]+$"))) {
 			Logger.error("{} attempted to upload a Maintenance Order but the Service Type must be between 1 and 12 alphanumeric characters.",user.getUsername());
 			return null;
 		}
 		
-		if(!(cost.length() <= 16 && cost.length() > 0) || !(cost.matches("^[0-9.]+$"))) {
-			Logger.error("{} attempted to upload a Maintenance Order but the Cost must be between 1 and 16 numeric characters..",user.getUsername());
-			return null;
+		if (!(cost == null || cost.equals(""))) {
+			if(!(cost.length() <= 16 && cost.length() > 0) || !(cost.matches("^[0-9.]+$"))) {
+				Logger.error("{} attempted to upload a Maintenance Order but the Cost must be between 1 and 16 numeric characters..",user.getUsername());
+				return null;
+			}
 		}
 		
 		if(!(status.length() <= 64 && status.length() > 0)) {
@@ -1280,7 +1294,7 @@ public class ValidationServiceImp {
 			return null;
 		}
 		
-		if(!(type.length() <= 64 && type.length() > 0) || !(type.matches("^[a-zA-Z0-9.]+$"))) {
+		if(!(type.length() <= 64 && type.length() > 0) || !(type.matches("^[a-zA-Z0-9. ]+$"))) {
 			Logger.error("{} attempted to upload a Maintenance Order but the Maintenance Type must be between 1 and 64 characters.",user.getUsername());
 			return null;
 		}

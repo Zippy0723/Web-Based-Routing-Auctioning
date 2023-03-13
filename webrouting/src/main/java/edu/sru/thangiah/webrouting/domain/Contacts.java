@@ -13,6 +13,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.GenericGenerator;
+import org.springframework.lang.NonNull;
 
 /**
  * Sets up the Contacts database
@@ -30,34 +31,42 @@ public class Contacts {
 	@GeneratedValue(generator="generate")
     private long id;
 	
-	@Column(name="first_name", nullable= true, columnDefinition="varchar(32) default NULL")
+	@NonNull
+	@Column(name="first_name", nullable= false, columnDefinition="varchar(32)")
 	private String firstName;
 	
-	@Column(name="last_name", nullable= true, columnDefinition="varchar(32) default NULL")
+	@NonNull
+	@Column(name="last_name", nullable= false, columnDefinition="varchar(32)")
 	private String lastName;
 	
 	@Column(name="middle_initial", nullable= true, columnDefinition="varchar(1) default NULL")
 	private String middleInitial;
 	
-	@Column(name="email_address", nullable= true, columnDefinition="varchar(64) default NULL")
+	@NonNull
+	@Column(name="email_address", nullable= false, columnDefinition="varchar(64)")
 	private String emailAddress;
 	
-	@Column(name="street_address1", nullable= true, columnDefinition="varchar(128) default NULL")
+	@NonNull
+	@Column(name="street_address1", nullable= false, columnDefinition="varchar(128)")
 	private String streetAddress1;
 	
 	@Column(name="street_address2", nullable= true, columnDefinition="varchar(64) default NULL")
 	private String streetAddress2;
 	
-	@Column(name="city", nullable= true, columnDefinition="varchar(64) default NULL")
+	@NonNull
+	@Column(name="city", nullable= false, columnDefinition="varchar(64)")
 	private String city;
 	
-	@Column(name="state", nullable= true, columnDefinition="varchar(64) default NULL")
+	@NonNull
+	@Column(name="state", nullable= false, columnDefinition="varchar(64)")
 	private String state;
 	
-	@Column(name="zip", nullable= true, columnDefinition="varchar(12) default NULL")
+	@NonNull
+	@Column(name="zip", nullable= false, columnDefinition="varchar(12)")
 	private String zip;
 	
-	@Column(name="primary_phone", nullable= true, columnDefinition="varchar(64) default NULL")
+	@NonNull
+	@Column(name="primary_phone", nullable= false, columnDefinition="varchar(64)")
 	private String primaryPhone;
 	
 	@Column(name="work_phone", nullable= true, columnDefinition="varchar(64) default NULL")
