@@ -113,7 +113,6 @@ public class ExcelController {
 	}
 	
 	/**
-	 * 
 	 * @param model
 	 * @param session
 	 * @return
@@ -392,6 +391,8 @@ public class ExcelController {
 	@PostMapping("/upload-carrier")
 	public String LoadCarrierExcelForm(@RequestParam("file") MultipartFile excelData, HttpSession session, Model model){
 		
+		//Save current database in mem
+		Boolean validDependencies = true;
 		Hashtable<String, Long> vehicleTypeNameToId = new Hashtable<>();
 		Hashtable<String, Long> locationNameToId = new Hashtable<>();
 		Hashtable<String, Long> contactsFullNameToId = new Hashtable<>();
@@ -402,7 +403,6 @@ public class ExcelController {
 		XSSFWorkbook workbook;
 		User user = getLoggedInUser();
 		model = NotificationController.loadNotificationsIntoModel(user, model);
-		
 		try {
 			workbook = new XSSFWorkbook(excelData.getInputStream());
 			XSSFSheet vehicleTypesSheet = workbook.getSheetAt(0);
@@ -422,14 +422,70 @@ public class ExcelController {
 			List<Driver> drivers = new ArrayList<>();
 			List<MaintenanceOrders> maintenanceOrders = new ArrayList<>();
 			
+			List<String> allLocationNames = new ArrayList<>();
+			List<String> allContactFullNames = new ArrayList<>();
+			List<String> allMakeAndModel = new ArrayList<>();
+			
 			//Start Vehicle Types
-			vehicleTypes = validationServiceImp.validateVehicleTypesSheet(vehicleTypesSheet);
+			vehicleTypes = validationServiceImp.validateVehicleTypesSheet(vehicleTypesSheet, allMakeAndModel);
+			locations = validationServiceImp.validateLocationsSheet(locationsSheet, allLocationNames);
+			contacts = validationServiceImp.validateContactsSheet(contactsSheet, allContactFullNames);
+			vehicles = validationServiceImp.validateVehiclesSheet(vehiclesSheet);
+			technicians = validationServiceImp.validateTechniciansSheet(techniciansSheet);
+			drivers = validationServiceImp.validateDriverSheet(driversSheet);
+			maintenanceOrders = validationServiceImp.validateMaintenanceOrdersSheet(maintenanceOrdersSheet);
 			
 			if (vehicleTypes == null) {
 				Logger.info("{} attempted to save Vehicle Types but failed.",user.getUsername());
 				workbook.close();
 				return "redirect:" + redirectLocation;
 			}
+			
+			if (locations == null) {
+				Logger.info("{} attempted to save Locations but failed.",user.getUsername());
+				workbook.close();
+				return "redirect:" + redirectLocation;
+			}
+			
+			if (contacts == null) {
+				Logger.info("{} attempted to save Contacts but failed.",user.getUsername());
+				workbook.close();
+				return "redirect:" + redirectLocation; 
+			}
+			
+			if (vehicles == null) {
+				Logger.info("{} attempted to save Vehicle but failed.",user.getUsername());
+				workbook.close();
+				return "redirect:" + redirectLocation;
+			}
+			
+			if (technicians == null) {
+				Logger.info("{} attempted to save Technicians but failed.",user.getUsername());
+				workbook.close();
+				return "redirect:" + redirectLocation; 
+			}
+			
+			if (drivers == null) {
+				Logger.info("{} attempted to save Drivers but failed.",user.getUsername());
+				workbook.close();
+				return "redirect:" + redirectLocation;
+			}
+			
+			if (maintenanceOrders == null) {
+				Logger.info("{} attempted to save Maintenance Orders but failed.",user.getUsername());
+				workbook.close();
+				return "redirect:" + redirectLocation; 
+			}
+			
+			//CHECK FOR DEPENDENCIES
+			
+			
+			//validDependencies = validationServiceImp.validateDependencies(vehicleTypes, locations, contacts, vehicles, technicians, drivers, maintenanceOrders);
+			// on fail do nothing
+			
+			// on pass REMOVE ALL FROM DATABASE and save and set dependencies
+			
+			
 			
 			
 			for(VehicleTypes vehicleType: vehicleTypes) {
@@ -445,13 +501,8 @@ public class ExcelController {
 			}
 			
 			//Start Locations
-			locations = validationServiceImp.validateLocationsSheet(locationsSheet);
 			
-			if (locations == null) {
-				Logger.info("{} attempted to save Locations but failed.",user.getUsername());
-				workbook.close();
-				return "redirect:" + redirectLocation;
-			}
+
 
 			for(Locations location: locations) {
 				locationsRepository.save(location);
@@ -468,13 +519,8 @@ public class ExcelController {
 			}
 			
 			//Start Contacts
-			contacts = validationServiceImp.validateContactsSheet(contactsSheet);
 			
-			if (contacts == null) {
-				Logger.info("{} attempted to save Contacts but failed.",user.getUsername());
-				workbook.close();
-				return "redirect:" + redirectLocation; 
-			}
+
 			
 			for(Contacts contact: contacts) {
 				contactsRepository.save(contact);
@@ -491,13 +537,7 @@ public class ExcelController {
 			}
 			
 			//Start Vehicles
-			vehicles = validationServiceImp.validateVehiclesSheet(vehiclesSheet, vehicleTypeNameToId, locationNameToId);
 			
-			if (vehicles == null) {
-				Logger.info("{} attempted to save Vehicle but failed.",user.getUsername());
-				workbook.close();
-				return "redirect:" + redirectLocation;
-			}
 			
 			for(Vehicles vehicle: vehicles) {
 				vehiclesRepository.save(vehicle);
@@ -515,13 +555,9 @@ public class ExcelController {
 			
 			
 			//Start Technicians
-			technicians = validationServiceImp.validateTechniciansSheet(techniciansSheet, contactsFullNameToId);
 			
-			if (technicians == null) {
-				Logger.info("{} attempted to save Technicians but failed.",user.getUsername());
-				workbook.close();
-				return "redirect:" + redirectLocation; 
-			}
+			
+
 			
 			for(Technicians technician: technicians) {
 				techniciansRepository.save(technician);
@@ -539,13 +575,8 @@ public class ExcelController {
 			
 			
 			//Start Drivers
-			drivers = validationServiceImp.validateDriverSheet(driversSheet, vehiclePlateAndVinToId, contactsFullNameToId);
 			
-			if (drivers == null) {
-				Logger.info("{} attempted to save Drivers but failed.",user.getUsername());
-				workbook.close();
-				return "redirect:" + redirectLocation;
-			}
+
 			
 			for(Driver driver: drivers) {
 				driverRepository.save(driver);
@@ -554,13 +585,8 @@ public class ExcelController {
 			
 			
 			//Start MaintenanceOrders
-			maintenanceOrders = validationServiceImp.validateMaintenanceOrdersSheet(maintenanceOrdersSheet, vehiclePlateAndVinToId, techniciansContactFullNameToId);
 
-			if (maintenanceOrders == null) {
-				Logger.info("{} attempted to save Maintenance Orders but failed.",user.getUsername());
-				return "redirect:" + redirectLocation; 
-			}
-			
+
 			for(MaintenanceOrders maintenanceorder: maintenanceOrders) {
 				maintenanceOrdersRepository.save(maintenanceorder);
 				Logger.info("{} saved Maintenance Order with ID {}.",user.getUsername(), maintenanceorder.getId());
