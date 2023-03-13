@@ -366,20 +366,17 @@ public class ValidationServiceImp {
 		try {
 			
 			for(int i=1; i<worksheet.getPhysicalNumberOfRows(); i++) {
-				Boolean isNull = false;
-				 
 				VehicleTypes VehicleType = new VehicleTypes();
 		        XSSFRow row = worksheet.getRow(i);
 		        
-		        for (int j = 0; j<15; j++) {
-		        	if (row.getCell(j)== null || row.getCell(j).toString().equals("")) {
-		        		isNull = true;
-		        	}
-		        }
-		        if (isNull == true) {
-		        	break;
-		        }
-		        
+	        	if ((row.getCell(0)== null || row.getCell(0).toString().equals("")) || (row.getCell(1)== null || row.getCell(1).toString().equals("")) || (row.getCell(3)== null || row.getCell(3).toString().equals("")) 
+	        			|| (row.getCell(4)== null || row.getCell(4).toString().equals("")) || (row.getCell(5)== null || row.getCell(5).toString().equals("")) || (row.getCell(6)== null || row.getCell(6).toString().equals(""))
+	        			|| (row.getCell(7)== null || row.getCell(7).toString().equals("")) || (row.getCell(8)== null || row.getCell(8).toString().equals("")) || (row.getCell(10)== null || row.getCell(10).toString().equals("")) 
+	        			|| (row.getCell(11)== null || row.getCell(11).toString().equals("")) || (row.getCell(12)== null || row.getCell(12).toString().equals("")) || (row.getCell(13)== null || row.getCell(13).toString().equals(""))
+	        			|| (row.getCell(14)== null || row.getCell(14).toString().equals(""))) {
+	        				break;
+	        	}
+	        	
 		        String type = row.getCell(0).toString().strip();
 			    String subType = row.getCell(1).toString().strip();
 	    		String description = row.getCell(2).toString().strip();
@@ -579,19 +576,15 @@ public class ValidationServiceImp {
 		try {
 			
 			for(int i=1; i<worksheet.getPhysicalNumberOfRows(); i++) {
-				Boolean isNull = false;
 				Locations location = new Locations();
 		        XSSFRow row = worksheet.getRow(i);
 		        
-		        for (int j = 0; j<9; j++) {
-		        	if (row.getCell(j)== null || row.getCell(j).toString().equals("")) {
-		        		isNull = true;
-		        	}
-		        }
-		        if (isNull == true) {
-		        	break;
-		        }
-		        
+	        	if ((row.getCell(0)== null || row.getCell(0).toString().equals("")) || (row.getCell(1)== null || row.getCell(1).toString().equals("")) || (row.getCell(3)== null || row.getCell(3).toString().equals("")) 
+	        			|| (row.getCell(4)== null || row.getCell(4).toString().equals("")) || (row.getCell(5)== null || row.getCell(5).toString().equals("")) || (row.getCell(6)== null || row.getCell(6).toString().equals(""))
+	        			|| (row.getCell(7)== null || row.getCell(7).toString().equals("")) || (row.getCell(8)== null || row.getCell(8).toString().equals(""))) {
+	        				break;
+	        	}
+	        	
 		        String locationName = row.getCell(0).toString().strip();
 	    		String streetAddress1 = row.getCell(1).toString().strip();
 	    		String streetAddress2 = row.getCell(2).toString().strip();
@@ -724,20 +717,15 @@ public class ValidationServiceImp {
 			User user = getLoggedInUser();
 			
 			for(int i=1; i<worksheet.getPhysicalNumberOfRows(); i++) {
-				
-				Boolean isNull = false; 
 				Contacts contact = new Contacts();
 		        XSSFRow row = worksheet.getRow(i);
 		        
 		        
-		        for (int j = 0; j<11; j++) {
-		        	if (row.getCell(j)== null || row.getCell(j).toString().equals("")) {
-		        		isNull = true;
-		        	}
-		        }
-		        if (isNull == true) {
-		        	break;
-		        }
+	        	if ((row.getCell(0)== null || row.getCell(0).toString().equals("")) || (row.getCell(1)== null || row.getCell(1).toString().equals("")) || (row.getCell(3)== null || row.getCell(3).toString().equals("")) 
+	        			|| (row.getCell(4)== null || row.getCell(4).toString().equals("")) || (row.getCell(6)== null || row.getCell(6).toString().equals("")) || (row.getCell(7)== null || row.getCell(7).toString().equals(""))
+	        			|| (row.getCell(8)== null || row.getCell(8).toString().equals("")) || (row.getCell(9)== null || row.getCell(9).toString().equals(""))) {
+	        				break;
+	        	}
 		        
 		        String firstName = row.getCell(0).toString().strip();
 			    String lastName = row.getCell(1).toString().strip();
@@ -889,19 +877,13 @@ public class ValidationServiceImp {
 			 try {	
 				
 				for(int i=1; i<worksheet.getPhysicalNumberOfRows(); i++) {
-					Boolean isNull = false;
 					Technicians technician = new Technicians();
 			        XSSFRow row = worksheet.getRow(i);
 			        
-			        for (int j = 0; j<2; j++) {
-			        	if (row.getCell(j)== null || row.getCell(j).toString().equals("")) {
-			        		isNull = true;
-			        	}
-			        }
-			        if (isNull == true) {
-			        	break;
-			        }
-			        
+		        	if ((row.getCell(0)== null || row.getCell(0).toString().equals("")) || (row.getCell(1)== null || row.getCell(1).toString().equals(""))) {
+		        				break;
+		        	}
+		        	
 			        String skillGrade = row.getCell(0).toString().strip();
 				    String contactFullName = row.getCell(1).toString().strip();
 
@@ -969,18 +951,13 @@ public class ValidationServiceImp {
 		try {
 			
 			for(int i=1; i<worksheet.getPhysicalNumberOfRows(); i++) {
-				Boolean isNull = false;
 				Vehicles vehicle = new Vehicles();
 		        XSSFRow row = worksheet.getRow(i);
 		        
-		        for (int j = 0; j<5; j++) {
-		        	if (row.getCell(j)== null || row.getCell(j).toString().equals("")) {
-		        		isNull = true;
-		        	}
-		        }
-		        if (isNull == true) {
-		        	break;
-		        }
+	        	if ((row.getCell(0)== null || row.getCell(0).toString().equals("")) || (row.getCell(1)== null || row.getCell(1).toString().equals("")) || (row.getCell(2)== null || row.getCell(2).toString().equals("")) 
+	        			|| (row.getCell(3)== null || row.getCell(3).toString().equals("")) || (row.getCell(4)== null || row.getCell(4).toString().equals(""))) {
+	        				break;
+	        	}
 		        
 		        String plate = row.getCell(0).toString().strip();
 			    String vin = row.getCell(1).toString().strip();
@@ -1082,18 +1059,13 @@ public class ValidationServiceImp {
 			 try {	
 				
 				for(int i=1; i<worksheet.getPhysicalNumberOfRows(); i++) {
-					Boolean isNull = false;
 					Driver driver = new Driver();
 			        XSSFRow row = worksheet.getRow(i);
 			        
-			        for (int j = 0; j<5; j++) {
-			        	if (row.getCell(j)== null || row.getCell(j).toString().equals("")) {
-			        		isNull = true;
-			        	}
-			        }
-			        if (isNull == true) {
-			        	break;
-			        }
+		        	if ((row.getCell(0)== null || row.getCell(0).toString().equals("")) || (row.getCell(1)== null || row.getCell(1).toString().equals("")) || (row.getCell(2)== null || row.getCell(2).toString().equals("")) 
+		        			|| (row.getCell(3)== null || row.getCell(3).toString().equals("")) || (row.getCell(4)== null || row.getCell(4).toString().equals(""))) {
+		        				break;
+		        	}
 			        
 			        String licenseNumber = row.getCell(0).toString().strip();
 				    String licenseExpiration = row.getCell(1).toString().strip();
@@ -1183,19 +1155,15 @@ public class ValidationServiceImp {
 		try {
 			
 			for(int i=1; i<worksheet.getPhysicalNumberOfRows(); i++) {
-				Boolean isNull = false;
 				 
 				MaintenanceOrders maintenanceOrder = new MaintenanceOrders();
 		        XSSFRow row = worksheet.getRow(i);
 		        
-		        for (int j = 0; j<8; j++) {
-		        	if (row.getCell(j)== null || row.getCell(j).toString().equals("")) {
-		        		isNull = true;
+		       
+		        	if ((row.getCell(2)== null || row.getCell(2).toString().equals("")) || (row.getCell(4)== null || row.getCell(4).toString().equals("")) || (row.getCell(5)== null || row.getCell(5).toString().equals("")) 
+		        			|| (row.getCell(6)== null || row.getCell(6).toString().equals("")) || (row.getCell(7)== null || row.getCell(7).toString().equals(""))) {
+		        				break;
 		        	}
-		        }
-		        if (isNull == true) {
-		        	break;
-		        }
 		        
 		        String date = row.getCell(0).toString();
 			    String details = row.getCell(1).toString().strip();
