@@ -235,7 +235,7 @@ public class ValidationServiceImp {
 		}
 		
 		if(!(scac.length() <= 4 && scac.length() >= 2) || !(scac.matches("^[a-zA-Z0-9]+$"))) {
-			if (!(scac.equals("") || scac == null)) {
+			if (!scac.equals("")) {
 					Logger.error("{} attempted to upload a shipment but the SCAC must be between 2 and 4 characters long or empty.",user.getUsername());
 					return null;
 				}	
@@ -361,37 +361,25 @@ public class ValidationServiceImp {
 	}
 	
 	
-	public List<VehicleTypes> validateVehicleTypesSheet(XSSFSheet worksheet, List<String> allMakeAndModel){
+	public List<VehicleTypes> validateVehicleTypesSheet(XSSFSheet worksheet){
 		List <VehicleTypes> result = new ArrayList<>();
 		try {
 			
 			for(int i=1; i<worksheet.getPhysicalNumberOfRows(); i++) {
-				XSSFRow row = worksheet.getRow(i);
-				
-				if ((row.getCell(3)== null || row.getCell(3).toString().equals("")) || (row.getCell(4)== null || row.getCell(4).toString().equals(""))){
-					break;
-				}
-				String makeAndModel = row.getCell(3).toString().strip() + " " + row.getCell(4).toString().strip();
-				
-				if (allMakeAndModel.contains(makeAndModel)){
-					Logger.error("Duplicate Make and Model Numbers.");
-					return null;
-				}
-				allMakeAndModel.add(makeAndModel);
-			}
-			
-			for(int i=1; i<worksheet.getPhysicalNumberOfRows(); i++) {
+				Boolean isNull = false;
+				 
 				VehicleTypes VehicleType = new VehicleTypes();
 		        XSSFRow row = worksheet.getRow(i);
 		        
-	        	if ((row.getCell(0)== null || row.getCell(0).toString().equals("")) || (row.getCell(1)== null || row.getCell(1).toString().equals("")) || (row.getCell(3)== null || row.getCell(3).toString().equals("")) 
-	        			|| (row.getCell(4)== null || row.getCell(4).toString().equals("")) || (row.getCell(5)== null || row.getCell(5).toString().equals("")) || (row.getCell(6)== null || row.getCell(6).toString().equals(""))
-	        			|| (row.getCell(7)== null || row.getCell(7).toString().equals("")) || (row.getCell(8)== null || row.getCell(8).toString().equals("")) || (row.getCell(10)== null || row.getCell(10).toString().equals("")) 
-	        			|| (row.getCell(11)== null || row.getCell(11).toString().equals("")) || (row.getCell(12)== null || row.getCell(12).toString().equals("")) || (row.getCell(13)== null || row.getCell(13).toString().equals(""))
-	        			|| (row.getCell(14)== null || row.getCell(14).toString().equals(""))) {
-	        				break;
-	        	}
-	        	
+		        for (int j = 0; j<15; j++) {
+		        	if (row.getCell(j)== null || row.getCell(j).toString().equals("")) {
+		        		isNull = true;
+		        	}
+		        }
+		        if (isNull == true) {
+		        	break;
+		        }
+		        
 		        String type = row.getCell(0).toString().strip();
 			    String subType = row.getCell(1).toString().strip();
 	    		String description = row.getCell(2).toString().strip();
@@ -475,21 +463,19 @@ public class ValidationServiceImp {
 		String minimumCubicWeight = (String) hashtable.get("minimumCubicWeight");
 		String maximumCubicWeight = (String) hashtable.get("maximumCubicWeight");
 		
-		if (!(type.length() <= 32 && type.length() > 0) || !(type.matches("^[a-zA-Z ]+$"))) {
+		if (!(type.length() <= 32 && type.length() > 0) || !(type.matches("^[a-zA-Z]+$"))) {
 			Logger.error("{} attempted to upload a Vehicle Type but the Type was not between 1 and 32 alphabetic characters long.",user.getUsername());
 			return null;	
 		}
 		
-		if (!(subType.length() <= 32 && subType.length() > 0) || !(subType.matches("^[a-zA-Z ]+$"))) {
+		if (!(subType.length() <= 32 && subType.length() > 0) || !(subType.matches("^[a-zA-Z]+$"))) {
 			Logger.error("{} attempted to upload a Vehicle Type but the Sub Type was not between 1 and 32 characters long.",user.getUsername());
 			return null;	
 		}
 	
-		if (!(description == null || description.equals(""))) {
-			if (!(description.length() <= 64 && description.length() > 0)) {
-				Logger.error("{} attempted to upload a Vehicle Type but the Description was not between 1 and 64 characters long.",user.getUsername());
-				return null;	
-			}
+		if (!(description.length() <= 64 && description.length() > 0) || !(description.matches("^[a-zA-Z0-9.]+$"))) {
+			Logger.error("{} attempted to upload a Vehicle Type but the Description was not between 1 and 64 characters long.",user.getUsername());
+			return null;	
 		}
 		
 		if(!(make.length() <= 32 && make.length() > 0) || !(make.matches("^[a-zA-Z0-9.-]+$"))) {
@@ -512,11 +498,9 @@ public class ValidationServiceImp {
 			return null;
 		}
 		
-		if (!(capacity == null || capacity.equals(""))) {
-			if(!(capacity.length() <= 16 && capacity.length() > 0) || !(capacity.matches("^[0-9.]+$"))) {
-				Logger.error("{} attempted to upload a Vehicle Type but the Capacity was not between 1 and 16 numeric characters long.",user.getUsername());
-				return null;
-			}
+		if(!(capacity.length() <= 16 && capacity.length() > 0) || !(capacity.matches("^[0-9.]+$"))) {
+			Logger.error("{} attempted to upload a Vehicle Type but the Capacity was not between 1 and 16 numeric characters long.",user.getUsername());
+			return null;
 		}
 		
 		if(!(maximumRange.length() <= 16 && maximumRange.length() > 0) || !(maximumRange.matches("^[0-9.]+$"))) {
@@ -524,11 +508,9 @@ public class ValidationServiceImp {
 			return null;
 		}
 		
-		if (!(restrictions == null || restrictions.equals(""))) {
-			if(!(restrictions.length() <= 128 && restrictions.length() > 0)) {
-				Logger.error("{} attempted to upload a Vehicle Type but the Restrictions was not between 1 and 128 characters long.",user.getUsername());
-				return null;
-			}
+		if(!(restrictions.length() <= 128 && restrictions.length() > 0)) {
+			Logger.error("{} attempted to upload a Vehicle Type but the Restrictions was not between 1 and 128 characters long.",user.getUsername());
+			return null;
 		}
 		
 		if(!(height.length() <= 16 && height.length() > 0) || !(height.matches("^[0-9.]+$"))) {
@@ -541,10 +523,12 @@ public class ValidationServiceImp {
 			return null;
 		}
 		
+		
 		if(!(length.length() <= 16 && length.length() > 0) || !( length.matches("^[0-9.]+$"))) {
 			Logger.error("{} attempted to upload a Vehicle Type but the Length was not between 1 and 16 numeric characters long.",user.getUsername());
 			return null;
 		}
+		
 		
 		if(!(minimumCubicWeight.length() <= 16 && minimumCubicWeight.length() > 0) || !(minimumCubicWeight.matches("^[0-9.]+$"))){
 			Logger.error("{} attempted to upload a Vehicle Type but the Minimum Cubic Weight was not between 1 and 16 numeric characters long.",user.getUsername());
@@ -555,7 +539,6 @@ public class ValidationServiceImp {
 			Logger.error("{} attempted to upload a Vehicle Type but the Maximum Cubic Weight was not between 1 and 16 numeric characters long.",user.getUsername());
 			return null;
 		}
-		
 
 		VehicleTypes vehicleType = new VehicleTypes();
 		
@@ -585,36 +568,25 @@ public class ValidationServiceImp {
 	
 	}
 
-	public List<Locations> validateLocationsSheet(XSSFSheet worksheet, List<String> allLocationNames){
+	public List<Locations> validateLocationsSheet(XSSFSheet worksheet){
 		List <Locations> result = new ArrayList<>();
 		
 		try {
 			
 			for(int i=1; i<worksheet.getPhysicalNumberOfRows(); i++) {
-				XSSFRow row = worksheet.getRow(i);
-				
-				if ((row.getCell(0)== null || row.getCell(0).toString().equals(""))){
-					break;
-				}
-				String locationName = row.getCell(0).toString().strip();
-				
-				if (allLocationNames.contains(locationName)){
-					Logger.error("Duplicate Location Names");
-					return null;
-				}
-				allLocationNames.add(locationName);
-			}
-			
-			for(int i=1; i<worksheet.getPhysicalNumberOfRows(); i++) {
+				Boolean isNull = false;
 				Locations location = new Locations();
 		        XSSFRow row = worksheet.getRow(i);
 		        
-	        	if ((row.getCell(0)== null || row.getCell(0).toString().equals("")) || (row.getCell(1)== null || row.getCell(1).toString().equals("")) || (row.getCell(3)== null || row.getCell(3).toString().equals("")) 
-	        			|| (row.getCell(4)== null || row.getCell(4).toString().equals("")) || (row.getCell(5)== null || row.getCell(5).toString().equals("")) || (row.getCell(6)== null || row.getCell(6).toString().equals(""))
-	        			|| (row.getCell(7)== null || row.getCell(7).toString().equals("")) || (row.getCell(8)== null || row.getCell(8).toString().equals(""))) {
-	        				break;
-	        	}
-	        	
+		        for (int j = 0; j<9; j++) {
+		        	if (row.getCell(j)== null || row.getCell(j).toString().equals("")) {
+		        		isNull = true;
+		        	}
+		        }
+		        if (isNull == true) {
+		        	break;
+		        }
+		        
 		        String locationName = row.getCell(0).toString().strip();
 	    		String streetAddress1 = row.getCell(1).toString().strip();
 	    		String streetAddress2 = row.getCell(2).toString().strip();
@@ -675,7 +647,7 @@ public class ValidationServiceImp {
 			String locationLongitude = (String)hashtable.get("locationLongitude");
 			String locationType = (String)hashtable.get("locationType");
 			
-			if (!(locationName.length() <= 32 && locationName.length() > 0) || !(locationName.matches("^[a-zA-Z ']+$"))) { 
+			if (!(locationName.length() <= 32 && locationName.length() > 0) || !(locationName.matches("^[a-zA-Z]+$"))) { 
     			Logger.info("{} attempted to upload a location name field must be between 1 and 32 characters and alphabetic.",user.getUsername());
     			return null;
     		}
@@ -685,11 +657,9 @@ public class ValidationServiceImp {
     			return null;
     		}
     		
-    		if (!(streetAddress2 == null || streetAddress2.equals(""))) {
-    			if(!(streetAddress2.length() <= 64 && streetAddress2.length() > 0) || !(streetAddress2.matches("^[A-Za-z0-9./-]+(?:[\\s-][A-Za-z0-9.-]+)*$"))) {
-    				Logger.info("{} attempted to upload a location street address but it must be 2 must be between 1 and 64 characters that are alphanumeric.",user.getUsername());
-    				return null;
-    			}
+    		if(!(streetAddress2.length() <= 64 && streetAddress2.length() > 0) || !(streetAddress2.matches("^[A-Za-z0-9./-]+(?:[\\s-][A-Za-z0-9.-]+)*$"))) { 
+    			Logger.info("{} attempted to upload a location street address but it must be 2 must be between 1 and 64 characters that are alphanumeric.",user.getUsername());
+    			return null;
     		}
     		
     		if(!(locationCity.length() <= 64 && locationCity.length() > 0) || !(locationCity.matches("^[A-Za-z]+(?:[\\s-][A-Za-z]+)*$"))) { 
@@ -716,8 +686,7 @@ public class ValidationServiceImp {
     			Logger.info("{} attempted to upload a location longitude must be between -180 and 180 up to 7 decimal places.",user.getUsername());
     			return null;
     		}
-    		
-    		if(!(locationType.length() <= 64 && locationType.length() > 0) || !(locationType.matches("^[a-zA-Z ]+$"))){ 
+    		if(!(locationType.length() <= 64 && locationType.length() > 0) || !(locationType.matches("^[a-zA-Z]+$"))){ 
     			Logger.info("{} attempted to upload a location type must be 1 to 32 alphabetic characters.",user.getUsername());
     			return null;
     		}
@@ -740,38 +709,27 @@ public class ValidationServiceImp {
     		return location;
 	}
 
-	public List<Contacts> validateContactsSheet(XSSFSheet worksheet, List<String> allContactFullNames){
+	public List<Contacts> validateContactsSheet(XSSFSheet worksheet){
 		List <Contacts> result = new ArrayList<>();
 	
 		try {
 			User user = getLoggedInUser();
 			
-			
 			for(int i=1; i<worksheet.getPhysicalNumberOfRows(); i++) {
-				XSSFRow row = worksheet.getRow(i);
 				
-				if ((row.getCell(0)== null || row.getCell(0).toString().equals("")) || (row.getCell(1)== null || row.getCell(1).toString().equals(""))){
-					break;
-				}
-				String fullName = row.getCell(0).toString().strip() + " " + row.getCell(1).toString().strip();
-				
-				if (allContactFullNames.contains(fullName)){
-					Logger.error("Duplicate Contact First and Last Names.");
-					return null;
-				}
-				allContactFullNames.add(fullName);
-			}
-			
-			for(int i=1; i<worksheet.getPhysicalNumberOfRows(); i++) {
+				Boolean isNull = false; 
 				Contacts contact = new Contacts();
 		        XSSFRow row = worksheet.getRow(i);
 		        
 		        
-	        	if ((row.getCell(0)== null || row.getCell(0).toString().equals("")) || (row.getCell(1)== null || row.getCell(1).toString().equals("")) || (row.getCell(3)== null || row.getCell(3).toString().equals("")) 
-	        			|| (row.getCell(4)== null || row.getCell(4).toString().equals("")) || (row.getCell(6)== null || row.getCell(6).toString().equals("")) || (row.getCell(7)== null || row.getCell(7).toString().equals(""))
-	        			|| (row.getCell(8)== null || row.getCell(8).toString().equals("")) || (row.getCell(9)== null || row.getCell(9).toString().equals(""))) {
-	        				break;
-	        	}
+		        for (int j = 0; j<11; j++) {
+		        	if (row.getCell(j)== null || row.getCell(j).toString().equals("")) {
+		        		isNull = true;
+		        	}
+		        }
+		        if (isNull == true) {
+		        	break;
+		        }
 		        
 		        String firstName = row.getCell(0).toString().strip();
 			    String lastName = row.getCell(1).toString().strip();
@@ -838,20 +796,19 @@ public class ValidationServiceImp {
 			String primaryPhone = (String)hashtable.get("primaryPhone");
 			String workPhone = (String)hashtable.get("workPhone");
 			
-			if (!(firstName.length() <= 32 && firstName.length() > 0) || !(firstName.matches("^[a-zA-Z ']+$"))) { 
+			if (!(firstName.length() <= 32 && firstName.length() > 0) || !(firstName.matches("^[a-zA-Z]+$"))) { 
     			Logger.info("{} attempted to upload a contact but Contact first name field must be between 1 and 32 characters and alphabetic.",user.getUsername());
     			return null;
     		}
     		
-    		if(!(lastName.length() <= 32 && lastName.length() > 0) || !(lastName.matches("^[a-zA-Z ']+$"))) {
+    		if(!(lastName.length() <= 32 && lastName.length() > 0) || !(lastName.matches("^[a-zA-Z]+$"))) {
     			Logger.info("{} attempted to upload a contact but Contact last name field must be between 1 and 32 characters and alphbetic",user.getUsername());
     			return null;
     		}
-    		if (!(middleInitial == null || middleInitial.equals(""))) {
-    			if(!(middleInitial.length() <= 16 && middleInitial.length() > 0) || !(middleInitial.matches("^[A-Za-z]{1}$"))) {
-    				Logger.info("{} attempted to upload a contact but Contact Middle initial must be 1 character and alphabetic.",user.getUsername());
-    				return null;
-    			}
+    		
+    		if(!(middleInitial.length() <= 16 && middleInitial.length() > 0) || !(middleInitial.matches("^[A-Za-z]{1}$"))) {
+    			Logger.info("{} attempted to upload a contact but Contact Middle initial must be 1 character and alphabetic.",user.getUsername());
+    			return null;
     		}
     		
     		if(!(emailAddress.length() <= 64 && emailAddress.length() > 0) || !(emailAddress.matches("^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+$"))){
@@ -864,12 +821,11 @@ public class ValidationServiceImp {
     			return null;
     		}
     		
-    		if (!(streetAddress2 == null || streetAddress2.equals(""))) {
-    			if(!(streetAddress2.length() <= 64 && streetAddress2.length() > 0) || !(streetAddress2.matches("^[A-Za-z0-9./-]+(?:[\\s-][A-Za-z0-9.-]+)*$"))) { 
-    				Logger.info("{} attempted to upload a contact but Contact street address 2 must be between 1 and 64 characters that are alphanumeric.",user.getUsername());
-    				return null;
-    			}
+    		if(!(streetAddress2.length() <= 64 && streetAddress2.length() > 0) || !(streetAddress2.matches("^[A-Za-z0-9./-]+(?:[\\s-][A-Za-z0-9.-]+)*$"))) { 
+    			Logger.info("{} attempted to upload a contact but Contact street address 2 must be between 1 and 64 characters that are alphanumeric.",user.getUsername());
+    			return null;
     		}
+    		
     		if(!(contactCity.length() <= 64 && contactCity.length() > 0) || !(contactCity.matches("^[A-Za-z]+(?:[\\s-][A-Za-z]+)*$"))) {
     			Logger.info("{} attempted to upload a contact but Contact City must be between 1 and 64 characters and is alphabetic.",user.getUsername());
     			return null;
@@ -890,11 +846,9 @@ public class ValidationServiceImp {
     			return null;
     		}
     		
-    		if (!(workPhone == null || workPhone.equals(""))) {
-    			if(!(workPhone.length() <= 13 && workPhone.length() > 0) || !(workPhone.matches("\\d{3}-\\d{3}-\\d{4}"))){ 
-    				Logger.info("{} attempted to upload a contact but Contact work phone must be must be in format ###-###-####.",user.getUsername());
-    				return null;
-    			}
+    		if(!(workPhone.length() <= 13 && workPhone.length() > 0) || !(workPhone.matches("\\d{3}-\\d{3}-\\d{4}"))){ 
+    			Logger.info("{} attempted to upload a contact but Contact work phone must be must be in format ###-###-####.",user.getUsername());
+    			return null;
     		}
     	 
     		Contacts contact = new Contacts();
@@ -917,19 +871,25 @@ public class ValidationServiceImp {
 	}
 		
 		
-	public List<Technicians> validateTechniciansSheet(XSSFSheet worksheet){
+	public List<Technicians> validateTechniciansSheet(XSSFSheet worksheet, Hashtable<String, Long> contactsFullNameToId){
 		List <Technicians> result = new ArrayList<>();
 		 {
 			 try {	
 				
 				for(int i=1; i<worksheet.getPhysicalNumberOfRows(); i++) {
+					Boolean isNull = false;
 					Technicians technician = new Technicians();
 			        XSSFRow row = worksheet.getRow(i);
 			        
-		        	if ((row.getCell(0)== null || row.getCell(0).toString().equals("")) || (row.getCell(1)== null || row.getCell(1).toString().equals(""))) {
-		        		break;
-		        	}
-		        	
+			        for (int j = 0; j<2; j++) {
+			        	if (row.getCell(j)== null || row.getCell(j).toString().equals("")) {
+			        		isNull = true;
+			        	}
+			        }
+			        if (isNull == true) {
+			        	break;
+			        }
+			        
 			        String skillGrade = row.getCell(0).toString().strip();
 				    String contactFullName = row.getCell(1).toString().strip();
 
@@ -938,7 +898,7 @@ public class ValidationServiceImp {
 		    		hashtable.put("skillGrade", skillGrade);
 		    		hashtable.put("contactFullName", contactFullName );
 
-		    		technician = validateTechnicians(hashtable);
+		    		technician = validateTechnicians(hashtable, contactsFullNameToId);
 		    		if (technician == null) {
 		    			return null;
 		    		}
@@ -956,11 +916,19 @@ public class ValidationServiceImp {
 		}
 	
 	
-	public Technicians validateTechnicians(Hashtable<String, String> hashtable) {
+	public Technicians validateTechnicians(Hashtable<String, String> hashtable, Hashtable<String, Long> contactsFullNameToId) {
 		
 		User user = getLoggedInUser();
 		
 		String skillGrade = (String) hashtable.get("skillGrade");
+	    String contactFullName = (String) hashtable.get("contactFullName");
+		Long contactId = (Long) contactsFullNameToId.get(contactFullName);
+		
+		
+		if(contactId == null){
+			Logger.error("{} attempted to upload Technician but the Contact did not exist.", user.getUsername());
+			return null;
+		}
 		
 		if (!(skillGrade.length() <= 12 && skillGrade.length() > 0) || !(skillGrade.matches("^[a-zA-Z0-9.]+$"))) {
 			Logger.error("{} attempted to upload a Technician but the Skill Grade was not between 1 and 12 alphanumeric characters long.",user.getUsername());
@@ -973,8 +941,7 @@ public class ValidationServiceImp {
 		
 		technician.setCarrier(user.getCarrier());
 		technician.setSkill_grade(skillGrade);
-		
-		technician.setContact(null);
+		technician.setContact(contactsRepository.findById(contactId).orElseThrow(() -> new IllegalArgumentException("Invalid Contact Id")));
 		
 		}
 	catch(Exception e) {
@@ -985,18 +952,23 @@ public class ValidationServiceImp {
 
 		return technician;
 	}
-	public List<Vehicles> validateVehiclesSheet(XSSFSheet worksheet){
+	public List<Vehicles> validateVehiclesSheet(XSSFSheet worksheet, Hashtable<String, Long> vehicleTypeNameToId, Hashtable<String, Long> locationNameToId){
 		List <Vehicles> result = new ArrayList<>();
 		try {
 			
 			for(int i=1; i<worksheet.getPhysicalNumberOfRows(); i++) {
+				Boolean isNull = false;
 				Vehicles vehicle = new Vehicles();
 		        XSSFRow row = worksheet.getRow(i);
 		        
-	        	if ((row.getCell(0)== null || row.getCell(0).toString().equals("")) || (row.getCell(1)== null || row.getCell(1).toString().equals("")) || (row.getCell(2)== null || row.getCell(2).toString().equals("")) 
-	        			|| (row.getCell(3)== null || row.getCell(3).toString().equals("")) || (row.getCell(4)== null || row.getCell(4).toString().equals(""))) {
-	        				break;
-	        	}
+		        for (int j = 0; j<5; j++) {
+		        	if (row.getCell(j)== null || row.getCell(j).toString().equals("")) {
+		        		isNull = true;
+		        	}
+		        }
+		        if (isNull == true) {
+		        	break;
+		        }
 		        
 		        String plate = row.getCell(0).toString().strip();
 			    String vin = row.getCell(1).toString().strip();
@@ -1015,7 +987,7 @@ public class ValidationServiceImp {
 	    		hashtable.put("locationName", locationName);
 
 	    		
-	    		vehicle = validateVehicles(hashtable);
+	    		vehicle = validateVehicles(hashtable, vehicleTypeNameToId, locationNameToId );
 	    		if (vehicle == null) {
 	    			return null;								
 	    		}
@@ -1032,16 +1004,29 @@ public class ValidationServiceImp {
 		return result;
 	}
 	
-	public Vehicles validateVehicles(Hashtable<String, String> hashtable) {
+	public Vehicles validateVehicles(Hashtable<String, String> hashtable, Hashtable<String, Long> vehicleTypeNameToId, Hashtable<String, Long> locationNameToId) {
 		
 		User user = getLoggedInUser();
 		
 		String plate = (String) hashtable.get("plate");
 	    String vin = (String) hashtable.get("vin");
 		String manufacturedYear = (String) hashtable.get("manufacturedYear");
-
-			
-		if (!(plate.length() <= 12 && plate.length() > 0) || !(plate.matches("^[a-zA-Z0-9. -]+$"))) {
+		String vehicleTypeMakeModel = (String) hashtable.get("vehicleTypeMakeModel");
+		String locationName = (String) hashtable.get("locationName");
+		
+		Long vehicleTypeId = (Long) vehicleTypeNameToId.get(vehicleTypeMakeModel);
+		if(vehicleTypeId == null){
+			Logger.error("{} attempted to upload Vehicle but the Vehicle Type did not exist.", user.getUsername());
+			return null;
+		}
+		Long locationId = (Long) locationNameToId.get(locationName);
+		if(locationId == null){
+			Logger.error("{} attempted to upload Vehicle but the Location did not exist.", user.getUsername());
+			return null;
+		}
+		
+		
+		if (!(plate.length() <= 12 && plate.length() > 0) || !(plate.matches("^[a-zA-Z0-9.]+$"))) {
 			Logger.error("{} attempted to upload a Vehicle but the Plate was not between 1 and 12 alphanumeric characters long.",user.getUsername());
 			return null;	
 		}
@@ -1063,10 +1048,9 @@ public class ValidationServiceImp {
 	    vehicle.setPlateNumber(plate);
 	    vehicle.setVinNumber(vin);
 	    vehicle.setManufacturedYear(manufacturedYear);
+	    vehicle.setVehicleType(vehicleTypesRepository.findById(vehicleTypeId).orElseThrow(() -> new IllegalArgumentException("Invalid vehicleType Id")));
+	    vehicle.setLocation(locationsRepository.findById(locationId).orElseThrow(() -> new IllegalArgumentException("Invalid location Id")));
 		vehicle.setCarrier(user.getCarrier());
-		
-	    vehicle.setVehicleType(null);
-	    vehicle.setLocation(null);
 		
 	}
 	catch(Exception e) {
@@ -1078,19 +1062,24 @@ public class ValidationServiceImp {
 		return vehicle;
 	}
 	
-	public List<Driver> validateDriverSheet(XSSFSheet worksheet){
+	public List<Driver> validateDriverSheet(XSSFSheet worksheet, Hashtable<String, Long> vehiclePlateAndVinToId, Hashtable<String, Long> contactsFullNameToId){
 		List <Driver> result = new ArrayList<>();
 		 {
 			 try {	
 				
 				for(int i=1; i<worksheet.getPhysicalNumberOfRows(); i++) {
+					Boolean isNull = false;
 					Driver driver = new Driver();
 			        XSSFRow row = worksheet.getRow(i);
 			        
-		        	if ((row.getCell(0)== null || row.getCell(0).toString().equals("")) || (row.getCell(1)== null || row.getCell(1).toString().equals("")) || (row.getCell(2)== null || row.getCell(2).toString().equals("")) 
-		        			|| (row.getCell(3)== null || row.getCell(3).toString().equals("")) || (row.getCell(4)== null || row.getCell(4).toString().equals(""))) {
-		        				break;
-		        	}
+			        for (int j = 0; j<5; j++) {
+			        	if (row.getCell(j)== null || row.getCell(j).toString().equals("")) {
+			        		isNull = true;
+			        	}
+			        }
+			        if (isNull == true) {
+			        	break;
+			        }
 			        
 			        String licenseNumber = row.getCell(0).toString().strip();
 				    String licenseExpiration = row.getCell(1).toString().strip();
@@ -1106,7 +1095,7 @@ public class ValidationServiceImp {
 		    		hashtable.put("licenseExpiration", licenseExpiration);
 		    		hashtable.put("licenseClass", licenseClass);
 		 
-		    		driver = validateDriver(hashtable);
+		    		driver = validateDriver(hashtable, vehiclePlateAndVinToId, contactsFullNameToId);
 		    		if (driver == null) {
 		    			return null;
 		    		}
@@ -1122,16 +1111,30 @@ public class ValidationServiceImp {
 		 }
 			return result;
 		}
-			public Driver validateDriver(Hashtable<String, String> hashtable) {
+			public Driver validateDriver(Hashtable<String, String> hashtable,  Hashtable<String, Long> vehiclePlateAndVinToId, Hashtable<String, Long> contactsFullNameToId) {
 				
 				User user = getLoggedInUser();
 				
+				String vehiclePlateAndVin = hashtable.get("vehiclePlateAndVin");
+				String contactFullName = (String)hashtable.get("contactFullName");
 				String licenseNumber = (String)hashtable.get("licenseNumber");
 				String licenseExpiration = (String)hashtable.get("licenseExpiration");
 				String licenseClass = (String)hashtable.get("licenseClass");
 				
+				
+				Long vehicleId = (Long) vehiclePlateAndVinToId.get(vehiclePlateAndVin);
+				if(vehicleId == null){
+					Logger.error("{} attempted to upload Driver but the Vehicle did not exist.", user.getUsername());
+					return null;
+				}
+				
+				Long contactId = (Long) contactsFullNameToId.get(contactFullName);
+				if(contactId == null){
+					Logger.error("{} attempted to upload Driver but the Contact did not exist.", user.getUsername());
+					return null;
+				}
 
-	    		if(!(licenseNumber.length() <= 32 && licenseNumber.length() > 0) || !(licenseNumber.matches("^[A-Za-z0-9-/]$"))){
+	    		if(!(licenseNumber.length() <= 32 && licenseNumber.length() > 0) || !(licenseNumber.matches("^[A-Za-z0-9-]{6,12}$"))){
 	    			Logger.info("{} attempted to upload a Driver but the license number must be between 0 and 12 characters that are alpahnumeric.",user.getUsername());
 	    			return null;
 	    		}
@@ -1141,7 +1144,7 @@ public class ValidationServiceImp {
 	    			return null;
 	    		}
 	    		
-	    		if(!(licenseClass.length() <= 12 && licenseClass.length() > 0) || !(licenseClass.matches("^[A-Za-z0-9-/]$"))) { 
+	    		if(!(licenseClass.length() <= 12 && licenseClass.length() > 0) || !(licenseClass.matches("^[A-Za-z]{1}$"))) { 
 	    			Logger.info("{} attempted to upload a Driver but the license class must be 1 character and alphabetic.",user.getUsername());
 	    			return null;
 	    		}
@@ -1149,34 +1152,36 @@ public class ValidationServiceImp {
 	    		
 	    		Driver driver = new Driver();
 	    	
-
+	    		driver.setContact(contactsRepository.findById(contactId).orElseThrow(() -> new IllegalArgumentException("Invalid Contact Id")));
+	    		driver.setVehicle(vehiclesRepository.findById(vehicleId).orElseThrow(() -> new IllegalArgumentException("Invalid Vehicle Id")));
 	    		driver.setLisence_number(licenseNumber);
 	    		driver.setLisence_expiration(licenseExpiration);
 	    		driver.setLisence_class(licenseClass);
 	    		driver.setCarrier(user.getCarrier());
-	    		
-	    		driver.setContact(null);
-	    		driver.setVehicle(null);
 	    		
 	    		return driver;
 		}
 	
 			
 
-	public List<MaintenanceOrders> validateMaintenanceOrdersSheet(XSSFSheet worksheet){
+	public List<MaintenanceOrders> validateMaintenanceOrdersSheet(XSSFSheet worksheet, Hashtable<String, Long> vehiclePlateAndVinToId, Hashtable<String, Long> techniciansContactFullNameToId){
 		List <MaintenanceOrders> result = new ArrayList<>();
 		try {
 			
 			for(int i=1; i<worksheet.getPhysicalNumberOfRows(); i++) {
+				Boolean isNull = false;
 				 
 				MaintenanceOrders maintenanceOrder = new MaintenanceOrders();
 		        XSSFRow row = worksheet.getRow(i);
 		        
-		       
-		        	if ((row.getCell(2)== null || row.getCell(2).toString().equals("")) || (row.getCell(4)== null || row.getCell(4).toString().equals("")) || (row.getCell(5)== null || row.getCell(5).toString().equals("")) 
-		        			|| (row.getCell(6)== null || row.getCell(6).toString().equals("")) || (row.getCell(7)== null || row.getCell(7).toString().equals(""))) {
-		        				break;
+		        for (int j = 0; j<8; j++) {
+		        	if (row.getCell(j)== null || row.getCell(j).toString().equals("")) {
+		        		isNull = true;
 		        	}
+		        }
+		        if (isNull == true) {
+		        	break;
+		        }
 		        
 		        String date = row.getCell(0).toString();
 			    String details = row.getCell(1).toString().strip();
@@ -1203,7 +1208,7 @@ public class ValidationServiceImp {
 
 
 	    		
-	    		maintenanceOrder = validateMaintenanceOrder(hashtable);
+	    		maintenanceOrder = validateMaintenanceOrder(hashtable, vehiclePlateAndVinToId, techniciansContactFullNameToId );
 	    		if (maintenanceOrder == null) {
 	    			return null;								
 	    		}
@@ -1219,7 +1224,7 @@ public class ValidationServiceImp {
 		}
 		return result;
 	}
-	public MaintenanceOrders validateMaintenanceOrder(Hashtable<String, String> hashtable) {
+	public MaintenanceOrders validateMaintenanceOrder(Hashtable<String, String> hashtable, Hashtable<String, Long> vehiclePlateAndVinToId, Hashtable<String, Long> techniciansContactFullNameToId) {
 		
 		User user = getLoggedInUser();
 		
@@ -1229,32 +1234,45 @@ public class ValidationServiceImp {
 		String cost = (String)hashtable.get("cost");
 		String status = (String)hashtable.get("status");
 		String type = hashtable.get("type");
+		String vehiclePlateAndVin = (String)hashtable.get("vehiclePlateAndVin");
+		String techniciansContactFullName = (String)hashtable.get("techniciansContactFullName");
+		
+		
+		Long vehicleId = (Long) vehiclePlateAndVinToId.get(vehiclePlateAndVin);
+		if(vehicleId == null){
+			Logger.error("{} attempted to upload Maintenance Order but the Vehicle did not exist.", user.getUsername());
+			return null;
+		}
+		Long technicianId = (Long) techniciansContactFullNameToId.get(techniciansContactFullName);
+		if(technicianId == null){
+			Logger.error("{} attempted to upload Maintenance Order but the Technician did not exist.", user.getUsername());
+			return null;
+		}
 
-
-		if (!(date == null || date.equals(""))) {
-			if(!(date.length() <= 12 && date.length() > 0 && date.matches("^\\d{2}-(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)-\\d{4}$"))) { 
-				Logger.error("{} attempted to upload a Maintenance Order but the Date must be between 1 and 12 characters and formated MM/DD/YYYY.",user.getUsername());
-				return null;
-			}
+		if(!(date.length() <= 12 && date.length() > 0 && date.matches("^\\d{2}-(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)-\\d{4}$"))) { 
+			Logger.error("{} attempted to upload a Maintenance Order but the Date must be between 1 and 12 characters and formated MM/DD/YYYY.",user.getUsername());
+			return null;
 		}
 		
-		if (!(details == null || details.equals(""))) {
-			if(!(details.length() <= 128 && details.length() > 0)) {
-				Logger.error("{} attempted to upload a Maintenance Order but the Details was not between 1 and 128 characters long.",user.getUsername());
-				return null;
-			}
+		if(!(details.length() <= 128 && details.length() > 0)) {
+			Logger.error("{} attempted to upload a Maintenance Order but the Details was not between 1 and 128 characters long.",user.getUsername());
+			return null;
 		}
+		
+		if(!(date.length() <= 12 && date.length() > 0 && date.matches("^\\d{2}-(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)-\\d{4}$"))) { 
+			Logger.error("{} attempted to upload a Maintenance Order but the Date must be between 1 and 12 characters and formated MM/DD/YYYY.",user.getUsername());
+			return null;
+		}
+		
 		
 		if(!(serviceType.length() <= 12 && serviceType.length() > 0) || !(serviceType.matches("^[a-zA-Z0-9.]+$"))) {
 			Logger.error("{} attempted to upload a Maintenance Order but the Service Type must be between 1 and 12 alphanumeric characters.",user.getUsername());
 			return null;
 		}
 		
-		if (!(cost == null || cost.equals(""))) {
-			if(!(cost.length() <= 16 && cost.length() > 0) || !(cost.matches("^[0-9.]+$"))) {
-				Logger.error("{} attempted to upload a Maintenance Order but the Cost must be between 1 and 16 numeric characters..",user.getUsername());
-				return null;
-			}
+		if(!(cost.length() <= 16 && cost.length() > 0) || !(cost.matches("^[0-9.]+$"))) {
+			Logger.error("{} attempted to upload a Maintenance Order but the Cost must be between 1 and 16 numeric characters..",user.getUsername());
+			return null;
 		}
 		
 		if(!(status.length() <= 64 && status.length() > 0)) {
@@ -1262,7 +1280,7 @@ public class ValidationServiceImp {
 			return null;
 		}
 		
-		if(!(type.length() <= 64 && type.length() > 0) || !(type.matches("^[a-zA-Z0-9. ]+$"))) {
+		if(!(type.length() <= 64 && type.length() > 0) || !(type.matches("^[a-zA-Z0-9.]+$"))) {
 			Logger.error("{} attempted to upload a Maintenance Order but the Maintenance Type must be between 1 and 64 characters.",user.getUsername());
 			return null;
 		}
@@ -1278,8 +1296,8 @@ public class ValidationServiceImp {
 		maintenanceOrder.setMaintenance_type(type);
 		maintenanceOrder.setCarrier(user.getCarrier());
 		
-		maintenanceOrder.setVehicle(null);
-		maintenanceOrder.setTechnician(null);
+		maintenanceOrder.setVehicle(vehiclesRepository.findById(vehicleId).orElseThrow(() -> new IllegalArgumentException("Invalid Vehicle Id")));
+		maintenanceOrder.setTechnician(techniciansRepository.findById(technicianId).orElseThrow(() -> new IllegalArgumentException("Invalid Technician Id")));
 		
 		return maintenanceOrder;
 	}
@@ -1296,112 +1314,5 @@ public class ValidationServiceImp {
     		return null;
     	}
     }
-
-//public boolean validateDependencies(List<VehicleTypes> vehicleTypes, List<Locations> locations, List<Contacts> contacts, List<Vehicles> vehicles, List<Technicians> technicians, List<Driver> drivers, List<MaintenanceOrders> maintenanceOrders) {
-//	User user = getLoggedInUser();
-//	
-//
-//	List<String> allLocationNames = new ArrayList<>();
-//	List<String> vehicleLocationNames = new ArrayList<>();
-//	List<String> allVehicleTypesMakeModel = new ArrayList<>();
-//	List<String> vehiclesMakeModel = new ArrayList<>();
-//	
-//	
-//	//validate Vehicles for locations and Vehicle Type
-//	
-//	for (Locations location : locations) {
-//		 allLocationNames.add(location.getName());
-//	}
-//	
-//	for (Vehicles vehicle : vehicles) {
-//		vehicleLocationNames.add(vehicle.getLocation().getName());
-//	}
-//	
-//	if (!(allLocationNames.containsAll(vehicleLocationNames))){
-//		Logger.error("{} attmpted to save a vehicle without a existing Location", user.getUsername());
-//		return false;
-//	}
-//	
-//	for (VehicleTypes vehicletype : vehicleTypes) {
-//		allVehicleTypesMakeModel.add(vehicletype.getModel() + " " + vehicletype.getModel());
-//	}
-//	
-//	for (Vehicles vehicle : vehicles) {
-//		vehiclesMakeModel.add(vehicletype.getModel() + " " + vehicletype.getModel());
-//	}
-//	
-//	if (!(allVehicleTypesMakeModel.containsAll(vehicleVehicleTypesModelNumbers))){
-//		Logger.error("{} attmpted to save a vehicle without an existing Vehicle Type", user.getUsername());
-//		return false;
-//	}
-//	
-//	List<String> allContactFirstNames = new ArrayList<>();
-//	List<String> technicianContactFirstNames = new ArrayList<>();
-//	
-//	//validate Technicians for Contact
-//	
-//	for (Contacts contact : contacts) {
-//		allContactFirstNames.add(contact.getFirstName());
-//	}
-//	
-//	
-//	for (Technicians technician : technicians) {
-//		technicianContactFirstNames.add(technician.getContact().getFirstName());
-//	}
-//	
-//	if (!(allContactFirstNames.containsAll(technicianContactFirstNames))){
-//		Logger.error("{} attmpted to save a Technician without an existing Contact", user.getUsername());
-//		return false;
-//	}
-//	
-//	List<String> driversContactFirstNames = new ArrayList<>();
-//	List<String> allVehiclePlateNumbers = new ArrayList<>();
-//	List<String> driversVehiclePlateNumbers = new ArrayList<>();
-//	
-//	//Validate Drivers for Contact and Vehicle
-//	
-//	for(Driver driver : drivers) {
-//		driversContactFirstNames.add(driver.getContact().getFirstName());
-//	}
-//	
-//	if (!(allContactFirstNames.containsAll(driversContactFirstNames))){
-//		Logger.error("{} attmpted to save a Driver without an existing Contact", user.getUsername());
-//		return false;
-//	}
-//	
-//	for (Vehicles vehicle: vehicles) {
-//		allVehiclePlateNumbers.add(vehicle.getPlateNumber());
-//	}
-//	
-//	for(Driver driver : drivers) {
-//		driversVehiclePlateNumbers.add(driver.getVehicle().getPlateNumber());
-//	}
-//	
-//	if (!(allVehiclePlateNumbers.containsAll(driversVehiclePlateNumbers))){
-//		Logger.error("{} attmpted to save a Driver without an existing Vehicle", user.getUsername());
-//		return false;
-//	}
-//	
-//	//Validate Maintenance Orders for Vehicle and Technician
-//	
-//	List<String> maintenanceOrdersVehiclePlateNumbers = new ArrayList<>();
-//	List<String> maintenanceOrdersTechnicianFirstNames = new ArrayList<>();
-//	List<String> allTechnicianFirstNames = new ArrayList<>();
-//	
-//	for(MaintenanceOrders maintenanceOrder : maintenanceOrders) {
-//		maintenanceOrdersVehiclePlateNumbers.add(maintenanceOrder.getVehicle().getPlateNumber());	
-//	}
-//	
-//	if (!(allVehiclePlateNumbers.containsAll(maintenanceOrdersVehiclePlateNumbers))){
-//		Logger.error("{} attmpted to save a Maintenance Order without an existing Vehicle", user.getUsername());
-//		return false;
-//	}
-//	
-//	for (Technicians technician : technicians) {
-//	//	allTechnicianFirstNames.add(technician.getFirstName());
-//	}
-//	
-//	
-//return true;
-//}
 }
+

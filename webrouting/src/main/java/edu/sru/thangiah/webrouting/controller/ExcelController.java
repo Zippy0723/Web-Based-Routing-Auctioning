@@ -113,6 +113,7 @@ public class ExcelController {
 	}
 	
 	/**
+	 * 
 	 * @param model
 	 * @param session
 	 * @return
@@ -387,12 +388,55 @@ public class ExcelController {
 		return "redirect:" + redirectLocation;	
 	}
 	
+	public void removeEntriesFromRepository( Hashtable<String,Object> dataBaseState) {
+		
+		if(dataBaseState.get("orders") !=  null){maintenanceOrdersRepository.deleteAll((List <MaintenanceOrders>) dataBaseState.get("orders"));}
+    	if(dataBaseState.get("drivers") != null) {driverRepository.deleteAll((List <Driver>) dataBaseState.get("drivers"));}
+    	if(dataBaseState.get("vehicles") != null) {vehiclesRepository.deleteAll((List <Vehicles>) dataBaseState.get("vehicles"));}
+    	if(dataBaseState.get("technicans") != null) {techniciansRepository.deleteAll((List <Technicians>) dataBaseState.get("technicans"));}
+    	if(dataBaseState.get("contacts") != null) {contactsRepository.deleteAll((List <Contacts>) dataBaseState.get("contacts"));}
+    	if(dataBaseState.get("vehicleTypes") != null) {vehicleTypesRepository.deleteAll((List <VehicleTypes>) dataBaseState.get("vehicleTypes"));}
+    	if(dataBaseState.get("locations") != null) {locationsRepository.deleteAll((List <Locations>) dataBaseState.get("locations"));}
+    }
+	
+	public void addEntriesToRepsoitory(Hashtable<String,Object> dataBaseState) {
+		
+	   	contactsRepository.saveAll((List <Contacts>) dataBaseState.get("contacts"));
+    	vehicleTypesRepository.saveAll((List <VehicleTypes>) dataBaseState.get("vehicleTypes"));
+    	locationsRepository.saveAll((List <Locations>) dataBaseState.get("locations"));
+    	techniciansRepository.saveAll((List <Technicians>) dataBaseState.get("technicans"));
+    	vehiclesRepository.saveAll((List <Vehicles>) dataBaseState.get("vehicles"));
+    	driverRepository.saveAll((List <Driver>) dataBaseState.get("drivers"));
+    	maintenanceOrdersRepository.saveAll((List <MaintenanceOrders>) dataBaseState.get("orders"));
+	}
 	
 	@PostMapping("/upload-carrier")
 	public String LoadCarrierExcelForm(@RequestParam("file") MultipartFile excelData, HttpSession session, Model model){
+		User user = getLoggedInUser();
+		Carriers carrier = user.getCarrier();
 		
-		//Save current database in mem
-		Boolean validDependencies = true;
+		List<Contacts> currentContacts = carrier.getContacts();
+        List<VehicleTypes> currentVehicleTypes = carrier.getVehicleTypes();
+        List<Locations> currentLocations = carrier.getLocations();
+        List<Technicians> currentTechnicians = carrier.getTechnicians();
+        List<Vehicles> currentVehicles = carrier.getVehicles();
+        List<MaintenanceOrders> currentOrders = carrier.getOrders();
+        List<Driver> currentDrivers = carrier.getDrivers();
+        
+        Hashtable<String,Object> currentDataBaseState = new Hashtable<String,Object>();
+        Hashtable<String,Object> newDataBaseState = new Hashtable<String,Object>();
+        
+        
+        currentDataBaseState.put("contacts",currentContacts);
+        currentDataBaseState.put("vehicleTypes",currentVehicleTypes);
+        currentDataBaseState.put("locations",currentLocations);
+        currentDataBaseState.put("technicans",currentTechnicians);
+        currentDataBaseState.put("vehicles",currentVehicles);
+        currentDataBaseState.put("orders",currentOrders);
+        currentDataBaseState.put("drivers",currentDrivers);
+        
+        removeEntriesFromRepository(currentDataBaseState);
+        
 		Hashtable<String, Long> vehicleTypeNameToId = new Hashtable<>();
 		Hashtable<String, Long> locationNameToId = new Hashtable<>();
 		Hashtable<String, Long> contactsFullNameToId = new Hashtable<>();
@@ -401,8 +445,8 @@ public class ExcelController {
 		
 		String redirectLocation = (String) session.getAttribute("redirectLocation");
 		XSSFWorkbook workbook;
-		User user = getLoggedInUser();
 		model = NotificationController.loadNotificationsIntoModel(user, model);
+		
 		try {
 			workbook = new XSSFWorkbook(excelData.getInputStream());
 			XSSFSheet vehicleTypesSheet = workbook.getSheetAt(0);
@@ -422,77 +466,34 @@ public class ExcelController {
 			List<Driver> drivers = new ArrayList<>();
 			List<MaintenanceOrders> maintenanceOrders = new ArrayList<>();
 			
-			List<String> allLocationNames = new ArrayList<>();
-			List<String> allContactFullNames = new ArrayList<>();
-			List<String> allMakeAndModel = new ArrayList<>();
+			
+			newDataBaseState.put("contacts",contacts);
+	        newDataBaseState.put("vehicleTypes",vehicleTypes);
+	        newDataBaseState.put("locations",locations);
+	        newDataBaseState.put("technicans",technicians);
+	        newDataBaseState.put("vehicles",vehicles);
+	        newDataBaseState.put("maintenanceOrders",maintenanceOrders);
+	        newDataBaseState.put("drivers",drivers);
+			
 			
 			//Start Vehicle Types
-			vehicleTypes = validationServiceImp.validateVehicleTypesSheet(vehicleTypesSheet, allMakeAndModel);
-			locations = validationServiceImp.validateLocationsSheet(locationsSheet, allLocationNames);
-			contacts = validationServiceImp.validateContactsSheet(contactsSheet, allContactFullNames);
-			vehicles = validationServiceImp.validateVehiclesSheet(vehiclesSheet);
-			technicians = validationServiceImp.validateTechniciansSheet(techniciansSheet);
-			drivers = validationServiceImp.validateDriverSheet(driversSheet);
-			maintenanceOrders = validationServiceImp.validateMaintenanceOrdersSheet(maintenanceOrdersSheet);
+			vehicleTypes = validationServiceImp.validateVehicleTypesSheet(vehicleTypesSheet);
 			
 			if (vehicleTypes == null) {
 				Logger.info("{} attempted to save Vehicle Types but failed.",user.getUsername());
+				removeEntriesFromRepository(newDataBaseState);
+				addEntriesToRepsoitory(currentDataBaseState);
 				workbook.close();
 				return "redirect:" + redirectLocation;
 			}
-			
-			if (locations == null) {
-				Logger.info("{} attempted to save Locations but failed.",user.getUsername());
-				workbook.close();
-				return "redirect:" + redirectLocation;
-			}
-			
-			if (contacts == null) {
-				Logger.info("{} attempted to save Contacts but failed.",user.getUsername());
-				workbook.close();
-				return "redirect:" + redirectLocation; 
-			}
-			
-			if (vehicles == null) {
-				Logger.info("{} attempted to save Vehicle but failed.",user.getUsername());
-				workbook.close();
-				return "redirect:" + redirectLocation;
-			}
-			
-			if (technicians == null) {
-				Logger.info("{} attempted to save Technicians but failed.",user.getUsername());
-				workbook.close();
-				return "redirect:" + redirectLocation; 
-			}
-			
-			if (drivers == null) {
-				Logger.info("{} attempted to save Drivers but failed.",user.getUsername());
-				workbook.close();
-				return "redirect:" + redirectLocation;
-			}
-			
-			if (maintenanceOrders == null) {
-				Logger.info("{} attempted to save Maintenance Orders but failed.",user.getUsername());
-				workbook.close();
-				return "redirect:" + redirectLocation; 
-			}
-			
-			//CHECK FOR DEPENDENCIES
-			
-			
-			//validDependencies = validationServiceImp.validateDependencies(vehicleTypes, locations, contacts, vehicles, technicians, drivers, maintenanceOrders);
-			// on fail do nothing
-			
-			// on pass REMOVE ALL FROM DATABASE and save and set dependencies
-			
-			
 			
 			
 			for(VehicleTypes vehicleType: vehicleTypes) {
 				vehicleTypesRepository.save(vehicleType);
 				if(vehicleTypeNameToId.containsKey(vehicleType.getMake() + " " + vehicleType.getModel())){
 					Logger.error("{} saved Vehicle Type with ID the same ID.",user.getUsername(),vehicleType.getId());
-					//ToDo: Reinstate database on fail
+					removeEntriesFromRepository(newDataBaseState);
+					addEntriesToRepsoitory(currentDataBaseState);
 					workbook.close();
 					return "redirect:" + redirectLocation;
 				}
@@ -501,14 +502,22 @@ public class ExcelController {
 			}
 			
 			//Start Locations
+			locations = validationServiceImp.validateLocationsSheet(locationsSheet);
 			
-
+			if (locations == null) {
+				Logger.info("{} attempted to save locations but failed.",user.getUsername());
+				removeEntriesFromRepository(newDataBaseState);
+				addEntriesToRepsoitory(currentDataBaseState);
+				workbook.close();
+				return "redirect:" + redirectLocation;
+			}
 
 			for(Locations location: locations) {
 				locationsRepository.save(location);
 				if(locationNameToId.containsKey(location.getName())){
 					Logger.error("{} saved Location with ID the same ID.",user.getUsername(),location.getId());
-					//ToDo: Reinstate database on fail
+					removeEntriesFromRepository(newDataBaseState);
+					addEntriesToRepsoitory(currentDataBaseState);
 					workbook.close();
 					return "redirect:" + redirectLocation;
 				}
@@ -519,14 +528,22 @@ public class ExcelController {
 			}
 			
 			//Start Contacts
+			contacts = validationServiceImp.validateContactsSheet(contactsSheet);
 			
-
+			if (contacts == null) {
+				Logger.info("{} attempted to save Contacts but failed.",user.getUsername());
+				removeEntriesFromRepository(newDataBaseState);
+				addEntriesToRepsoitory(currentDataBaseState);
+				workbook.close();
+				return "redirect:" + redirectLocation; 
+			}
 			
 			for(Contacts contact: contacts) {
 				contactsRepository.save(contact);
 				if(contactsFullNameToId.containsKey(contact.getFirstName() + " " + contact.getLastName())){
 					Logger.error("{} saved Contact with ID the same ID.",user.getUsername(),contact.getId());
-					//ToDo: Reinstate database on fail
+					removeEntriesFromRepository(newDataBaseState);
+					addEntriesToRepsoitory(currentDataBaseState);
 					workbook.close();
 					return "redirect:" + redirectLocation;
 				}
@@ -537,13 +554,22 @@ public class ExcelController {
 			}
 			
 			//Start Vehicles
+			vehicles = validationServiceImp.validateVehiclesSheet(vehiclesSheet, vehicleTypeNameToId, locationNameToId);
 			
+			if (vehicles == null) {
+				Logger.info("{} attempted to save Vehicle but failed.",user.getUsername());
+				removeEntriesFromRepository(newDataBaseState);
+				addEntriesToRepsoitory(currentDataBaseState);
+				workbook.close();
+				return "redirect:" + redirectLocation;
+			}
 			
 			for(Vehicles vehicle: vehicles) {
 				vehiclesRepository.save(vehicle);
 				if(vehiclePlateAndVinToId.containsKey(vehicle.getPlateNumber() + " " + vehicle.getVinNumber())){
 					Logger.error("{} saved Vehicle with ID the same ID.",user.getUsername(),vehicle.getId());
-					//ToDo: Reinstate database on fail
+					removeEntriesFromRepository(newDataBaseState);
+					addEntriesToRepsoitory(currentDataBaseState);
 					workbook.close();
 					return "redirect:" + redirectLocation;
 				}
@@ -555,15 +581,22 @@ public class ExcelController {
 			
 			
 			//Start Technicians
+			technicians = validationServiceImp.validateTechniciansSheet(techniciansSheet, contactsFullNameToId);
 			
-			
-
+			if (technicians == null) {
+				Logger.info("{} attempted to save Technicians but failed.",user.getUsername());
+				removeEntriesFromRepository(newDataBaseState);
+				addEntriesToRepsoitory(currentDataBaseState);
+				workbook.close();
+				return "redirect:" + redirectLocation; 
+			}
 			
 			for(Technicians technician: technicians) {
 				techniciansRepository.save(technician);
 				if(techniciansContactFullNameToId.containsKey(technician.getContact().getFirstName() + " " + technician.getContact().getLastName())){
 					Logger.error("{} saved Technician with ID the same ID.",user.getUsername(),technician.getId());
-					//ToDo: Reinstate database on fail
+					removeEntriesFromRepository(newDataBaseState);
+					addEntriesToRepsoitory(currentDataBaseState);
 					workbook.close();
 					return "redirect:" + redirectLocation;
 				}
@@ -575,8 +608,15 @@ public class ExcelController {
 			
 			
 			//Start Drivers
+			drivers = validationServiceImp.validateDriverSheet(driversSheet, vehiclePlateAndVinToId, contactsFullNameToId);
 			
-
+			if (drivers == null) {
+				Logger.info("{} attempted to save Drivers but failed.",user.getUsername());
+				removeEntriesFromRepository(newDataBaseState);
+				addEntriesToRepsoitory(currentDataBaseState);
+				workbook.close();
+				return "redirect:" + redirectLocation;
+			}
 			
 			for(Driver driver: drivers) {
 				driverRepository.save(driver);
@@ -585,8 +625,15 @@ public class ExcelController {
 			
 			
 			//Start MaintenanceOrders
+			maintenanceOrders = validationServiceImp.validateMaintenanceOrdersSheet(maintenanceOrdersSheet, vehiclePlateAndVinToId, techniciansContactFullNameToId);
 
-
+			if (maintenanceOrders == null) {
+				Logger.info("{} attempted to save Maintenance Orders but failed.",user.getUsername());
+				removeEntriesFromRepository(newDataBaseState);
+				addEntriesToRepsoitory(currentDataBaseState);
+				return "redirect:" + redirectLocation; 
+			}
+			
 			for(MaintenanceOrders maintenanceorder: maintenanceOrders) {
 				maintenanceOrdersRepository.save(maintenanceorder);
 				Logger.info("{} saved Maintenance Order with ID {}.",user.getUsername(), maintenanceorder.getId());
@@ -597,6 +644,8 @@ public class ExcelController {
 		}
 		catch(Exception e ) {
 			e.printStackTrace();
+			removeEntriesFromRepository(newDataBaseState);
+			addEntriesToRepsoitory(currentDataBaseState);
 			return "redirect:" + redirectLocation;
 		}
 		return "redirect:" + redirectLocation;
