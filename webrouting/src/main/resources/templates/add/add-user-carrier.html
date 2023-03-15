@@ -118,7 +118,6 @@
                 <br>
                 <br>
                 <form action="/CarrierAdministrationPage">
-                    <input type="submit" value="Cancel Adding User" />
                 </form>
                 <form method="POST" th:object="${userForm}" th:action="@{/addusercarrier}">
                     <hr>
@@ -144,16 +143,16 @@
                         <h2> Enter Carrier Information</h2>
                         <br>
                         <label for="carrierName">Carrier Name: </label>
-                        <input type="text" name="carrierName" placeholder="Carrier Name" required>
+                        <input type="text" name="carrierName" placeholder="Carrier Name" size=23 required>
                         <br>
                         <label for="scac">SCAC: </label>  
-                        <input type="text" maxlength="4" minlength="2" name="scac" placeholder="2-4 Characters" required>
+                        <input type="text" maxlength="4" minlength="2" name="scac" placeholder="2-4 Characters" size=23 required>
                         <br>
                         <label for="pallets">Pallets: </label>  
-                        <input type="text" name="pallets" placeholder="Pallets" required>
+                        <input type="text" name="pallets" placeholder="Pallets" size=23 required>
                         <br>
                         <label for="weight">Weight: </label> 
-                        <input type="text" name="weight" placeholder="Weight" required>
+                        <input type="text" name="weight" placeholder="Weight" size=23 required>
                         <br>
                         <label for="ltl">LTL: </label>
                         <select name="ltl" required>
@@ -171,10 +170,9 @@
                             </th:block>
                         </select>   
                         <br><br>
-                        
+                        <button class="buttons7" onclick="window.location.href='./CarrierAdministrationPage';">Back</button>
 						<button class="buttons4" type="submit">Submit</button>
-						<br>
-						<button class="buttons6" onclick="window.location.href='./CarrierAdministrationPage';">Carrier Users Page</button>
+
 					</div>
                 </form>
 			</div>

@@ -131,7 +131,6 @@
                 <h2>Add Shipper User Account</h2>
                 <br>
                 <form action="/ShipperAdministrationPage">
-                    <input type="submit" value="Cancel Adding User" />
                 </form>
                 <br>
 				<hr>
@@ -141,15 +140,15 @@
 	            	<h2> Enter Account Info</h2>
 	            	<br><br>
 	                <label for="username">UserName: </label>
-	                <input type="text" th:field="*{username}" id="username" placeholder="UserName" required>
+	                <input type="text" th:field="*{username}" id="username" placeholder="UserName" size=23 required>
 	                <span th:if="${#fields.hasErrors('username')}" th:errors="*{username}"></span>
 	             	<br>
 	                <label for="password">Password: </label>
-	                <input type="password" th:field="*{password}" id="password" placeholder="Password" required>
+	                <input type="password" th:field="*{password}" id="password" placeholder="Password" size=23 required>
 	                <span th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></span>
 	            	<br>
 	                <label for="email">Email: </label>
-	                <input type="text" th:field="*{email}" id="email" placeholder="Email" required>
+	                <input type="text" th:field="*{email}" id="email" placeholder="Email" size=23 required>
 	                <span th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></span>
 	             	<br>
 	                <label for="role">Role: </label>
@@ -162,9 +161,8 @@
 	   				<br>            
 	    			<br>
 	    			<!-- <input type="submit" value="Submit" />  -->
+	    			<button class = "buttons7" onclick="window.location.href='./ShipperAdministrationPage';">Back</button>
 	                <button class="buttons4" type="submit">Submit</button>
-					<br>
-	                <button class = "buttons6" onclick="window.location.href='./ShipperAdministrationPage';">Back</button>
 	                <br><br>
 	            </div> 
                 </form>

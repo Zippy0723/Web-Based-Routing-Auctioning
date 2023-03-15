@@ -137,10 +137,10 @@
                     <h2 th:case="null">No bids yet!</h2>
                     <div th:case="*">
                         <h2>Bids</h2>
+ 						<br>
+                        <hr>
                         <br>
-		                <br><br>
                         <span type="hidden" th:text="${error}" class="loginError"></span>
-                        <hr><br>
                         <table class="dataTable">
                             <thead>
                                 <tr>

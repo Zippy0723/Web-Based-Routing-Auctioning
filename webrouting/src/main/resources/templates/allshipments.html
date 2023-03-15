@@ -135,9 +135,7 @@
 				<br><br>
 				<p sec:authorize="hasAuthority('MASTERLIST')"><button class="buttons7" onclick="window.location.href='/shipmentshomemaster';">Back</button></p>
                 <p sec:authorize="hasAuthority('CARRIER')"><button class="buttons7" onclick="window.location.href='/shipmentshomecarrier';">Back</button></p>
-                <p sec:authorize="hasAuthority('SHIPPER')"><button class="buttons7" onclick="window.location.href='/shipmentshomeshipper';">Back</button>
-                <p sec:authorize="hasAuthority('SHIPPER')"><button class="buttons7" onclick="window.location.href='/uploadshipments';">Upload From Excel</button></p>
-                <p sec:authorize="hasAuthority('SHIPPER')"><button class="buttons7" onclick="window.location.href='/add-shipments';">Add New Shipment</button>
+                <p sec:authorize="hasAuthority('SHIPPER')"><button class="buttons7" onclick="window.location.href='/shipmentshomeshipper';">Back</button></p>
                 <br>
 				<br><br>
 				<div th:if="${status != 'CARRIER'}">
@@ -197,7 +195,7 @@
                             </tbody>
                         </table>
                     </div>
-                    <br>
+                    <p sec:authorize="hasAuthority('SHIPPER')"><button class="buttons7" onclick="window.location.href='/uploadshipments';">Upload From Excel</button><button class="buttons7" onclick="window.location.href='/add-shipments';">Add New Shipment</button></p>
                 </div>
                 </div>
                 <br><br>

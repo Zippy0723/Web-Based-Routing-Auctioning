@@ -131,26 +131,25 @@
   					<button class=""  id="hamburger" style="display:none" onclick="nav_open()">☰</button>
 				</span>
 				<br><br>
-				<p><button class="buttons7" th:attr="onclick=|window.location.href='${redirectLocation}'|">Back</button>
                 <h2>Update Location</h2>
                     <form action="#" th:action="@{/updatelocation/{id}(id=${locations.id})}" th:object="${locations}" method="post">
                 	<hr>
                 	<div class="form-group">
                  		<br>
                  		<label for="name">Location Name: </label>
-                    	<input type="text" th:field="*{name}" id="name" placeholder="Location Name" required>
+                    	<input type="text" th:field="*{name}" id="name" placeholder="Location Name" size=23 required>
                     	<span th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></span>
 						<br>					
                      	<label for="streetAddress1">Street Address 1: </label>
-                     	<input type="text" th:field="*{streetAddress1}" id="streetAddress1" placeholder="Street Address 1" required>
+                     	<input type="text" th:field="*{streetAddress1}" id="streetAddress1" placeholder="Street Address 1" size=23 required>
                      	<span th:if="${#fields.hasErrors('streetAddress1')}" th:errors="*{streetAddress1}"></span>
 						<br>
                      	<label for="streetAddress2">Street Address 2: </label>
-                     	<input type="text" th:field="*{streetAddress2}" id="streetAddress2" placeholder="Street Address 2">
+                     	<input type="text" th:field="*{streetAddress2}" id="streetAddress2" placeholder="Street Address 2" size=23>
                      	<span th:if="${#fields.hasErrors('streetAddress2')}" th:errors="*{streetAddress2}"></span>
 						<br>
                      	<label for="city">City: </label>
-                     	<input type="text" th:field="*{city}" id="city" placeholder="City" required>
+                     	<input type="text" th:field="*{city}" id="city" placeholder="City" size=23 required>
                      	<span th:if="${#fields.hasErrors('city')}" th:errors="*{city}"></span>
 						<br>
                      	 <label for="state">State: </label>
@@ -211,18 +210,18 @@
                      	<span th:if="${#fields.hasErrors('state')}" th:errors="*{state}"></span>
 						<br>
                      	<label for="zip">Zip Code: </label>
-                     	<input type="text" th:field="*{zip}" id="zip" placeholder="Zip Code" minlength = "5" maxlength = "10" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1');">
+                     	<input type="text" th:field="*{zip}" id="zip" placeholder="Zip Code" size=23 minlength = "5" maxlength = "10" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1');">
                      	<span th:if="${#fields.hasErrors('zip')}" th:errors="*{zip}"></span>
 						<br><br>
 					</div>
                  	<div class="form-group2">
                  		<br>
                     	<label for="latitude">Latitude: </label>
-                        <input type="text" th:field="*{latitude}" id="latitude" placeholder="Latitude">
+                        <input type="text" th:field="*{latitude}" id="latitude" placeholder="Latitude" size=23>
                         <span th:if="${#fields.hasErrors('latitude')}" th:errors="*{latitude}"></span>
 						<br>
                         <label for="longitude">Longitude: </label>
-                        <input type="text" th:field="*{longitude}" id="longitude" placeholder="Longitude">
+                        <input type="text" th:field="*{longitude}" id="longitude" placeholder="Longitude" size=23>
                         <span th:if="${#fields.hasErrors('longitude')}" th:errors="*{longitude}"></span>
                     	<br> 
                         <label for="carrier">Carrier: </label>
@@ -233,11 +232,12 @@
                         </select>  
                     	<br>
                         <label for="locationType">Location Type: </label>
-                        <input type="text" th:field="*{locationType}" id="locationType" placeholder="Location Type" required>
+                        <input type="text" th:field="*{locationType}" id="locationType" placeholder="Location Type" size=23 required>
                         <span th:if="${#fields.hasErrors('locationType')}" th:errors="*{locationType}"></span>   
                     	<br>
 					<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
 					<br> 
+					<button class="buttons7" th:attr="onclick=|window.location.href='${redirectLocation}'|">Back</button>
                 	<button class="buttons4" type="submit">Update Location</button>
                 	<br>
                     </div>

@@ -134,7 +134,8 @@
   					<button class=""  id="hamburger" style="display:none" onclick="nav_open()">☰</button>
 				</span>
 				<div th:if="${redirectLocation != '/routes'}">
-				<p><button class="buttons7" th:attr="onclick=|window.location.href='${redirectLocation}'|">Back</button></p>
+				<button class="buttons7" th:attr="onclick=|window.location.href='${redirectLocation}'|">Back</button>
+				<br>
 				</div>
                 <br><br>
                 <h2>Routes</h2>
@@ -142,7 +143,7 @@
 				<hr>
 				<br>
                 <form action="get" th:action="@{/search}" name="showRoutes" id= "showRoutes">
-				<div class="form-group9">
+				<div class="form-group">
 					<br>
 					<h2>Filter Routes</h2>
 					<br>
@@ -158,13 +159,14 @@
                     <br>
                     <label for="anydate">Any Date: </label>
                     <input type="checkbox" name="anydate" checked>
-                    <br>
+                    <br><br>
                     <button class="buttons6" type="submit">Show Routes</button>  
+                    <br><br>
                 </div>
                 </form>
 				<br>
-                <hr>
                 <br>
+                <br><br><br>
                 <table class="dataTable">
                     <thead>
                         <tr>

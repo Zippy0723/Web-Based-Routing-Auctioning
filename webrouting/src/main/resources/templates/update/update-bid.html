@@ -132,7 +132,6 @@
 				</span>
 				<br><br>
                 <h2>Update Bid</h2>
-                <p><button class="buttons7" th:attr="onclick=|window.location.href='${redirectLocation}'|">Back</button>
                 <br><br>
                 <span type="hidden" th:text="${error}" class="loginError"></span>
                 <form action="#" th:action="@{/updatebid/{id}(id=${bids.id})}" th:object="${bids}" method="post">
@@ -149,11 +148,12 @@
 	                </select>    
 	             	<br>
 	                <label for="price">Price: </label>
-	                <input type="text" th:field="*{price}" id="price" placeholder="Price" required oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1');">
+	                <input type="text" th:field="*{price}" id="price" placeholder="Price" size=23 required oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1');">
 	                <span th:if="${#fields.hasErrors('price')}" th:errors="*{price}"></span>
 	                <br>
 	                <br>
-					<button class="buttons6" type="submit">Add Bid</button>
+	                <button class="buttons7" th:attr="onclick=|window.location.href='${redirectLocation}'|" type="button">Back</button>
+					<button class="buttons4" type="submit">Add Bid</button>
 	                <br><br>
                 </div>
                 </form>
