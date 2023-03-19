@@ -62,6 +62,7 @@ public class PopulateDatabase implements ApplicationRunner{
 	 * @throws SQLException if the carriers have already been added
 	 * @author Josh Gearhart & Nick Bushee	jjg1018@sru.edu	nab1017@sru.edu
 	 */
+	
 	public void populateCarriers(Statement statement) {
 		try {
 			statement.executeUpdate("INSERT INTO carriers " + "VALUES (1,'THANGIAH SHIPPING','Yes','Yes','24','GZBO','40000')"
@@ -72,12 +73,14 @@ public class PopulateDatabase implements ApplicationRunner{
 			System.out.println(carriers + " Carriers have already been added");
 		}
 	}
+	
 	/**
 	 * Populates contacts table
 	 * @param statement - used to connect to the sql database and make updates
 	 * @throws SQLException if the contacts have already been added
 	 * @author Josh Gearhart & Nick Bushee	jjg1018@sru.edu	nab1017@sru.edu
 	 */
+	/*
 	public void populateContacts(Statement statement) {
 		try {
 			statement.executeUpdate("INSERT INTO contacts " + "VALUES (1,'kittanning','imbwwe@yahoo.com','Ian','Black','M','7248411924','PA','143 roundtop drive','','NA','16201',1),"
@@ -95,12 +98,14 @@ public class PopulateDatabase implements ApplicationRunner{
 			System.out.println(contacts + " Contacts have already been added");
 		}
 	}
+	*/
 	/**
 	 * Populates driver table
 	 * @param statement - used to connect to the sql database and make updates
 	 * @throws SQLException if the driver have already been added
 	 * @author Josh Gearhart & Nick Bushee	jjg1018@sru.edu	nab1017@sru.edu
 	 */
+	/*
 	public void populateDriver(Statement statement) {
 		try {
 			statement.executeUpdate("INSERT INTO driver " + "VALUES (1,'A','2022-11-16','384-374',1,10,1),"
@@ -111,12 +116,14 @@ public class PopulateDatabase implements ApplicationRunner{
 			System.out.println(drivers + " Drivers have already been added");
 		}
 	}
+	*/
 	/**
 	 * Populates Locations table
 	 * @param statement - used to connect to the sql database and make updates
 	 * @throws SQLException if the Locations have already been added
 	 * @author Josh Gearhart & Nick Bushee	jjg1018@sru.edu	nab1017@sru.edu
 	 */
+	/*
 	public void populateLocations(Statement statement) {
 		try {
 			statement.executeUpdate("INSERT INTO locations "+ "VALUES (1,'Butler','','Workshop','','Factory','PA','111 Chocolate street','','12121',2),"
@@ -127,12 +134,14 @@ public class PopulateDatabase implements ApplicationRunner{
 			System.out.println(locations + "Locations have already been added");
 		}
 	}
+	*/
 	/**
 	 * Populates MaintenceOrders table
 	 * @param statement - used to connect to the sql database and make updates
 	 * @throws SQLException if the MaintenceOrders have already been added
 	 * @author Josh Gearhart & Nick Bushee	jjg1018@sru.edu	nab1017@sru.edu
 	 */
+	/*
 	public void populateMaintenceOrders(Statement statement) {
 		try {
 			statement.executeUpdate("INSERT INTO maintenance_orders " + "VALUES (1,'$5000.45','Brake Replacement','Brakes','2022-02-26','Repair','Pending',1,2,2),"
@@ -142,6 +151,7 @@ public class PopulateDatabase implements ApplicationRunner{
 			System.out.println(maintenanceOrders + "Maintenance Orders have already been created");
 		}
 	}
+	*/
 	/**
 	 * Populates shipments table
 	 * @param statement - used to connect to the sql database and make updates
@@ -164,6 +174,7 @@ public class PopulateDatabase implements ApplicationRunner{
 	 * @throws SQLException if the technicians have already been added
 	 * @author Josh Gearhart & Nick Bushee	jjg1018@sru.edu	nab1017@sru.edu
 	 */
+	/*
 	public void populateTechnicians(Statement statement) {
 		try {
 		statement.executeUpdate("INSERT INTO technicians " + "VALUES (1,'A',3),(2,'B',5)");
@@ -172,12 +183,14 @@ public class PopulateDatabase implements ApplicationRunner{
 			System.out.println(technicians + " technicians already inserted");
 		}
 	}
+	*/
 	/**
 	 * Populates Vehicles table
 	 * @param statement - used to connect to the sql database and make updates
 	 * @throws SQLException if the vehicles have already been added
 	 * @author Josh Gearhart & Nick Bushee	jjg1018@sru.edu	nab1017@sru.edu
 	 */
+	/*
 	public void populateVehicle(Statement statement) {
 		try {
 			statement.executeUpdate("INSERT INTO vehicles " + "VALUES (1,'1980','DEC-DEC1','4B7DH3LDJNEE945D',1,2,3),"
@@ -189,12 +202,14 @@ public class PopulateDatabase implements ApplicationRunner{
 			System.out.println(vehicles + " vehicles already inserted");
 		}
 	}
+	*/
 	/**
 	 * Populates Vehicle Types table
 	 * @param statement - used to connect to the sql database and make updates
 	 * @throws SQLException if the vehicle types have already been added
 	 * @author Josh Gearhart & Nick Bushee	jjg1018@sru.edu	nab1017@sru.edu
 	 */
+	/*
 	public void populateVehicleTypes(Statement statement) {
 		try {
 			statement.executeUpdate("INSERT INTO vehicle_types " + "VALUES (1,'3000','',10000,80,85,'FreightLiner',0,400,80000,0,20000,'FL-384DK','N/A','Open','Tanker'),"
@@ -208,6 +223,7 @@ public class PopulateDatabase implements ApplicationRunner{
 			System.out.println(vehicleTypes +" Vehicle Types have already been added");
 		}
 	}
+	*/
 	/**
 	 * Populates the roles table with specified roles
 	 * @param statement - used to connect to the sql database and make updates
@@ -276,34 +292,34 @@ public class PopulateDatabase implements ApplicationRunner{
 		populateCarriers(sqlStatement);
 		
 		System.out.println("Populating Contacts Table May Throw error if already added");
-		populateContacts(sqlStatement);
+		//populateContacts(sqlStatement);
 		
 		System.out.println("Populating Locations Table May Throw error if already added");
-		populateLocations(sqlStatement);
+		//populateLocations(sqlStatement);
 		
 		System.out.println("Populating Roles table May Throw error if already added");
 		populateRolesTable(sqlStatement);
 		
 		System.out.println("Populating Technicians Table May Throw error if already added");
-		populateTechnicians(sqlStatement);
+		//populateTechnicians(sqlStatement);
 		
 		System.out.println("Populating User Table May Throw error if already added");
 		populateUser(sqlStatement);
 		
 		System.out.println("Populating VehicleTypes Table May Throw error if already added");
-		populateVehicleTypes(sqlStatement);
+		//populateVehicleTypes(sqlStatement);
 		
 		System.out.println("Populating Vehicle Table May Throw error if already added");
-		populateVehicle(sqlStatement);
+		//populateVehicle(sqlStatement);
 		
 		System.out.println("Populating Drivers Table May Throw error if already added");
-		populateDriver(sqlStatement);
+		//populateDriver(sqlStatement);
 		
 		System.out.println("Populating Shipments Table May Throw error if already added");
 		populateShipments(sqlStatement);
 		
 		System.out.println("Populating Maintence Orders Table  May Throw error if already added");
-		populateMaintenceOrders(sqlStatement);
+		//populateMaintenceOrders(sqlStatement);
 		
 		System.out.println("Populating Bids Table May Throw error if already added");
 		populateBids(sqlStatement);

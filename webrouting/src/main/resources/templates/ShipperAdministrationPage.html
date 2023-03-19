@@ -1,5 +1,5 @@
 <!doctype html>
-<html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
 	<head>
 		<title>Carrier Users</title>
 
@@ -136,6 +136,7 @@
                     <div th:case="*">
                         <h2>All Shippers</h2>
                         <br>
+                        <hr>
                         <div th:if="${resetMsg != null}">
 						<p><h2>[[${resetMsg}]]</h2></p>
 						</div>
@@ -210,7 +211,7 @@
                         </table>
                     </div>      
                     <p><button class="buttons6" onclick="window.location.href='./addshipperuser';">Add New User</button>
-                    	<button class="buttons6" onclick="">Upload an Excel File</button></p>
+                    <p><button class="buttons6" onclick="window.location.href='./roles';">View Available Roles</button></p>
                 </div>
             </div>
         </div>

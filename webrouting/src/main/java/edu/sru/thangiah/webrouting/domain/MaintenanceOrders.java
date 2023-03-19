@@ -9,6 +9,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.GenericGenerator;
+import org.springframework.lang.NonNull;
 
 /**
  * Sets up the Maintenance Order database
@@ -35,12 +36,14 @@ public class MaintenanceOrders {
 	@Column(name="details", nullable= true, columnDefinition="varchar(128) default NULL")
 	private String details;
 	
+	@NonNull
 	@Column(name="service_type_key", nullable= false, columnDefinition="varchar(12)")
 	private String service_type_key;
 	
 	@Column(name="cost", nullable= true, columnDefinition="varchar(16) default NULL")
 	private String cost;
 	
+	@NonNull
 	@Column(name="status_key", nullable= false, columnDefinition="varchar(64)")
 	private String status_key;
 	
@@ -48,6 +51,7 @@ public class MaintenanceOrders {
 	@JoinColumn(name = "vehicle_id")
 	private Vehicles vehicle;
 	
+	@NonNull
 	@Column(name="maintenance_type", nullable= false, columnDefinition="varchar(64)")
 	private String maintenance_type;
 	

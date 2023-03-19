@@ -132,7 +132,6 @@
                 <h2>&emsp;&emsp;Update User</h2>
                 <br>
                 <form action="/users">
-                    &emsp;&emsp;&emsp;&ensp;<button type="submit">Back</button>
                 </form>
                 <form action="#" th:action="@{/updateuser/{id}(id=${user.id})}" th:object="${user}" method="post">
                 <div class="form-group">
@@ -146,7 +145,7 @@
                     <span th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></span>
                     <br>
                     <label for="email">Email: </label>
-                    <input type="text" th:field="*{email}" id="email" placeholder="Email" required>
+                    <input type="text" th:field="*{email}" id="email" placeholder="Email" size=23 required>
                     <p th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></p>
                     
                     <input type="hidden" th:field="*{updateEmail}" id="updateEmail" placeholder="updateEmail" required>
@@ -161,7 +160,7 @@
                     <label for="resetUsersPassword">Reset Password: </label>
                     <input type="checkbox" name="resetPassword" class = "checkbox">
                     <br><br>
-                  
+                  	 <button class="buttons7" th:attr="onclick=|window.location.href='${redirectLocation}'|">Back</button>
                     <button type="submit" class = "buttons4">Update User </button> 
                     <br><br>
                 </div>

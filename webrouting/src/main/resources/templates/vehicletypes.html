@@ -142,6 +142,7 @@
                     <div th:case="*">
                         <h2>Vehicle Types</h2>
                         <br>
+                        <hr>
                         <span type="hidden" th:text="${error}" class="loginError"></span>
                         <br>
                         <table class="dataTable">
@@ -192,6 +193,7 @@
                         </table>
                     </div>      
                     <p><button class="buttons6" onclick="window.location.href='/signupvehicletype';">Add New Type</button>
+                    <p><button class="buttons6" onclick="window.location.href='/excel/upload-vehicletypes';">Upload From Excel</button></p>
                 </div>
             </div>
         </div>

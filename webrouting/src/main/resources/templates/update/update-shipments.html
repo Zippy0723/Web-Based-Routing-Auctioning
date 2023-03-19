@@ -120,13 +120,12 @@
 				</span>
 				<div id="content">
 				<h2>Update Shipment</h2>
-				<p><button class="buttons7" th:attr="onclick=|window.location.href='${redirectLocation}'|">Back</button>
                 <form action="#" th:action="@{/updateshipment/{id}(id=${shipments.id})}" th:object="${shipments}" method="post">
 				<hr>
 				<div class="form-group7">
 					<br>
                     <label for="client">Client: </label> 
-                    <input type="text" th:field="*{client}" id="client" placeholder="Client" required>
+                    <input type="text" th:field="*{client}" id="client" placeholder="Client" size=23 required>
                     <span th:if="${#fields.hasErrors('client')}" th:errors="*{client}"></span>
 					<br>
                     <label for="vehicle">Vehicle: </label> 
@@ -149,70 +148,71 @@
                     <span th:if="${#fields.hasErrors('shipDate')}" th:errors="*{shipDate}"></span>
 					<br>
                     <label for="freightbillNumber">Freightbill Number: </label>       
-                    <input type="text" th:field="*{freightbillNumber}" id="freightbillNumber" placeholder="Freightbill Number" required>
+                    <input type="text" th:field="*{freightbillNumber}" id="freightbillNumber" placeholder="Freightbill Number" size=23 required>
                     <span th:if="${#fields.hasErrors('freightbillNumber')}" th:errors="*{freightbillNumber}"></span>
 					<br>
                     <label for="fullFreightTerms">Full Freight Terms</label>       
-                    <input type="text" th:field="*{fullFreightTerms}" id="fullFreightTerms" placeholder="Full Freight Terms" required>
+                    <input type="text" th:field="*{fullFreightTerms}" id="fullFreightTerms" placeholder="Full Freight Terms" size=23 required>
                     <span th:if="${#fields.hasErrors('fullFreightTerms')}" th:errors="*{fullFreightTerms}"></span>
 					<br>
                     <label for="commodityClass">Commodity Class: </label> 
-                    <input type="text" th:field="*{commodityClass}" id="commodityClass" placeholder="Commodity Class" required>
+                    <input type="text" th:field="*{commodityClass}" id="commodityClass" placeholder="Commodity Class" size=23 required>
                     <span th:if="${#fields.hasErrors('commodityClass')}" th:errors="*{commodityClass}"></span>
 					<br>
                     <label for="commodityPieces">Commodity Pieces: </label>   
-                    <input type="text" th:field="*{commodityPieces}" id="commodityPieces" placeholder="Commodity Pieces" required>
+                    <input type="text" th:field="*{commodityPieces}" id="commodityPieces" placeholder="Commodity Pieces" size=23 required>
                     <span th:if="${#fields.hasErrors('commodityPieces')}" th:errors="*{commodityPieces}"></span>
 					<br>
                     <label for="commodityPaidWeight">Commodity Paid Weight: </label>
-     				<input type="text" th:field="*{commodityPaidWeight}" id="commodityPaidWeight" placeholder="Commodity Paid Weight" required>
+     				<input type="text" th:field="*{commodityPaidWeight}" id="commodityPaidWeight" placeholder="Commodity Paid Weight" size=23 required>
                     <span th:if="${#fields.hasErrors('commodityPaidWeight')}" th:errors="*{commodityPaidWeight}"></span>
                     <br><br>
 				</div>
 				<div class="form-group8">
 					<br>
                     <label for="shipperCity">Shipper City: </label> 
-                    <input type="text" th:field="*{shipperCity}" id="shipperCity" placeholder="Shipper City" required>
+                    <input type="text" th:field="*{shipperCity}" id="shipperCity" placeholder="Shipper City" size=23 required>
                     <span th:if="${#fields.hasErrors('shipperCity')}" th:errors="*{shipperCity}"></span>
 					<br>
                     <label for="shipperState">Shipper State: </label> 
-                    <input type="text" th:field="*{shipperState}" id="shipperState" placeholder="Shipper State" required>
+                    <input type="text" th:field="*{shipperState}" id="shipperState" placeholder="Shipper State" size=23 required>
                     <span th:if="${#fields.hasErrors('shipperState')}" th:errors="*{shipperState}"></span>
 					<br>
                     <label for="shipperZip">Shipper Zip: </label> 
-                    <input type="text" th:field="*{shipperZip}" id="shipperZip" placeholder="Shipper Zip" required>
+                    <input type="text" th:field="*{shipperZip}" id="shipperZip" placeholder="Shipper Zip" size=23 required>
                     <span th:if="${#fields.hasErrors('shipperZip')}" th:errors="*{shipperZip}"></span>
 					<br>
                     <label for="shipperLatitude">Shipper Latitude: </label>  
-                    <input type="text" th:field="*{shipperLatitude}" id="shipperLatitude" placeholder="Shipper Latitude" required>
+                    <input type="text" th:field="*{shipperLatitude}" id="shipperLatitude" placeholder="Shipper Latitude" size=23 required>
                     <span th:if="${#fields.hasErrors('shipperLatitude')}" th:errors="*{shipperLatitude}"></span>
 					<br>
                     <label for="shipperLongitude">Shipper Longitude: </label> 
-                    <input type="text" th:field="*{shipperLongitude}" id="shipperLongitude" placeholder="Shipper Longitude" required>
+                    <input type="text" th:field="*{shipperLongitude}" id="shipperLongitude" placeholder="Shipper Longitude" size=23 required>
                     <span th:if="${#fields.hasErrors('shipperLongitude')}" th:errors="*{shipperLongitude}"></span>
 					<br>
                     <label for="consigneeCity">Consignee City: </label>  
-                    <input type="text" th:field="*{consigneeCity}" id="consigneeCity" placeholder="Consignee City" required>
+                    <input type="text" th:field="*{consigneeCity}" id="consigneeCity" placeholder="Consignee City" size=23 required>
                     <span th:if="${#fields.hasErrors('consigneeCity')}" th:errors="*{consigneeCity}"></span>
 					<br>
                     <label for="consigneeState">Consignee State: </label>   
-                    <input type="text" th:field="*{consigneeState}" id="consigneeState" placeholder="Consignee State" required>
+                    <input type="text" th:field="*{consigneeState}" id="consigneeState" placeholder="Consignee State" size=23 required>
                     <span th:if="${#fields.hasErrors('consigneeState')}" th:errors="*{consigneeState}"></span>
 					<br>
                     <label for="consigneeZip">Consignee Zip: </label>   
-                    <input type="text" th:field="*{consigneeZip}" id="consigneeZip" placeholder="Consignee Zip" required>
+                    <input type="text" th:field="*{consigneeZip}" id="consigneeZip" placeholder="Consignee Zip" size=23 required>
                     <span th:if="${#fields.hasErrors('consigneeZip')}" th:errors="*{consigneeZip}"></span>
 					<br>
                     <label for="consigneeLatitude">Consignee Latitude: </label> 
-					<input type="text" th:field="*{consigneeLatitude}" id="consigneeLatitude" placeholder="Consignee Latitude" required>
+					<input type="text" th:field="*{consigneeLatitude}" id="consigneeLatitude" placeholder="Consignee Latitude" size=23 required>
                     <span th:if="${#fields.hasErrors('consigneeLatitude')}" th:errors="*{consigneeLatitude}"></span>
 					<br>
                     <label for="consigneeLongitude">Consignee Longitude: </label>
-                    <input type="text" th:field="*{consigneeLongitude}" id="consigneeLongitude" placeholder="Consignee Longitude" required>
+                    <input type="text" th:field="*{consigneeLongitude}" id="consigneeLongitude" placeholder="Consignee Longitude" size=23 required>
                     <span th:if="${#fields.hasErrors('consigneeLongitude')}" th:errors="*{consigneeLongitude}"></span>
                 	<br>                         
                 	<br>
-                	<p><button class="buttons6" type="submit">Update Shipment</button></p>
+                	<button class="buttons7" type="button" th:attr="onclick=|window.location.href='${redirectLocation}'|">Back</button>
+                	<button class="buttons4" type="submit">Update Shipment</button>
               	</div>
                 </form>
 			</div>

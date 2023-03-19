@@ -166,7 +166,7 @@
 		</form>
 			<br>
 			<div th:if="${status == 'CARRIER'}">
-			<form th:action="@{/upload-carrier-excel}" enctype="multipart/form-data" method="POST">
+			<form th:action="@{/upload-carrier}" enctype="multipart/form-data" method="POST">
 			<div class="form-group">
 				<br>
 				<h2> Choose Excel File to Upload Carrier Information</h2>
@@ -181,7 +181,21 @@
 				<br><br>
 			</div>
 		</form>
-	</div>	
+	</div>
+	<br>
+	<div th:if="${status == 'CARRIER'}">
+			<form th:action="@{/dump-excel-carrier}" enctype="multipart/form-data" method="POST">
+			<div class="form-group">
+				<br>
+				<h2>Download current carrier information as an excel file</h2>
+				<br>
+				<br>
+				<br><br><br>
+				<button type="submit" class="buttons4">Upload</button>
+				<br><br>
+			</div>
+		</form>
+	</div>		
 </div>
 </div>
 
