@@ -57,23 +57,6 @@ public class AuctionController {
 	}
 	
 	/**
-	 * Handles loading auctioning homepage
-	 * @param model : used to add data to the page model
-	 * @return : returns "auctioninghome"
-	 */
-	@RequestMapping("/auctioninghome")
-	public String auctioningHome(Model model) {
-		List<Shipments> allShipments = (List<Shipments>)shipmentsRepository.findAll();
-		
-		model.addAttribute("shipments", allShipments);
-		
-		User user = getLoggedInUser();
-		model = NotificationController.loadNotificationsIntoModel(user, model);
-		
-		return "auctioninghome";
-	}
-	
-	/**
 	 * Finds a given shipment by ID, then redirects to the force end auction confirmation page if the shipment has any bids placed on it
 	 * If the shipment has no bids on it, or is not AVAILABLE SHIPMENT, returns the user to their page and alerts the master that the operation has failed
 	 * @

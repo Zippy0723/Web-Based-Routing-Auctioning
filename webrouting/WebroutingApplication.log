@@ -2998,3 +2998,65 @@ javax.persistence.EntityNotFoundException: Unable to find edu.sru.thangiah.webro
 |2023-Mar-14|03:46:21|RMI TCP Connection(18)-127.0.0.1|INFO |LocalContainerEntityManagerFactoryBean            |Closing JPA EntityManagerFactory for persistence unit 'default'
 |2023-Mar-14|03:46:21|RMI TCP Connection(18)-127.0.0.1|INFO |HikariDataSource                                  |HikariPool-1 - Shutdown initiated...
 |2023-Mar-14|03:46:21|RMI TCP Connection(18)-127.0.0.1|INFO |HikariDataSource                                  |HikariPool-1 - Shutdown completed.
+|2023-Mar-19|13:38:19|main|INFO |WebroutingApplication                             |Starting WebroutingApplication using Java 17.0.6 on Thomas-PC with PID 19956 (C:\Users\Zippy\git\repository\webrouting\target\classes started by Zippy in C:\Users\Zippy\git\repository\webrouting)
+|2023-Mar-19|13:38:19|main|INFO |WebroutingApplication                             |No active profile set, falling back to default profiles: default
+|2023-Mar-19|13:38:19|main|INFO |RepositoryConfigurationDelegate                   |Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+|2023-Mar-19|13:38:19|main|INFO |RepositoryConfigurationDelegate                   |Finished Spring Data repository scanning in 45 ms. Found 13 JPA repository interfaces.
+|2023-Mar-19|13:38:20|main|INFO |TomcatWebServer                                   |Tomcat initialized with port(s): 8080 (http)
+|2023-Mar-19|13:38:20|main|INFO |Http11NioProtocol                                 |Initializing ProtocolHandler ["http-nio-8080"]
+|2023-Mar-19|13:38:20|main|INFO |StandardService                                   |Starting service [Tomcat]
+|2023-Mar-19|13:38:20|main|INFO |StandardEngine                                    |Starting Servlet engine: [Apache Tomcat/9.0.56]
+|2023-Mar-19|13:38:20|main|INFO |[/]                                               |Initializing Spring embedded WebApplicationContext
+|2023-Mar-19|13:38:20|main|INFO |ServletWebServerApplicationContext                |Root WebApplicationContext: initialization completed in 887 ms
+|2023-Mar-19|13:38:20|main|INFO |LogHelper                                         |HHH000204: Processing PersistenceUnitInfo [name: default]
+|2023-Mar-19|13:38:20|main|INFO |Version                                           |HHH000412: Hibernate ORM core version 5.6.4.Final
+|2023-Mar-19|13:38:20|main|INFO |Version                                           |HCANN000001: Hibernate Commons Annotations {5.1.2.Final}
+|2023-Mar-19|13:38:20|main|INFO |HikariDataSource                                  |HikariPool-1 - Starting...
+|2023-Mar-19|13:38:20|main|INFO |HikariDataSource                                  |HikariPool-1 - Start completed.
+|2023-Mar-19|13:38:20|main|INFO |Dialect                                           |HHH000400: Using dialect: org.hibernate.dialect.MySQL8Dialect
+|2023-Mar-19|13:38:21|main|INFO |JtaPlatformInitiator                              |HHH000490: Using JtaPlatform implementation: [org.hibernate.engine.transaction.jta.platform.internal.NoJtaPlatform]
+|2023-Mar-19|13:38:21|main|INFO |LocalContainerEntityManagerFactoryBean            |Initialized JPA EntityManagerFactory for persistence unit 'default'
+|2023-Mar-19|13:38:21|main|WARN |JpaBaseConfiguration$JpaWebConfiguration          |spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+|2023-Mar-19|13:38:21|main|INFO |WelcomePageHandlerMapping                         |Adding welcome page template: index
+|2023-Mar-19|13:38:21|main|INFO |DefaultSecurityFilterChain                        |Will secure any request with [org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter@1c00a9f0, org.springframework.security.web.context.SecurityContextPersistenceFilter@77a6aa9f, org.springframework.security.web.header.HeaderWriterFilter@6f8281e6, org.springframework.security.web.authentication.logout.LogoutFilter@4303511e, org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter@12ef7db5, org.springframework.security.web.savedrequest.RequestCacheAwareFilter@feb57b4, org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter@2e674698, org.springframework.security.web.authentication.AnonymousAuthenticationFilter@203ba07, org.springframework.security.web.session.SessionManagementFilter@206a465f, org.springframework.security.web.access.ExceptionTranslationFilter@4e7e7763, org.springframework.security.web.access.intercept.FilterSecurityInterceptor@55d35f7a]
+|2023-Mar-19|13:38:21|main|INFO |Http11NioProtocol                                 |Starting ProtocolHandler ["http-nio-8080"]
+|2023-Mar-19|13:38:21|main|INFO |TomcatWebServer                                   |Tomcat started on port(s): 8080 (http) with context path ''
+|2023-Mar-19|13:38:21|main|INFO |WebroutingApplication                             |Started WebroutingApplication in 2.806 seconds (JVM running for 3.175)
+|2023-Mar-19|13:38:27|http-nio-8080-exec-1|INFO |[/]                                               |Initializing Spring DispatcherServlet 'dispatcherServlet'
+|2023-Mar-19|13:38:27|http-nio-8080-exec-1|INFO |DispatcherServlet                                 |Initializing Servlet 'dispatcherServlet'
+|2023-Mar-19|13:38:27|http-nio-8080-exec-1|INFO |DispatcherServlet                                 |Completed initialization in 1 ms
+|2023-Mar-19|13:38:41|http-nio-8080-exec-6|INFO |CustomLoginSuccessHandler                         |AdminTry logged in.
+|2023-Mar-19|13:38:56|http-nio-8080-exec-10|INFO |CustomLogoutSuccessHandler                        |AdminTry logged out.
+|2023-Mar-19|13:39:01|http-nio-8080-exec-1|INFO |CustomLoginSuccessHandler                         |Shipper logged in.
+|2023-Mar-19|13:39:11|http-nio-8080-exec-6|INFO |CustomLogoutSuccessHandler                        |Shipper logged out.
+|2023-Mar-19|14:09:01|main|INFO |WebroutingApplication                             |Starting WebroutingApplication using Java 17.0.6 on Thomas-PC with PID 13704 (C:\Users\Zippy\git\repository\webrouting\target\classes started by Zippy in C:\Users\Zippy\git\repository\webrouting)
+|2023-Mar-19|14:09:01|main|INFO |WebroutingApplication                             |No active profile set, falling back to default profiles: default
+|2023-Mar-19|14:09:01|main|INFO |RepositoryConfigurationDelegate                   |Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+|2023-Mar-19|14:09:01|main|INFO |RepositoryConfigurationDelegate                   |Finished Spring Data repository scanning in 41 ms. Found 13 JPA repository interfaces.
+|2023-Mar-19|14:09:02|main|INFO |TomcatWebServer                                   |Tomcat initialized with port(s): 8080 (http)
+|2023-Mar-19|14:09:02|main|INFO |Http11NioProtocol                                 |Initializing ProtocolHandler ["http-nio-8080"]
+|2023-Mar-19|14:09:02|main|INFO |StandardService                                   |Starting service [Tomcat]
+|2023-Mar-19|14:09:02|main|INFO |StandardEngine                                    |Starting Servlet engine: [Apache Tomcat/9.0.56]
+|2023-Mar-19|14:09:02|main|INFO |[/]                                               |Initializing Spring embedded WebApplicationContext
+|2023-Mar-19|14:09:02|main|INFO |ServletWebServerApplicationContext                |Root WebApplicationContext: initialization completed in 904 ms
+|2023-Mar-19|14:09:02|main|INFO |LogHelper                                         |HHH000204: Processing PersistenceUnitInfo [name: default]
+|2023-Mar-19|14:09:02|main|INFO |Version                                           |HHH000412: Hibernate ORM core version 5.6.4.Final
+|2023-Mar-19|14:09:02|main|INFO |Version                                           |HCANN000001: Hibernate Commons Annotations {5.1.2.Final}
+|2023-Mar-19|14:09:02|main|INFO |HikariDataSource                                  |HikariPool-1 - Starting...
+|2023-Mar-19|14:09:02|main|INFO |HikariDataSource                                  |HikariPool-1 - Start completed.
+|2023-Mar-19|14:09:02|main|INFO |Dialect                                           |HHH000400: Using dialect: org.hibernate.dialect.MySQL8Dialect
+|2023-Mar-19|14:09:03|main|INFO |JtaPlatformInitiator                              |HHH000490: Using JtaPlatform implementation: [org.hibernate.engine.transaction.jta.platform.internal.NoJtaPlatform]
+|2023-Mar-19|14:09:03|main|INFO |LocalContainerEntityManagerFactoryBean            |Initialized JPA EntityManagerFactory for persistence unit 'default'
+|2023-Mar-19|14:09:03|main|WARN |JpaBaseConfiguration$JpaWebConfiguration          |spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+|2023-Mar-19|14:09:03|main|INFO |WelcomePageHandlerMapping                         |Adding welcome page template: index
+|2023-Mar-19|14:09:03|main|INFO |DefaultSecurityFilterChain                        |Will secure any request with [org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter@3ed4c822, org.springframework.security.web.context.SecurityContextPersistenceFilter@7d8c264, org.springframework.security.web.header.HeaderWriterFilter@5f1eff72, org.springframework.security.web.authentication.logout.LogoutFilter@76ac8c3d, org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter@24673720, org.springframework.security.web.savedrequest.RequestCacheAwareFilter@7479cdf7, org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter@1fcef6f9, org.springframework.security.web.authentication.AnonymousAuthenticationFilter@7b6558aa, org.springframework.security.web.session.SessionManagementFilter@234adbe2, org.springframework.security.web.access.ExceptionTranslationFilter@3ce71bbb, org.springframework.security.web.access.intercept.FilterSecurityInterceptor@2125086c]
+|2023-Mar-19|14:09:03|main|INFO |Http11NioProtocol                                 |Starting ProtocolHandler ["http-nio-8080"]
+|2023-Mar-19|14:09:03|main|INFO |TomcatWebServer                                   |Tomcat started on port(s): 8080 (http) with context path ''
+|2023-Mar-19|14:09:03|main|INFO |WebroutingApplication                             |Started WebroutingApplication in 2.785 seconds (JVM running for 3.15)
+|2023-Mar-19|14:09:16|http-nio-8080-exec-1|INFO |[/]                                               |Initializing Spring DispatcherServlet 'dispatcherServlet'
+|2023-Mar-19|14:09:16|http-nio-8080-exec-1|INFO |DispatcherServlet                                 |Initializing Servlet 'dispatcherServlet'
+|2023-Mar-19|14:09:16|http-nio-8080-exec-1|INFO |DispatcherServlet                                 |Completed initialization in 1 ms
+|2023-Mar-19|14:10:26|http-nio-8080-exec-6|INFO |CustomLoginSuccessHandler                         |Carrier logged in.
+|2023-Mar-19|14:11:24|http-nio-8080-exec-1|INFO |CustomLogoutSuccessHandler                        |Carrier logged out.
+|2023-Mar-19|14:11:30|http-nio-8080-exec-8|INFO |CustomLoginSuccessHandler                         |Shipper logged in.
+|2023-Mar-19|14:11:36|http-nio-8080-exec-4|INFO |CustomLogoutSuccessHandler                        |Shipper logged out.
