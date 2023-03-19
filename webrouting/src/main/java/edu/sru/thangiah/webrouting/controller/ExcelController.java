@@ -395,6 +395,49 @@ public class ExcelController {
 	 * @return
 	 */
 	
+	
+	@GetMapping("/excel-download-vehicletypes")
+	public String downloadVehicleTypesFromExcel(HttpSession session){
+		String redirectLocation = (String) session.getAttribute("redirectLocation");
+		return "redirect:" + redirectLocation;
+	}
+	
+	@GetMapping("/excel-download-locations")
+	public String downloadLocationsFromExcel(HttpSession session){
+		String redirectLocation = (String) session.getAttribute("redirectLocation");
+		return "redirect:" + redirectLocation;
+	}
+	
+	@GetMapping("/excel-download-contacts")
+	public String downloadContactsFromExcel(HttpSession session){
+		String redirectLocation = (String) session.getAttribute("redirectLocation");
+		return "redirect:" + redirectLocation;
+	}
+	
+	@GetMapping("/excel-download-vehicles")
+	public String downloadVehiclesFromExcel(HttpSession session){
+		String redirectLocation = (String) session.getAttribute("redirectLocation");
+		return "redirect:" + redirectLocation;
+	}
+	
+	@GetMapping("/excel-download-drivers")
+	public String downloadDriverFromExcel(HttpSession session){
+		String redirectLocation = (String) session.getAttribute("redirectLocation");
+		return "redirect:" + redirectLocation;
+	}
+	
+	@GetMapping("/excel-download-technicians")
+	public String downloadTechnicianFromExcel(HttpSession session){
+		String redirectLocation = (String) session.getAttribute("redirectLocation");
+		return "redirect:" + redirectLocation;
+	}
+	
+	@GetMapping("/excel-download-maintenanceorders")
+	public String downloadMaintenanceOrdersFromExcel(HttpSession session){
+		String redirectLocation = (String) session.getAttribute("redirectLocation");
+		return "redirect:" + redirectLocation;
+	}
+	
 	@PostMapping("/excel-upload-vehicletypes")
 	public String loadVehicleTypesFromExcel(@RequestParam("file") MultipartFile excelData, HttpSession session, Model model){
 		User user = getLoggedInUser();
