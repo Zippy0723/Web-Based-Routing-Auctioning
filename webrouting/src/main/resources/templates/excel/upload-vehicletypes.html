@@ -133,6 +133,10 @@
   				<button class=""  id="hamburger" style="display:none" onclick="nav_open()">☰</button>
 			</span>
 			<br><br>
+			<div class="alert alert-info" th:if="${message}">
+            	<span th:text="${message}"></span>
+            </div>
+            <br>
         	<h2>Upload file</h2>
 	        <br><br>
 	            	*** Warning: Upload time varies with file size; larger files take more time.
