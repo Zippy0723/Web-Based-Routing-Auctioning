@@ -176,6 +176,7 @@ public class ShipmentsController {
 		
 		List<Shipments> shipmentsWOCarrier = new ArrayList<>();
 		User user = getLoggedInUser();
+		model.addAttribute("user",user);
 		session.setAttribute("redirectLocation", "/createdshipments");
 		try {
 			model.addAttribute("message",session.getAttribute("message"));
@@ -353,6 +354,7 @@ public class ShipmentsController {
 	public String showPendingShipmentsList(Model model, HttpSession session) {
 		List<Shipments> shipmentsPending = new ArrayList<>();
 		User user = getLoggedInUser();
+		model.addAttribute("user",user);
         model = NotificationController.loadNotificationsIntoModel(user, model);
 		session.setAttribute("redirectLocation", "/pendingshipments");
 		List<Shipments> shipments;
@@ -404,6 +406,7 @@ public class ShipmentsController {
 		List<Shipments> allShipments = new ArrayList<>();
 		List<Shipments> ownShipments = new ArrayList<>();
 		User user = getLoggedInUser();
+		model.addAttribute("user",user);
 		String status = "";	
 		model = NotificationController.loadNotificationsIntoModel(user, model);
 		
