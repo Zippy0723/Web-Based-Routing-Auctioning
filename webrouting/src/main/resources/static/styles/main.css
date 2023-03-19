@@ -170,6 +170,15 @@ body {
 	
 	}
 	
+.disabled-btn {
+  opacity: 0.5;
+  pointer-events: none;
+}
+
+.disabled-btn:hover {
+  cursor: not-allowed;
+}
+	
 .buttons:hover {
 	background-color: #676767;
 }

@@ -192,7 +192,7 @@
                                     <td sec:authorize="hasAnyAuthority('SHIPPER','MASTERLIST')"><a th:href="@{/editshipment/{id}(id=${shipment.id})}">Edit</a></td>
                                     <td sec:authorize="hasAnyAuthority('SHIPPER','MASTERLIST')"><a th:href="@{/deleteshipment/{id}(id=${shipment.id})}">Delete</a></td>
                                     <td sec:authorize="hasAuthority('MASTERLIST')"><a th:href="@{/freezeshipment/{id}(id=${shipment.id})}">Freeze</a></td>
-                                    <td sec:authorize="hasAnyAuthority('SHIPPER','MASTERLIST')"><a th:href="@{/pushshipment/{id}(id=${shipment.id})}">Push to Auction</a></td>
+                                    <td sec:authorize="hasAnyAuthority('SHIPPER','MASTERLIST')"><a th:classappend="${user.auctioningAllowed ? '' : 'disabled-btn'}" th:href="@{/pushshipment/{id}(id=${shipment.id})}">Push to Auction</a></td>
                                     <td sec:authorize="hasAnyAuthority('SHIPPER','MASTERLIST')"><a th:href="@{/directassignshipment/{id}(id=${shipment.id})}">Direct Assign</a></td>
                                     
                                 </tr>
