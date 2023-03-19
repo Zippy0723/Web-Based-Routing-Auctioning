@@ -86,6 +86,9 @@
 						<li sec:authorize="hasAnyAuthority('CARRIER', 'MASTERLIST', 'ADMIN','SHIPPER')">
                             <a class= "navlink" id= "nav_notifications" href="/unreadnotifications" th:inline="text">Notifications ([[${notifications.size()}]])</a>
                         </li>
+                        <li sec:authorize="hasAnyAuthority('CARRIER', 'MASTERLIST', 'ADMIN','SHIPPER')">
+							<a class= "navlink" id= "nav_update_user_details" href="/update-user-details">Update User</a>
+						</li>
                         <li sec:authorize="isAuthenticated()" class="navitem">
                             <form id="logoutForm" method="POST" th:action="@{/logout}">
                                 <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
@@ -130,7 +133,7 @@
 				<span class="nav-expand">
   					<button class=""  id="hamburger" style="display:none" onclick="nav_open()">☰</button>
 				</span>
-				<br><br>
+				<br>
 				<div th:switch="${shippers}">
                     <h2 th:case="null">No users yet!</h2>
                     <div th:case="*">
@@ -141,7 +144,6 @@
 						</div>
                         <br>
                         <span type="hidden" th:text="${error}" class="loginError"></span>
-                        <br>
                         <table class="dataTable">
                             <thead>
                                 <tr>
@@ -160,7 +162,6 @@
                                     <th>Edit</th>
                                     <th>Delete</th>
                                     <th>Toggle Auctioning Allowed</th>
-                                    
                                 </tr>
                             </thead>
                             <tbody>
@@ -210,7 +211,7 @@
                         </table>
                     </div>      
                 </div>
-                <br><br><br><br><br>
+                <br>
             <div th:switch="${carriers}">
                     <h2 th:case="null">No carriers yet!</h2>
                     <div th:case="*">
@@ -221,7 +222,6 @@
 						</div>
                         <br>
                         <span type="hidden" th:text="${error}" class="loginError"></span>
-                        <br>
                         <table class="dataTable">
                             <thead>
                                 <tr>
@@ -229,13 +229,13 @@
                                     <th>UserName</th>
                                     <th>Email</th>
                                     <th>Role</th>
-                                    <th>Enabled</th>
                                     <th>Carrier Name</th>
                                     <th>SCAC</th>
                                     <th>LTL</th>
                                     <th>FTL</th>
-                                    <th>Number of Pallets</th>
-                                    <th>Weight in Pounds</th>
+                                    <th>Pallets</th>
+                                    <th>Weight</th>
+                                    <th>Enabled</th>
                                     <th>Auctioning Allowed</th>
                                     <th>Edit</th>
                                     <th>Delete</th>
@@ -250,13 +250,37 @@
                                     <td th:text="${user.username}"></td>
                                     <td th:text="${user.email}"></td>
                                     <td th:text="${user.role}"></td>
+                                    <td>
+                                    <ul>
+                                    <li th:each="carrier : ${user.carrier}" th:text="${carrier.carrierName}"></li>
+                                    </ul>
+                                    </td>
+                                    <td>
+                                    <ul>
+                                    <li th:each="carrier : ${user.carrier}" th:text="${carrier.scac}"></li>
+                                    </ul>
+                                    </td>
+                                    <td>
+                                    <ul>
+                                    <li th:each="carrier : ${user.carrier}" th:text="${carrier.ltl}"></li>
+                                    </ul>
+                                    </td>
+                                    <td>
+                                    <ul>
+                                    <li th:each="carrier : ${user.carrier}" th:text="${carrier.ftl}"></li>
+                                    </ul>
+                                    </td>
+                                    <td>
+                                    <ul>
+                                    <li th:each="carrier : ${user.carrier}" th:text="${carrier.pallets}"></li>
+                                    </ul>
+                                    </td>
+                                    <td>
+                                    <ul>
+                                    <li th:each="carrier : ${user.carrier}" th:text="${carrier.weight}"></li>
+                                    </ul>
+                                    </td>
                                     <td th:text= "${user.enabled}"></td>
-                                    <td th:text="${user.carrier.carrierName}"></td>
-                                    <td th:text="${user.carrier.scac}"></td>
-                                    <td th:text="${user.carrier.ltl}"></td>
-                                    <td th:text="${user.carrier.ftl}"></td>
-                                    <td th:text="${user.carrier.pallets}"></td>
-                                    <td th:text="${user.carrier.weight}"></td>
                                     <td th:text="${user.auctioningAllowed}"></td>
                                     <td><a th:href="@{/edituser/{id}(id=${user.id})}">Edit</a></td>
                                     <td><a th:href="@{/deleteuser/{id}(id=${user.id})}">Delete</a></td>
@@ -264,16 +288,93 @@
                                 </tr>
                             </tbody>
                         </table>
-                    </div>      
+                    </div>
+                    <br>
+           			<div th:switch="${others}">
+                    <h2 th:case="null">No Other Users yet!</h2>
+                    <div th:case="*">
+                        <h2>All Other Users</h2>
+                        <br>
+                        <div th:if="${resetMsg != null}">
+						<p><h2>[[${resetMsg}]]</h2></p>
+						</div>
+                        <br>
+                        <span type="hidden" th:text="${error}" class="loginError"></span>
+                        <table class="dataTable">
+                            <thead>
+                                <tr>
+                                    <th>User ID</th>
+                                    <th>UserName</th>
+                                    <th>Email</th>
+                                    <th>Role</th>
+                                    <th>Carrier Name</th>
+                                    <th>SCAC</th>
+                                    <th>LTL</th>
+                                    <th>FTL</th>
+                                    <th>Pallets</th>
+                                    <th>Weight</th>
+                                    <th>Enabled</th>
+                                    <th>Auctioning Allowed</th>
+                                    <th>Edit</th>
+                                    <th>Delete</th>
+                                    <th>Toggle Auctioning Allowed</th>
+                                    
+                                </tr>
+                            </thead>
+                            <tbody>
+                            
+                                <tr th:each="user : ${others}">                           
+                                    <td th:text="${user.id}"></td>
+                                    <td th:text="${user.username}"></td>
+                                    <td th:text="${user.email}"></td>
+                                    <td th:text="${user.role}"></td>
+                                    <td>
+                                    <ul>
+                                    <li th:each="carrier : ${user.carrier}" th:text="${carrier.carrierName}"></li>
+                                    </ul>
+                                    </td>
+                                    <td>
+                                    <ul>
+                                    <li th:each="carrier : ${user.carrier}" th:text="${carrier.scac}"></li>
+                                    </ul>
+                                    </td>
+                                    <td>
+                                    <ul>
+                                    <li th:each="carrier : ${user.carrier}" th:text="${carrier.ltl}"></li>
+                                    </ul>
+                                    </td>
+                                    <td>
+                                    <ul>
+                                    <li th:each="carrier : ${user.carrier}" th:text="${carrier.ftl}"></li>
+                                    </ul>
+                                    </td>
+                                    <td>
+                                    <ul>
+                                    <li th:each="carrier : ${user.carrier}" th:text="${carrier.pallets}"></li>
+                                    </ul>
+                                    </td>
+                                    <td>
+                                    <ul>
+                                    <li th:each="carrier : ${user.carrier}" th:text="${carrier.weight}"></li>
+                                    </ul>
+                                    </td>
+                                    <td th:text= "${user.enabled}"></td>
+                                    <td th:text="${user.auctioningAllowed}"></td>
+                                    <td><a th:href="@{/edituser/{id}(id=${user.id})}">Edit</a></td>
+                                    <td><a th:href="@{/deleteuser/{id}(id=${user.id})}">Delete</a></td>
+                                    <td><a th:href="@{/toggleauctioning/{id}(id=${user.id})}">Toggle Auctioning Allowed</a></td>                         
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>  
+                    <br>    
                     <p><button class="buttons6" onclick="window.location.href='./signup';">Add New User</button>
                     	<button class="buttons6" onclick="window.location.href='./uploadusers';">Upload an Excel File</button></p>
-                    <p><button class="buttons6" onclick="window.location.href='./roles';">View Available Roles</button></p>
                 </div>
         </div>
         </div>
-
+		<br><br>
 		<div class="footer">
-            Copyright &copy; Slippery Rock University 2022
         </div>
 		<script>
 		function nav_open() {

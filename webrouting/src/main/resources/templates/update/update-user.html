@@ -86,6 +86,9 @@
 						<li sec:authorize="hasAnyAuthority('CARRIER', 'MASTERLIST', 'ADMIN','SHIPPER')">
                             <a class= "navlink" id= "nav_notifications" href="/unreadnotifications" th:inline="text">Notifications ([[${notifications.size()}]])</a>
                         </li>
+                        <li sec:authorize="hasAnyAuthority('CARRIER', 'MASTERLIST', 'ADMIN','SHIPPER')">
+							<a class= "navlink" id= "nav_update_user_details" href="/update-user-details">Update User</a>
+						</li>
                         <li sec:authorize="isAuthenticated()" class="navitem">
                             <form id="logoutForm" method="POST" th:action="@{/logout}">
                                 <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
@@ -153,17 +156,7 @@
                         <th:block th:each="role : ${roles}">
                             <option th:text="${role.name}" th:value="${role.id}"></option>
                         </th:block>
-                    </select>  
-				    <br>
-                    <label for="carrier">Carrier: </label>
-                    <select th:field="*{carrier}" required>
-                        <th:block th:each="carrier : ${carriers}">
-                            <option th:text="${carrier.carrierName}" th:value="${carrier.id}"></option>
-                        </th:block>
-                    </select>  
-				    <br><br>
-                    <label for="nocarrier">Not a Carrier: </label>
-                    <input type="checkbox" name="nocarrier" class="checkbox">
+                    </select>
 				    <br><br>
                     <label for="resetUsersPassword">Reset Password: </label>
                     <input type="checkbox" name="resetPassword" class = "checkbox">
@@ -177,7 +170,6 @@
 		</div>
 
 		<div class="footer">
-            Copyright &copy; Slippery Rock University 2022
         </div>
 		<script>
 		function nav_open() {

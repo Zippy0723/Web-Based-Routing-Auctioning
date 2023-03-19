@@ -1,7 +1,7 @@
 <!doctype html>
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
 	<head>
-		<title>Enterprise Routing System</title>
+		<title>Update User</title>
 
 		<link rel="stylesheet" type="text/css" href="/styles/reset.css" />
         <link rel="stylesheet" type="text/css" href="/styles/main.css" />
@@ -26,10 +26,10 @@
                 <div id="menu">
                     <ul class="navbar">
                         <li class="navitem">
-                            <a class="selected" id="nav_home" href="/">Home</a>
+                            <a class="navlink" id="nav_home" href="/">Home</a>
                         </li>
                         <li sec:authorize="hasAuthority('ADMIN')" class="navitem">
-                            <a class="navlink" id="nav_users" href="/users">Users</a>
+                            <a class="selected" id="nav_users" href="/users">Users</a>
                         </li>
                         <li sec:authorize="hasAuthority('ADMIN')" class="navitem">
                             <a class="navlink" id="nav_users" href="/CarrierAdministrationPage">Carrier Page</a>
@@ -117,34 +117,56 @@
 
             <div id="sub_heading">
                 <div id="loginDiv">
-                    <div sec:authorize="isAuthenticated()" style="float: right;">
-                        <form id="logoutForm" method="POST" th:action="@{/logout}">
-                            <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
-                        </form>
-                        Hello <span sec:authentication="name"></span> | <a onclick="document.forms['logoutForm'].submit()">Logout</a>
-                    </div>
+
                     <div sec:authorize="!isAuthenticated()" style="float: right;">
                         <a id="loginLink" class="ui-button" href="/login">Login</a>
                     </div>
                 </div>
             </div>
+			
 			<div id="content">
 				<span class="nav-expand">
   					<button class=""  id="hamburger" style="display:none" onclick="nav_open()">☰</button>
 				</span>
-				<br><br>
-                <div id="loginDiv" style="text-align: center" th:each="technician : ${technicians}">
-                    <h1>Are you sure you want to delete technician: </h1>
+				
+                <h2>&emsp;&emsp;Update Shipper User</h2>
+                <br>
+                <form action="/users">
+                    &emsp;&emsp;&emsp;&ensp;<button type="submit">Back</button>
+                </form>
+                <form action="#" th:action="@{/updateshipperuser/{id}(id=${user.id})}" th:object="${user}" method="post">
+                <div class="form-group">
+                	<br>
+                	<h2> Enter Account Info</h2>
+                	<br><br>
+                	<input type="hidden" th:field="*{username}" id="username" placeholder="UserName" required>
+                  	<span th:if="${#fields.hasErrors('username')}" th:errors="*{username}"></span>
+				    <br>
+                    <input type="hidden" th:field="*{password}" id="password" placeholder="Password" required>
+                    <span th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></span>
                     <br>
+                    <label for="email">Email: </label>
+                    <input type="text" th:field="*{email}" id="email" placeholder="Email" required>
+                    <p th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></p>
+                    
+                    <input type="hidden" th:field="*{updateEmail}" id="updateEmail" placeholder="updateEmail" required>
                     <br>
-                    <h2 th:text="${technician}"></h2>
-                    <br>
-                    <br>
-                    <h2><a th:href="|/deletetechnicianconfirmation/${technician.id}|">Yes</a></h2>
-                    <br>
-                    <h2><a href="/technicians">No</a></h2>
+                    <label for="role">Role: </label>
+                    <select th:field="*{role}" required>
+                        <th:block th:each="role : ${roles}">
+                            <option th:text="${role.name}" th:value="${role.id}"></option>
+                        </th:block>
+                    </select>
+				    <br><br>
+                    <label for="resetUsersPassword">Reset Password: </label>
+                    <input type="checkbox" name="resetPassword" class = "checkbox">
+                    <br><br>
+                  
+                    <button type="submit" class = "buttons4">Update Shipper User </button> 
+                    <br><br>
                 </div>
-            </div>
+                </form>        
+			</div>
 		</div>
 
 		<div class="footer">

@@ -86,6 +86,9 @@
 						<li sec:authorize="hasAnyAuthority('CARRIER', 'MASTERLIST', 'ADMIN','SHIPPER')">
                             <a class= "navlink" id= "nav_notifications" href="/unreadnotifications" th:inline="text">Notifications ([[${notifications.size()}]])</a>
                         </li>
+                        <li sec:authorize="hasAnyAuthority('CARRIER', 'MASTERLIST', 'ADMIN','SHIPPER')">
+							<a class= "navlink" id= "nav_update_user_details" href="/update-user-details">Update User</a>
+						</li>
                         <li sec:authorize="isAuthenticated()" class="navitem">
                             <form id="logoutForm" method="POST" th:action="@{/logout}">
                                 <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
@@ -247,7 +250,6 @@
 		</div>
 
 		<div class="footer">
-            Copyright &copy; Slippery Rock University 2022
         </div>
 		<script>
 		function nav_open() {

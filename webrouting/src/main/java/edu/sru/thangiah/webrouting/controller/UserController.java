@@ -126,6 +126,7 @@ public class UserController {
     	List<User> userList = userRepository.findAll();
     	List<User> userShipperList = new ArrayList<User>();
     	List<User> userCarrierList = new ArrayList<User>();
+    	List<User> userOtherList = new ArrayList<User>();
     	
     	session.setAttribute("redirectLocation", "/users");
     	
@@ -142,10 +143,15 @@ public class UserController {
     		}
     	}
     	
+    	for (User user : userList) {
+    		if (!user.getRole().toString().equals("CARRIER") && !user.getRole().toString().equals("SHIPPER"))  {
+    			userOtherList.add(user);
+    		}
+    	}
     	
     	model.addAttribute("shippers", userShipperList);
     	model.addAttribute("carriers", userCarrierList);
-        
+    	model.addAttribute("others", userOtherList);
         
         User user = getLoggedInUser();
         model = NotificationController.loadNotificationsIntoModel(user, model);
@@ -240,7 +246,7 @@ public class UserController {
   		List<Role> roles = (List<Role>) roleRepository.findAll();
   		List<Role> result = new ArrayList<Role>();
   		for(Role r : roles){
-  		  if(!r.getName().equals("ADMIN") && !r.getName().equals("MASTERLIST")){
+  		  if(!r.getName().equals("SHIPPER") && !r.getName().equals("CARRIER")){
   		    result.add(r);
   		  }
   		}
@@ -468,14 +474,98 @@ public class UserController {
 		}
 
 		model.addAttribute("roles",results);
+		User loggedInUser = getLoggedInUser();
+        model = NotificationController.loadNotificationsIntoModel(loggedInUser, model);
+		return "/update/update-shipper-user";
        }
-        
+       
+       if(user.getRole().toString().equals("CARRIER")) {
+	        List<Role> roles = (List<Role>) roleRepository.findAll();
+			List<Role> results = new ArrayList<Role>();
+
+			for(Role rsc : roles){
+			  if(rsc.getName().equals("CARRIER")){
+			    results.add(rsc);
+			  }
+			}
+			
+			model.addAttribute("roles",results);
+			User loggedInUser = getLoggedInUser();
+	        model = NotificationController.loadNotificationsIntoModel(loggedInUser, model);
+			return "/update/update-carrier-user";
+	    }
+       else {
+    	   List<Role> roles = (List<Role>) roleRepository.findAll();
+			List<Role> results = new ArrayList<Role>();
+
+			for(Role rso : roles){
+			  if(!rso.getName().equals("CARRIER") && !rso.getName().equals("SHIPPER")){
+			    results.add(rso);
+			  }
+			}
+			
+		model.addAttribute("roles",results);
         User loggedInUser = getLoggedInUser();
         model = NotificationController.loadNotificationsIntoModel(loggedInUser, model);
         
         return "/update/update-user";
+       }
     }
   	
+  	@GetMapping("/editshipperuser/{id}")
+    public String showShipperEditForm(@PathVariable("id") long id, Model model) {
+  		User user = userRepository.findById(id)
+          .orElseThrow(() -> new IllegalArgumentException("Invalid user Id:" + id));
+        user.setUpdateEmail(user.getEmail());
+  		model.addAttribute("roles", roleRepository.findAll());
+  		model.addAttribute("carriers", carriersRepository.findAll());
+        model.addAttribute("user", user);
+        
+       if(user.getRole().toString().equals("SHIPPER")) {
+        List<Role> roles = (List<Role>) roleRepository.findAll();
+		List<Role> results = new ArrayList<Role>();
+
+		for(Role rs : roles){
+		  if(rs.getName().equals("SHIPPER")){
+		    results.add(rs);
+		  }
+		}
+
+		model.addAttribute("roles",results);
+       }
+        User loggedInUser = getLoggedInUser();
+        model = NotificationController.loadNotificationsIntoModel(loggedInUser, model);
+        
+        return "/update/update-shipper-user";
+    }
+  	
+  	
+  	@GetMapping("/editcarrieruser/{id}")
+    public String showCarrierEditForm(@PathVariable("id") long id, Model model) {
+  		User user = userRepository.findById(id)
+          .orElseThrow(() -> new IllegalArgumentException("Invalid user Id:" + id));
+        user.setUpdateEmail(user.getEmail());
+  		model.addAttribute("roles", roleRepository.findAll());
+  		model.addAttribute("carriers", carriersRepository.findAll());
+        model.addAttribute("user", user);
+        
+       if(user.getRole().toString().equals("CARRIER")) {
+        List<Role> roles = (List<Role>) roleRepository.findAll();
+		List<Role> results = new ArrayList<Role>();
+
+		for(Role rsc : roles){
+		  if(rsc.getName().equals("CARRIER")){
+		    results.add(rsc);
+		  }
+		}
+
+		model.addAttribute("roles",results);
+       }
+        User loggedInUser = getLoggedInUser();
+        model = NotificationController.loadNotificationsIntoModel(loggedInUser, model);
+        
+        return "/update/update-carrier-user";
+    }
   	/**
   	 * Admin functionality to update a certain users information
   	 * @param id - ID of the user being updated
@@ -500,9 +590,6 @@ public class UserController {
         if (result.hasErrors()) {
         	user.setId(id);
             return "/update/update-user";
-        }
-        if (nocarrier) {
-        	user.setCarrier(null);
         }
         if(resetPassword) {
         	user.setEnabled(true);
@@ -532,6 +619,63 @@ public class UserController {
         }
     }
   	
+  	@PostMapping("/updateshipperuser/{id}")
+    public String updateShipperUser(@PathVariable("id") long id, @Validated User user, 
+      BindingResult result, Model model, boolean nocarrier, boolean resetPassword, RedirectAttributes redirectAttr, String updateEmail) {
+  		updateEmail = user.getUpdateEmail();
+  		User loggedInUser = getLoggedInUser();
+  		model = NotificationController.loadNotificationsIntoModel(loggedInUser, model);
+  		userValidator.validateEmail(user, result);
+        if (result.hasErrors()) {
+        	user.setId(id);
+            return "/update/update-shipper-user";
+        }
+        if(resetPassword) {
+        	user.setEnabled(true);
+        	user.setOtpCode(userService.createOtpCode());
+        	userService.save(user);
+        	redirectAttr.addFlashAttribute("resetMsg", user.getUsername() + "'s Email has Recieved a Password Reset");
+        	 websiteUrl = MailSending.getUrl(mailRequest);
+        	 emailImpl.forgotPasswordAdminFunction(user.getUsername(), websiteUrl);
+        }
+        
+        user.setEnabled(true);
+        userService.save(user);
+
+
+        Logger.info("{} successfully updated the user {}.", loggedInUser.getUsername(), user.getUsername());
+
+        return "redirect:/ShipperAdministrationPage";
+    }
+  	
+  	@PostMapping("/updatecarrieruser/{id}")
+    public String updateCarrierUser(@PathVariable("id") long id, @Validated User user, 
+      BindingResult result, Model model, boolean nocarrier, boolean resetPassword, RedirectAttributes redirectAttr, String updateEmail) {
+  		updateEmail = user.getUpdateEmail();
+  		User loggedInUser = getLoggedInUser();
+  		model = NotificationController.loadNotificationsIntoModel(loggedInUser, model);
+  		userValidator.validateEmail(user, result);
+        if (result.hasErrors()) {
+        	user.setId(id);
+            return "/update/update-carrier-user";
+        }
+        if(resetPassword) {
+        	user.setEnabled(true);
+        	user.setOtpCode(userService.createOtpCode());
+        	userService.save(user);
+        	redirectAttr.addFlashAttribute("resetMsg", user.getUsername() + "'s Email has Recieved a Password Reset");
+        	 websiteUrl = MailSending.getUrl(mailRequest);
+        	 emailImpl.forgotPasswordAdminFunction(user.getUsername(), websiteUrl);
+        }
+        
+        user.setEnabled(true);
+        userService.save(user);
+
+
+        Logger.info("{} successfully updated the user {}.", loggedInUser.getUsername(), user.getUsername());
+
+        return "redirect:/CarrierAdministrationPage";
+  	}
   	/**
   	 * Redirects user to the /update/update-user-details page. <br>
   	 * Adds details of currently logged in user to the form.

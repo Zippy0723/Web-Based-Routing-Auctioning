@@ -83,6 +83,9 @@
                             <a class="navlink" id="nav_database" href="/database">Database</a>
                         </li>
 						<br><br><br><br><br>
+						<li sec:authorize="hasAnyAuthority('CARRIER', 'MASTERLIST', 'ADMIN','SHIPPER')">
+							<a class= "navlink" id= "nav_update_user_details" href="/update-user-details">Update User</a>
+						</li>
                         <li sec:authorize="isAuthenticated()" class="navitem">
                             <form id="logoutForm" method="POST" th:action="@{/logout}">
                                 <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
@@ -125,13 +128,18 @@
                     <br>
                     <br>
                     <br>
+                    <h3><a href="/addshipperuser">Shipper</a></h3>
+                    <h4>Add a user with the shipper role</h4>
+                    <br>
+                    <br>
+                    <br>
                     <h3><a href="/addcarrieruser">Carrier</a></h3>
                     <h4>Add a user with the carrier role</h4>
                     <br>
                     <br>
                     <br>
                     <h3><a href="/addotheruser">Other User</a></h3>
-                    <h4>Add a user who is not a carrier</h4>
+                    <h4>Add a user who is not a carrier or shipper</h4>
                     <br>
                     <br>
                     <br>
@@ -141,7 +149,6 @@
 		</div>
 
 		<div class="footer">
-            Copyright &copy; Slippery Rock University 2022
         </div>
 		<script>
 		function nav_open() {

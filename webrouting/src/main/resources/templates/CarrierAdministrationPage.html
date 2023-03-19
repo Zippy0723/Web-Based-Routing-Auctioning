@@ -83,6 +83,9 @@
 						<li sec:authorize="hasAnyAuthority('CARRIER', 'MASTERLIST', 'ADMIN','SHIPPER')">
                             <a class= "navlink" id= "nav_notifications" href="/unreadnotifications" th:inline="text">Notifications ([[${notifications.size()}]])</a>
                         </li>
+                        <li sec:authorize="hasAnyAuthority('CARRIER', 'MASTERLIST', 'ADMIN','SHIPPER')">
+							<a class= "navlink" id= "nav_update_user_details" href="/update-user-details">Update User</a>
+						</li>
                         <li sec:authorize="isAuthenticated()" class="navitem">
                             <form id="logoutForm" method="POST" th:action="@{/logout}">
                                 <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
@@ -153,12 +156,6 @@
                                     <th>Pallets</th>
                                     <th>Weight</th>
                                     <th>Enabled</th>
-                                    <th>Carrier Name</th>
-                                    <th>SCAC</th>
-                                    <th>LTL</th>
-                                    <th>FTL</th>
-                                    <th>Number of Pallets</th>
-                                    <th>Weight in Pounds</th>
                                     <th>Auctioning Allowed</th>
                                     <th>Edit</th>
                                     <th>Delete</th>
@@ -204,14 +201,8 @@
                                     </ul>
                                     </td>
                                     <td th:text= "${user.enabled}"></td>
-                                    <td th:text="${user.carrier.carrierName}"></td>
-                                    <td th:text="${user.carrier.scac}"></td>
-                                    <td th:text="${user.carrier.ltl}"></td>
-                                    <td th:text="${user.carrier.ftl}"></td>
-                                    <td th:text="${user.carrier.pallets}"></td>
-                                    <td th:text="${user.carrier.weight}"></td>
                                     <td th:text="${user.auctioningAllowed}"></td>
-                                    <td><a th:href="@{/edituser/{id}(id=${user.id})}">Edit</a></td>
+                                    <td><a th:href="@{/editcarrieruser/{id}(id=${user.id})}">Edit</a></td>
                                     <td><a th:href="@{/deleteuser/{id}(id=${user.id})}">Delete</a></td>
                                     <td><a th:href="@{/toggleauctioning/{id}(id=${user.id})}">Toggle Auctioning Allowed</a></td>                         
                                 </tr>
@@ -219,13 +210,11 @@
                         </table>
                     </div>      
                     <p><button class="buttons6" onclick="window.location.href='./addcarrieruser';">Add New User</button></p>
-                    <p><button class="buttons6" onclick="window.location.href='./roles';">View Available Roles</button></p>
                 </div>
             </div>
         </div>
 
 		<div class="footer">
-            Copyright &copy; Slippery Rock University 2022
         </div>
 		<script>
 		function nav_open() {
