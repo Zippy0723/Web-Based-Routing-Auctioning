@@ -476,7 +476,7 @@ public class ValidationServiceImp {
 		String maximumCubicWeight = (String) hashtable.get("maximumCubicWeight");
 		
 		
-		if(!(allVehicleTypes.contains(make + " " + model))) {
+		if(allVehicleTypes.contains(make + " " + model)) {
 			Logger.error("{} attempted to upload a Vehicle Type but the Make and Model already exists in the Repo", user.getUsername());
 			return null;
 		}
@@ -498,12 +498,12 @@ public class ValidationServiceImp {
 			}
 		}
 		
-		if(!(make.length() <= 32 && make.length() > 0) || !(make.matches("^[a-zA-Z0-9.-]+$"))) {
+		if(!(make.length() <= 32 && make.length() > 0)) {
 			Logger.error("{} attempted to upload a Vehicle Type but the Make was not between 1 and 32 characters long.",user.getUsername());
 			return null;
 		}
 		
-		if(!(model.length() <= 32 && model.length() > 0) || !(model.matches("^[a-zA-Z0-9.-]+$"))) {
+		if(!(model.length() <= 32 && model.length() > 0)) {
 			Logger.error("{} attempted to upload a Vehicle Type but the Make was not between 1 and 32 characters long.",user.getUsername());
 			return null;
 		}
@@ -519,7 +519,7 @@ public class ValidationServiceImp {
 		}
 		
 		if (!(capacity == null || capacity.equals(""))) {
-			if(!(capacity.length() <= 16 && capacity.length() > 0) || !(capacity.matches("^[0-9.]+$"))) {
+			if(!(capacity.length() <= 16 && capacity.length() > 0) || !(capacity.matches("^[0-9-.]+$"))) {
 				Logger.error("{} attempted to upload a Vehicle Type but the Capacity was not between 1 and 16 numeric characters long.",user.getUsername());
 				return null;
 			}
@@ -617,8 +617,6 @@ public class ValidationServiceImp {
 	    		String locationType = row.getCell(8).toString().strip();
 	    		
 	    		locationZip = locationZip.substring(0, locationZip.length() - 2);
-	    		locationLatitude = locationLatitude.substring(0, locationLatitude.length() - 2);
-	    		locationLongitude = locationLongitude.substring(0, locationLongitude.length() - 2);
 	    		
 	    		Hashtable<String, String> hashtable = new Hashtable<>();
 	    		
@@ -642,8 +640,8 @@ public class ValidationServiceImp {
 	    			allLocations.add(l.getName());	
 	    		}
 	    		
-	    		if(!(allLocations.contains(locationName))) {
-	    			Logger.error("{} attempted to upload a multiple Locations with the same name.",user.getUsername());
+	    		if(allLocations.contains(locationName)) {
+	    			Logger.error("{} attempted to upload multiple Locations with the same name.",user.getUsername());
 	    			return null;
 	    		}
 	    		
@@ -803,7 +801,7 @@ public class ValidationServiceImp {
 	    			allContacts.add(c.getFirstName() + " " + c.getLastName());	
 	    		}
 	    		
-	    		if(allContacts.contains(firstName + lastName)) {
+	    		if(allContacts.contains(firstName + " " + lastName)) {
 	    			Logger.error("{} attempted to upload a multiple Contacts with the same first and last name.",user.getUsername());
 	    			return null;
 	    		}
@@ -844,10 +842,11 @@ public class ValidationServiceImp {
 			String primaryPhone = (String)hashtable.get("primaryPhone");
 			String workPhone = (String)hashtable.get("workPhone");
 			
-			if (allContacts.contains(firstName + lastName)) { 
-    			Logger.info("{} attempted to upload a contact but a contact with the same First Name and Last Name already exists.",user.getUsername());
+			for(Contacts c: repoContacts) {
+				if((c.getFirstName() + " " + c.getLastName()) == (firstName + " " + lastName));
+				Logger.info("{} attempted to upload a contact but a contact with the same First Name and Last Name already exists.",user.getUsername());
     			return null;
-    		}
+			}
 			
 			if (!(firstName.length() <= 32 && firstName.length() > 0) || !(firstName.matches("^[a-zA-Z ']+$"))) { 
     			Logger.info("{} attempted to upload a contact but Contact first name field must be between 1 and 32 characters and alphabetic.",user.getUsername());
@@ -870,14 +869,14 @@ public class ValidationServiceImp {
     			return null;
     		}
     		
-    		if(!(streetAddress1.length() <= 64 && streetAddress1.length() > 0) || !(streetAddress1.matches("\\d+\\s+([a-zA-Z.]+\\s?)+"))) { 
-    			Logger.info("{} attempted to upload a contact but Contact street address must be between 1 and 128 characters that are alphanumeric.",user.getUsername());
+    		if(!(streetAddress1.length() <= 64 && streetAddress1.length() > 0)) { 
+    			Logger.info("{} attempted to upload a contact but Contact street address 1 must be between 1 and 128 characters.",user.getUsername());
     			return null;
     		}
     		
     		if (!(streetAddress2 == null || streetAddress2.equals(""))) {
-    			if(!(streetAddress2.length() <= 64 && streetAddress2.length() > 0) || !(streetAddress2.matches("^[A-Za-z0-9./-]+(?:[\\s-][A-Za-z0-9.-]+)*$"))) { 
-    				Logger.info("{} attempted to upload a contact but Contact street address 2 must be between 1 and 64 characters that are alphanumeric.",user.getUsername());
+    			if(!(streetAddress2.length() <= 64 && streetAddress2.length() > 0)) { 
+    				Logger.info("{} attempted to upload a contact but Contact street address 2 must be between 1 and 64 characters.",user.getUsername());
     				return null;
     			}
     		}
@@ -930,10 +929,12 @@ public class ValidationServiceImp {
 		
 	public List<Technicians> validateTechniciansSheet(XSSFSheet worksheet){
 		List <Technicians> result = new ArrayList<>();
+		User user = getLoggedInUser();
 		 {
 			 try {	
 				
 				for(int i=1; i<worksheet.getPhysicalNumberOfRows(); i++) {
+					List<String> allTechnicians = new ArrayList<>();
 					Technicians technician = new Technicians();
 			        XSSFRow row = worksheet.getRow(i);
 			        
@@ -954,6 +955,15 @@ public class ValidationServiceImp {
 		    			return null;
 		    		}
 		    		
+		    		for(Technicians t: result) {
+		    			allTechnicians.add(t.getContact().getFirstName() + " " + t.getContact().getLastName());	
+		    		}
+		    		
+		    		if(allTechnicians.contains(contactFullName)) {
+		    			Logger.error("{} attempted to upload multiple Technicians with the same Contact name.",user.getUsername());
+		    			return null;
+		    		}
+		    		
 			        result.add(technician);	
 				}
 			}
@@ -968,13 +978,34 @@ public class ValidationServiceImp {
 	
 	
 	public Technicians validateTechnicians(Hashtable<String, String> hashtable) {
-		
+		ArrayList <Contacts> repoContacts = (ArrayList) contactsRepository.findAll();
+		ArrayList <Technicians> repoTechnicians = (ArrayList) techniciansRepository.findAll();
 		User user = getLoggedInUser();
+		Long contactId = null;
 		
 		String skillGrade = (String) hashtable.get("skillGrade");
+		String contactFullName = (String) hashtable.get("contactFullName");
+		
+		for(Contacts c : repoContacts) {
+			if (contactFullName.equals(c.getFirstName() + " " + c.getLastName())) {
+				contactId = c.getId();
+			}
+		}
+		
+		for(Technicians t : repoTechnicians) {
+			if ((t.getContact().getFirstName() + " " + t.getContact().getLastName()).equals(contactFullName)) {
+				Logger.error("{} attempted to upload a Technician but the Contact already exists.",user.getUsername());
+				return null;
+			}
+		}
 		
 		if (!(skillGrade.length() <= 12 && skillGrade.length() > 0) || !(skillGrade.matches("^[a-zA-Z0-9.]+$"))) {
 			Logger.error("{} attempted to upload a Technician but the Skill Grade was not between 1 and 12 alphanumeric characters long.",user.getUsername());
+			return null;	
+		}
+		
+		if (contactId == null) {
+			Logger.error("{} attempted to upload a Technician but the Contact did not exist.",user.getUsername());
 			return null;	
 		}
 		
@@ -985,7 +1016,7 @@ public class ValidationServiceImp {
 		technician.setCarrier(user.getCarrier());
 		technician.setSkill_grade(skillGrade);
 		
-		technician.setContact(null);
+		technician.setContact(contactsRepository.findById(contactId).orElseThrow(() -> new IllegalArgumentException("Invalid Contact Id")));
 		
 		}
 	catch(Exception e) {
@@ -997,10 +1028,11 @@ public class ValidationServiceImp {
 		return technician;
 	}
 	public List<Vehicles> validateVehiclesSheet(XSSFSheet worksheet){
+		User user = getLoggedInUser();
 		List <Vehicles> result = new ArrayList<>();
 		try {
-			
 			for(int i=1; i<worksheet.getPhysicalNumberOfRows(); i++) {
+				List <String> allVehicles = new ArrayList<>();
 				Vehicles vehicle = new Vehicles();
 		        XSSFRow row = worksheet.getRow(i);
 		        
@@ -1031,6 +1063,15 @@ public class ValidationServiceImp {
 	    			return null;								
 	    		}
 	    		
+	    		for(Vehicles v: result) {
+	    			allVehicles.add(v.getPlateNumber() + " " + v.getVinNumber());
+	    		}
+	    		
+	    		if(allVehicles.contains(plate + " " + vin)) {
+	    			Logger.error("{} attempted to upload a multiple Vehicles with the same Plate and Vin.",user.getUsername());
+	    			return null;
+	    		}
+
 		        result.add(vehicle);
 			 		
 			 	}
@@ -1047,6 +1088,7 @@ public class ValidationServiceImp {
 		User user = getLoggedInUser();
 		ArrayList <VehicleTypes> repoVehicleTypes = (ArrayList) vehicleTypesRepository.findAll();
 		ArrayList <Locations> repoLocations = (ArrayList) locationsRepository.findAll();
+		ArrayList <Vehicles> repoVehicles = (ArrayList) vehiclesRepository.findAll();
 		Long vehicleTypeId = null;
 		Long locationId = null;
 		
@@ -1056,22 +1098,30 @@ public class ValidationServiceImp {
 		String vehicleTypeMakeModel = (String) hashtable.get("vehicleTypeMakeModel");
 		String locationName = (String) hashtable.get("locationName");
 		
-		for(VehicleTypes v: repoVehicleTypes) {
-			if ((v.getMake()+ " " + v.getModel()) == vehicleTypeMakeModel)
-				vehicleTypeId = v.getId();
+		for(VehicleTypes vt: repoVehicleTypes) {
+			if (vehicleTypeMakeModel.equals(vt.getMake() + " " + vt.getModel())){
+				vehicleTypeId = vt.getId();
+			}
 		}
 		
 		for(Locations l: repoLocations) {
-			if (l.getName() == locationName)
+			if (l.getName().equals(locationName)) {
 				locationId = l.getId();
+			}
 		}
 		
-		if(!(vehicleTypeId == null)) {
+		for(Vehicles v: repoVehicles) {
+			if ((v.getPlateNumber()+ " " + v.getVinNumber()).equals(plate + " " + vin))
+				Logger.error("{} attempted to upload a Vehicle but the Vehicle already exists.",user.getUsername());
+				return null;
+		}
+		
+		if(vehicleTypeId == null) {
 			Logger.error("{} attempted to upload a Vehicle but the Vehicle Type did not exist.",user.getUsername());
 			return null;	
 		}
 		
-		if(!(locationId == null)) {
+		if(locationId == null) {
 			Logger.error("{} attempted to upload a Vehicle but the Location did not exist.",user.getUsername());
 			return null;	
 		}
@@ -1082,7 +1132,7 @@ public class ValidationServiceImp {
 		}
 		
 		if (!(vin.length() <= 17 && vin.length() > 0) || !(vin.matches("^[a-zA-Z0-9.]+$"))) {
-			Logger.error("{} attempted to upload a Vehicle but the Plate was not between 1 and 17 alphanumeric characters long.",user.getUsername());
+			Logger.error("{} attempted to upload a Vehicle but the Vin was not between 1 and 17 alphanumeric characters long.",user.getUsername());
 			return null;	
 		}
 	
@@ -1099,9 +1149,10 @@ public class ValidationServiceImp {
 	    vehicle.setVinNumber(vin);
 	    vehicle.setManufacturedYear(manufacturedYear);
 		vehicle.setCarrier(user.getCarrier());
-
+		
 	    vehicle.setVehicleType(vehicleTypesRepository.findById(vehicleTypeId).orElseThrow(() -> new IllegalArgumentException("Invalid Vehicle Type Id")));
 	    vehicle.setLocation(locationsRepository.findById(locationId).orElseThrow(() -> new IllegalArgumentException("Invalid Location Id")));
+	    
 		}
 		
 	catch(Exception e) {
@@ -1109,16 +1160,17 @@ public class ValidationServiceImp {
 		System.out.println("Failed to set Vehicle");
 		return null;
 	}
-
-		return vehicle;
-	}
+	return vehicle;
+}
 	
 	public List<Driver> validateDriverSheet(XSSFSheet worksheet){
 		List <Driver> result = new ArrayList<>();
+		User user = getLoggedInUser();
 		 {
 			 try {	
 				
 				for(int i=1; i<worksheet.getPhysicalNumberOfRows(); i++) {
+					List<String> allDrivers = new ArrayList<>();
 					Driver driver = new Driver();
 			        XSSFRow row = worksheet.getRow(i);
 			        
@@ -1132,7 +1184,7 @@ public class ValidationServiceImp {
 		    		String licenseClass = row.getCell(2).toString().strip();
 		    		String contactFullName = row.getCell(3).toString().strip();
 		    		String vehiclePlateAndVin = row.getCell(4).toString().strip();
-		    			
+		    		
 		    		Hashtable<String, String> hashtable = new Hashtable<>();
 		    		
 		    		hashtable.put("contactFullName", contactFullName);
@@ -1143,6 +1195,15 @@ public class ValidationServiceImp {
 		 
 		    		driver = validateDriver(hashtable);
 		    		if (driver == null) {
+		    			return null;
+		    		}
+		    		
+		    		for(Driver d: result) {
+		    			allDrivers.add(d.getContact().getFirstName() + " " + d.getContact().getLastName());	
+		    		}
+		    		
+		    		if(allDrivers.contains(contactFullName)) {
+		    			Logger.error("{} attempted to upload multiple Drivers with the same Contact name.",user.getUsername());
 		    			return null;
 		    		}
 		    		
@@ -1157,27 +1218,64 @@ public class ValidationServiceImp {
 		 }
 			return result;
 		}
+	
 			public Driver validateDriver(Hashtable<String, String> hashtable) {
-				
 				User user = getLoggedInUser();
+				ArrayList <Contacts> repoContacts = (ArrayList) contactsRepository.findAll();
+				ArrayList <Driver> repoDrivers = (ArrayList) driverRepository.findAll();
+				ArrayList <Vehicles> repoVehicles = (ArrayList) vehiclesRepository.findAll();
+				
+				
+				Long contactId = null;
+				Long vehicleId = null;
 				
 				String licenseNumber = (String)hashtable.get("licenseNumber");
 				String licenseExpiration = (String)hashtable.get("licenseExpiration");
 				String licenseClass = (String)hashtable.get("licenseClass");
-				
+				String contactFullName = (String)hashtable.get("contactFullName");
+				String vehiclePlateAndVin = (String)hashtable.get("vehiclePlateAndVin");
 
-	    		if(!(licenseNumber.length() <= 32 && licenseNumber.length() > 0) || !(licenseNumber.matches("^[A-Za-z0-9-/]$"))){
-	    			Logger.info("{} attempted to upload a Driver but the license number must be between 0 and 12 characters that are alpahnumeric.",user.getUsername());
+				for(Vehicles v: repoVehicles) {
+					if (vehiclePlateAndVin.equals(v.getPlateNumber() + " " + v.getVinNumber())){
+						vehicleId = v.getId();
+					}
+				}
+				
+				for(Contacts c: repoContacts) {
+					if (contactFullName.equals(c.getFirstName() + " " + c.getLastName())) {
+						contactId = c.getId();
+					}
+				}
+				
+				for(Driver d : repoDrivers) {
+					if ((d.getContact().getFirstName() + " " + d.getContact().getLastName()).equals(contactFullName)) {
+						Logger.error("{} attempted to upload a Driver but the Contact already exists.",user.getUsername());
+						return null;
+					}
+				}
+				
+				if(vehicleId == null) {
+					Logger.info("{} attempted to upload a Driver but the Contact did not exist.",user.getUsername());
+					return null;
+				}
+				
+				if(contactId == null) {
+					Logger.info("{} attempted to upload a Driver but the Contact did not exist.",user.getUsername());
+					return null;
+				}
+
+	    		if(!(licenseNumber.length() <= 32 && licenseNumber.length() > 0)){
+	    			Logger.info("{} attempted to upload a Driver but the license number must be between 1 and 12 characters.",user.getUsername());
 	    			return null;
 	    		}
 	    		
 	    		if(!(licenseExpiration.length() <= 12 && licenseExpiration.length() > 0) || !(licenseExpiration.matches("^\\d{2}-(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)-\\d{4}$"))){ 
-	    			Logger.info("{} attempted to upload a Driver but the Date must be between 0 and 12 characters and formated MM/DD/YYYY.", user.getUsername());
+	    			Logger.info("{} attempted to upload a Driver but the Date must be between 1 and 12 characters and formated MM/DD/YYYY.", user.getUsername());
 	    			return null;
 	    		}
 	    		
-	    		if(!(licenseClass.length() <= 12 && licenseClass.length() > 0) || !(licenseClass.matches("^[A-Za-z0-9-/]$"))) { 
-	    			Logger.info("{} attempted to upload a Driver but the license class must be 1 character and alphabetic.",user.getUsername());
+	    		if(!(licenseClass.length() <= 12 && licenseClass.length() > 0) || !(licenseClass.matches("^[a-zA-Z-/]+$"))) { 
+	    			Logger.info("{} attempted to upload a Driver but the license class must be between 1 and 12 characters.",user.getUsername());
 	    			return null;
 	    		}
 	    		
@@ -1190,8 +1288,8 @@ public class ValidationServiceImp {
 	    		driver.setLisence_class(licenseClass);
 	    		driver.setCarrier(user.getCarrier());
 	    		
-	    		driver.setContact(null);
-	    		driver.setVehicle(null);
+	    		driver.setVehicle(vehiclesRepository.findById(vehicleId).orElseThrow(() -> new IllegalArgumentException("Invalid Vehicle Id")));
+	    		driver.setContact(contactsRepository.findById(contactId).orElseThrow(() -> new IllegalArgumentException("Invalid Contact Id")));
 	    		
 	    		return driver;
 		}
@@ -1255,6 +1353,11 @@ public class ValidationServiceImp {
 		return result;
 	}
 	public MaintenanceOrders validateMaintenanceOrder(Hashtable<String, String> hashtable) {
+		ArrayList <Technicians> repoTechnicians = (ArrayList) techniciansRepository.findAll();
+		ArrayList <Vehicles> repoVehicles = (ArrayList) vehiclesRepository.findAll();
+		
+		Long vehicleId = null;
+		Long technicianId = null;
 		
 		User user = getLoggedInUser();
 		
@@ -1264,7 +1367,31 @@ public class ValidationServiceImp {
 		String cost = (String)hashtable.get("cost");
 		String status = (String)hashtable.get("status");
 		String type = hashtable.get("type");
+		String vehiclePlateAndVin = hashtable.get("vehiclePlateAndVin");
+		String techniciansContactFullName = hashtable.get("techniciansContactFullName");
 
+		
+		for(Vehicles v: repoVehicles) {
+			if (vehiclePlateAndVin.equals(v.getPlateNumber() + " " + v.getVinNumber())){
+				vehicleId = v.getId();
+			}
+		}
+		
+		for(Technicians t: repoTechnicians) {
+			if (techniciansContactFullName.equals(t.getContact().getFirstName() + " " + t.getContact().getLastName())){
+				technicianId = t.getId();
+			}
+		}
+		
+		if(vehicleId == null) {
+			Logger.info("{} attempted to upload a Maintenance Order but the vehicle did not exist.",user.getUsername());
+			return null;
+		}
+		
+		if(technicianId == null) {
+			Logger.info("{} attempted to upload a Maintenance Order but the Technician did not exist.",user.getUsername());
+			return null;
+		}
 
 		if (!(date == null || date.equals(""))) {
 			if(!(date.length() <= 12 && date.length() > 0 && date.matches("^\\d{2}-(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)-\\d{4}$"))) { 
@@ -1313,8 +1440,9 @@ public class ValidationServiceImp {
 		maintenanceOrder.setMaintenance_type(type);
 		maintenanceOrder.setCarrier(user.getCarrier());
 		
-		maintenanceOrder.setVehicle(null);
-		maintenanceOrder.setTechnician(null);
+		
+		maintenanceOrder.setVehicle(vehiclesRepository.findById(vehicleId).orElseThrow(() -> new IllegalArgumentException("Invalid Vehicle Id")));
+		maintenanceOrder.setTechnician(techniciansRepository.findById(technicianId).orElseThrow(() -> new IllegalArgumentException("Invalid Technician Id")));
 		
 		return maintenanceOrder;
 	}

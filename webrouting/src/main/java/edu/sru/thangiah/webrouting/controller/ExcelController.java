@@ -29,6 +29,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
@@ -389,8 +390,8 @@ public class ExcelController {
 	}
 	
 	
-	@PostMapping("/upload-vehicleTypes")
-	public String loadVechileTypesFromExcel(@RequestParam("file") MultipartFile excelData, HttpSession session, Model model){
+	@PostMapping("/excel-upload-vehicletypes")
+	public String loadVehicleTypesFromExcel(@RequestParam("file") MultipartFile excelData, HttpSession session, Model model){
 		User user = getLoggedInUser();
 		String redirectLocation = (String) session.getAttribute("redirectLocation");
 		XSSFWorkbook workbook;
@@ -420,7 +421,7 @@ public class ExcelController {
 	}
 	
 	
-	@PostMapping("/upload-locations")
+	@PostMapping("/excel-upload-locations")
 	public String loadLocationsFromExcel(@RequestParam("file") MultipartFile excelData, HttpSession session, Model model){
 		User user = getLoggedInUser();
 		String redirectLocation = (String) session.getAttribute("redirectLocation");
@@ -449,7 +450,228 @@ public class ExcelController {
 		}
 		return "redirect:" + redirectLocation;
 	}
+	
+	
+	@PostMapping("/excel-upload-contacts")
+	public String loadContactsFromExcel(@RequestParam("file") MultipartFile excelData, HttpSession session, Model model){
+		User user = getLoggedInUser();
+		String redirectLocation = (String) session.getAttribute("redirectLocation");
+		XSSFWorkbook workbook;
+		model = NotificationController.loadNotificationsIntoModel(user, model);
+		
+		try {
+			workbook = new XSSFWorkbook(excelData.getInputStream());
+			XSSFSheet contactsSheet = workbook.getSheetAt(0);
+			
+			List<Contacts> contacts = validationServiceImp.validateContactsSheet(contactsSheet);
+			
+			if (contacts == null) {
+				Logger.info("{} attempted to save Contacts but failed.",user.getUsername());
+				return "redirect:" + redirectLocation; 
+			}
+			for(Contacts contact: contacts) {
+				contactsRepository.save(contact);
+				Logger.info("{} saved Contact with ID {}.",user.getUsername(),contact.getId());
+			}
+			
+		}
+		catch(Exception e ) {
+			e.printStackTrace();
+			return "redirect:" + redirectLocation;
+		}
+		return "redirect:" + redirectLocation;
+	}
 
+	@PostMapping("/excel-upload-technicians")
+	public String loadTechniciansFromExcel(@RequestParam("file") MultipartFile excelData, HttpSession session, Model model){
+		User user = getLoggedInUser();
+		String redirectLocation = (String) session.getAttribute("redirectLocation");
+		XSSFWorkbook workbook;
+		model = NotificationController.loadNotificationsIntoModel(user, model);
+		
+		try {
+			workbook = new XSSFWorkbook(excelData.getInputStream());
+			XSSFSheet techniciansSheet = workbook.getSheetAt(0);
+			
+			List<Technicians> technicians = validationServiceImp.validateTechniciansSheet(techniciansSheet);
+			
+			if (technicians == null) {
+				Logger.info("{} attempted to save Technician but failed.",user.getUsername());
+				return "redirect:" + redirectLocation; 
+			}
+			for(Technicians technician: technicians) {
+				techniciansRepository.save(technician);
+				Logger.info("{} saved Technician with ID {}.",user.getUsername(),technician.getId());
+			}
+			
+		}
+		catch(Exception e ) {
+			e.printStackTrace();
+			return "redirect:" + redirectLocation;
+		}
+		return "redirect:" + redirectLocation;
+	}
+	
+	@PostMapping("/excel-upload-vehicles")
+	public String loadVehicleFromExcel(@RequestParam("file") MultipartFile excelData, HttpSession session, Model model){
+		User user = getLoggedInUser();
+		String redirectLocation = (String) session.getAttribute("redirectLocation");
+		XSSFWorkbook workbook;
+		model = NotificationController.loadNotificationsIntoModel(user, model);
+		
+		try {
+			workbook = new XSSFWorkbook(excelData.getInputStream());
+			XSSFSheet vehicleSheet = workbook.getSheetAt(0);
+			
+			List<Vehicles> vehicles = validationServiceImp.validateVehiclesSheet(vehicleSheet);
+			
+			if (vehicles == null) {
+				Logger.info("{} attempted to save Vehicle but failed.",user.getUsername());
+				return "redirect:" + redirectLocation; 
+			}
+			for(Vehicles vehicle: vehicles) {
+				vehiclesRepository.save(vehicle);
+				Logger.info("{} saved Vehicle with ID {}.",user.getUsername(),vehicle.getId());
+			}
+			
+		}
+		catch(Exception e ) {
+			e.printStackTrace();
+			return "redirect:" + redirectLocation;
+		}
+		return "redirect:" + redirectLocation;
+	}
+	
+	@PostMapping("/excel-upload-drivers")
+	public String loadDriverFromExcel(@RequestParam("file") MultipartFile excelData, HttpSession session, Model model){
+		User user = getLoggedInUser();
+		String redirectLocation = (String) session.getAttribute("redirectLocation");
+		XSSFWorkbook workbook;
+		model = NotificationController.loadNotificationsIntoModel(user, model);
+		
+		try {
+			workbook = new XSSFWorkbook(excelData.getInputStream());
+			XSSFSheet driverSheet = workbook.getSheetAt(0);
+			
+			List<Driver> drivers = validationServiceImp.validateDriverSheet(driverSheet);
+			
+			if (drivers == null) {
+				Logger.info("{} attempted to save Driver but failed.",user.getUsername());
+				return "redirect:" + redirectLocation; 
+			}
+			for(Driver driver: drivers) {
+				driverRepository.save(driver);
+				Logger.info("{} saved Driver with ID {}.",user.getUsername(),driver.getId());
+			}
+			
+		}
+		catch(Exception e ) {
+			e.printStackTrace();
+			return "redirect:" + redirectLocation;
+		}
+		return "redirect:" + redirectLocation;
+	}
+	
+	@PostMapping("/excel-upload-maintenanceOrders")
+	public String loadMaintenanceOrdersFromExcel(@RequestParam("file") MultipartFile excelData, HttpSession session, Model model){
+		User user = getLoggedInUser();
+		String redirectLocation = (String) session.getAttribute("redirectLocation");
+		XSSFWorkbook workbook;
+		model = NotificationController.loadNotificationsIntoModel(user, model);
+		
+		try {
+			workbook = new XSSFWorkbook(excelData.getInputStream());
+			XSSFSheet orderSheet = workbook.getSheetAt(0);
+			
+			List<MaintenanceOrders> orders = validationServiceImp.validateMaintenanceOrdersSheet(orderSheet);
+			
+			if (orders == null) {
+				Logger.info("{} attempted to save Maintenance Orders but failed.",user.getUsername());
+				return "redirect:" + redirectLocation; 
+			}
+			for(MaintenanceOrders order: orders) {
+				maintenanceOrdersRepository.save(order);
+				Logger.info("{} saved Maintenance Order with ID {}.",user.getUsername(),order.getId());
+			}
+			
+		}
+		catch(Exception e ) {
+			e.printStackTrace();
+			return "redirect:" + redirectLocation;
+		}
+		return "redirect:" + redirectLocation;
+	}
+	
+	@GetMapping("/excel/upload-vehicletypes")
+	public String vehicletypesUploadPage(Model model, HttpSession session){
+		model.addAttribute("redirectLocation", session.getAttribute("redirectLocation"));
+		
+		User user = getLoggedInUser();
+        model = NotificationController.loadNotificationsIntoModel(user, model);
+		
+		return "/excel/upload-vehicletypes";	
+	}
+	
+	@GetMapping("/excel/upload-locations")
+	public String locationsUploadPage(Model model, HttpSession session){
+		model.addAttribute("redirectLocation", session.getAttribute("redirectLocation"));
+		
+		User user = getLoggedInUser();
+        model = NotificationController.loadNotificationsIntoModel(user, model);
+		
+		return "/excel/upload-locations";	
+	}
+	
+	@GetMapping("/excel/upload-contacts")
+	public String contactsUploadPage(Model model, HttpSession session){
+		model.addAttribute("redirectLocation", session.getAttribute("redirectLocation"));
+		
+		User user = getLoggedInUser();
+        model = NotificationController.loadNotificationsIntoModel(user, model);
+		
+		return "/excel/upload-contacts";	
+	}
+	
+	@GetMapping("/excel/upload-drivers")
+	public String driversUploadPage(Model model, HttpSession session){
+		model.addAttribute("redirectLocation", session.getAttribute("redirectLocation"));
+		
+		User user = getLoggedInUser();
+        model = NotificationController.loadNotificationsIntoModel(user, model);
+		
+		return "/excel/upload-drivers";	
+	}
+	
+	@GetMapping("/excel/upload-maintenanceorders")
+	public String maintenanceordersUploadPage(Model model, HttpSession session){
+		model.addAttribute("redirectLocation", session.getAttribute("redirectLocation"));
+		
+		User user = getLoggedInUser();
+        model = NotificationController.loadNotificationsIntoModel(user, model);
+		
+		return "/excel/upload-maintenanceorders";	
+	}
+	
+	@GetMapping("/excel/upload-technicians")
+	public String techniciansUploadPage(Model model, HttpSession session){
+		model.addAttribute("redirectLocation", session.getAttribute("redirectLocation"));
+		
+		User user = getLoggedInUser();
+        model = NotificationController.loadNotificationsIntoModel(user, model);
+		
+		return "/excel/upload-technicians";	
+	}
+	
+	@GetMapping("/excel/upload-vehicles")
+	public String vehiclesUploadPage(Model model, HttpSession session){
+		model.addAttribute("redirectLocation", session.getAttribute("redirectLocation"));
+		
+		User user = getLoggedInUser();
+        model = NotificationController.loadNotificationsIntoModel(user, model);
+		
+		return "/excel/upload-vehicles";	
+	}
+	
 	
 	/**
 	 * Returns the user that is currently logged into the system. <br>
