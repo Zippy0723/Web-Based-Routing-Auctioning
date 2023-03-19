@@ -357,9 +357,9 @@
                                     </td>
                                     <td th:text= "${user.enabled}"></td>
                                     <td th:text="${user.auctioningAllowed}"></td>
-                                    <td><a th:href="@{/edituser/{id}(id=${user.id})}">Edit</a></td>
-                                    <td><a th:href="@{/deleteuser/{id}(id=${user.id})}">Delete</a></td>
-                                    <td><a th:href="@{/toggleauctioning/{id}(id=${user.id})}">Toggle Auctioning Allowed</a></td>                         
+                                    <td><a class="disabled-btn" th:href="@{/edituser/{id}(id=${user.id})}">Edit</a></td>
+                                    <td><a class="disabled-btn" th:href="@{/deleteuser/{id}(id=${user.id})}">Delete</a></td>
+                                    <td><a class="disabled-btn" th:href="@{/toggleauctioning/{id}(id=${user.id})}">Toggle Auctioning Allowed</a></td>                         
                                 </tr>
                             </tbody>
                         </table>
