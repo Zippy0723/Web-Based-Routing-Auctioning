@@ -63,19 +63,20 @@ public class TechniciansController {
 	@RequestMapping({"/technicians"})
     public String showTechList(Model model, HttpSession session) {
 		
-	      try {
-	            model.addAttribute("error",session.getAttribute("error"));
-	        } catch(Exception e){
-	            //do nothing
-	        }
-	        session.removeAttribute("error");
+		User user = getLoggedInUser();
+	    try {
+	       model.addAttribute("error",session.getAttribute("error"));
+	    } catch(Exception e){
+	          //do nothing
+	    }
+	    session.removeAttribute("error");
 	        
-		String redirectLocation = "/technicians";
+	    String redirectLocation = "/technicians";
 		session.setAttribute("redirectLocation", redirectLocation);
 		model.addAttribute("redirectLocation", redirectLocation);
-        model.addAttribute("technicians", techniciansRepository.findAll());
+        model.addAttribute("technicians", user.getCarrier().getTechnicians());
         
-        User user = getLoggedInUser();
+        
         model = NotificationController.loadNotificationsIntoModel(user, model);
         
         return "technicians";
@@ -120,7 +121,7 @@ public class TechniciansController {
   		model.addAttribute("redirectLocation", session.getAttribute("redirectLocation")); 
   		
   		List<Technicians> checkTech = new ArrayList<>();
-  		checkTech = (List<Technicians>) techniciansRepository.findAll();
+  		checkTech = (List<Technicians>) loggedInUser.getCarrier().getTechnicians();
   		for(Technicians tech: checkTech) {
   			if(technician.getContact().getId() == tech.getContact().getId()) {
   				deny = true;
@@ -135,6 +136,7 @@ public class TechniciansController {
 			 
   		}
   		
+  		technician.setCarrier(loggedInUser.getCarrier());
   		techniciansRepository.save(technician);
   		Logger.info("{} successfully saved Technician with ID {}.",loggedInUser.getUsername(), technician.getId());
   		return "redirect:" + redirectLocation;

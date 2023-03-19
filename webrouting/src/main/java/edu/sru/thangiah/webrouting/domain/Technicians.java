@@ -40,6 +40,10 @@ public class Technicians {
 	
 	@OneToMany(mappedBy = "technician")
 	private List<MaintenanceOrders> orders = new ArrayList<>();
+	
+	@ManyToOne
+	@JoinColumn(name = "carrier_id")
+	private Carriers carrier;
 
 	/**
 	 * Gets the Technician ID
@@ -103,6 +107,20 @@ public class Technicians {
 	 */
 	public void setOrders(List<MaintenanceOrders> orders) {
 		this.orders = orders;
+	}
+
+	/**
+	 * @return the carrier
+	 */
+	public Carriers getCarrier() {
+		return carrier;
+	}
+
+	/**
+	 * @param carrier the carrier to set
+	 */
+	public void setCarrier(Carriers carrier) {
+		this.carrier = carrier;
 	}
 
 	/**
