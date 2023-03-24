@@ -139,12 +139,6 @@
                                     <th>UserName</th>
                                     <th>Email</th>
                                     <th>Role</th>
-                                    <th>Carrier Name</th>
-                                    <th>SCAC</th>
-                                    <th>LTL</th>
-                                    <th>FTL</th>
-                                    <th>Pallets</th>
-                                    <th>Weight</th>
                                     <th>Enabled</th>
                                     <th>Auctioning Allowed</th>
                                     <th>Edit</th>
@@ -159,36 +153,6 @@
                                     <td th:text="${user.username}"></td>
                                     <td th:text="${user.email}"></td>
                                     <td th:text="${user.role}"></td>
-                                    <td>
-                                    <ul>
-                                    <li th:each="carrier : ${user.carrier}" th:text="${carrier.carrierName}"></li>
-                                    </ul>
-                                    </td>
-                                    <td>
-                                    <ul>
-                                    <li th:each="carrier : ${user.carrier}" th:text="${carrier.scac}"></li>
-                                    </ul>
-                                    </td>
-                                    <td>
-                                    <ul>
-                                    <li th:each="carrier : ${user.carrier}" th:text="${carrier.ltl}"></li>
-                                    </ul>
-                                    </td>
-                                    <td>
-                                    <ul>
-                                    <li th:each="carrier : ${user.carrier}" th:text="${carrier.ftl}"></li>
-                                    </ul>
-                                    </td>
-                                    <td>
-                                    <ul>
-                                    <li th:each="carrier : ${user.carrier}" th:text="${carrier.pallets}"></li>
-                                    </ul>
-                                    </td>
-                                    <td>
-                                    <ul>
-                                    <li th:each="carrier : ${user.carrier}" th:text="${carrier.weight}"></li>
-                                    </ul>
-                                    </td>
                                     <td th:text= "${user.enabled}"></td>
                                     <td th:text="${user.auctioningAllowed}"></td>
                                     <td><a th:href="@{/edituser/{id}(id=${user.id})}">Edit</a></td>
@@ -295,12 +259,6 @@
                                     <th>UserName</th>
                                     <th>Email</th>
                                     <th>Role</th>
-                                    <th>Carrier Name</th>
-                                    <th>SCAC</th>
-                                    <th>LTL</th>
-                                    <th>FTL</th>
-                                    <th>Pallets</th>
-                                    <th>Weight</th>
                                     <th>Enabled</th>
                                     <th>Auctioning Allowed</th>
                                     <th>Edit</th>
@@ -316,36 +274,6 @@
                                     <td th:text="${user.username}"></td>
                                     <td th:text="${user.email}"></td>
                                     <td th:text="${user.role}"></td>
-                                    <td>
-                                    <ul>
-                                    <li th:each="carrier : ${user.carrier}" th:text="${carrier.carrierName}"></li>
-                                    </ul>
-                                    </td>
-                                    <td>
-                                    <ul>
-                                    <li th:each="carrier : ${user.carrier}" th:text="${carrier.scac}"></li>
-                                    </ul>
-                                    </td>
-                                    <td>
-                                    <ul>
-                                    <li th:each="carrier : ${user.carrier}" th:text="${carrier.ltl}"></li>
-                                    </ul>
-                                    </td>
-                                    <td>
-                                    <ul>
-                                    <li th:each="carrier : ${user.carrier}" th:text="${carrier.ftl}"></li>
-                                    </ul>
-                                    </td>
-                                    <td>
-                                    <ul>
-                                    <li th:each="carrier : ${user.carrier}" th:text="${carrier.pallets}"></li>
-                                    </ul>
-                                    </td>
-                                    <td>
-                                    <ul>
-                                    <li th:each="carrier : ${user.carrier}" th:text="${carrier.weight}"></li>
-                                    </ul>
-                                    </td>
                                     <td th:text= "${user.enabled}"></td>
                                     <td th:text="${user.auctioningAllowed}"></td>
                                     <td><a class="disabled-btn" th:href="@{/edituser/{id}(id=${user.id})}">Edit</a></td>
