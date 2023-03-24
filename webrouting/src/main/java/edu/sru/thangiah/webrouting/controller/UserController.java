@@ -145,7 +145,7 @@ public class UserController {
     	}
     	
     	for (User user : userList) {
-    		if (!user.getRole().toString().equals("CARRIER") && !user.getRole().toString().equals("SHIPPER"))  {
+    		if (!user.getRole().toString().equals("CARRIER") && !user.getRole().toString().equals("SHIPPER") && !user.getRole().toString().equals("SHADOWADMIN")) {
     			userOtherList.add(user);
     		}
     	}
