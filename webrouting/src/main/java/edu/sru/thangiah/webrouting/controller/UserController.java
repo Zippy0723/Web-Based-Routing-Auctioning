@@ -116,6 +116,14 @@ public class UserController {
 		this.notficationRepository = notificationRepository;
 	}
     
+    @GetMapping("/userhome")
+    public String showUserHome(Model model, HttpSession session) {
+        User user = getLoggedInUser();
+        model = NotificationController.loadNotificationsIntoModel(user, model);
+        
+        return "userhome";
+    }
+    
     /**
 	 * Adds all of the users to the "userstable" model and redirects user to
 	 * the users page.
@@ -161,7 +169,7 @@ public class UserController {
     }
     
     @GetMapping("/CarrierAdministrationPage")
-    public String carrierAdministrationPage(Model model) {
+    public String carrierAdministrationPage(Model model, HttpSession session) {
     	List<User> userList = userRepository.findAll();
     	List<User> userCarrierList = new ArrayList<User>();
     	
@@ -175,14 +183,16 @@ public class UserController {
         
         User user = getLoggedInUser();
         model = NotificationController.loadNotificationsIntoModel(user, model);
+        session.setAttribute("redirectLocation", "/CarrierAdministrationPage");
         
         return "CarrierAdministrationPage";
     }
     
     @RequestMapping("/ShipperAdministrationPage")
-    public String shipperAdministrationPage(Model model) {
+    public String shipperAdministrationPage(Model model, HttpSession session) {
     	List<User> userList = userRepository.findAll();
     	List<User> finalUserList = new ArrayList<User>();
+    	session.setAttribute("redirectLocation", "/ShipperAdministrationPage");
     	
     	for (User user : userList) {
     		if (user.getRole().toString().equals("SHIPPER")) {
@@ -744,6 +754,17 @@ public class UserController {
   		Logger.info("{} sucessfully updated the user infomation for {}.", loggedInUser.getUsername(), user.getUsername());
   		model.addAttribute("message", "Information Updated! If you changed your email please re-verify your account!");
   		return "/index";
+  	}
+  	
+  	@RequestMapping("/toggleenabled/{id}")
+  	public String toggleEnabled(@PathVariable("id") long id, Model model, HttpSession session) {
+  		User user = userRepository.findById(id)
+  				.orElseThrow(() -> new IllegalArgumentException("Invalid user Id:" + id));
+  		
+  		user.setEnabled(!user.isEnabled());
+  		userRepository.save(user);
+  		
+  		return "redirect:" + (String) session.getAttribute("redirectLocation");
   	}
   	
   	

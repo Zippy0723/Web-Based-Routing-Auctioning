@@ -56,7 +56,7 @@
                             <a class="navlink" id="nav_carriers" href="/carriers">Carriers</a>
                         </li>
                         <li sec:authorize="hasAuthority('MASTERLIST')" class="navitem">
-                           <a class="navlink" id="nav_shipments_home_masterlist" href="/shipmentshomemaster">Shipments</a>
+                            <a class="navlink" id="nav_shipments_home_masterlist" href="/shipmentshomemaster">Shipments</a>
                         </li>
                         <li sec:authorize="hasAuthority('SHIPPER')" class="navitem">
                             <a class="selected" id="nav_shipments_home_shipper" href="/shipmentshomeshipper">Shipments</a>
@@ -72,9 +72,9 @@
                         </li>
 						<br><br><br><br><br>
 						<li sec:authorize="hasAnyAuthority('CARRIER', 'MASTERLIST', 'ADMIN','SHIPPER')">
-							<a class= "navlink" id= "nav_notifications" href="/unreadnotifications" th:inline="text">Notifications ([[${notifications.size()}]])</a>
-						</li>
-						<li sec:authorize="hasAnyAuthority('CARRIER', 'MASTERLIST', 'ADMIN','SHIPPER')">
+                            <a class= "navlink" id= "nav_notifications" href="/unreadnotifications" th:inline="text">Notifications ([[${notifications.size()}]])</a>
+                        </li>
+                        <li sec:authorize="hasAnyAuthority('CARRIER', 'MASTERLIST', 'ADMIN','SHIPPER')">
 							<a class= "navlink" id= "nav_update_user_details" href="/update-user-details">Update User</a>
 						</li>
                         <li sec:authorize="isAuthenticated()" class="navitem">
@@ -88,20 +88,20 @@
             </div>
             <div sec:authorize="!isAuthenticated()" class = "navSideBar" id="mySidebar">
                 <button onclick="nav_close()" class="bar-item">...</button>
-                <ul class="navbar">
-                    <li class="navitem">
-                        <a class="selected" id="nav_home" href="/">Home</a>
-                    </li>
-                    <br>
-                    <li sec:authorize="!isAuthenticated()" class="navitem">
-                        <a class="navlink" id="nav_login" href="login">Login</a>
-                    </li>
-                    <br>
-                    <li sec:authorize="!isAuthenticated()" class="navitem">
-                        <a class="navlink" id="nav_registration" href="/registrationhome">Register</a>
-                    </li>
-                </ul>
-           </div>
+                <div id="menu">
+                    <ul class="navbar">
+                        <li class="navitem">
+                            <a class="selected" id="nav_home" href="/">Home</a>
+                        </li>
+                        <li sec:authorize="!isAuthenticated()" class="navitem">
+                            <a class="navlink" id="nav_login" href="login">Login</a>
+                        </li>
+                        <li sec:authorize="!isAuthenticated()" class="navitem">
+                            <a class="navlink" id="nav_registration" href="/registrationhome">Register</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
 
             <div id="sub_heading">
                 <div id="loginDiv">
@@ -122,35 +122,20 @@
   					<button class=""  id="hamburger" style="display:none" onclick="nav_open()">☰</button>
 				</span>
 				<br><br>
-				<div th:switch="${notifications.size()}">
-					<h2 th:case="0">No Active Notifications!</h2>
-					<div th:case="*">
-						<h2>Notifications: </h2>
-						<br>
-                        <span type="hidden" th:text="${error}" class="loginError"></span>
-                        <br>
-                        <table class="dataTable">
-                        	<thead>
-                        		<tr>
-                        	    	<th>Notification ID</th>
-                        			<th>Message</th>
-                        			<th>Time</th>
-                        			<th>Mark as Unread</th>
-                        		</tr>
-                        	</thead>
-                        	<tbody>
-                        		<tr th:each="notification : ${notifications}">
-                        			<td th:text="${notification.id}"></td>
-                        			<td th:text="${notification.message}"></td>
-                        			<td th:text="${notification.timesent}"></td>
-                        			<td><a th:href="@{/markasunread/{id}(id=${notification.id})}">Mark as Unread</a></td>
-                        		</tr>
-                        	</tbody>
-                        </table>
-					</div>
-				</div>
-				<br></br>
-				<p><button class="buttons1" onclick="window.location.href='./unreadnotifications';">Unread Notifications</button></p>
+				<div style="text-align: center;">
+                    <h1>Select which users you want to view: </h1>
+                    <br>
+                    <br>
+                    <h3><a href="/users">All Users</a></h3>
+					<br>
+                    <br>
+                    <h3><a href="/CarrierAdministrationPage">Carriers</a></h3>
+                    <br>
+                    <br>
+                    <h3><a href="/ShipperAdministrationPage">Shippers</a></h3>
+                    <br>
+                    <br>
+                </div>
             </div>
         </div>
 

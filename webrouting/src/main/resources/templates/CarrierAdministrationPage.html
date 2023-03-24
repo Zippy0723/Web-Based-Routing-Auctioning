@@ -29,7 +29,7 @@
                             <a class="navlink" id="nav_home" href="/">Home</a>
                         </li>
                         <li sec:authorize="hasAuthority('ADMIN')" class="navitem">
-                            <a class="navlink" id="nav_users" href="/users">Users</a>
+                            <a class="navlink" id="nav_users" href="/userhome">Users</a>
                         </li>
                         <li sec:authorize="hasAuthority('CARRIER')" class="navitem">
                             <a class="navlink" id="nav_contacts" href="/contacts">Contacts</a>
@@ -151,6 +151,7 @@
                                     <th>Auctioning Allowed</th>
                                     <th>Edit</th>
                                     <th>Delete</th>
+                                    <th>Toggle Account Enable</th>
                                     <th>Toggle Auctioning Allowed</th>
                                     
                                 </tr>
@@ -196,6 +197,7 @@
                                     <td th:text="${user.auctioningAllowed}"></td>
                                     <td><a th:href="@{/editcarrieruser/{id}(id=${user.id})}">Edit</a></td>
                                     <td><a th:href="@{/deleteuser/{id}(id=${user.id})}">Delete</a></td>
+                                    <td><a th:href="@{/toggleenabled/{id}(id=${user.id})}">Toggle Account Enable</a></td>
                                     <td><a th:href="@{/toggleauctioning/{id}(id=${user.id})}">Toggle Auctioning Allowed</a></td>                         
                                 </tr>
                             </tbody>
