@@ -29,16 +29,7 @@
                             <a class="selected" id="nav_home" href="/">Home</a>
                         </li>
                         <li sec:authorize="hasAuthority('ADMIN')" class="navitem">
-                            <a class="navlink" id="nav_users" href="/users">Users</a>
-                        </li>
-                        <li sec:authorize="hasAuthority('ADMIN')" class="navitem">
-                            <a class="navlink" id="nav_users" href="/CarrierAdministrationPage">Carrier Page</a>
-                        </li>
-                        <li sec:authorize="hasAuthority('ADMIN')" class="navitem">
-                            <a class="navlink" id="nav_users" href="/ShipperAdministrationPage">Shipper Page</a>
-                        </li>
-                        <li sec:authorize="hasAuthority('ADMIN')" class="navitem">
-                            <a class="navlink" id="nav_users" href="/viewavailableroles">Available Roles</a>
+                            <a class="navlink" id="nav_users" href="/userhome">Users</a>
                         </li>
                         <li sec:authorize="hasAuthority('CARRIER')" class="navitem">
                             <a class="navlink" id="nav_contacts" href="/contacts">Contacts</a>
@@ -141,7 +132,7 @@
                     <br>
                     <h2><a th:href="|/toggleauctioningconfirmation/${user.id}|">Yes</a></h2>
                     <br>
-                    <h2><a href="/users">No</a></h2>
+                    <h2><a th:href="${redirectLocation}">No</a></h2>
             </div>
 		</div>
 
