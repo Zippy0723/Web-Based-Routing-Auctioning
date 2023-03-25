@@ -591,16 +591,16 @@ public class ValidationServiceImp {
 		vehicleType.setDescription(description);
 		vehicleType.setMake(make);
 		vehicleType.setModel(model);
-		vehicleType.setMinimumWeight(Integer.parseInt(minimumWeight));
-		vehicleType.setMaximumWeight(Integer.parseInt(maximumWeight));
+		vehicleType.setMinimumWeight(minimumWeight);
+		vehicleType.setMaximumWeight(maximumWeight);
 		vehicleType.setCapacity(capacity);
-		vehicleType.setMaximumRange(Integer.parseInt(maximumRange));
+		vehicleType.setMaximumRange(maximumRange);
 		vehicleType.setRestrictions(restrictions);
-		vehicleType.setHeight(Integer.parseInt(height));
-		vehicleType.setEmptyWeight(Integer.parseInt(emptyWeight));
-		vehicleType.setLength(Integer.parseInt(length));
-		vehicleType.setMinimumCubicWeight(Integer.parseInt(minimumCubicWeight));
-		vehicleType.setMaximumCubicWeight(Integer.parseInt(maximumCubicWeight));
+		vehicleType.setHeight(height);
+		vehicleType.setEmptyWeight(emptyWeight);
+		vehicleType.setLength(length);
+		vehicleType.setMinimumCubicWeight(minimumCubicWeight);
+		vehicleType.setMaximumCubicWeight(maximumCubicWeight);
 		vehicleType.setCarrier(user.getCarrier());
 	}
 	catch(Exception e) {
@@ -1514,6 +1514,409 @@ public class ValidationServiceImp {
 		
 		return maintenanceOrder;
 	}
+	
+	
+	
+	
+	public Contacts validateContactForm(Hashtable<String, String> hashtable, HttpSession session) {
+		ArrayList <Contacts> repoContacts = (ArrayList) contactsRepository.findAll();
+		ArrayList <String> allContacts = new ArrayList<>();
+		
+		for(Contacts c: repoContacts) {
+			allContacts.add(c.getFirstName() + " " + c.getLastName());
+		}
+		
+		
+		List<String> states = Arrays.asList("Alabama", "Alaska", "Arizona", "Arkansas", "California", "Colorado", "Connecticut", "Delaware", "Florida", "Georgia", "Hawaii", "Idaho", "Illinois", "Indiana", "Iowa", "Kansas", "Kentucky", "Louisiana", "Maine", "Maryland", "Massachusetts", "Michigan", "Minnesota", "Mississippi", "Missouri", "Montana", "Nebraska", "Nevada", "New Hampshire", "New Jersey", "New Mexico", "New York", "North Carolina", "North Dakota", "Ohio", "Oklahoma", "Oregon", "Pennsylvania", "Rhode Island", "South Carolina", "South Dakota", "Tennessee", "Texas", "Utah", "Vermont", "Virginia", "Washington", "West Virginia", "Wisconsin", "Wyoming");
+		List<String> stateAbbreviations = Arrays.asList("DC", "AL", "AK", "AZ", "AR", "CA", "CO", "CT", "DE", "FL", "GA", "HI", "ID", "IL", "IN", "IA", "KS", "KY", "LA", "ME", "MD", "MA", "MI", "MN", "MS", "MO", "MT", "NE", "NV", "NH", "NJ", "NM", "NY", "NC", "ND", "OH", "OK", "OR", "PA", "RI", "SC", "SD", "TN", "TX", "UT", "VT", "VA", "WA", "WV", "WI", "WY");
+		
+		User user = getLoggedInUser();
+		
+		String firstName = (String) hashtable.get("firstName");
+		String lastName = (String)hashtable.get("lastName");
+		String middleInitial = (String)hashtable.get("middleInitial");
+		String emailAddress = (String)hashtable.get("emailAddress");
+		String streetAddress1 = (String)hashtable.get("streetAddress1");
+		String streetAddress2 = (String)hashtable.get("streetAddress2");
+		String contactCity = (String)hashtable.get("contactCity");
+		String contactState = (String)hashtable.get("contactState");
+		String contactZip = (String)hashtable.get("contactZip");
+		String primaryPhone = (String)hashtable.get("primaryPhone");
+		String workPhone = (String)hashtable.get("workPhone");
+		
+		
+		if (!(firstName.length() <= 32 && firstName.length() > 0) || !(firstName.matches("^[a-zA-Z ']+$"))) { 
+			Logger.info("{} attempted to edit a contact but Contact first name field must be between 1 and 32 characters and alphabetic.",user.getUsername());
+			session.setAttribute("message", "First name field must be between 1 and 32 characters and alphabetic.");
+			return null;
+		}
+		
+		if(!(lastName.length() <= 32 && lastName.length() > 0) || !(lastName.matches("^[a-zA-Z ']+$"))) {
+			Logger.info("{} attempted to edit a contact but Contact last name field must be between 1 and 32 characters and alphbetic.",user.getUsername());
+			session.setAttribute("message", "Last name field must be between 1 and 32 characters and alphbetic.");
+			return null;
+		}
+		if (!(middleInitial == null || middleInitial.equals(""))) {
+			if(!(middleInitial.length() <= 16 && middleInitial.length() > 0) || !(middleInitial.matches("^[A-Za-z]{1}$"))) {
+				Logger.info("{} attempted to edit a contact but Contact Middle initial must be 1 character and alphabetic.",user.getUsername());
+				session.setAttribute("message", "Middle initial must be 1 character and alphabetic.");
+				return null;
+			}
+		}
+		
+		if(!(emailAddress.length() <= 64 && emailAddress.length() > 0) || !(emailAddress.matches("^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+$"))){
+			Logger.info("{} attempted to edit a contact but Contact email address must be between 1 and 64 characters that are alpahnumeric.",user.getUsername());
+			session.setAttribute("message", "Email address must be between 1 and 64 characters that are alpahnumeric.");
+			return null;
+		}
+		
+		if(!(streetAddress1.length() <= 64 && streetAddress1.length() > 0)) { 
+			Logger.info("{} attempted to edit a contact but Contact street address 1 must be between 1 and 128 characters.",user.getUsername());
+			session.setAttribute("message", "Street address 1 must be between 1 and 128 characters.");
+			return null;
+		}
+		
+		if (!(streetAddress2 == null || streetAddress2.equals(""))) {
+			if(!(streetAddress2.length() <= 64 && streetAddress2.length() > 0)) { 
+				Logger.info("{} attempted to edit a contact but Contact street address 2 must be between 1 and 64 characters.",user.getUsername());
+				session.setAttribute("message", "Street address 2 must be between 1 and 64 characters.");
+				return null;
+			}
+		}
+		if(!(contactCity.length() <= 64 && contactCity.length() > 0) || !(contactCity.matches("^[A-Za-z]+(?:[\\s-][A-Za-z]+)*$"))) {
+			Logger.info("{} attempted to edit a contact but Contact City must be between 1 and 64 characters and is alphabetic.",user.getUsername());
+			session.setAttribute("message", "City must be between 1 and 64 characters and is alphabetic.");
+			return null;
+		}
+		
+		if(!(states.contains(contactState) || stateAbbreviations.contains(contactState))) {  
+			Logger.info("{} attempted to edit a contact but Contact state must be a state or state abbreviation.",user.getUsername());
+			session.setAttribute("message", "State must be selected.");
+			return null;
+		}
+		
+		if(!(contactZip.length() == 5) || !(contactZip.matches("^[0-9.]+$"))){ 
+			Logger.info("{} attempted to edit a contact but Contact Zip must 5 numeric characters",user.getUsername());
+			session.setAttribute("message", "Zip must be 5 numeric characters.");
+			return null;
+		}
+		
+		if(!(primaryPhone.length() <= 13 && primaryPhone.length() > 0) || !(primaryPhone.matches("\\d{3}-\\d{3}-\\d{4}"))){ 
+			Logger.info("{} attempted to edit a contact but Contact primary phone must be in format ###-###-####.",user.getUsername());
+			session.setAttribute("message", "Primary phone must be in format ###-###-####.");
+			return null;
+		}
+		
+		if (!(workPhone == null || workPhone.equals(""))) {
+			if(!(workPhone.length() <= 13 && workPhone.length() > 0) || !(workPhone.matches("\\d{3}-\\d{3}-\\d{4}"))){ 
+				Logger.info("{} attempted to edit a contact but Contact work phone must be must be in format ###-###-####.",user.getUsername());
+				session.setAttribute("message", "Work phone must be must be in format ###-###-####.");
+				return null;
+			}
+		}
+	 
+		Contacts contact = new Contacts();
+		
+
+		contact.setFirstName(firstName);
+		contact.setLastName(lastName);
+		contact.setMiddleInitial(middleInitial);
+		contact.setEmailAddress(emailAddress);
+		contact.setStreetAddress1(streetAddress1);
+		contact.setStreetAddress2(streetAddress2);
+		contact.setCity(contactCity);
+		contact.setState(contactState);
+		contact.setZip(contactZip);
+		contact.setPrimaryPhone(primaryPhone);
+		contact.setWorkPhone(workPhone);
+		contact.setCarrier(user.getCarrier());
+		
+		return contact;
+}
+	
+public VehicleTypes validateVehicleTypesForm(Hashtable<String, String> hashtable, HttpSession session) {
+		
+		User user = getLoggedInUser();			
+	
+		String type = (String) hashtable.get("type");
+	    String subType = (String) hashtable.get("subType");
+		String description = (String) hashtable.get("description");
+	    String make = (String) hashtable.get("make");
+	    String model = (String) hashtable.get("model");
+		String minimumWeight = (String) hashtable.get("minimumWeight");
+		String maximumWeight = (String) hashtable.get("maximumWeight");
+		String capacity = (String) hashtable.get("capacity");
+		String maximumRange = (String) hashtable.get("maximumRange");
+		String restrictions = (String) hashtable.get("restrictions");
+		String height = (String) hashtable.get("height");
+		String emptyWeight = (String) hashtable.get("emptyWeight");
+		String length = (String) hashtable.get("length");
+		String minimumCubicWeight = (String) hashtable.get("minimumCubicWeight");
+		String maximumCubicWeight = (String) hashtable.get("maximumCubicWeight");
+		
+		
+		if (!(type.length() <= 32 && type.length() > 0) || !(type.matches("^[a-zA-Z ]+$"))) {
+			Logger.error("{} attempted to edit a Vehicle Type but the Type was not between 1 and 32 alphabetic characters long.",user.getUsername());
+			session.setAttribute("message", "Type was not between 1 and 32 alphabetic characters long.");
+			return null;	
+		}
+		
+		if (!(subType.length() <= 32 && subType.length() > 0) || !(subType.matches("^[a-zA-Z ]+$"))) {
+			Logger.error("{} attempted to edit a Vehicle Type but the Sub Type was not between 1 and 32 characters long.",user.getUsername());
+			session.setAttribute("message", "Sub Type was not between 1 and 32 characters long.");
+			return null;	
+		}
+	
+		if (!(description == null || description.equals(""))) {
+			if (!(description.length() <= 64 && description.length() > 0)) {
+				Logger.error("{} attempted to edit a Vehicle Type but the Description was not between 1 and 64 characters long.",user.getUsername());
+				session.setAttribute("message", "Description was not between 1 and 64 characters long.");
+				return null;	
+			}
+		}
+		
+		if(!(make.length() <= 32 && make.length() > 0)) {
+			Logger.error("{} attempted to edit a Vehicle Type but the Make was not between 1 and 32 characters long.",user.getUsername());
+			session.setAttribute("message", "Make was not between 1 and 32 characters long.");
+			return null;
+		}
+		
+		if(!(model.length() <= 32 && model.length() > 0)) {
+			Logger.error("{} attempted to edit a Vehicle Type but the Model was not between 1 and 32 characters long.",user.getUsername());
+			session.setAttribute("message", "Model was not between 1 and 32 characters long.");
+			return null;
+		}
+		
+		if (!(minimumWeight.length() <= 16 && minimumWeight.length() > 0) || !(minimumWeight.matches("^[0-9.]+$"))) {
+			Logger.error("{} attempted to edit a Vehicle Type but the Minimum Weight was not between 1 and 16 numeric characters long.",user.getUsername());
+			session.setAttribute("message", "Minimum Weight was not between 1 and 16 numeric characters long.");
+			return null;
+		}
+		
+		if (!(maximumWeight.length() <= 16 && maximumWeight.length() > 0) || !(maximumWeight.matches("^[0-9.]+$"))) { 
+			Logger.error("{} attempted to edit a Vehicle Type but the Maximum Weight was not between 1 and 16 numeric characters long.",user.getUsername());
+			session.setAttribute("message", "Maximum Weight was not between 1 and 16 numeric characters long.");
+			return null;
+		}
+		
+		if (!(capacity == null || capacity.equals(""))) {
+			if(!(capacity.length() <= 16 && capacity.length() > 0) || !(capacity.matches("^[0-9-.]+$"))) {
+				Logger.error("{} attempted to edit a Vehicle Type but the Capacity was not between 1 and 16 numeric characters long.",user.getUsername());
+				session.setAttribute("message", "Capacity was not between 1 and 16 numeric characters long.");
+				return null;
+			}
+		}
+		
+		if(!(maximumRange.length() <= 16 && maximumRange.length() > 0) || !(maximumRange.matches("^[0-9.]+$"))) {
+			Logger.error("{} attempted to edit a Vehicle Type but the Maximum Range was not between 1 and 16 numeric characters long.",user.getUsername());
+			session.setAttribute("message", " Maximum Range was not between 1 and 16 numeric characters long.");
+			return null;
+		}
+		
+		if (!(restrictions == null || restrictions.equals(""))) {
+			if(!(restrictions.length() <= 128 && restrictions.length() > 0)) {
+				Logger.error("{} attempted to edit a Vehicle Type but the Restrictions was not between 1 and 128 characters long.",user.getUsername());
+				session.setAttribute("message", "Restrictions was not between 1 and 128 characters long.");
+				return null;
+			}
+		}
+		
+		if(!(height.length() <= 16 && height.length() > 0) || !(height.matches("^[0-9.]+$"))) {
+			Logger.error("{} attempted to edit a Vehicle Type but the Height was not between 1 and 16 numeric characters long.",user.getUsername());
+			session.setAttribute("message", "Height was not between 1 and 16 numeric characters long.");
+			return null;
+		}
+		
+		if(!(emptyWeight.length() <= 16 && emptyWeight.length() > 0) || !(emptyWeight.matches("^[0-9.]+$"))) {
+			Logger.error("{} attempted to edit a Vehicle Type but the Empty Weight was not between 1 and 16 numeric characters long.",user.getUsername());
+			session.setAttribute("message", "Empty Weight was not between 1 and 16 numeric characters long.");
+			return null;
+		}
+		
+		if(!(length.length() <= 16 && length.length() > 0) || !( length.matches("^[0-9.]+$"))) {
+			Logger.error("{} attempted to edit a Vehicle Type but the Length was not between 1 and 16 numeric characters long.",user.getUsername());
+			session.setAttribute("message", "Length was not between 1 and 16 numeric characters long.");
+			return null;
+		}
+		
+		if(!(minimumCubicWeight.length() <= 16 && minimumCubicWeight.length() > 0) || !(minimumCubicWeight.matches("^[0-9.]+$"))){
+			Logger.error("{} attempted to edit a Vehicle Type but the Minimum Cubic Weight was not between 1 and 16 numeric characters long.",user.getUsername());
+			session.setAttribute("message", "Minimum Cubic Weight was not between 1 and 16 numeric characters long.");
+			return null;
+		}
+		
+		if(!(maximumCubicWeight.length() <= 16 && maximumCubicWeight.length() > 0) || !(maximumCubicWeight.matches("^[0-9.]+$"))){
+			Logger.error("{} attempted to edit a Vehicle Type but the Maximum Cubic Weight was not between 1 and 16 numeric characters long.",user.getUsername());
+			session.setAttribute("message", "Maximum Cubic Weight was not between 1 and 16 numeric characters long.");
+			return null;
+		}
+		
+
+		VehicleTypes vehicleType = new VehicleTypes();
+		
+	try {
+		vehicleType.setType(type);
+		vehicleType.setSubType(subType);
+		vehicleType.setDescription(description);
+		vehicleType.setMake(make);
+		vehicleType.setModel(model);
+		vehicleType.setMinimumWeight(minimumWeight);
+		vehicleType.setMaximumWeight(maximumWeight);
+		vehicleType.setCapacity(capacity);
+		vehicleType.setMaximumRange(maximumRange);
+		vehicleType.setRestrictions(restrictions);
+		vehicleType.setHeight(height);
+		vehicleType.setEmptyWeight(emptyWeight);
+		vehicleType.setLength(length);
+		vehicleType.setMinimumCubicWeight(minimumCubicWeight);
+		vehicleType.setMaximumCubicWeight(maximumCubicWeight);
+		vehicleType.setCarrier(user.getCarrier());
+	}
+	catch(Exception e) {
+		e.printStackTrace();
+	}
+	
+	return vehicleType;
+	
+	}
+
+public Locations validateLocationsForm(Hashtable<String, String> hashtable, HttpSession session) {
+
+
+	List<String> states = Arrays.asList("Alabama", "Alaska", "Arizona", "Arkansas", "California", "Colorado", "Connecticut", "Delaware", "Florida", "Georgia", "Hawaii", "Idaho", "Illinois", "Indiana", "Iowa", "Kansas", "Kentucky", "Louisiana", "Maine", "Maryland", "Massachusetts", "Michigan", "Minnesota", "Mississippi", "Missouri", "Montana", "Nebraska", "Nevada", "New Hampshire", "New Jersey", "New Mexico", "New York", "North Carolina", "North Dakota", "Ohio", "Oklahoma", "Oregon", "Pennsylvania", "Rhode Island", "South Carolina", "South Dakota", "Tennessee", "Texas", "Utah", "Vermont", "Virginia", "Washington", "West Virginia", "Wisconsin", "Wyoming");
+	List<String> stateAbbreviations = Arrays.asList("AL", "AK", "AZ", "AR", "CA", "CO", "CT", "DE", "FL", "GA", "HI", "ID", "IL", "IN", "IA", "KS", "KY", "LA", "ME", "MD", "MA", "MI", "MN", "MS", "MO", "MT", "NE", "NV", "NH", "NJ", "NM", "NY", "NC", "ND", "OH", "OK", "OR", "PA", "RI", "SC", "SD", "TN", "TX", "UT", "VT", "VA", "WA", "WV", "WI", "WY");
+	
+	User user = getLoggedInUser();
+	
+	String locationName = (String) hashtable.get("locationName");
+	String streetAddress1 = (String)hashtable.get("streetAddress1");
+	String streetAddress2 = (String)hashtable.get("streetAddress2");
+	String locationCity = (String)hashtable.get("locationCity");
+	String locationState = (String)hashtable.get("locationState");
+	String locationZip = (String)hashtable.get("locationZip");
+	String locationLatitude = (String)hashtable.get("locationLatitude");
+	String locationLongitude = (String)hashtable.get("locationLongitude");
+	String locationType = (String)hashtable.get("locationType");
+	
+	if (!(locationName.length() <= 32 && locationName.length() > 0) || !(locationName.matches("^[a-zA-Z ']+$"))) { 
+		Logger.info("{} attempted to upload a location but the name field must be between 1 and 32 characters and alphabetic.",user.getUsername());
+		session.setAttribute("message", "Name must be between 1 and 32 characters and alphabetic.");
+		return null;
+	}
+	
+	if(!(streetAddress1.length() <= 64 && streetAddress1.length() > 0) || !(streetAddress1.matches("\\d+\\s+([a-zA-Z.]+\\s?)+"))) { 
+		Logger.info("{} attempted to upload a location but location address must be between 1 and 64 characters that are alphanumeric.",user.getUsername());
+		session.setAttribute("message", "Address must be between 1 and 64 characters that are alphanumeric.");
+		return null;
+	}
+	
+	if (!(streetAddress2 == null || streetAddress2.equals(""))) {
+		if(!(streetAddress2.length() <= 64 && streetAddress2.length() > 0) || !(streetAddress2.matches("^[A-Za-z0-9./-]+(?:[\\s-][A-Za-z0-9.-]+)*$"))) {
+			Logger.info("{} attempted to upload a location street address 2 must be between 1 and 64 characters that are alphanumeric.",user.getUsername());
+			session.setAttribute("message", "Street Address 2 must be between 1 and 64 characters that are alphanumeric.");
+			return null;
+		}
+	}
+	
+	if(!(locationCity.length() <= 64 && locationCity.length() > 0) || !(locationCity.matches("^[A-Za-z]+(?:[\\s-][A-Za-z]+)*$"))) { 
+		Logger.info("{} attempted to upload a location city but location city must be between 1 and 64 characters and is alphabetic.",user.getUsername());
+		session.setAttribute("message", "City must be between 1 and 64 characters and is alphabetic.");
+		return null;
+	}
+	
+	if(!(states.contains(locationState) || stateAbbreviations.contains(locationState))) {  
+		Logger.info("{} attempted to upload a location state but location state must be a state or state abbreviation.",user.getUsername());
+		session.setAttribute("message", "State must be a state or state abbreviation.");
+		return null;
+	}
+	
+	if(!(locationZip.length() == 5) || !(locationZip.matches("^[0-9.]+$"))){ 
+		Logger.info("{} attempted to upload a location zip but location zip must be 5 numeric characters.",user.getUsername());
+		session.setAttribute("message", "Zip must 5 numeric characters.");
+		return null;
+	}
+	
+	if(!(locationLatitude.length() <= 13 && locationLatitude.length() > 0) || !(locationLatitude.matches("^(-?[0-8]?\\d(\\.\\d{1,7})?|90(\\.0{1,7})?)$"))){ 
+		Logger.info("{} attempted to upload a location latitude must be between 90 and -90 up to 7 decimal places." ,user.getUsername());
+		session.setAttribute("message", "Latitude must be between 90 and -90 up to 7 decimal places.");
+		return null;
+	}
+	
+	if(!(locationLongitude.length() <= 13 && locationLongitude.length() > 0) || !(locationLongitude.matches("^-?(180(\\.0{1,7})?|\\d{1,2}(\\.\\d{1,7})?|1[0-7]\\d(\\.\\d{1,7})?|-180(\\.0{1,7})?|-?\\d{1,2}(\\.\\d{1,7})?)$"))){ 
+		Logger.info("{} attempted to upload a location longitude must be between -180 and 180 up to 7 decimal places.",user.getUsername());
+		session.setAttribute("message", "Longitude must be between -180 and 180 up to 7 decimal places.");
+		return null;
+	}
+	
+	if(!(locationType.length() <= 64 && locationType.length() > 0) || !(locationType.matches("^[a-zA-Z ]+$"))){ 
+		Logger.info("{} attempted to upload a location type must be 1 to 32 alphabetic characters.",user.getUsername());
+		session.setAttribute("message", "Type must be 1 to 32 alphabetic characters.");
+		return null;
+	}
+ 
+	Locations location = new Locations();
+	
+
+	location.setName(locationName);
+	location.setStreetAddress1(streetAddress1);
+	location.setStreetAddress2(streetAddress2);
+	location.setCity(locationCity);
+	location.setState(locationState);
+	location.setZip(locationZip);
+	location.setLatitude(locationLatitude);
+	location.setLongitude(locationLongitude);
+	location.setCarrier(user.getCarrier());
+	location.setLocationType(locationType);
+	location.setCarrier(user.getCarrier());
+
+	return location;
+}
+	
+	public Vehicles validateVehiclesForm(Hashtable<String, String> hashtable, HttpSession session) {
+		User user = getLoggedInUser();
+		String plate = (String) hashtable.get("plate");
+	    String vin = (String) hashtable.get("vin");
+		String manufacturedYear = (String) hashtable.get("manufacturedYear");
+	
+
+		
+		if (!(plate.length() <= 12 && plate.length() > 0) || !(plate.matches("^[a-zA-Z0-9. -]+$"))) {
+			Logger.error("{} attempted to upload a Vehicle but the Plate was not between 1 and 12 alphanumeric characters long.",user.getUsername());
+			session.setAttribute("message", "Plate was not between 1 and 12 alphanumeric characters long.");
+			return null;	
+		}
+		
+		if (!(vin.length() <= 17 && vin.length() > 0) || !(vin.matches("^[a-zA-Z0-9.]+$"))) {
+			Logger.error("{} attempted to upload a Vehicle but the Vin was not between 1 and 17 alphanumeric characters long.",user.getUsername());
+			session.setAttribute("message", "Vin was not between 1 and 17 alphanumeric characters long.");
+			return null;	
+		}
+	
+		if (!(manufacturedYear.length() <= 4 && manufacturedYear.length() > 0) || !(manufacturedYear.matches("^[0-9]+$"))) {
+			Logger.error("{} attempted to upload a Vehicle but the Year was not between 1 and 4 numeric characters long.",user.getUsername());
+			session.setAttribute("message", "Year was not between 1 and 4 numeric characters long.");
+			return null;	
+		}	
+		
+		Vehicles vehicle = new Vehicles();
+		
+	try {
+		
+	    vehicle.setPlateNumber(plate);
+	    vehicle.setVinNumber(vin);
+	    vehicle.setManufacturedYear(manufacturedYear);
+		vehicle.setCarrier(user.getCarrier());
+	}
+		
+	catch(Exception e) {
+		e.printStackTrace();
+		return null;
+	}
+	
+	return vehicle;
+}
+
+
 	public User getLoggedInUser() {
     	if (securityService.isAuthenticated()) {
     		org.springframework.security.core.userdetails.User user = 
