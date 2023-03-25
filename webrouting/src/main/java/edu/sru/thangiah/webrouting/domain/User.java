@@ -8,6 +8,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
@@ -76,8 +77,9 @@ public class User {
     @NonNull
     private boolean auctioningAllowed;
     
-    @OneToMany(mappedBy = "user")
-    private List<FreightRateTable> freightRateTables;
+    @Lob
+    @Column(name= "freightratetable",nullable=true)
+    private byte[] freightRateTables;
 
     /**
      * Gets the User ID
@@ -323,14 +325,14 @@ public class User {
 	/**
 	 * @return the freightRateTables
 	 */
-	public List<FreightRateTable> getFreightRateTables() {
+	public byte[] getFreightRateTables() {
 		return freightRateTables;
 	}
 
 	/**
 	 * @param freightRateTables the freightRateTables to set
 	 */
-	public void setFreightRateTables(ArrayList<FreightRateTable> freightRateTables) {
+	public void setFreightRateTables(byte[] freightRateTables) {
 		this.freightRateTables = freightRateTables;
 	}
 }

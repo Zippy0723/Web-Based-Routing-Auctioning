@@ -1,5 +1,6 @@
 package edu.sru.thangiah.webrouting.controller;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -19,6 +20,7 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ByteArrayResource;
 import org.springframework.expression.AccessException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
@@ -924,7 +926,7 @@ public class ShipmentsController {
 		model.addAttribute("carriers",carriers);
 		model.addAttribute("selectedCarrierId", 1);
 		model.addAttribute("redirectLocation",(String)session.getAttribute("redirectLocation"));
-			
+		
 		return "directassignshipment";
 	}
 	
