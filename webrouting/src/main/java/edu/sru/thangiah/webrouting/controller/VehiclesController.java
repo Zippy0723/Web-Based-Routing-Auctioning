@@ -427,21 +427,21 @@ public class VehiclesController {
   	 * @param model Used to add data to the model
   	 * @return "update/update-vehicle"
   	 */
-	@GetMapping("/editvehicles/{id}")
-    public String showEditForm(@PathVariable("id") long id, Model model, HttpSession session) {
-		 Vehicles vehicle = vehiclesRepository.findById(id)
-          .orElseThrow(() -> new IllegalArgumentException("Invalid Vehicle Id:" + id));
-		 User user = getLoggedInUser();
-		 model = NotificationController.loadNotificationsIntoModel(user, model);
-		 model.addAttribute("redirectLocation", (String) session.getAttribute("redirectLocation"));
-			
-				model.addAttribute("carriers", user.getCarrier());
-				model.addAttribute("vehicleTypes", vehicleTypesRepository.findAll()); 
-			    model.addAttribute("locations", user.getCarrier().getLocations());
-			    model.addAttribute("vehicles", vehicle);
-			    
-			    return "/update/update-vehicle";
-			}
+//	@GetMapping("/editvehicles/{id}")
+//    public String showEditForm(@PathVariable("id") long id, Model model, HttpSession session) {
+//		 Vehicles vehicle = vehiclesRepository.findById(id)
+//          .orElseThrow(() -> new IllegalArgumentException("Invalid Vehicle Id:" + id));
+//		 User user = getLoggedInUser();
+//		 model = NotificationController.loadNotificationsIntoModel(user, model);
+//		 model.addAttribute("redirectLocation", (String) session.getAttribute("redirectLocation"));
+//			
+//				model.addAttribute("carriers", user.getCarrier());
+//				model.addAttribute("vehicleTypes", vehicleTypesRepository.findAll()); 
+//			    model.addAttribute("locations", user.getCarrier().getLocations());
+//			    model.addAttribute("vehicles", vehicle);
+//			    
+//			    return "/update/update-vehicle";
+//			}
         /**
 		 model.addAttribute("vehicleTypes", vehicleTypesRepository.findAll()); 
 	     model.addAttribute("locations", locationsRepository.findAll());   
