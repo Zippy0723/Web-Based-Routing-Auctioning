@@ -154,6 +154,7 @@
     			        	</div>
     			        <label for="inputPrice">Enter the price of the shipment:</label>
 						<input type="text" id="inputPrice" name="inputPrice">
+						<button type="button" onclick="fetchPrice()">Fetch Price from Freight Rate Table</button>
     			        <br></br>
     				    <button type="submit">Select this Carrier</button>
 				      </form>
@@ -176,6 +177,12 @@
 		  document.getElementById("content").style.marginLeft = "0%";
 		  document.getElementById("mySidebar").style.display = "none";
 		  document.getElementById("hamburger").style.display = "block";
+		}
+		
+		function fetchPrice(){
+			var input = document.getElementById("inputPrice");
+			
+			input.value = "1";
 		}
 		</script>
 	</body>

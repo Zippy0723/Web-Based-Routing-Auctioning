@@ -410,6 +410,12 @@ public class ShipmentsController {
 		String status = "";	
 		model = NotificationController.loadNotificationsIntoModel(user, model);
 		
+		try {
+			model.addAttribute("message",session.getAttribute("message"));
+		} catch (Exception e) {
+			//do nothing
+		}
+		
 		if (user.getRole().toString().equals("SHIPPER")) {  
 			ownShipments = user.getShipments();
 				for (int i = 0; i < ownShipments.size(); i++) {
@@ -903,6 +909,7 @@ public class ShipmentsController {
 		ArrayList<Carriers> carriers = (ArrayList<Carriers>) carriersRepository.findAll();
 		
 		User user = getLoggedInUser();
+		model.addAttribute("user",user);
 		model = NotificationController.loadNotificationsIntoModel(user, model);
 
 		try {
@@ -917,8 +924,7 @@ public class ShipmentsController {
 		model.addAttribute("carriers",carriers);
 		model.addAttribute("selectedCarrierId", 1);
 		model.addAttribute("redirectLocation",(String)session.getAttribute("redirectLocation"));
-		
-		
+			
 		return "directassignshipment";
 	}
 	

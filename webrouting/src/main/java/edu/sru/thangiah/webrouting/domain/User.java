@@ -64,7 +64,6 @@ public class User {
     @Column(name = "enabled", nullable=false, columnDefinition="bit(1) default false")
     private boolean enabled;
 
-    
     @Column(name = "otp", nullable=true, columnDefinition="varchar(6) default NULL")
     private String otpCode;
     
@@ -76,6 +75,9 @@ public class User {
     
     @NonNull
     private boolean auctioningAllowed;
+    
+    @OneToMany(mappedBy = "user")
+    private List<FreightRateTable> freightRateTables;
 
     /**
      * Gets the User ID
@@ -316,5 +318,19 @@ public class User {
 	 */
 	public void setNotifications(List<Notification> notifications) {
 		this.notifications = notifications;
+	}
+
+	/**
+	 * @return the freightRateTables
+	 */
+	public List<FreightRateTable> getFreightRateTables() {
+		return freightRateTables;
+	}
+
+	/**
+	 * @param freightRateTables the freightRateTables to set
+	 */
+	public void setFreightRateTables(ArrayList<FreightRateTable> freightRateTables) {
+		this.freightRateTables = freightRateTables;
 	}
 }

@@ -6,8 +6,10 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpSession;
 import javax.swing.JFileChooser;
@@ -37,6 +39,7 @@ import org.springframework.web.multipart.MultipartFile;
 import edu.sru.thangiah.webrouting.domain.Carriers;
 import edu.sru.thangiah.webrouting.domain.Contacts;
 import edu.sru.thangiah.webrouting.domain.Driver;
+import edu.sru.thangiah.webrouting.domain.FreightRateTable;
 import edu.sru.thangiah.webrouting.domain.Locations;
 import edu.sru.thangiah.webrouting.domain.MaintenanceOrders;
 import edu.sru.thangiah.webrouting.domain.Shipments;
@@ -48,10 +51,12 @@ import edu.sru.thangiah.webrouting.repository.BidsRepository;
 import edu.sru.thangiah.webrouting.repository.CarriersRepository;
 import edu.sru.thangiah.webrouting.repository.ContactsRepository;
 import edu.sru.thangiah.webrouting.repository.DriverRepository;
+import edu.sru.thangiah.webrouting.repository.FreightRateTableRepository;
 import edu.sru.thangiah.webrouting.repository.LocationsRepository;
 import edu.sru.thangiah.webrouting.repository.MaintenanceOrdersRepository;
 import edu.sru.thangiah.webrouting.repository.ShipmentsRepository;
 import edu.sru.thangiah.webrouting.repository.TechniciansRepository;
+import edu.sru.thangiah.webrouting.repository.UserRepository;
 import edu.sru.thangiah.webrouting.repository.VehicleTypesRepository;
 import edu.sru.thangiah.webrouting.repository.VehiclesRepository;
 import edu.sru.thangiah.webrouting.services.SecurityService;
@@ -93,12 +98,16 @@ public class ExcelController {
 	
 	private MaintenanceOrdersRepository maintenanceOrdersRepository;
 	
+	private UserRepository userRepository;
+	
+	private FreightRateTableRepository freightRateTableRepository;
+	
 	private static final Logger Logger = LoggerFactory.getLogger(ExcelController.class);
 	
 	
 	public ExcelController (BidsRepository bidsRepository, ShipmentsRepository shipmentsRepository, CarriersRepository carriersRepository, VehiclesRepository vehiclesRepository, 
 			VehicleTypesRepository vehicleTypesRepository,ValidationServiceImp validationServiceImp,LocationsRepository	locationsRepository, ContactsRepository contactsRepository, TechniciansRepository techniciansRepository,
-			DriverRepository driverRepository, MaintenanceOrdersRepository maintenanceOrdersRepository) {
+			DriverRepository driverRepository, MaintenanceOrdersRepository maintenanceOrdersRepository, UserRepository userRepository, FreightRateTableRepository freightRateTableRepository) {
 		this.shipmentsRepository = shipmentsRepository;
 		this.carriersRepository = carriersRepository;
 		this.vehiclesRepository = vehiclesRepository;
@@ -110,6 +119,8 @@ public class ExcelController {
 		this.techniciansRepository = techniciansRepository;
 		this.driverRepository = driverRepository;
 		this.maintenanceOrdersRepository = maintenanceOrdersRepository;
+		this.userRepository = userRepository;
+		this.freightRateTableRepository = freightRateTableRepository;
 		
 	}
 	
@@ -373,6 +384,7 @@ public class ExcelController {
 			List<Shipments> shipments = validationServiceImp.validateShipmentSheet(worksheet);
 			
 			if (shipments == null) {
+				session.setAttribute("message", "Something went wrong! Please check your excel file!");
 				Logger.info("{} attempted to save shipments but failed.",user.getUsername());
 				return "redirect:" + redirectLocation; 
 			}
@@ -383,17 +395,86 @@ public class ExcelController {
 			
 		}
 		catch(Exception e ) {
+			session.setAttribute("message", "Something went wrong! Please check your excel file!");
 			e.printStackTrace();
 		}
 		
 		return "redirect:" + redirectLocation;	
 	}
-	/**
-	 * @param excelData is the excel data
-	 * @param session is the HTTP session used to set redirectLocation and error message
-	 * @param model is used to add error message and notifications to the page
-	 * @return
-	 */
+	
+	@PostMapping("/upload-freightrate-table")
+	public String uploadFreightRateTable(@RequestParam("file") MultipartFile excelData, HttpSession session, Model model) {
+		
+		//This function is absolute BS and needs a big comment explaining it all
+		//im sure im deff gonna have time to write that out at some point
+		//:D
+		
+		String redirectLocation = (String) session.getAttribute("redirectLocation");
+		XSSFWorkbook workbook;
+		User user = getLoggedInUser();
+		model = NotificationController.loadNotificationsIntoModel(user, model);
+		ArrayList<FreightRateTable> freightRateTables = new ArrayList<FreightRateTable>();
+		
+		try {
+			workbook = new XSSFWorkbook(excelData.getInputStream());
+			long numsheets = workbook.getNumberOfSheets();
+			
+			ArrayList<Carriers> carriers = (ArrayList<Carriers>) carriersRepository.findAll();
+			List<String> carrierSCACS = carriers.stream().map(Carriers::getScac).collect(Collectors.toList()); //returns a list of all carrier SCACS
+			
+			for(int sheetIndex = 0; sheetIndex < numsheets; sheetIndex++) {
+				XSSFSheet worksheet = workbook.getSheetAt(sheetIndex);
+				String sheetname = worksheet.getSheetName();
+				
+				if(!carrierSCACS.contains(sheetname)) {
+					session.setAttribute("message", sheetname + " is not a valid carrier SCAC in this database. Please contact your administrator.");
+					workbook.close();
+					throw new Exception("Invalid carrier scac");
+				}
+				
+				ArrayList<Long> weightTable = new ArrayList<Long>();
+				HashMap<String, ArrayList<Long>> rateTable = new HashMap<String, ArrayList<Long>>();
+				XSSFRow weightrow = worksheet.getRow(1);
+				
+				int cellIndex = 1; //skip first cell
+				
+				while(!(weightrow.getCell(cellIndex) == null) && !weightrow.getCell(cellIndex).toString().equals("")) {
+					Long weight = Long.parseLong(
+							weightrow.getCell(cellIndex).toString().replaceAll("[^\\d]","")); //remove all non digit characters
+					weightTable.add(weight);
+					cellIndex++;
+				}
+				
+				FreightRateTable freightRateTable = new FreightRateTable();
+				freightRateTable.setWeightTable(weightTable);
+				freightRateTable.setCarrier(carriersRepository.findById((long) 1).orElseThrow(() -> new IllegalArgumentException("Invalid carrer scac:"))); //TODO: impliment find by SCAC method
+				freightRateTable.setUser(user);
+				
+				freightRateTables.add(freightRateTable);
+				
+//				int rowIndex = 2; 
+//				XSSFRow rateRow = worksheet.getRow(rowIndex);
+//				cellIndex = 1; //the first cell contains the class, subsequent cell contiain prices, which are assosiated by index with the values in weightTable
+//				
+//				while(!rateRow.getCell(0).toString().equals("") && !(rateRow.getCell(0) == null)) {
+//					String shipmentClass = rateRow.getCell(0).toString();
+//					ArrayList<Long> rateList = new ArrayList<Long>();
+//					
+//				}
+				
+			}
+			
+			freightRateTableRepository.saveAll(freightRateTables);
+			user.setFreightRateTables(freightRateTables);
+			userRepository.save(user);
+			
+		} catch(Exception e) {
+			
+			e.printStackTrace();
+		}
+		
+		return "redirect:" + redirectLocation;
+	}
 	
 	
 	@GetMapping("/excel-download-vehicletypes")
