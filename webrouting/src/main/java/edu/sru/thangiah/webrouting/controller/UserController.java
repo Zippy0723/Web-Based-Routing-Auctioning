@@ -120,6 +120,7 @@ public class UserController {
     public String showUserHome(Model model, HttpSession session) {
         User user = getLoggedInUser();
         model = NotificationController.loadNotificationsIntoModel(user, model);
+        session.setAttribute("redirectLocation", "/userhome");
         
         return "userhome";
     }
