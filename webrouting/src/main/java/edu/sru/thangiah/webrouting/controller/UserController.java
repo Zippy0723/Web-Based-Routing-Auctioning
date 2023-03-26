@@ -218,6 +218,8 @@ public class UserController {
     
    @RequestMapping({"/signup"})
    public String shownAddHomePage(Model model) {
+	   User loggedInUser = getLoggedInUser();
+       model = NotificationController.loadNotificationsIntoModel(loggedInUser, model);
 	   return "/add/add-user-home";
    }
    /**
@@ -231,7 +233,8 @@ public class UserController {
    @RequestMapping({"/addcarrieruser"})
    public String showCarrierPage(User user, Model model) {
 	   model.addAttribute("userForm", new User());
-	   
+	   User loggedInUser = getLoggedInUser();
+       model = NotificationController.loadNotificationsIntoModel(loggedInUser, model);
        return "/add/add-user-carrier";
    }
    
@@ -262,6 +265,8 @@ public class UserController {
   		    result.add(r);
   		  }
   		}
+  		User loggedInUser = getLoggedInUser();
+        model = NotificationController.loadNotificationsIntoModel(loggedInUser, model);
   		model.addAttribute("roles", result);
   		
   		return "/add/add-user";
@@ -277,7 +282,8 @@ public class UserController {
 		    result.add(r);
 		  }
 		}
-
+		User loggedInUser = getLoggedInUser();
+	    model = NotificationController.loadNotificationsIntoModel(loggedInUser, model);
 		model.addAttribute("roles",result);
 		
 		return "/add/add-user-shipper";
@@ -307,8 +313,11 @@ public class UserController {
     	Carriers carrier = new Carriers();
     	
     	User loggedInUser = getLoggedInUser();
+        model = NotificationController.loadNotificationsIntoModel(loggedInUser, model);
     	
     	Long carrierId;
+    	
+    	
 
     	if (carrierList.size() != 0) {
     		carrierId = carrierList.get(carrierList.size() - 1).getId() + 1;
@@ -373,6 +382,7 @@ public class UserController {
   	public String addUser(@Validated User user, BindingResult result, Model model) {
   		userValidator.validate(user, result);
   		User loggedInUser = getLoggedInUser();
+        model = NotificationController.loadNotificationsIntoModel(loggedInUser, model);
   		if (result.hasErrors()) {
   			return "/add/add-user";
 		}
@@ -384,6 +394,8 @@ public class UserController {
   	@RequestMapping({"/addusershipper"})
   	public String addUserShipper(@Validated User user, BindingResult result, Model model) {
   		userValidator.validate(user, result);
+  		User loggedInUser = getLoggedInUser();
+        model = NotificationController.loadNotificationsIntoModel(loggedInUser, model);
   		if (result.hasErrors()) {
   			return "/add/add-user-shipper";
 		}
