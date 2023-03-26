@@ -2,6 +2,7 @@ package edu.sru.thangiah.webrouting.controller;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 
@@ -14,6 +15,7 @@ import javax.servlet.http.HttpSession;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+import org.apache.poi.xssf.usermodel.XSSFCell;
 import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
@@ -902,10 +904,11 @@ public class ShipmentsController {
 	}
 	
 	/**
+	 * @throws IOException 
 	 * 
 	 */
 	@GetMapping("/directassignshipment/{id}")
-	public String directAssignShipment(@PathVariable("id") long id, Model model, HttpSession session) {
+	public String directAssignShipment(@PathVariable("id") long id, Model model, HttpSession session) throws IOException {
 		Shipments shipment = shipmentsRepository.findById(id)
 			     .orElseThrow(() -> new IllegalArgumentException("Invalid Shipment Id:" + id));
 		ArrayList<Carriers> carriers = (ArrayList<Carriers>) carriersRepository.findAll();
@@ -926,6 +929,9 @@ public class ShipmentsController {
 		model.addAttribute("carriers",carriers);
 		model.addAttribute("selectedCarrierId", 1);
 		model.addAttribute("redirectLocation",(String)session.getAttribute("redirectLocation"));
+		
+		System.out.println(
+				getShipmentPriceFromFreightRateTable(shipment, user, carriersRepository.findById((long)1).orElseThrow(() -> new IllegalArgumentException("Invalid Carrier Id:" + id))));
 		
 		return "directassignshipment";
 	}
@@ -1199,8 +1205,6 @@ public class ShipmentsController {
 		        if(row.getCell(0).getStringCellValue().isEmpty() || row.getCell(0)== null ) {
 		        	break;
 		        }
-		        
-		        
 		       
 		        String scac = "";										//Not Set By Upload
 	    		String freightBillNumber = "0.00";							//Not Set By Upload
@@ -1392,6 +1396,95 @@ public class ShipmentsController {
 		}
 		
 		return "redirect:" + redirectLocation;
+	}
+	
+	/*
+	 * This function is very complicated and a bit of a mess, needs proper documentation
+	 */
+	public Long getShipmentPriceFromFreightRateTable(Shipments shipment, User user, Carriers carrier) throws IOException {
+		long Weight;
+		String commodityClass;
+		try {
+			Weight = Long.parseLong(shipment.getCommodityPaidWeight());
+			commodityClass = shipment.getCommodityClass();
+		} catch (NumberFormatException e) {
+			return null;
+		}
+		
+		byte[] freightRateTableRaw = user.getFreightRateTables();
+		InputStream stream = new ByteArrayInputStream(freightRateTableRaw);
+		XSSFWorkbook workbook = new XSSFWorkbook(stream);
+		stream.close();
+		int rowIndex = 1;
+		int cellIndex = 1;
+		Integer targetCellIndex = null;
+		Integer targetRowIndex = null;
+		XSSFSheet activeSheet = null;
+		
+		for(int i = 0; i < workbook.getNumberOfSheets(); i++) {
+			if(workbook.getSheetName(i).equals(carrier.getScac())) {
+				activeSheet = workbook.getSheetAt(i);
+			}
+		}
+		if (activeSheet == null) {
+			workbook.close();
+			return null;
+		}
+		
+		XSSFRow weightRow = activeSheet.getRow(rowIndex);
+		ArrayList<Long> weightRowData = new ArrayList<Long>();
+		XSSFCell activeCell = weightRow.getCell(cellIndex);
+		while(activeCell != null && !activeCell.toString().equals("")) {
+			try {
+				weightRowData.add(Long.parseLong(activeCell.toString().replaceAll("[^0-9]", "")));
+			} catch (NumberFormatException e) {
+				workbook.close();
+				return null;
+			}
+			activeCell = weightRow.getCell(++cellIndex);
+		}
+		
+		for(int i = 0; i < weightRowData.size(); i++) {
+			if (Weight < weightRowData.get(i)) {
+				targetCellIndex = i + 1;
+				break;
+			}
+		}
+		
+		rowIndex++;
+		XSSFRow activeRow = activeSheet.getRow(rowIndex);
+		activeCell = activeRow.getCell(0);
+		while(activeCell != null && !activeCell.toString().equals("")) {
+			String cellVal = activeCell.toString().substring(0,activeCell.toString().length() - 2);
+			if(commodityClass.equals(cellVal)){
+				targetRowIndex = rowIndex;
+				break;
+			}
+			activeRow = activeSheet.getRow(++rowIndex);
+			if(activeRow == null) {
+				break;
+			}
+			activeCell = activeRow.getCell(0);
+		}
+		
+		if(targetCellIndex == null || targetRowIndex == null) {
+			workbook.close();
+			return null;
+		}
+		
+		activeRow = activeSheet.getRow(targetRowIndex);
+		activeCell = activeRow.getCell(targetCellIndex);
+		long result;
+		
+		try {
+			result = Long.parseLong(activeCell.toString().substring(0,activeCell.toString().length()-2));
+		} catch (NumberFormatException e) {
+			workbook.close();
+			return null;
+		}
+		
+		workbook.close();
+		return result;
 	}
 	
 	/**
