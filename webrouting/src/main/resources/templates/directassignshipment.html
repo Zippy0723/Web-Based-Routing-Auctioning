@@ -145,6 +145,7 @@
     			        	</div>
     			        <label for="inputPrice">Enter the price of the shipment:</label>
 						<input type="text" id="inputPrice" name="inputPrice">
+						<button type="button" onclick="fetchPrice()">Fetch Price from Freight Rate Table</button>
     			        <br></br>
     				    <button type="submit">Select this Carrier</button>
 				      </form>
@@ -155,10 +156,11 @@
 
 		<div class="footer">
         </div>
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 		<script>
 		function nav_open() {
 			document.getElementById("content").style.marginLeft = "15%";
-			document.getElementById("mySidebar").style.width = "15%";			
+			document.getElementById("mySidebar").style.width = "15%";	
 			document.getElementById("mySidebar").style.display = "block";
 			document.getElementById("hamburger").style.display = "none";
 		}
@@ -167,6 +169,26 @@
 		  document.getElementById("content").style.marginLeft = "0%";
 		  document.getElementById("mySidebar").style.display = "none";
 		  document.getElementById("hamburger").style.display = "block";
+		}
+		
+		function fetchPrice(){
+			var input = document.getElementById("inputPrice");
+			var selectedRadioButton = document.querySelector('input[type="radio"]:checked');
+			var selectedCarrier = selectedRadioButton.value;
+			var shipmentId = document.querySelector('[name="shipmentId"]').getAttribute('value');
+
+			$.ajax({
+				 type : "GET",
+				 contentType: "application/json",
+				 dataType: "json",
+				 url : "http://localhost:8080/getfreightrateprice/" + shipmentId + "-" + selectedCarrier,
+				 success : function (data, status) {
+					 input.value = data;
+				 },
+			     error : function (jqXHR, textStatus, errorThrown) {
+			    	 location.reload()
+			      }
+				});
 		}
 		</script>
 	</body>

@@ -129,6 +129,9 @@
                 <p sec:authorize="hasAuthority('SHIPPER')"><button class="buttons6" onclick="window.location.href='/shipmentshomeshipper';">Back</button></p>
                 <br>
 				<br><br>
+                <div class="alert alert-info" th:if="${message}">
+       		    <span th:text="${message}"></span>
+       	        </div>
 				<div th:if="${status != 'CARRIER'}">
 				<div th:switch="${shipmentsPending.size()}">
                     <h2 th:case="0">No Pending Shipments Yet!</h2>
@@ -330,9 +333,6 @@
                     <div th:case="*">
                         <h2>Shipments Awaiting Acceptance</h2>
                         <br>
-                        <div class="alert alert-info" th:if="${message}">
-       		            <span th:text="${message}"></span>
-       	                </div>
                         <span type="hidden" th:text="${error}" class="loginError"></span>
                         <div class="longDTableWrapper">
 	                        <table class="dataTable">

@@ -6,8 +6,10 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpSession;
 import javax.swing.JFileChooser;
@@ -52,6 +54,7 @@ import edu.sru.thangiah.webrouting.repository.LocationsRepository;
 import edu.sru.thangiah.webrouting.repository.MaintenanceOrdersRepository;
 import edu.sru.thangiah.webrouting.repository.ShipmentsRepository;
 import edu.sru.thangiah.webrouting.repository.TechniciansRepository;
+import edu.sru.thangiah.webrouting.repository.UserRepository;
 import edu.sru.thangiah.webrouting.repository.VehicleTypesRepository;
 import edu.sru.thangiah.webrouting.repository.VehiclesRepository;
 import edu.sru.thangiah.webrouting.services.SecurityService;
@@ -93,12 +96,14 @@ public class ExcelController {
 	
 	private MaintenanceOrdersRepository maintenanceOrdersRepository;
 	
+	private UserRepository userRepository;
+	
 	private static final Logger Logger = LoggerFactory.getLogger(ExcelController.class);
 	
 	
 	public ExcelController (BidsRepository bidsRepository, ShipmentsRepository shipmentsRepository, CarriersRepository carriersRepository, VehiclesRepository vehiclesRepository, 
 			VehicleTypesRepository vehicleTypesRepository,ValidationServiceImp validationServiceImp,LocationsRepository	locationsRepository, ContactsRepository contactsRepository, TechniciansRepository techniciansRepository,
-			DriverRepository driverRepository, MaintenanceOrdersRepository maintenanceOrdersRepository) {
+			DriverRepository driverRepository, MaintenanceOrdersRepository maintenanceOrdersRepository, UserRepository userRepository) {
 		this.shipmentsRepository = shipmentsRepository;
 		this.carriersRepository = carriersRepository;
 		this.vehiclesRepository = vehiclesRepository;
@@ -110,6 +115,7 @@ public class ExcelController {
 		this.techniciansRepository = techniciansRepository;
 		this.driverRepository = driverRepository;
 		this.maintenanceOrdersRepository = maintenanceOrdersRepository;
+		this.userRepository = userRepository;
 		
 	}
 	
@@ -373,6 +379,7 @@ public class ExcelController {
 			List<Shipments> shipments = validationServiceImp.validateShipmentSheet(worksheet);
 			
 			if (shipments == null) {
+				session.setAttribute("message", "Something went wrong! Please check your excel file!");
 				Logger.info("{} attempted to save shipments but failed.",user.getUsername());
 				return "redirect:" + redirectLocation; 
 			}
@@ -383,18 +390,36 @@ public class ExcelController {
 			
 		}
 		catch(Exception e ) {
+			session.setAttribute("message", "Something went wrong! Please check your excel file!");
 			e.printStackTrace();
 		}
 		
 		return "redirect:" + redirectLocation;	
 	}
-	/**
-	 * @param excelData is the excel data
-	 * @param session is the HTTP session used to set redirectLocation and error message
-	 * @param model is used to add error message and notifications to the page
-	 * @return
-	 */
 	
+	@PostMapping("/upload-freightrate-table")
+	public String uploadFreightRateTable(@RequestParam("file") MultipartFile excelData, HttpSession session, Model model) {
+		String redirectLocation = (String) session.getAttribute("redirectLocation");
+		XSSFWorkbook workbook;
+		User user = getLoggedInUser();
+		model = NotificationController.loadNotificationsIntoModel(user, model);
+		
+		try {
+			workbook = new XSSFWorkbook(excelData.getInputStream());
+			ByteArrayOutputStream bos = new ByteArrayOutputStream();
+			workbook.write(bos);
+			bos.close();
+			byte[] freightRateTable = bos.toByteArray();
+			user.setFreightRateTables(freightRateTable);
+			userRepository.save(user);
+			
+		} catch (Exception e){
+			session.setAttribute("message", "Uploaiding freight rate table has failed, please check your excel file");
+		}
+		
+		return "redirect:" + (String) session.getAttribute("redirectLocation");
+	}
+
 	
 	@GetMapping("/excel-download-vehicletypes")
 	public String downloadVehicleTypesFromExcel(HttpSession session){
