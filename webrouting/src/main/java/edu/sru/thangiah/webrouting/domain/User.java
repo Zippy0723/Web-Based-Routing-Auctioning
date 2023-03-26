@@ -8,6 +8,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
@@ -64,7 +65,6 @@ public class User {
     @Column(name = "enabled", nullable=false, columnDefinition="bit(1) default false")
     private boolean enabled;
 
-    
     @Column(name = "otp", nullable=true, columnDefinition="varchar(6) default NULL")
     private String otpCode;
     
@@ -76,6 +76,10 @@ public class User {
     
     @NonNull
     private boolean auctioningAllowed;
+    
+    @Lob
+    @Column(name= "freightratetable",nullable=true)
+    private byte[] freightRateTables;
 
     /**
      * Gets the User ID
@@ -316,5 +320,19 @@ public class User {
 	 */
 	public void setNotifications(List<Notification> notifications) {
 		this.notifications = notifications;
+	}
+
+	/**
+	 * @return the freightRateTables
+	 */
+	public byte[] getFreightRateTables() {
+		return freightRateTables;
+	}
+
+	/**
+	 * @param freightRateTables the freightRateTables to set
+	 */
+	public void setFreightRateTables(byte[] freightRateTables) {
+		this.freightRateTables = freightRateTables;
 	}
 }

@@ -7,8 +7,8 @@
         <link rel="stylesheet" type="text/css" href="/styles/main.css" />
         <link rel="stylesheet" type="text/css" href="/styles/login.css">
         <link rel="stylesheet" type="text/css" href="/styles/menubar.css">
-        <link rel="stylesheet" type="text/css" href="/styles/tables.css">
-
+        <link rel="stylesheet" type="text/css" href="/styles/table1.css">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />
         <link rel="stylesheet" type="text/css" href="/styles/smoothness/jquery-ui-1.10.2.css" />
 
 	</head>
@@ -124,11 +124,14 @@
   					<button class="expander"  id="hamburger" style="display:none" onclick="nav_open()">☰</button>
 				</span>
 				<br><br>
-				<p sec:authorize="hasAuthority('MASTERLIST')"><button class="buttons7" onclick="window.location.href='/shipmentshomemaster';">Back</button></p>
-                <p sec:authorize="hasAuthority('CARRIER')"><button class="buttons7" onclick="window.location.href='/shipmentshomecarrier';">Back</button></p>
-                <p sec:authorize="hasAuthority('SHIPPER')"><button class="buttons7" onclick="window.location.href='/shipmentshomeshipper';">Back</button></p>
+				<p sec:authorize="hasAuthority('MASTERLIST')"><button class="buttons6" onclick="window.location.href='/shipmentshomemaster';">Back</button></p>
+                <p sec:authorize="hasAuthority('CARRIER')"><button class="buttons6" onclick="window.location.href='/shipmentshomecarrier';">Back</button></p>
+                <p sec:authorize="hasAuthority('SHIPPER')"><button class="buttons6" onclick="window.location.href='/shipmentshomeshipper';">Back</button></p>
                 <br>
 				<br><br>
+                <div class="alert alert-info" th:if="${message}">
+       		    <span th:text="${message}"></span>
+       	        </div>
 				<div th:if="${status != 'CARRIER'}">
 				<div th:switch="${shipmentsPending.size()}">
                     <h2 th:case="0">No Pending Shipments Yet!</h2>
@@ -177,8 +180,8 @@
                                     <td th:text="${shipment.consigneeCity}"></td>
                                     <td th:text="${shipment.consigneeState}"></td>
                                     <td th:text="${shipment.consigneeZip}"></td>
-                                    <td sec:authorize="hasAnyAuthority('SHIPPER','MASTERLIST')"><a th:href="@{/editshipment/{id}(id=${shipment.id})}">Edit</a></td>
-                                    <td sec:authorize="hasAnyAuthority('SHIPPER','MASTERLIST')"><a th:href="@{/deleteshipment/{id}(id=${shipment.id})}">Delete</a></td>
+                                    <td sec:authorize="hasAnyAuthority('SHIPPER','MASTERLIST')"><a th:href="@{/editshipment/{id}(id=${shipment.id})}"><button style='font-size:11px'><i class='far fa-edit'></i></button></a></td>
+                                    <td sec:authorize="hasAnyAuthority('SHIPPER','MASTERLIST')"><a th:href="@{/deleteshipment/{id}(id=${shipment.id})}"><button class="fa fa-times" style="color: red;" onclick="deleteFunction()"></button></a></td> 
                                     <td sec:authorize="hasAuthority('MASTERLIST')"><a th:href="@{/freezeshipment/{id}(id=${shipment.id})}">Freeze</a></td>
                                     <td sec:authorize="hasAnyAuthority('SHIPPER','MASTERLIST')"><a th:classappend="${user.auctioningAllowed ? '' : 'disabled-btn'}" th:href="@{/pushshipment/{id}(id=${shipment.id})}">Push to Auction</a></td>
                                     <td sec:authorize="hasAnyAuthority('SHIPPER','MASTERLIST')"><a th:href="@{/directassignshipment/{id}(id=${shipment.id})}">Direct Assign</a></td>
@@ -186,6 +189,7 @@
                             </tbody>
                         </table>
                     </div>
+                    <br>
                     <p sec:authorize="hasAuthority('SHIPPER')"><button class="buttons7" onclick="window.location.href='/uploadshipments';">Upload From Excel</button><button class="buttons7" onclick="window.location.href='/add-shipments';">Add New Shipment</button></p>
                 </div>
                 </div>
@@ -242,11 +246,11 @@
                                     <td th:text="${shipment.consigneeCity}"></td>
                                     <td th:text="${shipment.consigneeState}"></td>
                                     <td th:text="${shipment.consigneeZip}"></td>
-                                    <td><a th:href="@{/viewshipmentbids/{id}(id=${shipment.id})}" th:inline="text">View Bids ([[${shipment.getBids().size()}]])</a></td>
+                                    <td><a th:href="@{/viewshipmentbids/{id}(id=${shipment.id})}" th:inline="text"><button class="buttons11" role="button">([[${shipment.getBids().size()}]])</button></a></td>
                                     <td><p th:inline="text">[[${shipment.getLowestBidValue()}]]</p></td>
                                     <td sec:authorize="hasAuthority('CARRIER')"><a th:classappend="${user.auctioningAllowed ? '' : 'disabled-btn'}" th:href="@{/add-bid/{id}(id=${shipment.id})}">Add Bid</a></td>
-                                    <td sec:authorize="hasAnyAuthority('SHIPPER','MASTERLIST')"><a th:href="@{/editshipment/{id}(id=${shipment.id})}">Edit</a></td>
-                                    <td sec:authorize="hasAnyAuthority('SHIPPER','MASTERLIST')"><a th:href="@{/deleteshipment/{id}(id=${shipment.id})}">Delete</a></td>
+                                    <td sec:authorize="hasAnyAuthority('SHIPPER','MASTERLIST')"><a th:href="@{/editshipment/{id}(id=${shipment.id})}"><button style='font-size:11px'><i class='far fa-edit'></i></button></a></td>
+                                    <td sec:authorize="hasAnyAuthority('SHIPPER','MASTERLIST')"><a th:href="@{/deleteshipment/{id}(id=${shipment.id})}"><button class="fa fa-times" style="color: red;" onclick="deleteFunction()"></button></a></td> 
                                     <td sec:authorize="hasAuthority('MASTERLIST')"><a th:href="@{/freezeshipment/{id}(id=${shipment.id})}">Freeze</a></td>
                                     <td sec:authorize="hasAuthority('MASTERLIST')"><a th:href="@{/resetshipmentbids/{id}(id=${shipment.id})}">Reset Bids</a></td>
                                     <td sec:authorize="hasAuthority('MASTERLIST')"><a th:href="@{/forceendauction/{id}(id=${shipment.id})}">Force End Auction</a></td>
@@ -309,10 +313,10 @@
                                     <td th:text="${shipment.consigneeCity}"></td>
                                     <td th:text="${shipment.consigneeState}"></td>
                                     <td th:text="${shipment.consigneeZip}"></td>
-                                    <td><a th:href="@{/viewshipmentbids/{id}(id=${shipment.id})}" th:inline="text">View Bids ([[${shipment.getBids().size()}]])</a></td>
+                                    <td><a th:href="@{/viewshipmentbids/{id}(id=${shipment.id})}" th:inline="text"><button class="buttons11" role="button">([[${shipment.getBids().size()}]])</button></a></td>
                                     <td><p th:inline="text">[[${shipment.getLowestBidValue()}]]</p></td>
-                                    <td sec:authorize="hasAnyAuthority('MASTERLIST')"><a th:href="@{/editshipment/{id}(id=${shipment.id})}">Edit</a></td>
-                                    <td sec:authorize="hasAnyAuthority('MASTERLIST')"><a th:href="@{/deleteshipment/{id}(id=${shipment.id})}">Delete</a></td>
+                                    <td sec:authorize="hasAnyAuthority('MASTERLIST')"><a th:href="@{/editshipment/{id}(id=${shipment.id})}"><button style='font-size:11px'><i class='far fa-edit'></i></button></a></td>
+                                    <td sec:authorize="hasAnyAuthority('MASTERLIST')"><a th:href="@{/deleteshipment/{id}(id=${shipment.id})}"><button class="fa fa-times" style="color: red;" onclick="deleteFunction()"></button></a></td>    
                                     <td sec:authorize="hasAuthority('MASTERLIST')"><a th:href="@{/unfreezeshipment/{id}(id=${shipment.id})}">Unfreeze</a></td>
                                     <td sec:authorize="hasAuthority('MASTERLIST')"><a th:href="@{/resetshipmentbids/{id}(id=${shipment.id})}">Reset Bids</a></td>
                                     <td sec:authorize="hasAuthority('MASTERLIST')"><a th:href="@{/forceendauction/{id}(id=${shipment.id})}">Force End Auction</a></td>
@@ -329,9 +333,6 @@
                     <div th:case="*">
                         <h2>Shipments Awaiting Acceptance</h2>
                         <br>
-                        <div class="alert alert-info" th:if="${message}">
-       		            <span th:text="${message}"></span>
-       	                </div>
                         <span type="hidden" th:text="${error}" class="loginError"></span>
                         <div class="longDTableWrapper">
 	                        <table class="dataTable">
@@ -364,7 +365,7 @@
 	                            </thead>
 	                            <tbody>
 	                                <tr th:each="shipment : ${shipmentsAwaiting}">
-	                                    <td><a th:href="@{/viewshipment/{id}(id=${shipment.id})}">View All Details</a></td>
+	                                    <td><a th:href="@{/viewshipment/{id}(id=${shipment.id})}"><button class="buttons11" role="button">View All Details</button></a></td>
 	                                    <td th:text="${shipment.id}"></td>
 	                                    <td th:text="${shipment.client}"></td>
 	                                    <td><a th:text="${shipment.carrier.carrierName}"></a></td>
@@ -383,8 +384,8 @@
 	                                    <td th:text="${shipment.consigneeCity}"></td>
 	                                    <td th:text="${shipment.consigneeState}"></td>
 	                                    <td th:text="${shipment.consigneeZip}"></td>
-                                        <td sec:authorize="hasAuthority('MASTERLIST')"><a th:href="@{/editshipment/{id}(id=${shipment.id})}">Edit</a></td>
-                                        <td sec:authorize="hasAuthority('MASTERLIST')"><a th:href="@{/deleteshipment/{id}(id=${shipment.id})}">Delete</a></td>
+                                        <td sec:authorize="hasAuthority('MASTERLIST')"><a th:href="@{/editshipment/{id}(id=${shipment.id})}"><button style='font-size:11px'><i class='far fa-edit'></i></button></a></td>
+                                        <td sec:authorize="hasAuthority('MASTERLIST')"><a th:href="@{/deleteshipment/{id}(id=${shipment.id})}"><button class="fa fa-times" style="color: red;"></button></a></td> 
                                         <td sec:authorize="hasAuthority('CARRIER')"><a th:href="@{/acceptawaitingshipment/{id}(id=${shipment.id})}">Accept</a></td>
                                         <td sec:authorize="hasAuthority('CARRIER')"><a th:href="@{/denyawaitingshipment/{id}(id=${shipment.id})}">Deny</a></td>                               
 	                                </tr>
@@ -408,15 +409,10 @@
 	                                    <th>Shipment ID</th>
 	                                    <th>Client</th>
 	                                    <th>Carrier Name</th>
-	                                    <th>Vehicle</th>
 	                                    <th>Client Mode</th>
 	                                    <th>Ship Date</th>
 	                                    <th>Freightbill Number</th>
 	                                    <th>Paid Amount</th>
-	                                    <th>Full Freight Terms</th>
-	                                    <th>Commodity Class</th>
-	                                    <th>Commodity Pieces</th>
-	                                    <th>Commodity Paid Weight</th>
 	                                    <th>Shipper City</th>
 	                                    <th>Shipper State</th>
 	                                    <th>Shipper Zip</th>
@@ -435,27 +431,21 @@
 	                                    <td th:text="${shipment.id}"></td>
 	                                    <td th:text="${shipment.client}"></td>
 	                                    <td><a th:text="${shipment.carrier.carrierName}"></a></td>
-	                                    <td th:text="${shipment.vehicle}"></td>
 	                                    <td th:text="${shipment.clientMode}"></td>
 	                                    <td th:text="${shipment.shipDate}"></td>
 	                                    <td th:text="${shipment.freightbillNumber}"></td>
 	                                    <td th:text="${shipment.paidAmount}"></td>
-	                                    <td th:text="${shipment.fullFreightTerms}"></td>
-	                                    <td th:text="${shipment.commodityClass}"></td>
-	                                    <td th:text="${shipment.commodityPieces}"></td>
-	                                    <td th:text="${shipment.commodityPaidWeight}"></td>
 	                                    <td th:text="${shipment.shipperCity}"></td>
 	                                    <td th:text="${shipment.shipperState}"></td>
 	                                    <td th:text="${shipment.shipperZip}"></td>
 	                                    <td th:text="${shipment.consigneeCity}"></td>
 	                                    <td th:text="${shipment.consigneeState}"></td>
 	                                    <td th:text="${shipment.consigneeZip}"></td>
-	                                    <td><a th:href="@{/viewshipment/{id}(id=${shipment.id})}">View All Details</a></td>
-	                                    <td><a th:href="@{/viewshipmentbids/{id}(id=${shipment.id})}" th:inline="text">View Bids ([[${shipment.getBids().size()}]])</a></td>
+	                                    <td><a th:href="@{/viewshipment/{id}(id=${shipment.id})}"><button class="buttons11" role="button">View All Details</button></a></td>
+	                                    <td><a th:href="@{/viewshipmentbids/{id}(id=${shipment.id})}"><button class="buttons11" role="button">([[${shipment.getBids().size()}]])</button></a></td>
 	                                    <td><p th:inline="text">[[${shipment.getLowestBidValue()}]]</p></td>
-                                        <td sec:authorize="hasAuthority('MASTERLIST')"><a th:href="@{/editshipment/{id}(id=${shipment.id})}">Edit</a></td>
-                                        <td sec:authorize="hasAuthority('MASTERLIST')"><a th:href="@{/deleteshipment/{id}(id=${shipment.id})}">Delete</a></td>
-                                        
+                                        <td sec:authorize="hasAuthority('MASTERLIST')"><a th:href="@{/editshipment/{id}(id=${shipment.id})}"><button style='font-size:11px'><i class='far fa-edit'></i></button></a></td>
+                                        <td sec:authorize="hasAuthority('MASTERLIST')"><a th:href="@{/deleteshipment/{id}(id=${shipment.id})}"><button class="fa fa-times" style="color: red;" onclick="deleteFunction()"></button></a></td>                                
 	                                </tr>
 	                            </tbody>
 	                        </table>

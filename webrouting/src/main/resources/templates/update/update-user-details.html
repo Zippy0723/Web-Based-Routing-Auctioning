@@ -155,6 +155,18 @@
 				<br><br>
 			</div> 
 		</form>
+		<form sec:authorize="hasAuthority('SHIPPER')" th:action="@{/upload-freightrate-table}" enctype="multipart/form-data" method="POST">
+			<div class="form-group">
+				<br>
+				<h2>Upload Freight Rate Table</h2>
+				<h3>Select an excel file containing a valid freight rate table.</h3>
+				<br>
+				<input required type="file" name="file" />
+				<br><br><br><br>
+				<button type="submit" class="buttons6">Upload Freight Rate Table</button>
+			<br>
+			</div>
+		</form>
 	<br>
 </div>
 </div>

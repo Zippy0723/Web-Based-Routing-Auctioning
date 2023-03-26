@@ -1,14 +1,14 @@
 <!doctype html>
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
-	<head>
+<head>
 		<title>Shipments</title>
 
 		<link rel="stylesheet" type="text/css" href="/styles/reset.css" />
         <link rel="stylesheet" type="text/css" href="/styles/main.css" />
         <link rel="stylesheet" type="text/css" href="/styles/login.css">
         <link rel="stylesheet" type="text/css" href="/styles/menubar.css">
-        <link rel="stylesheet" type="text/css" href="/styles/tables.css">
-
+        <link rel="stylesheet" type="text/css" href="/styles/table1.css">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />
         <link rel="stylesheet" type="text/css" href="/styles/smoothness/jquery-ui-1.10.2.css" />
 
 	</head>
@@ -119,14 +119,14 @@
 				<span class="nav-expand">
   					<button class="expander"  id="hamburger" style="display:none" onclick="nav_open()">☰</button>
 				</span>
-				<br><br>
 				<div th:switch="${shipments}">
                     <h2 th:case="null"style="text-align: center;">No shipments yet!</h2>
-                    <p sec:authorize="hasAuthority('MASTERLIST')"><button class="buttons7" onclick="window.location.href='/shipmentshomemaster';">Back</button></p>
-                	<p sec:authorize="hasAuthority('CARRIER')"><button class="buttons7" onclick="window.location.href='/shipmentshomecarrier';">Back</button></p>
-                	<p sec:authorize="hasAuthority('SHIPPER')"><button class="buttons7" onclick="window.location.href='/shipmentshomeshipper';">Back</button>
+                    <p sec:authorize="hasAuthority('MASTERLIST')"><button class="buttons6" onclick="window.location.href='/shipmentshomemaster';">Back</button></p>
+                	<p sec:authorize="hasAuthority('CARRIER')"><button class="buttons6" onclick="window.location.href='/shipmentshomecarrier';">Back</button></p>
+                	<p sec:authorize="hasAuthority('SHIPPER')"><button class="buttons6" onclick="window.location.href='/shipmentshomeshipper';">Back</button>
                 	<br><br>
                     <div th:case="*">
+                    <br>
                         <h2>Accepted Shipments</h2>
                         <br>
                         <hr>
@@ -147,10 +147,6 @@
 	                                    <th>Ship Date</th>
 	                                    <th>Freightbill Number</th>
 	                                    <th>Paid Amount</th>
-	                                    <th>Full Freight Terms</th>
-	                                    <th>Commodity Class</th>
-	                                    <th>Commodity Pieces</th>
-	                                    <th>Commodity Paid Weight</th>
 	                                    <th>Shipper City</th>
 	                                    <th>Shipper State</th>
 	                                    <th>Shipper Zip</th>
@@ -174,22 +170,17 @@
 	                                    <td th:text="${shipment.shipDate}"></td>
 	                                    <td th:text="${shipment.freightbillNumber}"></td>
 	                                    <td th:text="${shipment.paidAmount}"></td>
-	                                    <td th:text="${shipment.fullFreightTerms}"></td>
-	                                    <td th:text="${shipment.commodityClass}"></td>
-	                                    <td th:text="${shipment.commodityPieces}"></td>
-	                                    <td th:text="${shipment.commodityPaidWeight}"></td>
 	                                    <td th:text="${shipment.shipperCity}"></td>
 	                                    <td th:text="${shipment.shipperState}"></td>
 	                                    <td th:text="${shipment.shipperZip}"></td>
 	                                    <td th:text="${shipment.consigneeCity}"></td>
 	                                    <td th:text="${shipment.consigneeState}"></td>
 	                                    <td th:text="${shipment.consigneeZip}"></td>
-	                                    <td><a th:href="@{/viewshipment/{id}(id=${shipment.id})}">View All Details</a></td>
-	                                    <td><a th:href="@{/viewshipmentbids/{id}(id=${shipment.id})}" th:inline="text">View Bids ([[${shipment.getBids().size()}]])</a></td>
+	                                    <td><a th:href="@{/viewshipment/{id}(id=${shipment.id})}"><button class="buttons11" role="button">View All Details</button></a></td>
+	                                    <td><a th:href="@{/viewshipmentbids/{id}(id=${shipment.id})}"><button class="buttons11" role="button">([[${shipment.getBids().size()}]])</button></a></td>
 	                                    <td><p th:inline="text">[[${shipment.getLowestBidValue()}]]</p></td>
-                                        <td sec:authorize="hasAuthority('MASTERLIST')"><a th:href="@{/editshipment/{id}(id=${shipment.id})}">Edit</a></td>
-                                        <td sec:authorize="hasAuthority('MASTERLIST')"><a th:href="@{/deleteshipment/{id}(id=${shipment.id})}">Delete</a></td>
-                                        
+                                        <td sec:authorize="hasAuthority('MASTERLIST')"><a th:href="@{/editshipment/{id}(id=${shipment.id})}"><button style='font-size:11px'><i class='far fa-edit'></i></button></a></td>
+                                        <td sec:authorize="hasAuthority('MASTERLIST')"><a th:href="@{/deleteshipment/{id}(id=${shipment.id})}"><button class="fa fa-times" style="color: red;" onclick="deleteFunction()"></button></a></td>                                  		
 	                                </tr>
 	                            </tbody>
 	                        </table>

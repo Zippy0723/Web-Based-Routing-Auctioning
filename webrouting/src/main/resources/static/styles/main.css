@@ -160,7 +160,7 @@ body {
 .buttons{
 	padding: 10px 14px;
 	border-radius: 25px;
-	border: 3px solid black;
+	border: 2px solid black;
 	color: white;
 	background-color: grey;
 	font-weight: bold;
@@ -186,7 +186,7 @@ body {
 .buttons2{
 	padding: 10px 14px;
 	border-radius: 25px;
-	border: 3px solid black;
+	border: 2px solid white;
 	color: white;
 	background-color: #006438;
 	font-weight: bold;
@@ -202,7 +202,7 @@ body {
 .buttons3{
 	padding: 10px 14px;
 	border-radius: 25px;
-	border: 3px solid black;
+	border: 2px solid black;
 	color: black;
 	background-color: whitesmoke;
 	font-weight: bold;
@@ -218,7 +218,7 @@ body {
 .buttons4{
 	padding: 10px 14px;
 	border-radius: 25px;
-	border: 3px solid black;
+	border: 2px solid black;
 	color: white;
 	background-color: grey;
 	font-weight: bold;
@@ -234,7 +234,7 @@ body {
 .buttons5{
 	padding: 10px 14px;
 	border-radius: 25px;
-	border: 3px solid black;
+	border: 2px solid black;
 	color: black;
 	background-color: whitesmoke;
 	font-weight: bold;
@@ -250,7 +250,7 @@ body {
 .buttons6{
 	padding: 5px 7px;
 	border-radius: 25px;
-	border: 3px solid black;
+	border: 2px solid black;
 	color: white;
 	background-color: grey;
 	font-weight: bold;
@@ -273,7 +273,7 @@ input#routeDate {
 .buttons7 {
 	padding: 5px 7px;
 	border-radius: 25px;
-	border: 3px solid black;
+	border: 2px solid black;
 	color: white;
 	background-color: #006438;
 	font-weight: bold;
@@ -325,7 +325,7 @@ input#routeDate {
 .buttons10{
 	padding: 5px 9px;
 	border-radius: 20px;
-	border: 3px solid black;
+	border: 2px solid black;
 	color: white;
 	background-color: grey;
 	font-weight: bold;
@@ -338,7 +338,7 @@ input#routeDate {
 	background-color: #676767;
 }
 
-
+.buttons11 {font-size: 10px}
 
 
 /* 9 Form Styles in Total
@@ -351,7 +351,7 @@ input#routeDate {
 	position: relative;
 	top: 40px; 
 	margin: auto;
-	border: 3px solid black;
+	border: 2px solid #006438;
 	margin: 0px auto;
 	min-width: 320px;
 	max-width: 500px;  
@@ -397,7 +397,7 @@ input#date {
 	bottom: 30px;
 	padding-bottom: .75em;
 
-	border: 3px solid black;
+	border: 2px solid #006438;
 	margin: 0px auto;
 	min-width: 320px;
 	max-width: 500px;  
