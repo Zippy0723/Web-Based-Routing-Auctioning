@@ -131,15 +131,15 @@
 	            	<h2> Enter Account Info</h2>
 	            	<br><br>
 	                <label for="username">UserName: </label>
-	                <input type="text" th:field="*{username}" id="username" placeholder="UserName" size=23 required>
+	                <input type="text" th:field="*{username}" id="username" placeholder="Enter your Username" size=23 required>
 	                <span th:if="${#fields.hasErrors('username')}" th:errors="*{username}"></span>
 	             	<br>
 	                <label for="password">Password: </label>
-	                <input type="password" th:field="*{password}" id="password" placeholder="Password" size=23 required>
+	                <input type="password" th:field="*{password}" id="password" placeholder="Enter your Password" size=23 required>
 	                <span th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></span>
 	            	<br>
 	                <label for="email">Email: </label>
-	                <input type="text" th:field="*{email}" id="email" placeholder="Email" size=23 required>
+	                <input type="text" th:field="*{email}" id="email" placeholder="Ex: abc123@email.com" size=23 required>
 	                <span th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></span>
 	             	<br>
 	                <label for="role">Role: </label>

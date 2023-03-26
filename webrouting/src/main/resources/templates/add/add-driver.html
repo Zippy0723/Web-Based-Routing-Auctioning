@@ -72,7 +72,7 @@
                         </li>
 						<br><br><br><br><br>
 						<li sec:authorize="hasAnyAuthority('CARRIER', 'MASTERLIST', 'ADMIN','SHIPPER')">
-                            <a class= "navlink" id= "nav_notifications" href="/unreadnotifications" th:inline="text">Notifications ([[${notifications.size()}]])</a>
+                            <a class= "navlink" id= "nav_notifications" href="/unreadnotifications" th:inline="text">Alerts ([[${notifications.size()}]])</a>
                         </li>
                         <li sec:authorize="hasAnyAuthority('CARRIER', 'MASTERLIST', 'ADMIN','SHIPPER')">
 							<a class= "navlink" id= "nav_update_user_details" href="/update-user-details">Update User</a>
@@ -155,7 +155,7 @@
                 <div class="form-group2">
                 	<br>
                     <label for="lisence_number">License Number: </label>
-                    <input type="text" th:field="*{lisence_number}" id="lisence_number" placeholder="License Number" size=23 required>
+                    <input type="text" th:field="*{lisence_number}" id="lisence_number" placeholder="Ex:S-514-778-616-977" size=23 required>
                     <span th:if="${#fields.hasErrors('lisence_number')}" th:errors="*{lisence_number}"></span>
                  	<br>
                     <label for="lisence_expiration">License Expiration: </label>
@@ -163,7 +163,7 @@
                     <span th:if="${#fields.hasErrors('lisence_expiration')}" th:errors="*{lisence_expiration}"></span>
                 	<br>
                     <label for="lisence_class">License Class: </label>
-                    <input type="text" th:field="*{lisence_class}" id="lisence_class" placeholder="License Class" size=23 >
+                    <input type="text" th:field="*{lisence_class}" id="lisence_class" placeholder="Ex:A" size=23 >
                     <span th:if="${#fields.hasErrors('lisence_class')}" th:errors="*{lisence_class}"></span>
                     <br>
                     <button class="buttons7" th:attr="onclick=|window.location.href='${redirectLocation}'|">Back</button>

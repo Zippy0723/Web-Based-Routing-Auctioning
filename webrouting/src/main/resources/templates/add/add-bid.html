@@ -72,7 +72,7 @@
                         </li>
 						<br><br><br><br><br>
 						<li sec:authorize="hasAnyAuthority('CARRIER', 'MASTERLIST', 'ADMIN','SHIPPER')">
-                            <a class= "navlink" id= "nav_notifications" href="/unreadnotifications" th:inline="text">Notifications ([[${notifications.size()}]])</a>
+                            <a class= "navlink" id= "nav_notifications" href="/unreadnotifications" th:inline="text">Alerts ([[${notifications.size()}]])</a>
                         </li>
                         <li sec:authorize="hasAnyAuthority('CARRIER', 'MASTERLIST', 'ADMIN','SHIPPER')">
 							<a class= "navlink" id= "nav_update_user_details" href="/update-user-details">Update User</a>
@@ -139,7 +139,7 @@
 	                </select>
 	             	<br>
 	                <label for="price">Price: </label>
-	                <input type="text" th:field="*{price}" id="price" placeholder="Price" required oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1');">
+	                <input type="text" th:field="*{price}" id="price" placeholder="Enter the Bidding Price" required oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1');">
 	                <br>
 	                <span th:if="${#fields.hasErrors('price')}" th:errors="*{price}"></span>
 	                <br>

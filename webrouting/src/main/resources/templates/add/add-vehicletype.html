@@ -72,7 +72,7 @@
                         </li>
 						<br><br><br><br><br>
 						<li sec:authorize="hasAnyAuthority('CARRIER', 'MASTERLIST', 'ADMIN','SHIPPER')">
-                            <a class= "navlink" id= "nav_notifications" href="/unreadnotifications" th:inline="text">Notifications ([[${notifications.size()}]])</a>
+                            <a class= "navlink" id= "nav_notifications" href="/unreadnotifications" th:inline="text">Alerts ([[${notifications.size()}]])</a>
                         </li>
                         <li sec:authorize="hasAnyAuthority('CARRIER', 'MASTERLIST', 'ADMIN','SHIPPER')">
 							<a class= "navlink" id= "nav_update_user_details" href="/update-user-details">Update User</a>
@@ -128,66 +128,66 @@
 						<div class="form-group">
 							<br>
 	                        <label for="type">Vehicle Type: </label>
-	                        <input type="text" th:field="*{type}" id="type" placeholder="Vehicle Type" required>
+	                        <input type="text" th:field="*{type}" id="type" placeholder="Ex: Flatbed" required>
 	                        <span th:if="${#fields.hasErrors('type')}" th:errors="*{type}"></span>
 							<br>
 	                        <label for="subType">Sub Type: </label>
-	                        <input type="text" th:field="*{subType}" id="subType" placeholder="Sub Type">
+	                        <input type="text" th:field="*{subType}" id="subType" placeholder="Ex: Open">
 	                        <span th:if="${#fields.hasErrors('subType')}" th:errors="*{subType}"></span>
 	                     	<br>
 	                        <label for="description">Description: </label>
-	                        <input type="text" th:field="*{description}" id="description" placeholder="Description">
+	                        <input type="text" th:field="*{description}" id="description" placeholder="Vehicle Appearance">
 	                        <span th:if="${#fields.hasErrors('description')}" th:errors="*{description}"></span>
 	                     	<br>
 	                        <label for="make">Make: </label>
-	                        <input type="text" th:field="*{make}" id="make" placeholder="Make" required>
+	                        <input type="text" th:field="*{make}" id="make" placeholder="Ex: FreightLiner" required>
 	                        <span th:if="${#fields.hasErrors('make')}" th:errors="*{make}"></span>
 	                     	<br>
 	                        <label for="model">Model: </label>
-	                        <input type="text" th:field="*{model}" id="model" placeholder="Model" required>
+	                        <input type="text" th:field="*{model}" id="model" placeholder="Ex: FL-20134" required>
 	                        <span th:if="${#fields.hasErrors('model')}" th:errors="*{model}"></span>
 	                     	<br><br>
 						</div>
 						<div class="form-group2">
 							<br>
 	                        <label for="minimumWeight">Min. Weight: </label>
-	                        <input type="text" th:field="*{minimumWeight}" id="minimumWeight" placeholder="Minimum Weight" required>
+	                        <input type="text" th:field="*{minimumWeight}" id="minimumWeight" placeholder="Ex: 10000" required>
 	                        <span th:if="${#fields.hasErrors('minimumWeight')}" th:errors="*{minimumWeight}"></span>
 	                     	<br>
 	                        <label for="city">Max. Weight: </label>
-	                        <input type="text" th:field="*{maximumWeight}" id="maximumWeight" placeholder="Maximum Weight" required>
+	                        <input type="text" th:field="*{maximumWeight}" id="maximumWeight" placeholder="Ex: 30000" required>
 	                        <span th:if="${#fields.hasErrors('maximumWeight')}" th:errors="*{maximumWeight}"></span>
 	                     	<br>
 	                        <label for="capacity">Capacity: </label>
-	                        <input type="text" th:field="*{capacity}" id="capacity" placeholder="Capacity">
+	                        <input type="text" th:field="*{capacity}" id="capacity" placeholder="100 =>20000 pounds">
 	                        <span th:if="${#fields.hasErrors('capacity')}" th:errors="*{capacity}"></span>
 	                    	<br>
 	                        <label for="zip">Max. Range: </label>
-	                        <input type="text" th:field="*{maximumRange}" id="maximumRange" placeholder="Miles(numbers only)" required>
+	                        <input type="text" th:field="*{maximumRange}" id="maximumRange" placeholder="Ex: 1000 miles" required>
 	                        <span th:if="${#fields.hasErrors('maximumRange')}" th:errors="*{maximumRange}"></span>
 	                     	<br>
 	                        <label for="primaryPhone">Restrictions: </label>
-	                        <input type="text" th:field="*{restrictions}" id="restrictions" placeholder="Restrictions">
+	                        <input type="text" th:field="*{restrictions}" id="restrictions" placeholder="Ex: No Dirt Roads">
 	                        <span th:if="${#fields.hasErrors('restrictions')}" th:errors="*{restrictions}"></span>
 	                    	<br>
 	                        <label for="height">Height: </label>
-	                        <input type="text" th:field="*{height}" id="height" placeholder="Height" required>
+	                        <input type="text" th:field="*{height}" id="height" placeholder="Ex: 70" required>
 	                        <span th:if="${#fields.hasErrors('height')}" th:errors="*{height}"></span>
 	                     	<br>
 	                        <label for="emptyWeight">Empty Weight: </label>
-	                        <input type="text" th:field="*{emptyWeight}" id="emptyWeight" placeholder="Empty Weight" required>
+	                        <input type="text" th:field="*{emptyWeight}" id="emptyWeight" placeholder="Ex:100" required>
 	                        <span th:if="${#fields.hasErrors('emptyWeight')}" th:errors="*{emptyWeight}"></span>
 	                     	<br>
 	                        <label for="length">Length: </label>
-	                        <input type="text" th:field="*{length}" id="length" placeholder="Length" required>
+	                        <input type="text" th:field="*{length}" id="length" placeholder="Ex:80" required>
 	                        <span th:if="${#fields.hasErrors('length')}" th:errors="*{length}"></span>
 	                    	<br>
 	                        <label for="minimumCubicWeight">Min. Cubic Weight: </label>
-	                        <input type="text" th:field="*{minimumCubicWeight}" id="minimumCubicWeight" placeholder="Minimum Cubic Weight">
+	                        <input type="text" th:field="*{minimumCubicWeight}" id="minimumCubicWeight" placeholder="Ex: 500">
 	                        <span th:if="${#fields.hasErrors('minimumCubicWeight')}" th:errors="*{minimumCubicWeight}"></span>
 	                     	<br>
 	                        <label for="maximumCubicWeight">Max. Cubic Weight: </label>
-	                        <input type="text" th:field="*{maximumCubicWeight}" id="maximumCubicWeight" placeholder="Height">
+	                        <input type="text" th:field="*{maximumCubicWeight}" id="maximumCubicWeight" placeholder="Ex: 2000">
 	                        <span th:if="${#fields.hasErrors('maximumCubicWeight')}" th:errors="*{maximumCubicWeight}"></span>
 	                        <br>  
 	                        <br>

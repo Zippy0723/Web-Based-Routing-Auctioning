@@ -118,13 +118,13 @@
                         <br>
                         <h2> Enter Carrier User Info</h2>
                         <br>
-                        <input type="text" th:field="*{username}" id="username" placeholder="Username"  autofocus="true" required>
+                        <input type="text" th:field="*{username}" id="username" placeholder="Enter your Username"  autofocus="true" required>
                         <p th:if="${#fields.hasErrors('username')}" th:errorclass="username" th:errors="*{username}"></p>
                         <br>
-                        <input type="password" th:field="*{password}" id="password" placeholder="Password" required>
+                        <input type="password" th:field="*{password}" id="password" placeholder="Enter your Password" required>
                         <p th:if="${#fields.hasErrors('password')}" th:errorclass="password" th:errors="*{password}"></p>
                         <br>
-                        <input type="text" th:field="*{email}" id="email" placeholder="Email"  required>
+                        <input type="text" th:field="*{email}" id="email" placeholder="Ex: abc123@email.com"  required>
                         <p th:if="${#fields.hasErrors('email')}" th:errorclass="email" th:errors="*{email}"></p>
                         <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
                         <br><br>
@@ -134,16 +134,16 @@
                         <h2> Enter Carrier Information</h2>
                         <br>
                         <label for="carrierName">Carrier Name: </label>
-                        <input type="text" name="carrierName" placeholder="Carrier Name" size=23 required>
+                        <input type="text" name="carrierName" placeholder="Ex: FedEx" size=23 required>
                         <br>
                         <label for="scac">SCAC: </label>  
-                        <input type="text" maxlength="4" minlength="2" name="scac" placeholder="2-4 Characters" size=23 required>
+                        <input type="text" maxlength="4" minlength="2" name="scac" placeholder="2-4 Char with U, Ex: MSCU" size=23 required>
                         <br>
                         <label for="pallets">Pallets: </label>  
-                        <input type="text" name="pallets" placeholder="Pallets" size=23 required>
+                        <input type="text" name="pallets" placeholder="LTL >=10, FTL <= 24" size=23 required>
                         <br>
                         <label for="weight">Weight: </label> 
-                        <input type="text" name="weight" placeholder="Weight" size=23 required>
+                        <input type="text" name="weight" placeholder="Weight in Pounds" size=23 required>
                         <br>
                         <label for="ltl">LTL: </label>
                         <select name="ltl" required>
