@@ -7,8 +7,8 @@
         <link rel="stylesheet" type="text/css" href="/styles/main.css" />
         <link rel="stylesheet" type="text/css" href="/styles/login.css">
         <link rel="stylesheet" type="text/css" href="/styles/menubar.css">
-        <link rel="stylesheet" type="text/css" href="/styles/tables.css">
-
+        <link rel="stylesheet" type="text/css" href="/styles/table1.css">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />	
         <link rel="stylesheet" type="text/css" href="/styles/smoothness/jquery-ui-1.10.2.css" />
 
 	</head>
@@ -122,7 +122,7 @@
   					<button class=""  id="hamburger" style="display:none" onclick="nav_open()">☰</button>
 				</span>
 				<div th:if="${redirectLocation != '/contacts'}">
-				<p><button class="buttons7" th:attr="onclick=|window.location.href='${redirectLocation}'|">Back</button></p>
+				<p><button class="buttons6" th:attr="onclick=|window.location.href='${redirectLocation}'|">Back</button></p>
 				</div>
 				<br><br>
 				<div th:switch="${contacts}">
@@ -154,7 +154,7 @@
                             </thead>
                             <tbody>
                                 <tr th:each="contact : ${contacts}">
-                                    <td th:text="${contact.id}"></td>
+                                    <td th:text="${contact.id}"style="word-wrap: break-word;"></td>
                                     <td th:text="${contact.firstName}"></td>
                                     <td th:text="${contact.lastName}"></td>
                                     <td th:text="${contact.middleInitial}"></td>
@@ -166,15 +166,16 @@
                                     <td th:text="${contact.zip}"></td>
                                     <td th:text="${contact.primaryPhone}"></td>
                                     <td th:text="${contact.workPhone}"></td>
-                                    <td><a th:href="@{/editcontact/{id}(id=${contact.id})}">Edit</a></td>
-                                    <td><a th:href="@{/deletecontact/{id}(id=${contact.id})}">Delete</a></td>
+                                    <td><a th:href="@{/editcontact/{id}(id=${contact.id})}"><button style='font-size:11px'><i class='far fa-edit'></i></button></a></td>
+                                    <td><a th:href="@{/deletecontact/{id}(id=${contact.id})}"><button class="fa fa-times" style="color: red;" onclick="deleteFunction()"></button></a></td>  
                                 </tr>
                             </tbody>
                         </table>
-                    </div>      
-                    <p><button class="buttons6" onclick="window.location.href='/signupcontact';">Add Contact</button></p>
-                    <p><button class="buttons6" onclick="window.location.href='/excel/upload-contacts';">Upload From Excel</button></p>
-                    <p><button class="buttons6" onclick="window.location.href='/excel-download-contacts';">Download From Excel</button></p>
+                    </div>     
+                    <br>                     
+                    <p><button class="buttons7" onclick="window.location.href='/signupcontact';">Add Contact</button>
+                    <button class="buttons7" onclick="window.location.href='/excel/upload-contacts';">Upload From Excel</button>
+                    <button class="buttons7" onclick="window.location.href='/excel-download-contacts';">Download From Excel</button></p>
                 </div>
             </div>
         </div>
