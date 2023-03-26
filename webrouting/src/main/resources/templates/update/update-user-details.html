@@ -135,7 +135,8 @@
 				<br>
 				<h2> Edit Your User Info</h2>
 				<br>
-				<input type="hidden" th:field="*{username}" id="username" placeholder="UserName" required> 
+				<label for="username">UserName: </label>
+				<input type="text" th:field="*{username}" id="username" placeholder="UserName" required> 
 				<span th:if="${#fields.hasErrors('username')}" th:errors="*{username}"></span>
 				<br>
 				<label for="password">Password: </label>
@@ -146,7 +147,7 @@
 				<input type="password" th:field="*{confirmPassword}" id="confirmPassword" placeholder= "Confirm your Password" required/>
                 <p th:if="${#fields.hasErrors('confirmPassword')}" th:errorclass="confirmPassword" th:errors="*{confirmPassword}"></p>  
                 <br>
-				<label for="email">Email: </label></td>
+				<label for="email">Email: </label>
 				<input type="text" th:field="*{email}" id="email" placeholder="Email" required> 
 				<p th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></p>
 				<input type="hidden" th:field="*{updateEmail}" id="updateEmail" placeholder="updateEmail" required>
