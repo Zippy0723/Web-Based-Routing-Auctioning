@@ -1402,7 +1402,7 @@ public class ShipmentsController {
 	 */
 	@RequestMapping(value="/getfreightrateprice/{shipmentid}-{carrierid}",method = RequestMethod.GET)
 	@ResponseBody
-	public String getShipmentPriceFromFreightRateTable(@PathVariable String shipmentid, @PathVariable String carrierid) throws IOException {
+	public String getShipmentPriceFromFreightRateTable(@PathVariable String shipmentid, @PathVariable String carrierid, HttpSession session) throws IOException {
         Shipments shipment = shipmentsRepository.findById(Long.parseLong(shipmentid))
         		.orElseThrow(() -> new IllegalArgumentException("Invalid shipment Id:" + shipmentid));
         Carriers carrier = carriersRepository.findById(Long.parseLong(carrierid))
@@ -1415,6 +1415,7 @@ public class ShipmentsController {
 			Weight = Long.parseLong(shipment.getCommodityPaidWeight());
 			commodityClass = shipment.getCommodityClass();
 		} catch (NumberFormatException e) {
+			session.setAttribute("message", "There is an error in shipment data. Please contact an administrator.");
 			return null;
 		}
 		
@@ -1435,6 +1436,7 @@ public class ShipmentsController {
 		}
 		if (activeSheet == null) {
 			workbook.close();
+			session.setAttribute("message", "Error, your freight rate table does not have a table for this carrier.");
 			return null;
 		}
 		
@@ -1446,6 +1448,7 @@ public class ShipmentsController {
 				weightRowData.add(Long.parseLong(activeCell.toString().replaceAll("[^0-9]", "")));
 			} catch (NumberFormatException e) {
 				workbook.close();
+				session.setAttribute("message", "Error reading your weight specifications, please check your freight rate table");
 				return null;
 			}
 			activeCell = weightRow.getCell(++cellIndex);
@@ -1476,6 +1479,7 @@ public class ShipmentsController {
 		
 		if(targetCellIndex == null || targetRowIndex == null) {
 			workbook.close();
+			session.setAttribute("message", "Error, there is no price specified for this shipment class and weight. Please check your freight rate table.");
 			return null;
 		}
 		
@@ -1487,6 +1491,7 @@ public class ShipmentsController {
 			result = Long.parseLong(activeCell.toString().substring(0,activeCell.toString().length()-2));
 		} catch (NumberFormatException e) {
 			workbook.close();
+			session.setAttribute("message", "Error, the prices in your freight rate table are in an impoper format");
 			return null;
 		}
 		

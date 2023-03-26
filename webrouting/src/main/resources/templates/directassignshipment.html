@@ -194,8 +194,8 @@
 				 success : function (data, status) {
 					 input.value = data;
 				 },
-			     error : function (status) {
-			    	 input.value = "ERROR";
+			     error : function (jqXHR, textStatus, errorThrown) {
+			    	 location.reload()
 			      }
 				});
 		}

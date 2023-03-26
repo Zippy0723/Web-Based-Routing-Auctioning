@@ -399,11 +399,6 @@ public class ExcelController {
 	
 	@PostMapping("/upload-freightrate-table")
 	public String uploadFreightRateTable(@RequestParam("file") MultipartFile excelData, HttpSession session, Model model) {
-		
-		//This function is absolute BS and needs a big comment explaining it all
-		//im sure im deff gonna have time to write that out at some point
-		//:D
-		
 		String redirectLocation = (String) session.getAttribute("redirectLocation");
 		XSSFWorkbook workbook;
 		User user = getLoggedInUser();
