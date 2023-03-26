@@ -34,7 +34,9 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
 import edu.sru.thangiah.webrouting.domain.Bids;
@@ -927,11 +929,8 @@ public class ShipmentsController {
 		model.addAttribute("shipment",shipment);
 		model.addAttribute("shipmentId",shipment.getId());
 		model.addAttribute("carriers",carriers);
-		model.addAttribute("selectedCarrierId", 1);
+		model.addAttribute("selectedCarrierId", 1); //TODO: this will probably break if there is no carrier with ID 1 in the database
 		model.addAttribute("redirectLocation",(String)session.getAttribute("redirectLocation"));
-		
-		System.out.println(
-				getShipmentPriceFromFreightRateTable(shipment, user, carriersRepository.findById((long)1).orElseThrow(() -> new IllegalArgumentException("Invalid Carrier Id:" + id))));
 		
 		return "directassignshipment";
 	}
@@ -1401,7 +1400,15 @@ public class ShipmentsController {
 	/*
 	 * This function is very complicated and a bit of a mess, needs proper documentation
 	 */
-	public Long getShipmentPriceFromFreightRateTable(Shipments shipment, User user, Carriers carrier) throws IOException {
+	@RequestMapping(value="/getfreightrateprice/{shipmentid}-{carrierid}",method = RequestMethod.GET)
+	@ResponseBody
+	public String getShipmentPriceFromFreightRateTable(@PathVariable String shipmentid, @PathVariable String carrierid) throws IOException {
+        Shipments shipment = shipmentsRepository.findById(Long.parseLong(shipmentid))
+        		.orElseThrow(() -> new IllegalArgumentException("Invalid shipment Id:" + shipmentid));
+        Carriers carrier = carriersRepository.findById(Long.parseLong(carrierid))
+        		.orElseThrow(() -> new IllegalArgumentException("Invalid carrier Id:" + carrierid));
+        User user = getLoggedInUser();
+        
 		long Weight;
 		String commodityClass;
 		try {
@@ -1474,7 +1481,7 @@ public class ShipmentsController {
 		
 		activeRow = activeSheet.getRow(targetRowIndex);
 		activeCell = activeRow.getCell(targetCellIndex);
-		long result;
+		Long result;
 		
 		try {
 			result = Long.parseLong(activeCell.toString().substring(0,activeCell.toString().length()-2));
@@ -1484,7 +1491,7 @@ public class ShipmentsController {
 		}
 		
 		workbook.close();
-		return result;
+		return result.toString();
 	}
 	
 	/**
