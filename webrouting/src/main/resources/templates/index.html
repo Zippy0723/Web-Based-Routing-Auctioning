@@ -29,16 +29,7 @@
                             <a class="selected" id="nav_home" href="/">Home</a>
                         </li>
                         <li sec:authorize="hasAuthority('ADMIN')" class="navitem">
-                            <a class="navlink" id="nav_users" href="/users">Users</a>
-                        </li>
-                        <li sec:authorize="hasAuthority('ADMIN')" class="navitem">
-                            <a class="navlink" id="nav_users" href="/CarrierAdministrationPage">Carrier Page</a>
-                        </li>
-                        <li sec:authorize="hasAuthority('ADMIN')" class="navitem">
-                            <a class="navlink" id="nav_users" href="/ShipperAdministrationPage">Shipper Page</a>
-                        </li>
-                        <li sec:authorize="hasAuthority('ADMIN')" class="navitem">
-                            <a class="navlink" id="nav_users" href="/viewavailableroles">Available Roles</a>
+                            <a class="navlink" id="nav_users" href="/userhome">Users</a>
                         </li>
                         <li sec:authorize="hasAuthority('CARRIER')" class="navitem">
                             <a class="navlink" id="nav_contacts" href="/contacts">Contacts</a>
