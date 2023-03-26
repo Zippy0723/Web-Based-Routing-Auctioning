@@ -239,75 +239,7 @@ public class TechniciansController {
         return "maintenanceorders";
     }
 	
-	/**
-  	 * Finds a technician using the id parameter and if found, adds the details of that technician
-  	 * to a form and redirects the user to that update form. Also adds the contacts, and technicians to the form.
-  	 * @param id ID of the technician being edited
-  	 * @param model Used to add data to the model
-  	 * @return "update/update-technician"
-  	 */
-	@GetMapping("/edittechnician/{id}")
-    public String showEditForm(@PathVariable("id") long id, Model model, HttpSession session) {
-		Technicians technician = techniciansRepository.findById(id)
-          .orElseThrow(() -> new IllegalArgumentException("Invalid Technician Id:" + id));
-     	
-		 model.addAttribute("contacts", getLoggedInUser().getCarrier().getContacts());  
-	     model.addAttribute("technicians", technician);
-	     model.addAttribute("redirectLocation", (String) session.getAttribute("redirectLocation"));
-	     
-	     User user = getLoggedInUser();
-	     model = NotificationController.loadNotificationsIntoModel(user, model);
-	     
-        return "/update/update-technician";
-    }
-	
-	/**
-  	 * Updates a technician to the database. Checks if there are errors in the form. <br>
-  	 * If there are no errors, the technician is updated in the techniciansRepository. and the user is redirect to /technicians <br>
-  	 * If there are errors, the user is redirected to the /update/update-technician page.
-  	 * @param id ID of the technician being updated
-  	 * @param technician Stores information on the technician being updated
-  	 * @param result Ensure the information entered by the user is valid
-  	 * @param model Used to add data to the model
-  	 * @return "redirect:/technicians" or "/update/update-technician"
-  	 */
-	@PostMapping("/updatetechnician/{id}")
-    public String updateTechnician(@PathVariable("id") long id, @Validated Technicians technician, 
-      BindingResult result, Model model, HttpSession session) {
-        if (result.hasErrors()) {
-        	technician.setId(id);
-            return "/update/update-technician";
-        }
-        User user = getLoggedInUser();
-        model = NotificationController.loadNotificationsIntoModel(user, model);
-        String redirectLocation = (String) session.getAttribute("redirectLocation");
-        model.addAttribute("redirectLocation", session.getAttribute("redirectLocation")); 
-        
-        Boolean deny = false;
-  		List<Technicians> checkTech = new ArrayList<>();
-  		checkTech = (List<Technicians>) techniciansRepository.findAll();
-  		for(Technicians tech: checkTech) {
-  			if(technician.getContact().getId() == tech.getContact().getId() && technician.getId() != tech.getId()) {
-  				if (tech.getId() != technician.getId()) {
-  					deny = true;
-  	  				break;
-  				}
-  			}
-  		}
-  		
-  		if(deny == true) {
-  			model.addAttribute("error", "Unable to update Technician. Contact already in use");
-  			Logger.info("{} failed to update Technician with ID {}", user.getUsername(), technician.getId());
-  			model.addAttribute("technicians", techniciansRepository.findAll());
-  			return "technicians";
-			 
-  		}
-  		
-        techniciansRepository.save(technician);
-        Logger.info("{} successfully updated Technician with ID {}", user.getUsername(), technician.getId());
-        return "redirect:" + redirectLocation;
-    }
-	
+
 	/**
 	 * Returns the user that is currently logged into the system. <br>
 	 * If there is no user logged in, null is returned.

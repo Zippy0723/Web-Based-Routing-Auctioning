@@ -365,16 +365,18 @@ public class ExcelController {
 		XSSFWorkbook workbook;
 		User user = getLoggedInUser();
 		model = NotificationController.loadNotificationsIntoModel(user, model);
+		model.addAttribute("redirectLocation",redirectLocation);
 		
 		try {
 			workbook = new XSSFWorkbook(excelData.getInputStream());
 			XSSFSheet worksheet = workbook.getSheetAt(0);
 			
-			List<Shipments> shipments = validationServiceImp.validateShipmentSheet(worksheet);
+			List<Shipments> shipments = validationServiceImp.validateShipmentSheet(worksheet, session);
 			
 			if (shipments == null) {
 				Logger.info("{} attempted to save shipments but failed.",user.getUsername());
-				return "redirect:" + redirectLocation; 
+				model.addAttribute("message", session.getAttribute("message"));
+				return "/excel/upload-shipments";
 			}
 			for(Shipments s: shipments) {
 				shipmentsRepository.save(s);
@@ -785,6 +787,17 @@ public class ExcelController {
         model = NotificationController.loadNotificationsIntoModel(user, model);
 		
 		return "/excel/upload-vehicles";	
+	}
+	
+	@GetMapping("/uploadshipments")
+	public String ListFromExcelData(Model model, HttpSession session){
+		model.addAttribute("redirectLocation", session.getAttribute("redirectLocation"));
+		
+		User user = getLoggedInUser();
+        model = NotificationController.loadNotificationsIntoModel(user, model);
+        session.removeAttribute("message");
+		
+		return "/excel/upload-shipments";	
 	}
 	
 	

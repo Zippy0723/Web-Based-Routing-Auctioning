@@ -65,9 +65,9 @@ public class PopulateDatabase implements ApplicationRunner{
 	
 	public void populateCarriers(Statement statement) {
 		try {
-			statement.executeUpdate("INSERT INTO carriers " + "VALUES (1,'THANGIAH SHIPPING','Yes','Yes','24','GZBO','40000')"
-					+ ",(2,'WONKA SHIPPING','Yes','Yes','24','COCO','40000')"
-					+ ",(3,'WE SHIP 4 U', 'Yes','Yes','24','SH1P','40000')");
+			statement.executeUpdate("INSERT INTO carriers " + "VALUES (1,'THANGIAH SHIPPING',1,1,'24','GZBO','40000')"
+					+ ",(2,'WONKA SHIPPING',1,1,'24','COCO','40000')"
+					+ ",(3,'WE SHIP 4 U', 1,1,'24','SH1P','40000')");
 		}
 		catch(SQLException carriers) {
 			System.out.println(carriers + " Carriers have already been added");

@@ -299,7 +299,7 @@ public class UserController {
   	 */
   	@RequestMapping({"/addusercarrier"})
   	public String addUserCarrier(@ModelAttribute("userForm") User userForm, BindingResult bindingResult, Model model,
-    		String carrierName, String scac, String ltl, String ftl, String pallets, String weight) {
+    		String carrierName, String scac, boolean ltl, boolean ftl, String pallets, String weight) {
   		
   		
   		List<Carriers> carrierList = (List<Carriers>) carriersRepository.findAll();

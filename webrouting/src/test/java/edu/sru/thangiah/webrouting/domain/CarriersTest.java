@@ -21,9 +21,9 @@ class CarriersTest {
 	
 	private String scac;
 	
-	private String ltl;
+	private boolean ltl;
 	
-	private String ftl;
+	private boolean ftl;
 	
 	private String pallets;
 	
@@ -68,9 +68,9 @@ class CarriersTest {
 		id = 1L;
 		carrier.setId(id);
 		carrier.setScac(scac);
-		ltl = "Yes";
+		ltl = true;
 		carrier.setLtl(ltl);
-		ftl = "Yes";
+		ftl = false;
 		carrier.setFtl(ftl);
 		pallets = "24";
 		carrier.setPallets(pallets);
@@ -142,7 +142,7 @@ class CarriersTest {
 	 */
 	@Test
 	void testSetLtl() {
-		carrier.setLtl("NO");
+		carrier.setLtl(false);
 		assertNotEquals(ltl, carrier.getLtl());
 	}
 
@@ -159,7 +159,7 @@ class CarriersTest {
 	 */
 	@Test
 	void testSetFtl() {
-		carrier.setFtl("NO");
+		carrier.setFtl(false);
 		assertNotEquals(ftl, carrier.getFtl());
 	}
 

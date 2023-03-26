@@ -771,32 +771,32 @@ public class ShipmentsController {
   	 * @param model Used to add data to the model
   	 * @return for Master: "/update/update-shipments" for Shipper: "/update/update-shipments-shipper"
   	 */
-	@GetMapping("/editshipment/{id}")
-    public String showEditForm(@PathVariable("id") long id, Model model, HttpSession session) {
-		Shipments shipment = shipmentsRepository.findById(id)
-          .orElseThrow(() -> new IllegalArgumentException("Invalid Shipment Id:" + id));
-        
-		model.addAttribute("vehicles", vehiclesRepository.findAll());
-	    model.addAttribute("shipments", shipment);
-	    model.addAttribute("redirectLocation", session.getAttribute("redirectLocation"));
-	    
-	    User user = getLoggedInUser();
-        model = NotificationController.loadNotificationsIntoModel(user, model);
-	    
-        if (shipment.getFullFreightTerms().toString().equals("FROZEN") && !user.getRole().toString().equals("MASTERLIST")) {
-        	System.out.println("Non-Master user attempted to edit a frozen shipment!");
-        	Logger.error("Non-Master, {}, attempted to edit a frozen shipment with ID {}.", user.getUsername(), shipment.getId());
-        	return "/index"; //TODO: Replace this with a proper message and redirect.
-        }					//TODO: Add notification to this after master editing is implimented properly
-	    
-	    if (user.getRole().toString().equals("SHIPPER")) {
-	    	return "/update/update-shipments-shipper";
-	    }
-	    else {
-	    	return "/update/update-shipments";
-	    }
-        
-    }
+//	@GetMapping("/editshipment/{id}")
+//    public String showEditForm(@PathVariable("id") long id, Model model, HttpSession session) {
+//		Shipments shipment = shipmentsRepository.findById(id)
+//          .orElseThrow(() -> new IllegalArgumentException("Invalid Shipment Id:" + id));
+//        
+//		model.addAttribute("vehicles", vehiclesRepository.findAll());
+//	    model.addAttribute("shipments", shipment);
+//	    model.addAttribute("redirectLocation", session.getAttribute("redirectLocation"));
+//	    
+//	    User user = getLoggedInUser();
+//        model = NotificationController.loadNotificationsIntoModel(user, model);
+//	    
+//        if (shipment.getFullFreightTerms().toString().equals("FROZEN") && !user.getRole().toString().equals("MASTERLIST")) {
+//        	System.out.println("Non-Master user attempted to edit a frozen shipment!");
+//        	Logger.error("Non-Master, {}, attempted to edit a frozen shipment with ID {}.", user.getUsername(), shipment.getId());
+//        	return "/index"; //TODO: Replace this with a proper message and redirect.
+//        }					//TODO: Add notification to this after master editing is implimented properly
+//	    
+//	    if (user.getRole().toString().equals("SHIPPER")) {
+//	    	return "/update/update-shipments-shipper";
+//	    }
+//	    else {
+//	    	return "/update/update-shipments";
+//	    }
+//        
+//    }
 	
 	/**
 	 * Finds a shipment by ID, then Redirects to the Freeze Shipment confirmation page
@@ -1006,158 +1006,7 @@ public class ShipmentsController {
 	}
 	
 	
-	/**
-  	 * Updates a shipment to the database. Checks if there are errors in the form. <br>
-  	 * If there are no errors, the shipment is updated in the shipmentsRepository. and the user is redirect to /shipments <br>
-  	 * If there are errors, the user is redirected to the /update/update-shipments page.
-  	 * @param id ID of the shipment being updated
-  	 * @param shipment Information on the shipment being updated
-  	 * @param result Ensures that the values entered by the user are valid
-  	 * @param model Used to add data to the model
-  	 * @return "redirect:/shipments" or "/update/update-shipments" 
-  	 */
-	@PostMapping("/updateshipment/{id}")
-    public String updateShipment(@PathVariable("id") long id, @Validated Shipments shipment, 
-      BindingResult result, Model model, HttpSession session) {
-		String redirectLocation = (String) session.getAttribute("redirectLocation");
-		userValidator.addition(shipment, result);
-		User user = getLoggedInUser();
-        model = NotificationController.loadNotificationsIntoModel(user, model);
-        if (result.hasErrors()) {
-        	if (getLoggedInUser().getRole().toString().equals("SHIPPER")) {
-        		shipment.setId(id);
-                return "/update/update-shipments-shipper";
-        	}
-        	else {
-        		shipment.setId(id);
-                return "/update/update-shipments";
-        	}
-        }
-        
-        if (getLoggedInUser().getRole().toString().equals("SHIPPER")) {
-        	
-        	boolean deny = false;
-      		List<Shipments> shipmentsList = (List<Shipments>) shipmentsRepository.findAll();
-      		
-      		for (Shipments s : shipmentsList) {
-      			if (s.getCommodityClass().equals(shipment.getCommodityClass()) 
-      					&& s.getCommodityPaidWeight().equals(shipment.getCommodityPaidWeight())
-      					&& s.getCommodityPieces().equals(shipment.getCommodityPieces())
-      					&& s.getClient().equals(shipment.getClient())
-      					&& s.getConsigneeLatitude().equals(shipment.getConsigneeLatitude())
-      					&& s.getConsigneeLongitude().equals(shipment.getConsigneeLongitude())
-      					&& s.getShipDate().equals(shipment.getShipDate())) {
-      				if (s.getId() != shipment.getId()) {
-      					deny = true;
-      	  				break;
-      				}
-      			}
-      		}
-      		
-      		if (deny == true) {
-      			model.addAttribute("error", "Error adding a shipment: Shipment already exists!");
-      			Logger.error("{} failed to update shipment with ID {} because it already exists.", user.getUsername(), shipment.getId());
-      			List<Shipments> shipmentsWOCarrier = new ArrayList<>();
-      			if (user.getRole().toString().equals("SHIPPER")) {
-      				List<Shipments> shipments = user.getShipments();
-      				if (shipments.size() != 0 && shipments != null) {
-      					for (int i = 0; i < shipments.size(); i++) {
-      						if (shipments.get(i).getCarrier() == null) {
-      							shipmentsWOCarrier.add(shipments.get(i));
-      						}
-      					}
-      				}
-      				if (shipmentsWOCarrier.size() != 0 && shipmentsWOCarrier != null) {
-      					model.addAttribute("shipments", shipmentsWOCarrier);   
-      				}
-      			     
-      			}
-      			return redirectLocation;
-      		}
-        	
-        	shipment.setUser(getLoggedInUser());
-        	shipment.setCarrier(null);
-      		shipment.setVehicle(null);
-      		shipment.setPaidAmount("");
-      		shipment.setScac("");
-      		shipment.setFreightbillNumber("");
-      		shipment.setFullFreightTerms("AVAILABLE SHIPMENT");
-      		shipment.setUser(getLoggedInUser());
-      		shipmentsRepository.save(shipment);
-      		Logger.info("{} successfully saved shipment with ID {}", user.getUsername(), shipment.getId());
-      		
-      		return "redirect:" + redirectLocation;
-        }
-        else if (getLoggedInUser().getRole().toString().equals("CARRIER")) {
-        	Shipments s = shipmentsRepository.findById(id)
-        	          .orElseThrow(() -> new IllegalArgumentException("Invalid Shipment Id:" + id));
-        	shipment.setUser(s.getUser());
-        	shipment.setCarrier(s.getCarrier());
-        	
-        	boolean deny = false;
-      		List<Shipments> shipmentsList = (List<Shipments>) shipmentsRepository.findAll();
-      		
-      		for (Shipments s1 : shipmentsList) {
-      			if (s1.getCommodityClass().equals(shipment.getCommodityClass()) 
-      					&& s1.getCommodityPaidWeight().equals(shipment.getCommodityPaidWeight())
-      					&& s1.getCommodityPieces().equals(shipment.getCommodityPieces())
-      					&& s1.getClient().equals(shipment.getClient())
-      					&& s1.getConsigneeLatitude().equals(shipment.getConsigneeLatitude())
-      					&& s1.getConsigneeLongitude().equals(shipment.getConsigneeLongitude())
-      					&& s1.getShipDate().equals(shipment.getShipDate())) {
-      				if (s1.getId() != shipment.getId()) {
-      					deny = true;
-      	  				break;
-      				}
-      			}
-      		}
-      		
-      		if (deny == true) {
-      			model.addAttribute("error", "Error adding a shipment: Shipment already exists!");
-      			Logger.error("{} failed to update shipment with ID {} because it already exists.", user.getUsername(), shipment.getId());
-    			
-      			List<Shipments> shipments = getLoggedInUser().getCarrier().getShipments();
-    			
-    			
-    			if (shipments.size() != 0 && shipments != null) {
-    				for (int i = 0; i < shipments.size(); i++) {
-    					if (shipments.get(i).getCarrier() == null) {
-    						shipments.remove(i);
-    					}
-    				}
-    			}
-    			if (shipments.size() != 0 && shipments != null) {
-    				model.addAttribute("shipments", shipments);
-    				
-    			}
-      			return "acceptedshipments";
-      		}
-      		
-        	shipmentsRepository.save(shipment);
-        	Logger.info("{} successfully saved shipment with ID {}.", user.getUsername(), shipment.getId());
-        	return "redirect:" + redirectLocation;
-        }
-        else {
-        	shipmentsRepository.save(shipment);
-        	Logger.info("{} successfully saved shipment with ID {}.", user.getUsername(), shipment.getId());
-        	return "redirect:" + redirectLocation;
-        }
-    }
-	
-	/**
-  	 * Uploads an excel file containing shipments
-  	 * @param model Used to add data to the model 
-  	 * @return "/uploadshipments" 
-  	 */
-	@GetMapping("/uploadshipments")
-	public String ListFromExcelData(Model model, HttpSession session){
-		model.addAttribute("redirectLocation", session.getAttribute("redirectLocation"));
-		
-		User user = getLoggedInUser();
-        model = NotificationController.loadNotificationsIntoModel(user, model);
-		
-		return "/uploadshipments";	
-	}
+
 	
 	/**
 	 * Returns the user that is currently logged into the system. <br>

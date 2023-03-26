@@ -157,7 +157,7 @@
                                     <td th:text="${user.role}"></td>
                                     <td th:text= "${user.enabled}"></td>
                                     <td th:text="${user.auctioningAllowed}"></td>
-                                    <td><a th:href="@{/edituser/{id}(id=${user.id})}">Edit</a></td>
+                                    <td><a th:href="@{/editshippers/{id}(id=${user.id})}">Edit</a></td>
                                     <td><a th:href="@{/deleteuser/{id}(id=${user.id})}">Delete</a></td>
                                     <td><a th:href="@{/toggleenabled/{id}(id=${user.id})}">Toggle Account Enable</a></td>
                                     <td><a th:href="@{/toggleauctioning/{id}(id=${user.id})}">Toggle Auctioning Allowed</a></td>                         
