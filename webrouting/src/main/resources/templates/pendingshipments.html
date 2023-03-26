@@ -7,8 +7,8 @@
         <link rel="stylesheet" type="text/css" href="/styles/main.css" />
         <link rel="stylesheet" type="text/css" href="/styles/login.css">
         <link rel="stylesheet" type="text/css" href="/styles/menubar.css">
-        <link rel="stylesheet" type="text/css" href="/styles/tables.css">
-
+        <link rel="stylesheet" type="text/css" href="/styles/table1.css">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />
         <link rel="stylesheet" type="text/css" href="/styles/smoothness/jquery-ui-1.10.2.css" />
 
 	</head>
@@ -136,11 +136,12 @@
 			
 				<div th:switch="${shipments}">
                     <h2 th:case="null"style="text-align: center;">No shipments yet!</h2>
-                    <p sec:authorize="hasAuthority('MASTERLIST')"><button class="buttons7" onclick="window.location.href='/shipmentshomemaster';">Back</button></p>
-                	<p sec:authorize="hasAuthority('CARRIER')"><button class="buttons7" onclick="window.location.href='/shipmentshomecarrier';">Back</button></p>
-                	<p sec:authorize="hasAuthority('SHIPPER')"><button class="buttons7" onclick="window.location.href='/shipmentshomeshipper';">Back</button>
+                    <p sec:authorize="hasAuthority('MASTERLIST')"><button class="buttons6" onclick="window.location.href='/shipmentshomemaster';">Back</button></p>
+                	<p sec:authorize="hasAuthority('CARRIER')"><button class="buttons6" onclick="window.location.href='/shipmentshomecarrier';">Back</button></p>
+                	<p sec:authorize="hasAuthority('SHIPPER')"><button class="buttons6" onclick="window.location.href='/shipmentshomeshipper';">Back</button>
                 	<br><br>
                     <div th:case="*">
+                    <br>
                         <h2>Pending Shipments</h2>
                         <br>
                         <hr>
@@ -152,7 +153,7 @@
                         <table class="dataTable">
                             <thead>
                                 <tr>
-                                    <th>ID</th>
+                                    <th>Shipment ID</th>
                                     <th>Client</th>
                                     <th>Client Mode</th>
                                     <th>Ship Date</th>
@@ -189,8 +190,8 @@
                                     <td th:text="${shipment.consigneeCity}"></td>
                                     <td th:text="${shipment.consigneeState}"></td>
                                     <td th:text="${shipment.consigneeZip}"></td>
-                                    <td sec:authorize="hasAnyAuthority('SHIPPER','MASTERLIST')"><a th:href="@{/editshipment/{id}(id=${shipment.id})}">Edit</a></td>
-                                    <td sec:authorize="hasAnyAuthority('SHIPPER','MASTERLIST')"><a th:href="@{/deleteshipment/{id}(id=${shipment.id})}">Delete</a></td>
+                                    <td sec:authorize="hasAnyAuthority('SHIPPER','MASTERLIST')"><a th:href="@{/editshipment/{id}(id=${shipment.id})}"><button style='font-size:11px'><i class='far fa-edit'></i></button></a></td>
+                                    <td sec:authorize="hasAnyAuthority('SHIPPER','MASTERLIST')"><a th:href="@{/deleteshipment/{id}(id=${shipment.id})}"><button class="fa fa-times" style="color: red;"></button></a></td>
                                     <td sec:authorize="hasAuthority('MASTERLIST')"><a th:href="@{/freezeshipment/{id}(id=${shipment.id})}">Freeze</a></td>
                                     <td sec:authorize="hasAnyAuthority('SHIPPER','MASTERLIST')"><a th:classappend="${user.auctioningAllowed ? '' : 'disabled-btn'}" th:href="@{/pushshipment/{id}(id=${shipment.id})}">Push to Auction</a></td>
                                     <td sec:authorize="hasAnyAuthority('SHIPPER','MASTERLIST')"><a th:href="@{/directassignshipment/{id}(id=${shipment.id})}">Direct Assign</a></td>
@@ -199,6 +200,7 @@
                             </tbody>
                         </table>
                     </div>
+                    <br>
                     <p sec:authorize="hasAuthority('SHIPPER')"><button class="buttons7" onclick="window.location.href='/uploadshipments';">Upload From Excel</button><button class="buttons7" onclick="window.location.href='/add-shipments';">Add New Shipment</button>
                 </div>
             </div>

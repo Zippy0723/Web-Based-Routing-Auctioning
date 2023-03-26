@@ -7,8 +7,8 @@
         <link rel="stylesheet" type="text/css" href="/styles/main.css" />
         <link rel="stylesheet" type="text/css" href="/styles/login.css">
         <link rel="stylesheet" type="text/css" href="/styles/menubar.css">
-        <link rel="stylesheet" type="text/css" href="/styles/tables.css">
-
+        <link rel="stylesheet" type="text/css" href="/styles/table1.css">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />
         <link rel="stylesheet" type="text/css" href="/styles/smoothness/jquery-ui-1.10.2.css" />
 
 	</head>
@@ -130,7 +130,7 @@
   					<button class=""  id="hamburger" style="display:none" onclick="nav_open()">☰</button>
 				</span>
 				<div th:if="${redirectLocation != '/drivers'}">
-				<p><button class="buttons7" th:attr="onclick=|window.location.href='${redirectLocation}'|">Back</button></p>
+				<p><button class="buttons6" th:attr="onclick=|window.location.href='${redirectLocation}'|">Back</button></p>
 				</div>
 				<br><br>
 				<div th:switch="${drivers}">
@@ -164,15 +164,16 @@
                                		<td th:text="${driver.lisence_number}"></td>
                                     <td th:text="${driver.lisence_expiration}"></td>
                                     <td th:text="${driver.lisence_class}"></td>
-                                    <td><a th:href="@{/editdriver/{id}(id=${driver.id})}">Edit</a></td>
-                                    <td><a th:href="@{/deletedriver/{id}(id=${driver.id})}">Delete</a></td>
+                                    <td><a th:href="@{/editdriver/{id}(id=${driver.id})}"><button style='font-size:11px'><i class='far fa-edit'></i></button></a></td>
+                                    <td><a th:href="@{/deletedriver/{id}(id=${driver.id})}"><button class="fa fa-times" style="color: red;" onclick="deleteFunction()"></button></a></td>
                                 </tr>
                             </tbody>
                         </table>
                     </div>
-                    <p><button class="buttons6" onclick="window.location.href='/add-driver';">Add Driver</button></p>
-                    <p><button class="buttons6" onclick="window.location.href='/excel/upload-drivers';">Upload From Excel</button></p>
-                    <p><button class="buttons6" onclick="window.location.href='/excel-download-drivers';">Download From Excel</button></p>
+                    <br>
+                    <p><button class="buttons7" onclick="window.location.href='/add-driver';">Add Driver</button>
+                    <button class="buttons7" onclick="window.location.href='/excel/upload-drivers';">Upload From Excel</button>
+                    <button class="buttons7" onclick="window.location.href='/excel-download-drivers';">Download From Excel</button></p>
                 </div>
             </div>
 		

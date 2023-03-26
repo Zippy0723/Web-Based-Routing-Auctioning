@@ -7,8 +7,8 @@
         <link rel="stylesheet" type="text/css" href="/styles/main.css" />
         <link rel="stylesheet" type="text/css" href="/styles/login.css">
         <link rel="stylesheet" type="text/css" href="/styles/menubar.css">
-        <link rel="stylesheet" type="text/css" href="/styles/tables.css">
-
+        <link rel="stylesheet" type="text/css" href="/styles/table1.css">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />
         <link rel="stylesheet" type="text/css" href="/styles/smoothness/jquery-ui-1.10.2.css" />
 
 	</head>
@@ -167,9 +167,9 @@
                                     <td th:text="${carrier.ftl}"></td>
                                     <td th:text="${carrier.pallets}"></td>
                                     <td th:text="${carrier.weight}"></td>
-                                    <td sec:authorize="hasAnyAuthority('CARRIER','MASTERLIST')"><a th:href="@{/viewcarriershipments/{id}(id=${carrier.id})}">View Shipments</a></td>
-                                    <td sec:authorize="hasAnyAuthority('CARRIER','MASTERLIST')"><a th:href="@{/viewcarrierbids/{id}(id=${carrier.id})}">View Bids</a></td>
-                                	<td sec:authorize="hasAnyAuthority('CARRIER')"><a th:href="@{/editcarrier/{id}(id=${carrier.id})}">Edit</a></td>
+                                    <td sec:authorize="hasAnyAuthority('CARRIER','MASTERLIST')"><a th:href="@{/viewcarriershipments/{id}(id=${carrier.id})}"><button class="buttons11" role="button">View All Details</button></a></td>
+                                    <td sec:authorize="hasAnyAuthority('CARRIER','MASTERLIST')"><a th:href="@{/viewcarrierbids/{id}(id=${carrier.id})}"><button class="buttons11" role="button">View Bids</button></a></td>
+                                	<td sec:authorize="hasAnyAuthority('CARRIER')"><a th:href="@{/editcarrier/{id}(id=${carrier.id})}"><button style='font-size:11px'><i class='far fa-edit'></i></button></a></td>
                                 </tr>
                             </tbody>
                         </table>
