@@ -217,76 +217,9 @@ public class DriverController {
         return "drivers";
     }
 	
-	/**
-  	 * Finds a driver using the id parameter and if found, adds the details of that driver
-  	 * to a form and redirects the user to that update form. Also adds the carriers, contacts, and drivers to the form.
-  	 * @param id Stores the ID of the driver to be edited
-  	 * @param model Used to add data to the model
-  	 * @return "update/update-driver"
-  	 */
-	@GetMapping("/editdriver/{id}")
-    public String showEditForm(@PathVariable("id") long id, Model model, HttpSession session) {
-		Driver drivers = driverRepository.findById(id)
-          .orElseThrow(() -> new IllegalArgumentException("Invalid Driver Id:" + id));
-		
-         User user = getLoggedInUser();
-		 model.addAttribute("vehicles", user.getCarrier().getVehicles());
-		 model.addAttribute("carriers", user.getCarrier());
-		 model.addAttribute("contacts", user.getCarrier().getContacts());
-	     model.addAttribute("driver", drivers);
-	     model.addAttribute("redirectLocation",(String) session.getAttribute("redirectLocation"));
-	     model = NotificationController.loadNotificationsIntoModel(user, model);
-	     
-        return "/update/update-driver";
-    }
+
 	
-	/**
-  	 * Updates a driver to the database. Checks if there are errors in the form. <br>
-  	 * If there are no errors, the driver is updated in the driverRepository. and the user is redirected to /drivers <br>
-  	 * If there are errors, the user is redirected to the /update/update-driver page.
-  	 * @param id Stores the ID of the driver to be updated
-  	 * @param driver Stores the information on the driver from the user 
-  	 * @param result Ensure the user inputs are valid
-  	 * @param model Used to add data to the model
-  	 * @return "redirect:/contractor" or "/update/update-contractor"
-  	 */
-	@PostMapping("/updatedriver/{id}")
-    public String updateDriver(@PathVariable("id") long id, @Validated Driver driver, 
-      BindingResult result, Model model, HttpSession session) {
-		String redirectLocation = (String) session.getAttribute("redirectLocation");
-		   model.addAttribute("redirectLocation", redirectLocation);
-        if (result.hasErrors()) {
-        	driver.setId(id);
-            return "/update/update-driver";
-        }
-        
-    	Boolean deny = false;
-  		User user = getLoggedInUser();
-        model = NotificationController.loadNotificationsIntoModel(user, model);
-  		List<Driver> checkDrivers = new ArrayList<>();
-  		checkDrivers = (List<Driver>) driverRepository.findAll();
-  		
-  		for(Driver check: checkDrivers) {
-  			if(driver.getContact().toString().equals(check.getContact().toString()) ) {
-  				if(driver.getId() != check.getId()) {
-  					deny = true;
-  					break;
-  				}
-  				
-  	  		}
-  		}
-  		
-  		if(deny == true) {
-  			model.addAttribute("error", "Unable to update Driver. Lisence number already exists or Contact already in use");
-  			Logger.error("{} attempted to update driver with ID {}.Update failed due to lisence number already exists or contact already in use.", user.getUsername(), driver.getId());
-  			model.addAttribute("drivers", user.getCarrier().getDrivers());
-  			return "drivers";
-			 
-  		}
-        driverRepository.save(driver);
-        Logger.info("{} successfully updated driver with ID {}", user.getUsername(), driver.getId());
-        return "redirect:" + redirectLocation;
-    }
+
 	/**
 	 * Returns the user that is currently logged into the system. <br>
 	 * If there is no user logged in, null is returned.

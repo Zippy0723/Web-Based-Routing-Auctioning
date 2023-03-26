@@ -420,36 +420,7 @@ public class VehiclesController {
         return "vehicles";
     }
 	
-	/**
-  	 * Finds a vehicle using the id parameter and if found, adds the details of that vehicle
-  	 * to a form and redirects the user to that update form. Also adds the vehicle types, locations, and carriers to the form.
-  	 * @param id ID of the vehicle being edited
-  	 * @param model Used to add data to the model
-  	 * @return "update/update-vehicle"
-  	 */
-	@GetMapping("/editvehicles/{id}")
-    public String showEditForm(@PathVariable("id") long id, Model model, HttpSession session) {
-		 Vehicles vehicle = vehiclesRepository.findById(id)
-          .orElseThrow(() -> new IllegalArgumentException("Invalid Vehicle Id:" + id));
-		 User user = getLoggedInUser();
-		 model = NotificationController.loadNotificationsIntoModel(user, model);
-		 model.addAttribute("redirectLocation", (String) session.getAttribute("redirectLocation"));
-			
-				model.addAttribute("carriers", user.getCarrier());
-				model.addAttribute("vehicleTypes", vehicleTypesRepository.findAll()); 
-			    model.addAttribute("locations", user.getCarrier().getLocations());
-			    model.addAttribute("vehicles", vehicle);
-			    
-			    return "/update/update-vehicle";
-			}
-        /**
-		 model.addAttribute("vehicleTypes", vehicleTypesRepository.findAll()); 
-	     model.addAttribute("locations", locationsRepository.findAll());   
-	     model.addAttribute("carriers", carriersRepository.findAll());   
-	     model.addAttribute("vehicles", vehicle);
-        return "/update/update-vehicle";
-        }
-        */
+
     
 	
 	/**
@@ -494,55 +465,7 @@ public class VehiclesController {
         return "shipments";
     }
 	
-	/**
-  	 * Updates a vehicle to the database. Checks if there are errors in the form. <br>
-  	 * If there are no errors, the vehicle is updated in the vehiclesRepository. and the user is redirect to /vehicles <br>
-  	 * If there are errors, the user is redirected to the /update/update-vehicle page.
-  	 * @param id ID of the vehicle being updated
-  	 * @param vehicle Information on the vehicle being updated
-  	 * @param result Ensures the information entered by the user is valid
-  	 * @param model Used to add data to the model
-  	 * @return "redirect:/vehicles" or "/update/update-vehicle"
-  	 */
-	@PostMapping("/updatevehicle/{id}")
-    public String updateVehicle(@PathVariable("id") long id, @Validated Vehicles vehicle, 
-      BindingResult result, Model model, HttpSession session) {
-		userValidator.addition(vehicle, result);
-		User loggedInUser = getLoggedInUser();
-		model = NotificationController.loadNotificationsIntoModel(loggedInUser, model);
-		String redirectLocation = (String) session.getAttribute("redirectLocation");
-		model.addAttribute("redirectLocation", session.getAttribute("redirectLocation")); 
-        if (result.hasErrors()) {
-        	vehicle.setId(id);
-            return "/update/update-vehicle";
-        }
-        Boolean deny = false;
-  		User user = getLoggedInUser();
-  		List<Vehicles> checkVehicles = new ArrayList<>();
-  		checkVehicles = (List<Vehicles>) vehiclesRepository.findAll();
-  		
-  		for(Vehicles check: checkVehicles) {
-  			if(vehicle.getVinNumber().equals(check.getVinNumber().toString()) 
-  					|| vehicle.getPlateNumber().equals(check.getPlateNumber())) {
-  				if (vehicle.getId() != check.getId()) {
-  					deny = true;
-  	  				break;
-  				}
-  	  		}
-  		}
-  		
-  		if(deny == true) {
-  			model.addAttribute("error", "Unable to update Vehicle. Vehicle VIN or Plate Number already exists");
-  			model.addAttribute("vehicles", user.getCarrier().getVehicles());
-  			Logger.error("{} was unable to update Vehicle because VIN or Plate Number already exists.", user.getUsername());
-  			return "vehicles";
-  		}
-  		vehiclesRepository.save(vehicle);
-  		Logger.info("{} successfully updated vehicle with ID {}.",loggedInUser.getUsername(),vehicle.getId());
-  		return "redirect:" + redirectLocation;
-            
-       
-    }
+	
 	
 	/**
 	 * Returns the user that is currently logged into the system. <br>

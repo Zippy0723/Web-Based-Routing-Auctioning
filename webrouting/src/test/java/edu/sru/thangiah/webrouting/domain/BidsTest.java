@@ -55,8 +55,8 @@ class BidsTest {
 		carr.setId(1L);
 		carr.setCarrierName("THANGIAH SHIPPING");
 		carr.setScac("GZBO");
-		carr.setLtl("Yes");
-		carr.setFtl("Yes");
+		carr.setLtl(true);
+		carr.setFtl(true);
 		carr.setPallets("24");
 		carr.setWeight("40000");
 		carrierRepo.save(carr);

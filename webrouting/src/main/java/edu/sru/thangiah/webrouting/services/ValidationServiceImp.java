@@ -96,7 +96,7 @@ public class ValidationServiceImp {
 	}
 	
 	
-	public List<Shipments> validateShipmentSheet(XSSFSheet worksheet){
+	public List<Shipments> validateShipmentSheet(XSSFSheet worksheet, HttpSession session){
 		
 		List <Shipments> result = new ArrayList<>();
 		
@@ -180,9 +180,9 @@ public class ValidationServiceImp {
 	    		hashtable.put("fullFreightTerms", fullFreightTerms);
 	    		
 	    		
-	    		shipment = validateShipment(hashtable);
+	    		shipment = validateShipment(hashtable, session);
 	    		if (shipment == null) {
-	    			continue;								//Change this to return null if you want the upload to fail if any are incorrect
+	    			return null;								//Change this to return null if you want the upload to fail if any are incorrect
 	    		}
 	    		
 	    		shipment.setCarrier(null);					//THIS IS DEFAULT
@@ -202,7 +202,7 @@ public class ValidationServiceImp {
 		return result;
 	}
 	
-	public Shipments validateShipment(Hashtable<String, String> hashtable) {
+	public Shipments validateShipment(Hashtable<String, String> hashtable, HttpSession session) {
 		
 		List<String> acceptedFreightTerms = Arrays.asList("PENDING", "AVAILABLE SHIPMENT", "AWAITING ACCEPTANCE", "BID ACCEPTED", "FROZEN");
 		List<String> states = Arrays.asList("Alabama", "Alaska", "Arizona", "Arkansas", "California", "Colorado", "Connecticut", "Delaware", "Florida", "Georgia", "Hawaii", "Idaho", "Illinois", "Indiana", "Iowa", "Kansas", "Kentucky", "Louisiana", "Maine", "Maryland", "Massachusetts", "Michigan", "Minnesota", "Mississippi", "Missouri", "Montana", "Nebraska", "Nevada", "New Hampshire", "New Jersey", "New Mexico", "New York", "North Carolina", "North Dakota", "Ohio", "Oklahoma", "Oregon", "Pennsylvania", "Rhode Island", "South Carolina", "South Dakota", "Tennessee", "Texas", "Utah", "Vermont", "Virginia", "Washington", "West Virginia", "Wisconsin", "Wyoming");
@@ -234,105 +234,125 @@ public class ValidationServiceImp {
 		
 		if(!(acceptedFreightTerms.contains(fullFreightTerms))) {
 			Logger.error("{} attempted to upload a shipment but the Full Freight Terms must be an accepted term.",user.getUsername());
+			session.setAttribute("message", "Full Freight Term must be an accepted term.");
 			return null;
 		}
 		
 		if(!(scac.length() <= 4 && scac.length() >= 2) || !(scac.matches("^[a-zA-Z0-9]+$"))) {
 			if (!(scac.equals("") || scac == null)) {
 					Logger.error("{} attempted to upload a shipment but the SCAC must be between 2 and 4 characters long or empty.",user.getUsername());
+					session.setAttribute("message", "SCAC must be between 2 and 4 characters long or empty.");
 					return null;
 				}	
 			}
 		
 		if(!(paidAmount.length() <= 16 && paidAmount.length() > 0) || !(freightBillNumber.matches("^[0-9]*\\.?[0-9]+$"))) {
 			Logger.error("{} attempted to upload a shipment but the Paid Amount must be between 1 and 16 numbers long.",user.getUsername());
+			session.setAttribute("message", "Paid Amount must be between 1 and 16 numbers long.");
 			return null;
 		}
 		
 		if(!(freightBillNumber.length() <= 32 && freightBillNumber.length() > 0) || !(freightBillNumber.matches("^[0-9]*\\.?[0-9]+$"))) {
 			Logger.error("{} attempted to upload a shipment but the Freight Bill Number must be between 1 and 32 numbers long.",user.getUsername());
+			session.setAttribute("message", "Freight Bill Number must be between 1 and 32 numbers long.");
 			return null;
 		}
 		
 		if (!(clientName.length() <= 64 && clientName.length() > 0) || !(clientName.matches("^[a-zA-Z0-9.]+$"))) {
 			Logger.error("{} attempted to upload a shipment but the Client Name must be between 1 and 64 characters and alphanumeric.",user.getUsername());
+			session.setAttribute("message", "Client Name must be between 1 and 64 characters and alphanumeric.");
 			return null;
 		}
 		
 		if(!(clientMode.equals("LTL") || clientMode.equals("FTL"))) {
 			Logger.error("{} attempted to upload a shipment but the Client Mode must be LTL or FTL.",user.getUsername());
+			session.setAttribute("message", "Client Mode must be LTL or FTL.");
 			return null;
 		}
 		
 		
 		if(!(date.length() <= 12 && date.length() > 0 && date.matches("^\\d{2}-(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)-\\d{4}$"))) { 
 			Logger.error("{} attempted to upload a shipment but the Date must be between 1 and 12 characters and formated MM/DD/YYYY.",user.getUsername());
+			session.setAttribute("message", "Date must be between 1 and 12 characters and formated MM/DD/YYYY.");
 			return null;
 		}
 		
 		
 		if(!(commodityClass.length() <= 12 && commodityClass.length() > 0) || !(commodityClass.matches("^[a-zA-Z0-9.]+$"))) {
 			Logger.error("{} attempted to upload a shipment but the Commodity Class must be between 1 and 12 characters and alphanumeric.",user.getUsername());
+			session.setAttribute("message", "Commodity Class must be between 1 and 12 characters and alphanumeric.");
 			return null;
 		}
 		
 		if(!(commodityPieces.length() <= 64 && commodityPieces.length() > 0) || !(commodityPieces.matches("^[0-9.]+$"))) {
 			Logger.error("{} attempted to upload a shipment but the Commodity Pieces must be between 1 and 64 characters long and numeric.",user.getUsername());
+			session.setAttribute("message", "Commodity Pieces must be between 1 and 64 characters long and numeric.");
 			return null;
 		}
 		
 		if(!(commodityPaidWeight.length() <= 16 && commodityPaidWeight.length() > 0) || !(commodityPaidWeight.matches("^[0-9.]*\\.?[0-9.]+$"))) {
 			Logger.error("{} attempted to upload a shipment but the Commodity Paid Weight must be between 1 and 16 characters long and numeric.",user.getUsername());
+			session.setAttribute("message", "Commodity Paid Weight must be between 1 and 16 characters long and numeric.");
 			return null;
 		}
 		
-		if(!(shipperCity.length() <= 64 && shipperCity.length() > 0) || !(shipperCity.matches("^[a-zA-Z]+$"))) {
+		if(!(shipperCity.length() <= 64 && shipperCity.length() > 0) || !(shipperCity.matches("^[A-Za-z]+(?:[\\s-][A-Za-z]+)*$"))) {
 			Logger.error("{} attempted to upload a shipment but the Shipper City must be between 1 and 64 characters and is alphabetic.",user.getUsername());
+			session.setAttribute("message", "Shipper City must be between 1 and 64 characters and is alphabetic.");
 			return null;
 		}
 		
 		if(!(states.contains(shipperState) || stateAbbreviations.contains(shipperState))) {
 			Logger.error("{} attempted to upload a shipment but the Shipper State must be a state or state abbreviation.",user.getUsername());
+			session.setAttribute("message", "Shipper State must be a state or state abbreviation.");
 			return null;
 		}
 		
 		if(!(shipperZip.length() <= 12 && shipperZip.length() > 0) || !(shipperZip.matches("^[0-9.]+$"))){
 			Logger.error("{} attempted to upload a shipment but the Shipper Zip must be between 1 and 12 characters and is numeric.",user.getUsername());
+			session.setAttribute("message", "Shipper Zip must be between 1 and 12 characters and is numeric.");
 			return null;
 		}
 		
 		if(!(shipperLatitude.matches("^(-?[0-8]?\\d(\\.\\d{1,7})?|90(\\.0{1,7})?)$"))) {
 			Logger.error("{} attempted to upload a shipment but the Shipper Latitude must be between 90 and -90 up to 7 decimal places.",user.getUsername());
+			session.setAttribute("message", "Shipper Latitude must be between 90 and -90 up to 7 decimal places.");
 			return null;
 		}
 		
 		if(!(shipperLongitude.matches("^-?(180(\\.0{1,7})?|\\d{1,2}(\\.\\d{1,7})?|1[0-7]\\d(\\.\\d{1,7})?|-180(\\.0{1,7})?|-?\\d{1,2}(\\.\\d{1,7})?)$"))) {
 			Logger.error("{} attempted to upload a shipment but the Shipper Longitude must be between -180 and 180 up to 7 decimal places.",user.getUsername());
+			session.setAttribute("message", "Shipper Longitude must be between -180 and 180 up to 7 decimal places.");
 			return null;
 		}
 		
-		if(!(consigneeCity.length() <= 64 && consigneeCity.length() > 0) || !( consigneeCity.matches("^[a-zA-Z]+$"))) {
+		if(!(consigneeCity.length() <= 64 && consigneeCity.length() > 0) || !( consigneeCity.matches("^[A-Za-z]+(?:[\\s-][A-Za-z]+)*$"))) {
 			Logger.error("{} attempted to upload a shipment but the Consignee City must be between 1 and 64 characters and is alphabetic.",user.getUsername());
+			session.setAttribute("message", "Consignee City must be between 1 and 64 characters and is alphabetic.");
 			return null;
 		}
 		
 		if(!(states.contains(consigneeState) || stateAbbreviations.contains(consigneeState))) {
 			Logger.error("{} attempted to upload a shipment but the Consignee State must be a state or state abbreviation.",user.getUsername());
+			session.setAttribute("message", "Consignee State must be a state or state abbreviation.");
 			return null;
 		}
 		
 		if(!(consigneeZip.length() <= 12 && consigneeZip.length() > 0) || !(consigneeZip.matches("^[0-9.]+$"))){
 			Logger.error("{} attempted to upload a shipment but the Consignee Zip must be between 1 and 12 characters and is alphabetic.",user.getUsername());
+			session.setAttribute("message", "Consignee Zip must be between 1 and 12 characters and is alphabetic.");
 			return null;
 		}
 		
 		if(!(consigneeLatitude.matches("^(-?[0-8]?\\d(\\.\\d{1,7})?|90(\\.0{1,7})?)$"))) {
 			Logger.error("{} attempted to upload a shipment but the Consignee Latitude must be between 90 and -90 up to 7 decimal places.",user.getUsername());
+			session.setAttribute("message", "Consignee Latitude must be between 90 and -90 up to 7 decimal places.");
 			return null;
 		}
 		
 		if(!(consigneeLongitude.matches("^-?(180(\\.0{1,7})?|\\d{1,2}(\\.\\d{1,7})?|1[0-7]\\d(\\.\\d{1,7})?|-180(\\.0{1,7})?|-?\\d{1,2}(\\.\\d{1,7})?)$"))) {
 			Logger.error("{} attempted to upload a shipment but the Consignee Longitude must be between 180 and -180 up to 7 decimal places.",user.getUsername());
+			session.setAttribute("message", "Consignee Longitude must be between 180 and -180 up to 7 decimal places.");
 			return null;
 		}
 		Shipments shipment = new Shipments();
@@ -346,7 +366,7 @@ public class ValidationServiceImp {
 		shipment.setShipperCity(shipperCity);
 		shipment.setShipperState(shipperState);
 		shipment.setShipperZip(shipperZip);
-		shipment.setShipperLatitude(consigneeLongitude);
+		shipment.setShipperLatitude(shipperLatitude);
 		shipment.setShipperLongitude(shipperLongitude);
 		shipment.setConsigneeCity(consigneeCity);
 		shipment.setConsigneeState(consigneeState);
@@ -591,16 +611,16 @@ public class ValidationServiceImp {
 		vehicleType.setDescription(description);
 		vehicleType.setMake(make);
 		vehicleType.setModel(model);
-		vehicleType.setMinimumWeight(Integer.parseInt(minimumWeight));
-		vehicleType.setMaximumWeight(Integer.parseInt(maximumWeight));
+		vehicleType.setMinimumWeight(minimumWeight);
+		vehicleType.setMaximumWeight(maximumWeight);
 		vehicleType.setCapacity(capacity);
-		vehicleType.setMaximumRange(Integer.parseInt(maximumRange));
+		vehicleType.setMaximumRange(maximumRange);
 		vehicleType.setRestrictions(restrictions);
-		vehicleType.setHeight(Integer.parseInt(height));
-		vehicleType.setEmptyWeight(Integer.parseInt(emptyWeight));
-		vehicleType.setLength(Integer.parseInt(length));
-		vehicleType.setMinimumCubicWeight(Integer.parseInt(minimumCubicWeight));
-		vehicleType.setMaximumCubicWeight(Integer.parseInt(maximumCubicWeight));
+		vehicleType.setHeight(height);
+		vehicleType.setEmptyWeight(emptyWeight);
+		vehicleType.setLength(length);
+		vehicleType.setMinimumCubicWeight(minimumCubicWeight);
+		vehicleType.setMaximumCubicWeight(maximumCubicWeight);
 		vehicleType.setCarrier(user.getCarrier());
 	}
 	catch(Exception e) {
@@ -1322,7 +1342,7 @@ public class ValidationServiceImp {
 				}
 
 	    		if(!(licenseNumber.length() <= 32 && licenseNumber.length() > 0)){
-	    			Logger.info("{} attempted to upload a Driver but the license number must be between 1 and 12 characters.",user.getUsername());
+	    			Logger.info("{} attempted to upload a Driver but the license number must be between 1 and 32 characters.",user.getUsername());
 	    			session.setAttribute("message", "License number must be between 1 and 12 characters.");
 	    			return null;
 	    		}
@@ -1513,6 +1533,658 @@ public class ValidationServiceImp {
 		maintenanceOrder.setTechnician(techniciansRepository.findById(technicianId).orElseThrow(() -> new IllegalArgumentException("Invalid Technician Id")));
 		
 		return maintenanceOrder;
+	}
+	
+	
+	
+	
+	public Contacts validateContactForm(Hashtable<String, String> hashtable, HttpSession session) {
+
+		List<String> states = Arrays.asList("Alabama", "Alaska", "Arizona", "Arkansas", "California", "Colorado", "Connecticut", "Delaware", "Florida", "Georgia", "Hawaii", "Idaho", "Illinois", "Indiana", "Iowa", "Kansas", "Kentucky", "Louisiana", "Maine", "Maryland", "Massachusetts", "Michigan", "Minnesota", "Mississippi", "Missouri", "Montana", "Nebraska", "Nevada", "New Hampshire", "New Jersey", "New Mexico", "New York", "North Carolina", "North Dakota", "Ohio", "Oklahoma", "Oregon", "Pennsylvania", "Rhode Island", "South Carolina", "South Dakota", "Tennessee", "Texas", "Utah", "Vermont", "Virginia", "Washington", "West Virginia", "Wisconsin", "Wyoming");
+		List<String> stateAbbreviations = Arrays.asList("DC", "AL", "AK", "AZ", "AR", "CA", "CO", "CT", "DE", "FL", "GA", "HI", "ID", "IL", "IN", "IA", "KS", "KY", "LA", "ME", "MD", "MA", "MI", "MN", "MS", "MO", "MT", "NE", "NV", "NH", "NJ", "NM", "NY", "NC", "ND", "OH", "OK", "OR", "PA", "RI", "SC", "SD", "TN", "TX", "UT", "VT", "VA", "WA", "WV", "WI", "WY");
+		
+		User user = getLoggedInUser();
+		
+		String firstName = (String) hashtable.get("firstName");
+		String lastName = (String)hashtable.get("lastName");
+		String middleInitial = (String)hashtable.get("middleInitial");
+		String emailAddress = (String)hashtable.get("emailAddress");
+		String streetAddress1 = (String)hashtable.get("streetAddress1");
+		String streetAddress2 = (String)hashtable.get("streetAddress2");
+		String contactCity = (String)hashtable.get("contactCity");
+		String contactState = (String)hashtable.get("contactState");
+		String contactZip = (String)hashtable.get("contactZip");
+		String primaryPhone = (String)hashtable.get("primaryPhone");
+		String workPhone = (String)hashtable.get("workPhone");
+		
+		
+		if (!(firstName.length() <= 32 && firstName.length() > 0) || !(firstName.matches("^[a-zA-Z ']+$"))) { 
+			Logger.info("{} attempted to edit a contact but Contact first name field must be between 1 and 32 characters and alphabetic.",user.getUsername());
+			session.setAttribute("message", "First name field must be between 1 and 32 characters and alphabetic.");
+			return null;
+		}
+		
+		if(!(lastName.length() <= 32 && lastName.length() > 0) || !(lastName.matches("^[a-zA-Z ']+$"))) {
+			Logger.info("{} attempted to edit a contact but Contact last name field must be between 1 and 32 characters and alphbetic.",user.getUsername());
+			session.setAttribute("message", "Last name field must be between 1 and 32 characters and alphbetic.");
+			return null;
+		}
+		if (!(middleInitial == null || middleInitial.equals(""))) {
+			if(!(middleInitial.length() <= 16 && middleInitial.length() > 0) || !(middleInitial.matches("^[A-Za-z]{1}$"))) {
+				Logger.info("{} attempted to edit a contact but Contact Middle initial must be 1 character and alphabetic.",user.getUsername());
+				session.setAttribute("message", "Middle initial must be 1 character and alphabetic.");
+				return null;
+			}
+		}
+		
+		if(!(emailAddress.length() <= 64 && emailAddress.length() > 0) || !(emailAddress.matches("^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+$"))){
+			Logger.info("{} attempted to edit a contact but Contact email address must be between 1 and 64 characters that are alpahnumeric.",user.getUsername());
+			session.setAttribute("message", "Email address must be between 1 and 64 characters that are alpahnumeric.");
+			return null;
+		}
+		
+		if(!(streetAddress1.length() <= 64 && streetAddress1.length() > 0)) { 
+			Logger.info("{} attempted to edit a contact but Contact street address 1 must be between 1 and 128 characters.",user.getUsername());
+			session.setAttribute("message", "Street address 1 must be between 1 and 128 characters.");
+			return null;
+		}
+		
+		if (!(streetAddress2 == null || streetAddress2.equals(""))) {
+			if(!(streetAddress2.length() <= 64 && streetAddress2.length() > 0)) { 
+				Logger.info("{} attempted to edit a contact but Contact street address 2 must be between 1 and 64 characters.",user.getUsername());
+				session.setAttribute("message", "Street address 2 must be between 1 and 64 characters.");
+				return null;
+			}
+		}
+		if(!(contactCity.length() <= 64 && contactCity.length() > 0) || !(contactCity.matches("^[A-Za-z]+(?:[\\s-][A-Za-z]+)*$"))) {
+			Logger.info("{} attempted to edit a contact but Contact City must be between 1 and 64 characters and is alphabetic.",user.getUsername());
+			session.setAttribute("message", "City must be between 1 and 64 characters and is alphabetic.");
+			return null;
+		}
+		
+		if(!(states.contains(contactState) || stateAbbreviations.contains(contactState))) {  
+			Logger.info("{} attempted to edit a contact but Contact state must be a state or state abbreviation.",user.getUsername());
+			session.setAttribute("message", "State must be selected.");
+			return null;
+		}
+		
+		if(!(contactZip.length() == 5) || !(contactZip.matches("^[0-9.]+$"))){ 
+			Logger.info("{} attempted to edit a contact but Contact Zip must 5 numeric characters",user.getUsername());
+			session.setAttribute("message", "Zip must be 5 numeric characters.");
+			return null;
+		}
+		
+		if(!(primaryPhone.length() <= 13 && primaryPhone.length() > 0) || !(primaryPhone.matches("\\d{3}-\\d{3}-\\d{4}"))){ 
+			Logger.info("{} attempted to edit a contact but Contact primary phone must be in format ###-###-####.",user.getUsername());
+			session.setAttribute("message", "Primary phone must be in format ###-###-####.");
+			return null;
+		}
+		
+		if (!(workPhone == null || workPhone.equals(""))) {
+			if(!(workPhone.length() <= 13 && workPhone.length() > 0) || !(workPhone.matches("\\d{3}-\\d{3}-\\d{4}"))){ 
+				Logger.info("{} attempted to edit a contact but Contact work phone must be must be in format ###-###-####.",user.getUsername());
+				session.setAttribute("message", "Work phone must be must be in format ###-###-####.");
+				return null;
+			}
+		}
+	 
+		Contacts contact = new Contacts();
+		
+
+		contact.setFirstName(firstName);
+		contact.setLastName(lastName);
+		contact.setMiddleInitial(middleInitial);
+		contact.setEmailAddress(emailAddress);
+		contact.setStreetAddress1(streetAddress1);
+		contact.setStreetAddress2(streetAddress2);
+		contact.setCity(contactCity);
+		contact.setState(contactState);
+		contact.setZip(contactZip);
+		contact.setPrimaryPhone(primaryPhone);
+		contact.setWorkPhone(workPhone);
+		contact.setCarrier(user.getCarrier());
+		
+		return contact;
+}
+	
+public VehicleTypes validateVehicleTypesForm(Hashtable<String, String> hashtable, HttpSession session) {
+		
+		User user = getLoggedInUser();			
+	
+		String type = (String) hashtable.get("type");
+	    String subType = (String) hashtable.get("subType");
+		String description = (String) hashtable.get("description");
+	    String make = (String) hashtable.get("make");
+	    String model = (String) hashtable.get("model");
+		String minimumWeight = (String) hashtable.get("minimumWeight");
+		String maximumWeight = (String) hashtable.get("maximumWeight");
+		String capacity = (String) hashtable.get("capacity");
+		String maximumRange = (String) hashtable.get("maximumRange");
+		String restrictions = (String) hashtable.get("restrictions");
+		String height = (String) hashtable.get("height");
+		String emptyWeight = (String) hashtable.get("emptyWeight");
+		String length = (String) hashtable.get("length");
+		String minimumCubicWeight = (String) hashtable.get("minimumCubicWeight");
+		String maximumCubicWeight = (String) hashtable.get("maximumCubicWeight");
+		
+		
+		if (!(type.length() <= 32 && type.length() > 0) || !(type.matches("^[a-zA-Z ]+$"))) {
+			Logger.error("{} attempted to edit a Vehicle Type but the Type was not between 1 and 32 alphabetic characters long.",user.getUsername());
+			session.setAttribute("message", "Type was not between 1 and 32 alphabetic characters long.");
+			return null;	
+		}
+		
+		if (!(subType.length() <= 32 && subType.length() > 0) || !(subType.matches("^[a-zA-Z ]+$"))) {
+			Logger.error("{} attempted to edit a Vehicle Type but the Sub Type was not between 1 and 32 characters long.",user.getUsername());
+			session.setAttribute("message", "Sub Type was not between 1 and 32 characters long.");
+			return null;	
+		}
+	
+		if (!(description == null || description.equals(""))) {
+			if (!(description.length() <= 64 && description.length() > 0)) {
+				Logger.error("{} attempted to edit a Vehicle Type but the Description was not between 1 and 64 characters long.",user.getUsername());
+				session.setAttribute("message", "Description was not between 1 and 64 characters long.");
+				return null;	
+			}
+		}
+		
+		if(!(make.length() <= 32 && make.length() > 0)) {
+			Logger.error("{} attempted to edit a Vehicle Type but the Make was not between 1 and 32 characters long.",user.getUsername());
+			session.setAttribute("message", "Make was not between 1 and 32 characters long.");
+			return null;
+		}
+		
+		if(!(model.length() <= 32 && model.length() > 0)) {
+			Logger.error("{} attempted to edit a Vehicle Type but the Model was not between 1 and 32 characters long.",user.getUsername());
+			session.setAttribute("message", "Model was not between 1 and 32 characters long.");
+			return null;
+		}
+		
+		if (!(minimumWeight.length() <= 16 && minimumWeight.length() > 0) || !(minimumWeight.matches("^[0-9.]+$"))) {
+			Logger.error("{} attempted to edit a Vehicle Type but the Minimum Weight was not between 1 and 16 numeric characters long.",user.getUsername());
+			session.setAttribute("message", "Minimum Weight was not between 1 and 16 numeric characters long.");
+			return null;
+		}
+		
+		if (!(maximumWeight.length() <= 16 && maximumWeight.length() > 0) || !(maximumWeight.matches("^[0-9.]+$"))) { 
+			Logger.error("{} attempted to edit a Vehicle Type but the Maximum Weight was not between 1 and 16 numeric characters long.",user.getUsername());
+			session.setAttribute("message", "Maximum Weight was not between 1 and 16 numeric characters long.");
+			return null;
+		}
+		
+		if (!(capacity == null || capacity.equals(""))) {
+			if(!(capacity.length() <= 16 && capacity.length() > 0) || !(capacity.matches("^[0-9-.]+$"))) {
+				Logger.error("{} attempted to edit a Vehicle Type but the Capacity was not between 1 and 16 numeric characters long.",user.getUsername());
+				session.setAttribute("message", "Capacity was not between 1 and 16 numeric characters long.");
+				return null;
+			}
+		}
+		
+		if(!(maximumRange.length() <= 16 && maximumRange.length() > 0) || !(maximumRange.matches("^[0-9.]+$"))) {
+			Logger.error("{} attempted to edit a Vehicle Type but the Maximum Range was not between 1 and 16 numeric characters long.",user.getUsername());
+			session.setAttribute("message", " Maximum Range was not between 1 and 16 numeric characters long.");
+			return null;
+		}
+		
+		if (!(restrictions == null || restrictions.equals(""))) {
+			if(!(restrictions.length() <= 128 && restrictions.length() > 0)) {
+				Logger.error("{} attempted to edit a Vehicle Type but the Restrictions was not between 1 and 128 characters long.",user.getUsername());
+				session.setAttribute("message", "Restrictions was not between 1 and 128 characters long.");
+				return null;
+			}
+		}
+		
+		if(!(height.length() <= 16 && height.length() > 0) || !(height.matches("^[0-9.]+$"))) {
+			Logger.error("{} attempted to edit a Vehicle Type but the Height was not between 1 and 16 numeric characters long.",user.getUsername());
+			session.setAttribute("message", "Height was not between 1 and 16 numeric characters long.");
+			return null;
+		}
+		
+		if(!(emptyWeight.length() <= 16 && emptyWeight.length() > 0) || !(emptyWeight.matches("^[0-9.]+$"))) {
+			Logger.error("{} attempted to edit a Vehicle Type but the Empty Weight was not between 1 and 16 numeric characters long.",user.getUsername());
+			session.setAttribute("message", "Empty Weight was not between 1 and 16 numeric characters long.");
+			return null;
+		}
+		
+		if(!(length.length() <= 16 && length.length() > 0) || !( length.matches("^[0-9.]+$"))) {
+			Logger.error("{} attempted to edit a Vehicle Type but the Length was not between 1 and 16 numeric characters long.",user.getUsername());
+			session.setAttribute("message", "Length was not between 1 and 16 numeric characters long.");
+			return null;
+		}
+		
+		if(!(minimumCubicWeight.length() <= 16 && minimumCubicWeight.length() > 0) || !(minimumCubicWeight.matches("^[0-9.]+$"))){
+			Logger.error("{} attempted to edit a Vehicle Type but the Minimum Cubic Weight was not between 1 and 16 numeric characters long.",user.getUsername());
+			session.setAttribute("message", "Minimum Cubic Weight was not between 1 and 16 numeric characters long.");
+			return null;
+		}
+		
+		if(!(maximumCubicWeight.length() <= 16 && maximumCubicWeight.length() > 0) || !(maximumCubicWeight.matches("^[0-9.]+$"))){
+			Logger.error("{} attempted to edit a Vehicle Type but the Maximum Cubic Weight was not between 1 and 16 numeric characters long.",user.getUsername());
+			session.setAttribute("message", "Maximum Cubic Weight was not between 1 and 16 numeric characters long.");
+			return null;
+		}
+		
+
+		VehicleTypes vehicleType = new VehicleTypes();
+		
+	try {
+		vehicleType.setType(type);
+		vehicleType.setSubType(subType);
+		vehicleType.setDescription(description);
+		vehicleType.setMake(make);
+		vehicleType.setModel(model);
+		vehicleType.setMinimumWeight(minimumWeight);
+		vehicleType.setMaximumWeight(maximumWeight);
+		vehicleType.setCapacity(capacity);
+		vehicleType.setMaximumRange(maximumRange);
+		vehicleType.setRestrictions(restrictions);
+		vehicleType.setHeight(height);
+		vehicleType.setEmptyWeight(emptyWeight);
+		vehicleType.setLength(length);
+		vehicleType.setMinimumCubicWeight(minimumCubicWeight);
+		vehicleType.setMaximumCubicWeight(maximumCubicWeight);
+		vehicleType.setCarrier(user.getCarrier());
+	}
+	catch(Exception e) {
+		e.printStackTrace();
+	}
+	
+	return vehicleType;
+	
+	}
+
+public Locations validateLocationsForm(Hashtable<String, String> hashtable, HttpSession session) {
+
+
+	List<String> states = Arrays.asList("Alabama", "Alaska", "Arizona", "Arkansas", "California", "Colorado", "Connecticut", "Delaware", "Florida", "Georgia", "Hawaii", "Idaho", "Illinois", "Indiana", "Iowa", "Kansas", "Kentucky", "Louisiana", "Maine", "Maryland", "Massachusetts", "Michigan", "Minnesota", "Mississippi", "Missouri", "Montana", "Nebraska", "Nevada", "New Hampshire", "New Jersey", "New Mexico", "New York", "North Carolina", "North Dakota", "Ohio", "Oklahoma", "Oregon", "Pennsylvania", "Rhode Island", "South Carolina", "South Dakota", "Tennessee", "Texas", "Utah", "Vermont", "Virginia", "Washington", "West Virginia", "Wisconsin", "Wyoming");
+	List<String> stateAbbreviations = Arrays.asList("DC","AL", "AK", "AZ", "AR", "CA", "CO", "CT", "DE", "FL", "GA", "HI", "ID", "IL", "IN", "IA", "KS", "KY", "LA", "ME", "MD", "MA", "MI", "MN", "MS", "MO", "MT", "NE", "NV", "NH", "NJ", "NM", "NY", "NC", "ND", "OH", "OK", "OR", "PA", "RI", "SC", "SD", "TN", "TX", "UT", "VT", "VA", "WA", "WV", "WI", "WY");
+	
+	User user = getLoggedInUser();
+	
+	String locationName = (String) hashtable.get("locationName");
+	String streetAddress1 = (String)hashtable.get("streetAddress1");
+	String streetAddress2 = (String)hashtable.get("streetAddress2");
+	String locationCity = (String)hashtable.get("locationCity");
+	String locationState = (String)hashtable.get("locationState");
+	String locationZip = (String)hashtable.get("locationZip");
+	String locationLatitude = (String)hashtable.get("locationLatitude");
+	String locationLongitude = (String)hashtable.get("locationLongitude");
+	String locationType = (String)hashtable.get("locationType");
+	
+	if (!(locationName.length() <= 32 && locationName.length() > 0) || !(locationName.matches("^[a-zA-Z ']+$"))) { 
+		Logger.info("{} attempted to upload a location but the name field must be between 1 and 32 characters and alphabetic.",user.getUsername());
+		session.setAttribute("message", "Name must be between 1 and 32 characters and alphabetic.");
+		return null;
+	}
+	
+	if(!(streetAddress1.length() <= 64 && streetAddress1.length() > 0) || !(streetAddress1.matches("\\d+\\s+([a-zA-Z.]+\\s?)+"))) { 
+		Logger.info("{} attempted to upload a location but location address must be between 1 and 64 characters that are alphanumeric.",user.getUsername());
+		session.setAttribute("message", "Address must be between 1 and 64 characters that are alphanumeric.");
+		return null;
+	}
+	
+	if (!(streetAddress2 == null || streetAddress2.equals(""))) {
+		if(!(streetAddress2.length() <= 64 && streetAddress2.length() > 0) || !(streetAddress2.matches("^[A-Za-z0-9./-]+(?:[\\s-][A-Za-z0-9.-]+)*$"))) {
+			Logger.info("{} attempted to upload a location street address 2 must be between 1 and 64 characters that are alphanumeric.",user.getUsername());
+			session.setAttribute("message", "Street Address 2 must be between 1 and 64 characters that are alphanumeric.");
+			return null;
+		}
+	}
+	
+	if(!(locationCity.length() <= 64 && locationCity.length() > 0) || !(locationCity.matches("^[A-Za-z]+(?:[\\s-][A-Za-z]+)*$"))) { 
+		Logger.info("{} attempted to upload a location city but location city must be between 1 and 64 characters and is alphabetic.",user.getUsername());
+		session.setAttribute("message", "City must be between 1 and 64 characters and is alphabetic.");
+		return null;
+	}
+	
+	if(!(states.contains(locationState) || stateAbbreviations.contains(locationState))) {  
+		Logger.info("{} attempted to upload a location state but location state must be a state or state abbreviation.",user.getUsername());
+		session.setAttribute("message", "State must be a state or state abbreviation.");
+		return null;
+	}
+	
+	if(!(locationZip.length() == 5) || !(locationZip.matches("^[0-9.]+$"))){ 
+		Logger.info("{} attempted to upload a location zip but location zip must be 5 numeric characters.",user.getUsername());
+		session.setAttribute("message", "Zip must 5 numeric characters.");
+		return null;
+	}
+	
+	if(!(locationLatitude.length() <= 13 && locationLatitude.length() > 0) || !(locationLatitude.matches("^(-?[0-8]?\\d(\\.\\d{1,7})?|90(\\.0{1,7})?)$"))){ 
+		Logger.info("{} attempted to upload a location latitude must be between 90 and -90 up to 7 decimal places." ,user.getUsername());
+		session.setAttribute("message", "Latitude must be between 90 and -90 up to 7 decimal places.");
+		return null;
+	}
+	
+	if(!(locationLongitude.length() <= 13 && locationLongitude.length() > 0) || !(locationLongitude.matches("^-?(180(\\.0{1,7})?|\\d{1,2}(\\.\\d{1,7})?|1[0-7]\\d(\\.\\d{1,7})?|-180(\\.0{1,7})?|-?\\d{1,2}(\\.\\d{1,7})?)$"))){ 
+		Logger.info("{} attempted to upload a location longitude must be between -180 and 180 up to 7 decimal places.",user.getUsername());
+		session.setAttribute("message", "Longitude must be between -180 and 180 up to 7 decimal places.");
+		return null;
+	}
+	
+	if(!(locationType.length() <= 64 && locationType.length() > 0) || !(locationType.matches("^[a-zA-Z ]+$"))){ 
+		Logger.info("{} attempted to upload a location type must be 1 to 32 alphabetic characters.",user.getUsername());
+		session.setAttribute("message", "Type must be 1 to 32 alphabetic characters.");
+		return null;
+	}
+ 
+	Locations location = new Locations();
+	
+
+	location.setName(locationName);
+	location.setStreetAddress1(streetAddress1);
+	location.setStreetAddress2(streetAddress2);
+	location.setCity(locationCity);
+	location.setState(locationState);
+	location.setZip(locationZip);
+	location.setLatitude(locationLatitude);
+	location.setLongitude(locationLongitude);
+	location.setCarrier(user.getCarrier());
+	location.setLocationType(locationType);
+	location.setCarrier(user.getCarrier());
+
+	return location;
+}
+	
+	public Vehicles validateVehiclesForm(Hashtable<String, String> hashtable, HttpSession session) {
+		User user = getLoggedInUser();
+		String plate = (String) hashtable.get("plate");
+	    String vin = (String) hashtable.get("vin");
+		String manufacturedYear = (String) hashtable.get("manufacturedYear");
+	
+
+		
+		if (!(plate.length() <= 12 && plate.length() > 0) || !(plate.matches("^[a-zA-Z0-9. -]+$"))) {
+			Logger.error("{} attempted to upload a Vehicle but the Plate was not between 1 and 12 alphanumeric characters long.",user.getUsername());
+			session.setAttribute("message", "Plate was not between 1 and 12 alphanumeric characters long.");
+			return null;	
+		}
+		
+		if (!(vin.length() <= 17 && vin.length() > 0) || !(vin.matches("^[a-zA-Z0-9.]+$"))) {
+			Logger.error("{} attempted to upload a Vehicle but the Vin was not between 1 and 17 alphanumeric characters long.",user.getUsername());
+			session.setAttribute("message", "Vin was not between 1 and 17 alphanumeric characters long.");
+			return null;	
+		}
+	
+		if (!(manufacturedYear.length() <= 4 && manufacturedYear.length() > 0) || !(manufacturedYear.matches("^[0-9]+$"))) {
+			Logger.error("{} attempted to upload a Vehicle but the Year was not between 1 and 4 numeric characters long.",user.getUsername());
+			session.setAttribute("message", "Year was not between 1 and 4 numeric characters long.");
+			return null;	
+		}	
+		
+		Vehicles vehicle = new Vehicles();
+		
+	try {
+		
+	    vehicle.setPlateNumber(plate);
+	    vehicle.setVinNumber(vin);
+	    vehicle.setManufacturedYear(manufacturedYear);
+		vehicle.setCarrier(user.getCarrier());
+	}
+		
+	catch(Exception e) {
+		e.printStackTrace();
+		return null;
+	}
+	
+	return vehicle;
+}
+
+	public Driver validateDriverForm(Hashtable<String, String> hashtable, HttpSession session) {
+		User user = getLoggedInUser();
+
+		
+		String licenseNumber = (String)hashtable.get("licenseNumber");
+		String licenseExpiration = (String)hashtable.get("licenseExpiration");
+		String licenseClass = (String)hashtable.get("licenseClass");
+
+
+
+		if(!(licenseNumber.length() <= 32 && licenseNumber.length() > 0)){
+			Logger.info("{} attempted to edit a Driver but the license number must be between 1 and 32 characters.",user.getUsername());
+			session.setAttribute("message", "License number must be between 1 and 12 characters.");
+			return null;
+		}
+		
+		if(!(licenseExpiration.length() <= 12 && licenseExpiration.length() > 0) || !(licenseExpiration.matches("^\\d{2}-(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)-\\d{4}$"))){ 
+			Logger.info("{} attempted to edit a Driver but the Date must be between 1 and 12 characters and formated DD-MMM-YYYY.", user.getUsername());
+			session.setAttribute("message", "Date must be between 1 and 12 characters and formated DD-MMM-YYYY.");
+			return null;
+		}
+		
+		if(!(licenseClass.length() <= 12 && licenseClass.length() > 0) || !(licenseClass.matches("^[a-zA-Z-/]+$"))) { 
+			Logger.info("{} attempted to edit a Driver but the license class must be between 1 and 12 characters.",user.getUsername());
+			session.setAttribute("message", "License class must be between 1 and 12 characters.");
+			return null;
+		}
+		
+		
+		Driver driver = new Driver();
+	
+
+		driver.setLisence_number(licenseNumber);
+		driver.setLisence_expiration(licenseExpiration);
+		driver.setLisence_class(licenseClass);
+		driver.setCarrier(user.getCarrier());
+
+		
+		return driver;
+	}
+	
+	public MaintenanceOrders validateMaintenanceOrderForm(Hashtable<String, String> hashtable, HttpSession session) {
+
+		User user = getLoggedInUser();
+		
+		String date = hashtable.get("date");
+		String details = (String)hashtable.get("details");
+		String serviceType = (String)hashtable.get("serviceType");
+		String cost = (String)hashtable.get("cost");
+		String status = (String)hashtable.get("status");
+		String type = hashtable.get("type");
+
+
+
+		if (!(date == null || date.equals(""))) {
+			if(!(date.length() <= 12 && date.length() > 0 && date.matches("^\\d{2}-(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)-\\d{4}$"))) { 
+				Logger.error("{} attempted to edit a Maintenance Order but the Date must be between 1 and 12 characters and formated DD/MMM/YYYY.",user.getUsername());
+				session.setAttribute("message", "Date must be between 1 and 12 characters and formated DD/MMM/YYYY.");
+				return null;
+			}
+		}
+		
+		if (!(details == null || details.equals(""))) {
+			if(!(details.length() <= 128 && details.length() > 0)) {
+				Logger.error("{} attempted to edit a Maintenance Order but the Details must be between 1 and 128 characters.",user.getUsername());
+				session.setAttribute("message", "Details must be between 1 and 128 characters.");
+				return null;
+			}
+		}
+		
+		if(!(serviceType.length() <= 12 && serviceType.length() > 0) || !(serviceType.matches("^[a-zA-Z0-9.]+$"))) {
+			Logger.error("{} attempted to edit a Maintenance Order but the Service Type must be between 1 and 12 alphanumeric characters.",user.getUsername());
+			session.setAttribute("message", "Service Type must be between 1 and 12 alphanumeric characters.");
+			return null;
+		}
+		
+		if (!(cost == null || cost.equals(""))) {
+			if(!(cost.length() <= 16 && cost.length() > 0) || !(cost.matches("^[0-9.]+$"))) {
+				Logger.error("{} attempted to edit a Maintenance Order but the Cost must be between 1 and 16 numeric characters.",user.getUsername());
+				session.setAttribute("message", "Cost must be between 1 and 16 numeric characters.");
+				return null;
+			}
+		}
+		
+		if(!(status.length() <= 64 && status.length() > 0)) {
+			Logger.error("{} attempted to edit a Maintenance Order but the Status must be between 1 and 64 characters.",user.getUsername());
+			session.setAttribute("message", "Status must be between 1 and 64 characters.");
+			return null;
+		}
+		
+		if(!(type.length() <= 64 && type.length() > 0) || !(type.matches("^[a-zA-Z0-9. ]+$"))) {
+			Logger.error("{} attempted to edit a Maintenance Order but the Maintenance Type must be between 1 and 64 characters.",user.getUsername());
+			session.setAttribute("message", "Type must be between 1 and 64 characters.");
+			return null;
+		}
+		
+		
+		MaintenanceOrders maintenanceOrder = new MaintenanceOrders();
+		
+		maintenanceOrder.setCost(cost);
+		maintenanceOrder.setScheduled_date(date);
+		maintenanceOrder.setStatus_key(status);
+		maintenanceOrder.setDetails(details);
+		maintenanceOrder.setService_type_key(serviceType);
+		maintenanceOrder.setMaintenance_type(type);
+		maintenanceOrder.setCarrier(user.getCarrier());
+		
+		
+		return maintenanceOrder;
+	}
+	
+	public Shipments validateShipmentForm(Hashtable<String, String> hashtable, HttpSession session) {
+		
+		List<String> states = Arrays.asList("Alabama", "Alaska", "Arizona", "Arkansas", "California", "Colorado", "Connecticut", "Delaware", "Florida", "Georgia", "Hawaii", "Idaho", "Illinois", "Indiana", "Iowa", "Kansas", "Kentucky", "Louisiana", "Maine", "Maryland", "Massachusetts", "Michigan", "Minnesota", "Mississippi", "Missouri", "Montana", "Nebraska", "Nevada", "New Hampshire", "New Jersey", "New Mexico", "New York", "North Carolina", "North Dakota", "Ohio", "Oklahoma", "Oregon", "Pennsylvania", "Rhode Island", "South Carolina", "South Dakota", "Tennessee", "Texas", "Utah", "Vermont", "Virginia", "Washington", "West Virginia", "Wisconsin", "Wyoming");
+		List<String> stateAbbreviations = Arrays.asList("DC", "AL", "AK", "AZ", "AR", "CA", "CO", "CT", "DE", "FL", "GA", "HI", "ID", "IL", "IN", "IA", "KS", "KY", "LA", "ME", "MD", "MA", "MI", "MN", "MS", "MO", "MT", "NE", "NV", "NH", "NJ", "NM", "NY", "NC", "ND", "OH", "OK", "OR", "PA", "RI", "SC", "SD", "TN", "TX", "UT", "VT", "VA", "WA", "WV", "WI", "WY");
+		
+		User user = getLoggedInUser();
+		
+		String clientName = (String) hashtable.get("clientName");
+		String clientMode = (String)hashtable.get("clientMode");
+		String date = (String)hashtable.get("date");
+		String commodityClass = (String)hashtable.get("commodityClass");
+		String commodityPieces = (String)hashtable.get("commodityPieces");
+		String commodityPaidWeight = (String)hashtable.get("commodityPaidWeight");
+		String shipperCity = (String)hashtable.get("shipperCity");
+		String shipperState = (String)hashtable.get("shipperState");
+		String shipperZip = (String)hashtable.get("shipperZip");
+		String shipperLatitude = (String)hashtable.get("shipperLatitude");
+		String shipperLongitude = (String)hashtable.get("shipperLongitude");
+		String consigneeCity = (String)hashtable.get("consigneeCity");
+		String consigneeState = (String)hashtable.get("consigneeState");
+		String consigneeZip = (String)hashtable.get("consigneeZip");
+		String consigneeLatitude = (String)hashtable.get("consigneeLatitude");
+		String consigneeLongitude = (String)hashtable.get("consigneeLongitude");
+
+
+
+		if (!(clientName.length() <= 64 && clientName.length() > 0) || !(clientName.matches("^[a-zA-Z0-9.]+$"))) {
+			Logger.error("{} attempted to edit a shipment but the Client Name must be between 1 and 64 characters and alphanumeric.",user.getUsername());
+			session.setAttribute("message", "Client Name must be between 1 and 64 characters and alphanumeric.");
+			return null;
+		}
+		
+		if(!(clientMode.equals("LTL") || clientMode.equals("FTL"))) {
+			Logger.error("{} attempted to edit a shipment but the Client Mode must be LTL or FTL.",user.getUsername());
+			session.setAttribute("message", "Client Mode must be LTL or FTL.");
+			return null;
+		}
+		
+		
+		if(!(date.length() <= 12 && date.length() > 0 && date.matches("^\\d{2}-(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)-\\d{4}$"))) { 
+			Logger.error("{} attempted to edit a shipment but the Date must be between 1 and 12 characters and formated DD/MMM/YYYY.",user.getUsername());
+			session.setAttribute("message", "Date must be between 1 and 12 characters and formated DD/MMM/YYYY");
+			return null;
+		}
+		
+		
+		if(!(commodityClass.length() <= 12 && commodityClass.length() > 0) || !(commodityClass.matches("^[a-zA-Z0-9.]+$"))) {
+			Logger.error("{} attempted to edit a shipment but the Commodity Class must be between 1 and 12 characters and alphanumeric.",user.getUsername());
+			session.setAttribute("message", "Commodity Class must be between 1 and 12 characters and alphanumeric.");
+			return null;
+		}
+		
+		if(!(commodityPieces.length() <= 64 && commodityPieces.length() > 0) || !(commodityPieces.matches("^[0-9.]+$"))) {
+			Logger.error("{} attempted to edit a shipment but the Commodity Pieces must be between 1 and 64 characters long and numeric.",user.getUsername());
+			session.setAttribute("message", "Commodity Pieces must be between 1 and 64 characters long and numeric.");
+			return null;
+		}
+		
+		if(!(commodityPaidWeight.length() <= 16 && commodityPaidWeight.length() > 0) || !(commodityPaidWeight.matches("^[0-9.]*\\.?[0-9.]+$"))) {
+			Logger.error("{} attempted to edit a shipment but the Commodity Paid Weight must be between 1 and 16 characters long and numeric.",user.getUsername());
+			session.setAttribute("message", "Commodity Paid Weight must be between 1 and 16 characters long and numeric.");
+			return null;
+		}
+		
+		if(!(shipperCity.length() <= 64 && shipperCity.length() > 0) || !(shipperCity.matches("^[A-Za-z]+(?:[\\s-][A-Za-z]+)*$"))) {
+			Logger.error("{} attempted to edit a shipment but the Shipper City must be between 1 and 64 characters and is alphabetic.",user.getUsername());
+			session.setAttribute("message", "Shipper City must be between 1 and 64 characters and is alphabetic.");
+			return null;
+		}
+		
+		if(!(states.contains(shipperState) || stateAbbreviations.contains(shipperState))) {
+			Logger.error("{} attempted to edit a shipment but the Shipper State must be a state or state abbreviation.",user.getUsername());
+			session.setAttribute("message", "Shipper State must be a state or state abbreviation.");
+			return null;
+		}
+		
+		if(!(shipperZip.length() <= 12 && shipperZip.length() > 0) || !(shipperZip.matches("^[0-9.]+$"))){
+			Logger.error("{} attempted to edit a shipment but the Shipper Zip must be between 1 and 12 characters and is numeric.",user.getUsername());
+			session.setAttribute("message", "Shipper Zip must be between 1 and 12 characters and is numeric.");
+			return null;
+		}
+		
+		if(!(shipperLatitude.matches("^(-?[0-8]?\\d(\\.\\d{1,7})?|90(\\.0{1,7})?)$"))) {
+			Logger.error("{} attempted to edit a shipment but the Shipper Latitude must be between 90 and -90 up to 7 decimal places.",user.getUsername());
+			session.setAttribute("message", "Shipper Latitude must be between 90 and -90 up to 7 decimal places.");
+			return null;
+		}
+		
+		if(!(shipperLongitude.matches("^-?(180(\\.0{1,7})?|\\d{1,2}(\\.\\d{1,7})?|1[0-7]\\d(\\.\\d{1,7})?|-180(\\.0{1,7})?|-?\\d{1,2}(\\.\\d{1,7})?)$"))) {
+			Logger.error("{} attempted to edit a shipment but the Shipper Longitude must be between -180 and 180 up to 7 decimal places.",user.getUsername());
+			session.setAttribute("message", "Shipper Longitude must be between -180 and 180 up to 7 decimal places.");
+			return null;
+		}
+		
+		if(!(consigneeCity.length() <= 64 && consigneeCity.length() > 0) || !( consigneeCity.matches("^[A-Za-z]+(?:[\\s-][A-Za-z]+)*$"))) {
+			Logger.error("{} attempted to edit a shipment but the Consignee City must be between 1 and 64 characters and is alphabetic.",user.getUsername());
+			session.setAttribute("message", "Consignee City must be between 1 and 64 characters and is alphabetic.");
+			return null;
+		}
+		
+		if(!(states.contains(consigneeState) || stateAbbreviations.contains(consigneeState))) {
+			Logger.error("{} attempted to edit a shipment but the Consignee State must be a state or state abbreviation.",user.getUsername());
+			session.setAttribute("message", "Consignee State must be a state or state abbreviation.");
+			return null;
+		}
+		
+		if(!(consigneeZip.length() <= 12 && consigneeZip.length() > 0) || !(consigneeZip.matches("^[0-9.]+$"))){
+			Logger.error("{} attempted to edit a shipment but the Consignee Zip must be between 1 and 12 characters and is alphabetic.",user.getUsername());
+			session.setAttribute("message", "Consignee Zip must be between 1 and 12 characters and is alphabetic.");
+			return null;
+		}
+		
+		if(!(consigneeLatitude.matches("^(-?[0-8]?\\d(\\.\\d{1,7})?|90(\\.0{1,7})?)$"))) {
+			Logger.error("{} attempted to edit a shipment but the Consignee Latitude must be between 90 and -90 up to 7 decimal places.",user.getUsername());
+			session.setAttribute("message", "Consignee Latitude must be between 90 and -90 up to 7 decimal places.");
+			return null;
+		}
+		
+		if(!(consigneeLongitude.matches("^-?(180(\\.0{1,7})?|\\d{1,2}(\\.\\d{1,7})?|1[0-7]\\d(\\.\\d{1,7})?|-180(\\.0{1,7})?|-?\\d{1,2}(\\.\\d{1,7})?)$"))) {
+			Logger.error("{} attempted to edit a shipment but the Consignee Longitude must be between 180 and -180 up to 7 decimal places.",user.getUsername());
+			session.setAttribute("message", "Consignee Longitude must be between 180 and -180 up to 7 decimal places.");
+			return null;
+		}
+		Shipments shipment = new Shipments();
+		
+		shipment.setClient(clientName);
+		shipment.setClientMode(clientMode);
+		shipment.setShipDate(date);
+		shipment.setCommodityClass(commodityClass);
+		shipment.setCommodityPieces(commodityPieces);
+		shipment.setCommodityPaidWeight(commodityPaidWeight);
+		shipment.setShipperCity(shipperCity);
+		shipment.setShipperState(shipperState);
+		shipment.setShipperZip(shipperZip);
+		shipment.setShipperLatitude(shipperLatitude);
+		shipment.setShipperLongitude(shipperLongitude);
+		shipment.setConsigneeCity(consigneeCity);
+		shipment.setConsigneeState(consigneeState);
+		shipment.setConsigneeZip(consigneeZip);
+		shipment.setConsigneeLatitude(consigneeLatitude);
+		shipment.setConsigneeLongitude(consigneeLongitude);
+		
+		
+		return shipment;	
+		
 	}
 	public User getLoggedInUser() {
     	if (securityService.isAuthenticated()) {

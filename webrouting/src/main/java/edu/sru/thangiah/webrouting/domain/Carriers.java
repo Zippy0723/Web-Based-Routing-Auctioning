@@ -35,11 +35,11 @@ public class Carriers {
 	@Column(name="scac", nullable= true, columnDefinition="varchar(4) default NULL")
 	private String scac;
 	
-	@Column(name="ltl", nullable= true, columnDefinition="varchar(3) default NULL")
-	private String ltl;
+	@Column(name="ltl", nullable= true, columnDefinition="bit(1) default NULL")
+	private boolean ltl;
 	
-	@Column(name="ftl", nullable= true, columnDefinition="varchar(3) default NULL")
-	private String ftl;
+	@Column(name="ftl", nullable= true, columnDefinition="bit(1) default NULL")
+	private boolean ftl;
 	
 	@Column(name="pallets", nullable= true, columnDefinition="varchar(32) default NULL")
 	private String pallets;
@@ -126,7 +126,7 @@ public class Carriers {
 	 * Gets the LTL
 	 * @return ltl
 	 */
-	public String getLtl() {
+	public boolean getLtl() {
 		return ltl;
 	}
 
@@ -134,15 +134,15 @@ public class Carriers {
 	 * Sets the LTL
 	 * @param ltl Whether or not the carrier offers LTL
 	 */
-	public void setLtl(String ltl) {
-		this.ltl = ltl.trim();
+	public void setLtl(boolean ltl) {
+		this.ltl = ltl;
 	}
 
 	/**
 	 * Gets the FTL
 	 * @return ftl 
 	 */
-	public String getFtl() {
+	public boolean getFtl() {
 		return ftl;
 	}
 
@@ -150,8 +150,8 @@ public class Carriers {
 	 * Sets the FTL
 	 * @param ftl Whether or not the carrier offers FTL
 	 */
-	public void setFtl(String ftl) {
-		this.ftl = ftl.trim();
+	public void setFtl(boolean ftl) {
+		this.ftl = ftl;
 	}
 
 	/**

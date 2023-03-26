@@ -420,11 +420,11 @@ public class UserValidator implements Validator {
     			errors.rejectValue("model","character.model","Please only use numbers and letters");
     		}
     		ValidationUtils.rejectIfEmptyOrWhitespace(errors, "minimumWeight", "NotEmpty", "This field cannot be empty");
-    		if(vehicleType.getMinimumWeight() > 500000) {
+    		if(vehicleType.getMinimumWeight().length() > 500000) {
     			errors.rejectValue("minimumWeight", "invalid.minimumWeight", "This is minimum weight");
     		}
     		ValidationUtils.rejectIfEmptyOrWhitespace(errors, "maximumWeight", "NotEmpty", "This field cannot be empty");
-    		if(vehicleType.getMaximumWeight() < 250 || vehicleType.getMaximumWeight() > 500000) {
+    		if(vehicleType.getMaximumWeight().length() < 250 || vehicleType.getMaximumWeight().length() > 500000) {
     			errors.rejectValue("maximumWeight", "invalidMaxWeight", "Invalid Maximum weight");
     		}
     		
@@ -433,7 +433,7 @@ public class UserValidator implements Validator {
     		}
     	
     		ValidationUtils.rejectIfEmptyOrWhitespace(errors, "maximumRange", "NotEmpty", "This field cannot be empty");
-    		if(vehicleType.getMaximumRange() > 900000) {
+    		if(vehicleType.getMaximumRange().length() > 900000) {
     			errors.rejectValue("maximumRange", "invalid.maxRange", "This field should not be this large");
     		}
     		

@@ -51,41 +51,41 @@ public class VehicleTypes {
 	
 	@NonNull
 	@Column(name="minimum_weight",nullable = false, columnDefinition="varchar(16)")
-	private int minimumWeight;
+	private String minimumWeight;
 	
 	@NonNull
 	@Column(name="maximum_weight", nullable = false,columnDefinition="varchar(16)")
-	private int maximumWeight;
+	private String maximumWeight;
 	
 	@Column(name="capacity", nullable= true, columnDefinition="varchar(16) default NULL")
 	private String capacity;
 	
 	@NonNull
 	@Column(name="maximum_range", nullable = false, columnDefinition="varchar(16)")
-	private int maximumRange;
+	private String maximumRange;
 	
 	@Column(name="restrictions", nullable= true, columnDefinition="varchar(128) default NULL")
 	private String restrictions;
 	
 	@NonNull
 	@Column(name="height", nullable = false, columnDefinition="varchar(16)")
-	private int height;
+	private String height;
 	
 	@NonNull
 	@Column(name="empty_weight", nullable = false, columnDefinition="varchar(16)")
-	private int emptyWeight;
+	private String emptyWeight;
 	
 	@NonNull
 	@Column(name="length", columnDefinition="varchar(16)")
-	private int length;
+	private String length;
 	
 	@NonNull
 	@Column(name="minimum_cubic_weight", nullable= false, columnDefinition="varchar(16)")
-	private int minimumCubicWeight;
+	private String minimumCubicWeight;
 	
 	@NonNull
 	@Column(name="maximum_cubic_weight", nullable= false, columnDefinition="varchar(16)")
-	private int maximumCubicWeight;
+	private String maximumCubicWeight;
 	
 	@OneToMany(mappedBy = "vehicleType")
 	private List<Vehicles> vehicles = new ArrayList<>();
@@ -195,7 +195,7 @@ public class VehicleTypes {
 	 * Gets the Vehicle Type Minimum Weight
 	 * @return minimumWeight
 	 */
-	public int getMinimumWeight() {
+	public String getMinimumWeight() {
 		return minimumWeight;
 	}
 
@@ -203,7 +203,7 @@ public class VehicleTypes {
 	 * Sets the Vehicle Type Minimum Weight
 	 * @param minimumWeight Minimum weight of vehicle type
 	 */
-	public void setMinimumWeight(int minimumWeight) {
+	public void setMinimumWeight(String minimumWeight) {
 		this.minimumWeight = minimumWeight;
 	}
 
@@ -211,7 +211,7 @@ public class VehicleTypes {
 	 * Gets the Vehicle Type Maximum Weight
 	 * @return maximumWeight
 	 */
-	public int getMaximumWeight() {
+	public String getMaximumWeight() {
 		return maximumWeight;
 	}
 
@@ -219,7 +219,7 @@ public class VehicleTypes {
 	 * Sets the Vehicle Type Maximum Weight
 	 * @param maximumWeight Maximum weight of vehicle type
 	 */
-	public void setMaximumWeight(int maximumWeight) {
+	public void setMaximumWeight(String maximumWeight) {
 		this.maximumWeight = maximumWeight;
 	}
 
@@ -243,7 +243,7 @@ public class VehicleTypes {
 	 * Gets the Vehicle Type Maximum Range
 	 * @return maximumRange
 	 */
-	public int getMaximumRange() {
+	public String getMaximumRange() {
 		return maximumRange;
 	}
 
@@ -251,7 +251,7 @@ public class VehicleTypes {
 	 * Sets the Vehicle Type Maximum Range
 	 * @param maximumRange Maximum range of vehicle type
 	 */
-	public void setMaximumRange(int maximumRange) {
+	public void setMaximumRange(String maximumRange) {
 		this.maximumRange = maximumRange;
 	}
 
@@ -275,7 +275,7 @@ public class VehicleTypes {
 	 * Gets the Vehicle Type Height
 	 * @return height
 	 */
-	public int getHeight() {
+	public String getHeight() {
 		return height;
 	}
 
@@ -283,7 +283,7 @@ public class VehicleTypes {
 	 * Sets the Vehicle Type Height
 	 * @param height Height of vehicle type
 	 */
-	public void setHeight(int height) {
+	public void setHeight(String height) {
 		this.height = height;
 	}
 
@@ -291,7 +291,7 @@ public class VehicleTypes {
 	 * Gets the Vehicle Type Empty Weight
 	 * @return emptyWeight
 	 */
-	public int getEmptyWeight() {
+	public String getEmptyWeight() {
 		return emptyWeight;
 	}
 
@@ -299,7 +299,7 @@ public class VehicleTypes {
 	 * Sets the Vehicle Type Empty Weight
 	 * @param emptyWeight Empty weight of vehicle type
 	 */
-	public void setEmptyWeight(int emptyWeight) {
+	public void setEmptyWeight(String emptyWeight) {
 		this.emptyWeight = emptyWeight;
 	}
 
@@ -307,7 +307,7 @@ public class VehicleTypes {
 	 * Get the Vehicle Type Length
 	 * @return length
 	 */
-	public int getLength() {
+	public String getLength() {
 		return length;
 	}
 
@@ -315,7 +315,7 @@ public class VehicleTypes {
 	 * Set the Vehicle Type Length
 	 * @param length Length of vehicle type
 	 */
-	public void setLength(int length) {
+	public void setLength(String length) {
 		this.length = length;
 	}
 
@@ -323,7 +323,7 @@ public class VehicleTypes {
 	 * Gets the Vehicle Type Minimum Cubic Weight
 	 * @return minimumCubicWeight
 	 */
-	public int getMinimumCubicWeight() {
+	public String getMinimumCubicWeight() {
 		return minimumCubicWeight;
 	}
 
@@ -331,7 +331,7 @@ public class VehicleTypes {
 	 * Sets the Vehicle Type Minimum Cubic Weight
 	 * @param minimumCubicWeight Minimum cubic weight of vehicle type
 	 */
-	public void setMinimumCubicWeight(int minimumCubicWeight) {
+	public void setMinimumCubicWeight(String minimumCubicWeight) {
 		this.minimumCubicWeight = minimumCubicWeight;
 	}
 
@@ -339,7 +339,7 @@ public class VehicleTypes {
 	 * Gets the Vehicle Type Maximum Cubic Weight
 	 * @return maximumCubicWeight
 	 */
-	public int getMaximumCubicWeight() {
+	public String getMaximumCubicWeight() {
 		return maximumCubicWeight;
 	}
 
@@ -347,7 +347,7 @@ public class VehicleTypes {
 	 * Sets the Vehicle Type Maximum Cubic Weight
 	 * @param maximumCubicWeight Maximum weight of vehicle type
 	 */
-	public void setMaximumCubicWeight(int maximumCubicWeight) {
+	public void setMaximumCubicWeight(String maximumCubicWeight) {
 		this.maximumCubicWeight = maximumCubicWeight;
 	}
 	

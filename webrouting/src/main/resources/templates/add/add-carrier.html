@@ -1,0 +1,202 @@
+<!doctype html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+	<head>
+		<title>Enterprise Routing System</title>
+
+		<link rel="stylesheet" type="text/css" href="/styles/reset.css" />
+        <link rel="stylesheet" type="text/css" href="/styles/main.css" />
+        <link rel="stylesheet" type="text/css" href="/styles/login.css">
+        <link rel="stylesheet" type="text/css" href="/styles/menubar.css">
+        <link rel="stylesheet" type="text/css" href="/styles/tables.css">
+
+        <link rel="stylesheet" type="text/css" href="/styles/smoothness/jquery-ui-1.10.2.css" />
+
+	</head>
+	<body>
+		<div id="wrapper">
+
+            <div id="heading">
+                <h1>Enterprise Routing System &nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;Customer Service: 1 (800) 778-9111</h1>
+            </div>
+            <div id="menu-wrapper">
+            	<br><br>
+            </div>
+            <div sec:authorize="isAuthenticated()" class = "navSideBar" id="mySidebar">
+                <button onclick="nav_close()" class="bar-item">...</button>
+                <div id="menu">
+                    <ul class="navbar">
+                        <li class="navitem">
+                            <a class="navlink" id="nav_home" href="/">Home</a>
+                        </li>
+                        <li sec:authorize="hasAuthority('ADMIN')" class="navitem">
+                            <a class="selected" id="nav_users" href="/userhome">Users</a>
+                        </li>
+                        <li sec:authorize="hasAuthority('CARRIER')" class="navitem">
+                            <a class="navlink" id="nav_contacts" href="/contacts">Contacts</a>
+                        </li>
+                        <li sec:authorize="hasAuthority('CARRIER')" class="navitem">
+                            <a class="navlink" id="nav_locations" href="/locations">Locations</a>
+                        </li>
+                        <li sec:authorize="hasAuthority('CARRIER')" class="navitem">
+                            <a class="navlink" id="nav_vehicles" href="/vehicles">Vehicles</a>
+                        </li>
+                        <li sec:authorize="hasAuthority('CARRIER')" class="navitem">
+                            <a class="navlink" id="nav_vehicletypes" href="/vehicletypes">Vehicle Types</a>
+                        </li>
+                        <li sec:authorize="hasAuthority('CARRIER')" class="navitem">
+                            <a class="navlink" id="nav_drivers" href="/drivers">Drivers</a>
+                        </li>
+                        <li sec:authorize="hasAuthority('CARRIER')" class="navitem">
+                            <a class="navlink" id="nav_technicians" href="/technicians">Technicians</a>
+                        </li>
+                        <li sec:authorize="hasAuthority('CARRIER')" class="navitem">
+                            <a class="navlink" id="nav_maintenanceorders" href="/maintenanceorders">Maintenance</a>
+                        </li>
+                        <li sec:authorize="hasAnyAuthority('CARRIER','MASTERLIST')" class="navitem">
+                            <a class="navlink" id="nav_carriers" href="/carriers">Carriers</a>
+                        </li>
+                        <li sec:authorize="hasAuthority('MASTERLIST')" class="navitem">
+                            <a class="navlink" id="nav_shipments_home_masterlist" href="/shipmentshomemaster">Shipments</a>
+                        </li>
+                        <li sec:authorize="hasAuthority('SHIPPER')" class="navitem">
+                            <a class="navlink" id="nav_shipments_home_shipper" href="/shipmentshomeshipper">Shipments</a>
+                        </li>
+                        <li sec:authorize="hasAuthority('CARRIER')" class="navitem">
+                            <a class="navlink" id="nav_shipments_home_carrier" href="/shipmentshomecarrier">Shipments</a>
+                        </li>
+                        <li sec:authorize="hasAnyAuthority('CARRIER','MASTERLIST')" class="navitem">
+                            <a class="navlink" id="nav_routes" href="/routes">Routes</a>
+                        </li>
+                        <li sec:authorize="hasAnyAuthority('ADMIN')" class="navitem">
+                            <a class="navlink" id="nav_database" href="/database">Database</a>
+                        </li>
+						<br><br><br><br><br>
+						<li sec:authorize="hasAnyAuthority('CARRIER', 'MASTERLIST', 'ADMIN','SHIPPER')">
+							<a class= "navlink" id= "nav_update_user_details" href="/update-user-details">Update User</a>
+						</li>
+                        <li sec:authorize="isAuthenticated()" class="navitem">
+                            <form id="logoutForm" method="POST" th:action="@{/logout}">
+                                <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+                            </form>
+                            <a class="navlink" onclick="document.forms['logoutForm'].submit()">Logout</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div sec:authorize="!isAuthenticated()" class = "navSideBar" id="mySidebar">
+                <button onclick="nav_close()" class="bar-item">...</button>
+                <ul class="navbar">
+                    <li class="navitem">
+                        <a class="navlink" id="nav_home" href="/">Home</a>
+                    </li>
+                    <br>
+                    <li sec:authorize="!isAuthenticated()" class="navitem">
+                        <a class="navlink" id="nav_login" href="login">Login</a>
+                    </li>
+                    <br>
+                    <li sec:authorize="!isAuthenticated()" class="navitem">
+                        <a class="selected" id="nav_registration" href="/registrationhome">Register</a>
+                    </li>
+                </ul>
+            </div>
+			<div id="content">
+				<span class="nav-expand">
+  					<button class=""  id="hamburger" style="display:none" onclick="nav_open()">☰</button>
+				</span>
+				 <br>
+				<br>
+                <h2 >New Carrier Information</h2>
+                <br>
+                <div class="alert alert-info" th:if="${message}">
+              	 <span th:text="${message}"></span>
+              	 </div>
+                <form action="#" method="POST" th:object="${userForm}" th:action="@{/addcarrierform}">
+                    <hr>
+                    <div class="form-group">
+                        <span type="hidden" th:text="${error}" class="loginError"></span>
+                        <br>
+                        <h2> Enter Carrier Info</h2>
+                        <br>
+                        <label for="username">Username: </label>
+                        <input type="text" th:field="*{username}" id="username" placeholder="Username" size=19 required>
+
+                        <br>
+                        <label for="password">Password: </label>
+                        <input type="password" th:field="*{password}" id="password" placeholder="Password" size=19  required>
+   
+                        <br>
+                        <label for="email">Email: </label>
+                        <input type="text" th:field="*{email}" id="email" placeholder="Email" size=19 required>
+
+                        <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+
+                        <br>
+ 						<label for="auctioningAllowed">Auctioning: </label>
+                        <select name="auctioningAllowed" th:field="*{auctioningAllowed}" id="auctioningAllowed" required>
+                        <option value="1">Enabled</option>
+ 						<option value="0">Disabled</option>
+ 						</select>
+ 						<br>
+ 						
+                	<label for="enabled">Account: </label>
+                        <select name="enabled" th:field="*{enabled}" id="enabled" required>
+                        <option value="1">Enabled</option>
+ 						<option value="0">Disabled</option>
+ 						</select>
+ 						<br>
+ 						
+                        <label for="carrierName">Carrier Name: </label>
+                        <input type="text" name="carrierName" placeholder="Carrier Name" size=19 required>
+                        <br>
+                        <label for="scac">SCAC: </label>  
+                        <input type="text"  name="scac" placeholder="2-4 Characters" size=19 required>
+                        <br>
+                        <label for="pallets">Pallets: </label>  
+                        <input type="text" name="pallets" placeholder="Pallets" size=19 required>
+                        <br>
+                        <label for="weight">Weight: </label> 
+                        <input type="text" name="weight" placeholder="Weight" size=19 required>
+                        <br>
+                        <label for="ltl">LTL: </label>
+                        <select name="ltl" required>
+                            <th:block>
+                                <option th:text="Yes" th:value="true">Yes</option>
+                                <option th:text="No" th:value="false">No</option>
+                            </th:block>
+                        </select>   
+                        <br>
+                        <label for="ftl">FTL: </label>
+                        <select name="ftl" required>
+                            <th:block>
+                                <option th:text="Yes" th:value="true">Yes</option>
+                                <option th:text="No" th:value="false">No</option>
+                            </th:block>
+                        </select>   
+                        <br><br>
+                        <button class="buttons4" th:attr="onclick=|window.location.href='${redirectLocation}'|">Back</button>
+						<button class="buttons4" type="submit">Submit</button>
+						<br><br>
+
+					</div>
+                </form>
+			</div>
+		</div>
+
+		<div class="footer">
+        </div>
+		<script>
+		function nav_open() {
+			document.getElementById("content").style.marginLeft = "15%";
+			document.getElementById("mySidebar").style.width = "15%";			
+			document.getElementById("mySidebar").style.display = "block";
+			document.getElementById("hamburger").style.display = "none";
+		}
+	
+		function nav_close() {
+	  		document.getElementById("content").style.marginLeft = "0%";
+	  		document.getElementById("mySidebar").style.display = "none";
+	  		document.getElementById("hamburger").style.display = "block";
+		}
+		</script>
+	</body>
+</html>

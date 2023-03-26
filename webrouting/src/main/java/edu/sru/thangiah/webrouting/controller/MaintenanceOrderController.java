@@ -220,20 +220,20 @@ public class MaintenanceOrderController {
   	 * @param model Used to add data to the model
   	 * @return "update/update-maintenance"
   	 */
-	@GetMapping("/editorder/{id}")
-    public String showEditForm(@PathVariable("id") long id, Model model, HttpSession session ) {
-		MaintenanceOrders maintenanceOrder = maintenanceOrderRepository.findById(id)
-          .orElseThrow(() -> new IllegalArgumentException("Invalid maintenance Id:" + id));
-		User user = getLoggedInUser();
-		
-		model.addAttribute("technicians", techniciansRepository.findAll());
-		model.addAttribute("vehicles", user.getCarrier().getVehicles());
-	    model.addAttribute("maintenanceOrders", maintenanceOrder);
-	    model.addAttribute("redirectLocation", (String) session.getAttribute("redirectLocation"));
-        model = NotificationController.loadNotificationsIntoModel(user, model);
-	    
-        return "/update/update-maintenance";
-    }
+//	@GetMapping("/editorder/{id}")
+//    public String showEditForm(@PathVariable("id") long id, Model model, HttpSession session ) {
+//		MaintenanceOrders maintenanceOrder = maintenanceOrderRepository.findById(id)
+//          .orElseThrow(() -> new IllegalArgumentException("Invalid maintenance Id:" + id));
+//		User user = getLoggedInUser();
+//		
+//		model.addAttribute("technicians", techniciansRepository.findAll());
+//		model.addAttribute("vehicles", user.getCarrier().getVehicles());
+//	    model.addAttribute("maintenanceOrders", maintenanceOrder);
+//	    model.addAttribute("redirectLocation", (String) session.getAttribute("redirectLocation"));
+//        model = NotificationController.loadNotificationsIntoModel(user, model);
+//	    
+//        return "/update/update-maintenance";
+//    }
 	
 	/**
   	 * Updates a maintenance order to the database. Checks if there are errors in the form. <br>
@@ -245,44 +245,44 @@ public class MaintenanceOrderController {
   	 * @param model Used to add data to the model
   	 * @return "redirect:/locations" or "/update/update-location"
   	 */
-	@PostMapping("/updateorder/{id}")
-    public String updateOrder(@PathVariable("id") long id, @Validated MaintenanceOrders maintenanceOrder, 
-      BindingResult result, Model model, HttpSession session) {
-        maintenanceOrder.setCarrier(getLoggedInUser().getCarrier());
-        User loggedInUser = getLoggedInUser();
-        model = NotificationController.loadNotificationsIntoModel(loggedInUser, model);
-        String redirectLocation = (String) session.getAttribute("redirectLocation");
-        model.addAttribute("redirectLocation", session.getAttribute("redirectLocation")); 
-		
-		if (result.hasErrors()) {
-        	maintenanceOrder.setId(id);
-            return "/update/update-maintenance";
-        }
-        Boolean deny = false;
-  		List<MaintenanceOrders> orders = new ArrayList<>();
-  		orders = (List<MaintenanceOrders>) maintenanceOrderRepository.findAll();
-  		
-  		for(MaintenanceOrders check: orders) {
-  			if(maintenanceOrder.getVehicle().getId() == check.getVehicle().getId() && maintenanceOrder.getMaintenance_type().toString().equalsIgnoreCase(check.getMaintenance_type().toString()) ) {
-  				if(maintenanceOrder.getStatus_key().toString().equals("Pending") && maintenanceOrder.getId() != check.getId()) {
-  					deny = true;
-  	  				break;
-  				}
-  	  		}
-  		}
-  		
-  		if(deny == true) {
-  			model.addAttribute("error", "Unable to update Maintenance Request. Same Request is currently pending.");
-  			Logger.error("{} was unable to update Maintenance Request with ID {}. Same Request is currently pending.",loggedInUser.getUsername(), maintenanceOrder.getId());
-  			model.addAttribute("maintenanceOrder", getLoggedInUser().getCarrier().getOrders());
-  			return "maintenanceorders";
-			 
-  		}
-  		
-        maintenanceOrderRepository.save(maintenanceOrder);
-        Logger.info("{} successfully updated the maintenance order with ID {}",loggedInUser.getUsername(), maintenanceOrder.getId());
-        return "redirect:" + redirectLocation;
-    }
+//	@PostMapping("/updateorder/{id}")
+//    public String updateOrder(@PathVariable("id") long id, @Validated MaintenanceOrders maintenanceOrder, 
+//      BindingResult result, Model model, HttpSession session) {
+//        maintenanceOrder.setCarrier(getLoggedInUser().getCarrier());
+//        User loggedInUser = getLoggedInUser();
+//        model = NotificationController.loadNotificationsIntoModel(loggedInUser, model);
+//        String redirectLocation = (String) session.getAttribute("redirectLocation");
+//        model.addAttribute("redirectLocation", session.getAttribute("redirectLocation")); 
+//		
+//		if (result.hasErrors()) {
+//        	maintenanceOrder.setId(id);
+//            return "/update/update-maintenance";
+//        }
+//        Boolean deny = false;
+//  		List<MaintenanceOrders> orders = new ArrayList<>();
+//  		orders = (List<MaintenanceOrders>) maintenanceOrderRepository.findAll();
+//  		
+//  		for(MaintenanceOrders check: orders) {
+//  			if(maintenanceOrder.getVehicle().getId() == check.getVehicle().getId() && maintenanceOrder.getMaintenance_type().toString().equalsIgnoreCase(check.getMaintenance_type().toString()) ) {
+//  				if(maintenanceOrder.getStatus_key().toString().equals("Pending") && maintenanceOrder.getId() != check.getId()) {
+//  					deny = true;
+//  	  				break;
+//  				}
+//  	  		}
+//  		}
+//  		
+//  		if(deny == true) {
+//  			model.addAttribute("error", "Unable to update Maintenance Request. Same Request is currently pending.");
+//  			Logger.error("{} was unable to update Maintenance Request with ID {}. Same Request is currently pending.",loggedInUser.getUsername(), maintenanceOrder.getId());
+//  			model.addAttribute("maintenanceOrder", getLoggedInUser().getCarrier().getOrders());
+//  			return "maintenanceorders";
+//			 
+//  		}
+//  		
+//        maintenanceOrderRepository.save(maintenanceOrder);
+//        Logger.info("{} successfully updated the maintenance order with ID {}",loggedInUser.getUsername(), maintenanceOrder.getId());
+//        return "redirect:" + redirectLocation;
+//    }
 	
 	/**
 	 * Returns the user that is currently logged into the system. <br>

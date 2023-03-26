@@ -229,78 +229,7 @@ public class VehicleTypesController {
         return "vehicletypes";
     }
 	
-	/**
-  	 * Finds a vehicle type using the id parameter and if found, adds the details of that vehicle type
-  	 * to a form and redirects the user to that update form.
-  	 * @param id ID of the vehicle type being edited
-  	 * @param model Used to add data to the model
-  	 * @return "update/update-vehicletype"
-  	 */
-	@GetMapping("/editvehicletype/{id}")
-    public String showEditForm(@PathVariable("id") long id, Model model, HttpSession session) {
-		VehicleTypes vehicleTypes = vehicleTypesRepository.findById(id)
-          .orElseThrow(() -> new IllegalArgumentException("Invalid vechile type Id:" + id));
-        
-		model.addAttribute("vehicleTypes", vehicleTypes);
-		model.addAttribute("redirectLocation", (String) session.getAttribute("redirectLocation"));
-		User user = getLoggedInUser();
-		model = NotificationController.loadNotificationsIntoModel(user, model);
-		
-        return "/update/update-vehicletype";
-    }
 	
-	/**
-  	 * Updates a vehicle type to the database. Checks if there are errors in the form. <br>
-  	 * If there are no errors, the vehicle type is updated in the vehicleTypesRepository. and the user is redirect to /vehicletypes <br>
-  	 * If there are errors, the user is redirected to the /update/update-vehicletype page.
-  	 * @param id ID of the vehicle type being updated
-  	 * @param vehicleType Information on the vehicle type being updated
-  	 * @param result Ensures the information entered by the user is valid
-  	 * @param model Used to add data to the model
-  	 * @return "redirect:/vehicletypes" or "/update/update-vehicletype"
-  	 */
-	@PostMapping("/updatevehicletype/{id}")
-    public String updateVehicleType(@PathVariable("id") long id, @Validated VehicleTypes vehicleType, 
-      BindingResult result, Model model, HttpSession session) {
-		userValidator.addition(vehicleType, result);
-		
-		User loggedInUser = getLoggedInUser();
-		model = NotificationController.loadNotificationsIntoModel(loggedInUser, model);
-		String redirectLocation = (String) session.getAttribute("redirectLocation");
-		model.addAttribute("redirectLocation", session.getAttribute("redirectLocation"));
-        if (result.hasErrors()) {
-        	vehicleType.setId(id);
-            return "/update/update-vehicletype";
-        }
-        
-    	boolean deny = false;
-  		
-  		List<VehicleTypes> types = (List<VehicleTypes>) vehicleTypesRepository.findAll();
-  		
-  		for (VehicleTypes vt : types) {
-  			if (vt.getType().equals(vehicleType.getType()) && vt.getSubType().equals(vehicleType.getSubType())) {
-  				if (vt.getId() != vehicleType.getId()) {
-  					deny = true;
-  					break;
-  				}
-  			}
-  		}
-  		
-  		if (deny == true) {
-  			model.addAttribute("error", "Error: Vehicle Type already exists.");
-  			Logger.error("{} failed to update vehicle Type because the Vehicle type already exists.", loggedInUser.getUsername());
-  			model.addAttribute("vehicletypes", vehicleTypesRepository.findAll());
-  			return "vehicletypes";
-  		}
-        
-        vehicleTypesRepository.save(vehicleType);
-        Logger.info("{} successfully updated the Vehicle Type with ID {}.",loggedInUser.getUsername(),vehicleType.getId());
-        return "redirect:" + redirectLocation;
-    }
-	
-	/**
-	 *
-	 */
 	public User getLoggedInUser() {
     	if (securityService.isAuthenticated()) {
     		org.springframework.security.core.userdetails.User user = 

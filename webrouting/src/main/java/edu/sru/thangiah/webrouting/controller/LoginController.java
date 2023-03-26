@@ -187,7 +187,7 @@ public class LoginController {
      */
     @PostMapping("/registrationcarrier")
     public String registrationCarrier(@ModelAttribute("userForm") User userForm, BindingResult bindingResult, Model model,
-    		String carrierName, String scac, String ltl, String ftl, String pallets, String weight,RedirectAttributes redirectAttr) throws UnsupportedEncodingException, MessagingException {
+    		String carrierName, String scac, boolean ltl, boolean ftl, String pallets, String weight,RedirectAttributes redirectAttr) throws UnsupportedEncodingException, MessagingException {
 
     	
     	List<Carriers> carrierList = (List<Carriers>) carriersRepository.findAll();
