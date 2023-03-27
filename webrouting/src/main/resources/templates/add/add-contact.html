@@ -132,34 +132,34 @@
                         <h2> Enter Your Info</h2>
                         <br>
                         <label for="firstName">First Name: </label>
-                        <input type="text" th:field="*{firstName}" id="firstName" placeholder="First Name" size=23 required maxlength = "32">
+                        <input type="text" th:field="*{firstName}" id="firstName" placeholder="John" size=23 required maxlength = "32">
                         <span th:if="${#fields.hasErrors('firstName')}" th:errors="*{firstName}"></span>
 						<br>
                         <label for="lastName">Last Name: </label>
-                        <input type="text" th:field="*{lastName}" id="lastName" placeholder="Last Name" size=23 required maxlength = "32">
+                        <input type="text" th:field="*{lastName}" id="lastName" placeholder="Wick" size=23 required maxlength = "32">
                         <span th:if="${#fields.hasErrors('lastName')}" th:errors="*{lastName}"></span>
 						<br>
                         <label for="middleInitial">Middle Initial: </label>
-                        <input type="text" th:field="*{middleInitial}" id="middleInitial" size=23 placeholder="Middle Initial" maxlength="1" >
+                        <input type="text" th:field="*{middleInitial}" id="middleInitial" size=23 placeholder="S" maxlength="1" >
                         <span th:if="${#fields.hasErrors('middleInitial')}" th:errors="*{middleInitial}"></span>
 						<br>
                         <label for="emailAddress">Email Address: </label>
-                        <input type="text" th:field="*{emailAddress}" id="emailAddress" placeholder="Email Address" size=23 required maxlength = "64" >
+                        <input type="text" th:field="*{emailAddress}" id="emailAddress" placeholder="johnwick10@gmail.com" size=23 required maxlength = "64" >
                         <span th:if="${#fields.hasErrors('emailAddress')}" th:errors="*{emailAddress}"></span>
 						<br><br>
 					</div>
 					<div class="form-group2">
 						<br>					
                         <label for="streetAddress1">Street Address 1: </label>
-                        <input type="text" th:field="*{streetAddress1}" id="streetAddress1" placeholder="Street Address 1" size=23  maxlength = "128">
+                        <input type="text" th:field="*{streetAddress1}" id="streetAddress1" placeholder="1 Morrow Way" size=23  maxlength = "128">
                         <span th:if="${#fields.hasErrors('streetAddress1')}" th:errors="*{streetAddress1}"></span>
 						<br>
                         <label for="streetAddress2">Street Address 2: </label>
-                        <input type="text" th:field="*{streetAddress2}" id="streetAddress2" placeholder="Street Address 2" size=23  maxlength = "64">
+                        <input type="text" th:field="*{streetAddress2}" id="streetAddress2" placeholder="North Hall Room #201" size=23  maxlength = "64">
                         <span th:if="${#fields.hasErrors('streetAddress2')}" th:errors="*{streetAddress2}"></span>
 						<br>
                         <label for="city">City: </label>
-                        <input type="text" th:field="*{city}" id="city" placeholder="City" size=23 maxlength = "64" >
+                        <input type="text" th:field="*{city}" id="city" placeholder="Slippery Rock" size=23 maxlength = "64" >
                         <span th:if="${#fields.hasErrors('city')}" th:errors="*{city}"></span>
 						<br>
                         <label for="state">State: </label>
@@ -220,15 +220,15 @@
                         <span th:if="${#fields.hasErrors('state')}" th:errors="*{state}"></span>
 						<br>
                         <label for="zip">Zip Code: </label>
-                        <input type="text" th:field="*{zip}" id="zip" placeholder="Zip Code Only numbers" size=23  minlength = "5" maxlength = "10" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1');" >
+                        <input type="text" th:field="*{zip}" id="zip" placeholder="16057" size=23  minlength = "5" maxlength = "10" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1');" >
                         <span th:if="${#fields.hasErrors('zip')}" th:errors="*{zip}"></span>
 						<br>
                         <label for="primaryPhone">Primary Phone: </label>
-                        <input type="text"  oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1');" th:field="*{primaryPhone}" id="primaryPhone" placeholder="Ex:8143192289" size=23  minlength = "10" maxlength = "11" required>
+                        <input type="text"  oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1');" th:field="*{primaryPhone}" id="primaryPhone" placeholder="8143192289" size=23  minlength = "10" maxlength = "11" required>
                         <span th:if="${#fields.hasErrors('primaryPhone')}" th:errors="*{primaryPhone}"></span>
 						<br>
                         <label for="workPhone">Work Phone: </label>
-                        <input type="text" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1');" th:field="*{workPhone}" id="workPhone" placeholder="Work Phone" size=23 minlength = "10" maxlength = "11" >
+                        <input type="text" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1');" th:field="*{workPhone}" id="workPhone" placeholder="7247987173" size=23 minlength = "10" maxlength = "11" >
                         <span th:if="${#fields.hasErrors('workPhone')}" th:errors="*{workPhone}"></span>
                         <br>
                         <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
