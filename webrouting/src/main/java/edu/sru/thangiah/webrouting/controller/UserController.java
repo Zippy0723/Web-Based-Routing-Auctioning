@@ -216,10 +216,12 @@ public class UserController {
      * @return "/add/add-user-home"
      */
     
-   @RequestMapping({"/signup"})
-   public String shownAddHomePage(Model model) {
-	   return "/add/add-user-home";
-   }
+    @RequestMapping({"/signup"})
+    public String shownAddHomePage(Model model) {
+ 	   User loggedInUser = getLoggedInUser();
+        model = NotificationController.loadNotificationsIntoModel(loggedInUser, model);
+ 	   return "/add/add-user-home";
+    }
    /**
     * Redirects user to the /add/add-user-carrier page. <br>
     * Adds instance of user to the userForm. <br>
@@ -228,12 +230,13 @@ public class UserController {
     * @return "/add/add-user-carrier"
     */
    
-   @RequestMapping({"/addcarrieruser"})
-   public String showCarrierPage(User user, Model model) {
-	   model.addAttribute("userForm", new User());
-	   
-       return "/add/add-user-carrier";
-   }
+    @RequestMapping({"/addcarrieruser"})
+    public String showCarrierPage(User user, Model model) {
+ 	   model.addAttribute("userForm", new User());
+ 	   User loggedInUser = getLoggedInUser();
+        model = NotificationController.loadNotificationsIntoModel(loggedInUser, model);
+        return "/add/add-user-carrier";
+    }
    
    /**
     * Redirects user to the /upload users page when clicking "Upload an excel file" button in the users section of AdminTry
@@ -253,22 +256,24 @@ public class UserController {
 	 * @param user Used to the store the information on the user being added
 	 * @return "/add/add-user"
 	 */
-  	@RequestMapping({"/addotheruser"})
-      public String showOtherPage(User user, Model model) {
-  		List<Role> roles = (List<Role>) roleRepository.findAll();
-  		List<Role> result = new ArrayList<Role>();
-  		for(Role r : roles){
-  		  if(!r.getName().equals("SHIPPER") && !r.getName().equals("CARRIER")){
-  		    result.add(r);
-  		  }
-  		}
-  		model.addAttribute("roles", result);
-  		
-  		return "/add/add-user";
-    }
+   @RequestMapping({"/addotheruser"})
+   public String showOtherPage(User user, Model model) {
+		List<Role> roles = (List<Role>) roleRepository.findAll();
+		List<Role> result = new ArrayList<Role>();
+		for(Role r : roles){
+		  if(!r.getName().equals("SHIPPER") && !r.getName().equals("CARRIER")){
+		    result.add(r);
+		  }
+		}
+		User loggedInUser = getLoggedInUser();
+     model = NotificationController.loadNotificationsIntoModel(loggedInUser, model);
+		model.addAttribute("roles", result);
+		
+		return "/add/add-user";
+ }
   	
-  	@RequestMapping({"/addshipperuser"})
-    public String showShipperPage(User user, Model model) {
+   @RequestMapping({"/addshipperuser"})
+   public String showShipperPage(User user, Model model) {
 		List<Role> roles = (List<Role>) roleRepository.findAll();
 		List<Role> result = new ArrayList<Role>();
 
@@ -277,11 +282,12 @@ public class UserController {
 		    result.add(r);
 		  }
 		}
-
+		User loggedInUser = getLoggedInUser();
+	    model = NotificationController.loadNotificationsIntoModel(loggedInUser, model);
 		model.addAttribute("roles",result);
 		
 		return "/add/add-user-shipper";
-  }
+ }
   	
   	/**
   	 * Adds a user with the CARRIER role to the database. <br> 
@@ -307,7 +313,8 @@ public class UserController {
     	Carriers carrier = new Carriers();
     	
     	User loggedInUser = getLoggedInUser();
-    	
+    	 model = NotificationController.loadNotificationsIntoModel(loggedInUser, model);
+    	 
     	Long carrierId;
 
     	if (carrierList.size() != 0) {
@@ -373,6 +380,7 @@ public class UserController {
   	public String addUser(@Validated User user, BindingResult result, Model model) {
   		userValidator.validate(user, result);
   		User loggedInUser = getLoggedInUser();
+        model = NotificationController.loadNotificationsIntoModel(loggedInUser, model);
   		if (result.hasErrors()) {
   			return "/add/add-user";
 		}
@@ -384,6 +392,8 @@ public class UserController {
   	@RequestMapping({"/addusershipper"})
   	public String addUserShipper(@Validated User user, BindingResult result, Model model) {
   		userValidator.validate(user, result);
+  		User loggedInUser = getLoggedInUser();
+        model = NotificationController.loadNotificationsIntoModel(loggedInUser, model);
   		if (result.hasErrors()) {
   			return "/add/add-user-shipper";
 		}

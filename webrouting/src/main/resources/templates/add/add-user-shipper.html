@@ -72,6 +72,9 @@
                         </li>
 						<br><br><br><br><br>
 						<li sec:authorize="hasAnyAuthority('CARRIER', 'MASTERLIST', 'ADMIN','SHIPPER')">
+                            <a class= "navlink" id= "nav_notifications" href="/unreadnotifications" th:inline="text">Alerts ([[${notifications.size()}]])</a>
+                        </li>
+						<li sec:authorize="hasAnyAuthority('CARRIER', 'MASTERLIST', 'ADMIN','SHIPPER')">
 							<a class= "navlink" id= "nav_update_user_details" href="/update-user-details">Update User</a>
 						</li>
                         <li sec:authorize="isAuthenticated()" class="navitem">
@@ -131,15 +134,15 @@
 	            	<h2> Enter Account Info</h2>
 	            	<br><br>
 	                <label for="username">UserName: </label>
-	                <input type="text" th:field="*{username}" id="username" placeholder="UserName" size=23 required>
+	                <input type="text" th:field="*{username}" id="username" placeholder="Tom Cruise" size=23 required>
 	                <span th:if="${#fields.hasErrors('username')}" th:errors="*{username}"></span>
 	             	<br>
 	                <label for="password">Password: </label>
-	                <input type="password" th:field="*{password}" id="password" placeholder="Password" size=23 required>
+	                <input type="password" th:field="*{password}" id="password" placeholder="Enter your Password" size=23 required>
 	                <span th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></span>
 	            	<br>
 	                <label for="email">Email: </label>
-	                <input type="text" th:field="*{email}" id="email" placeholder="Email" size=23 required>
+	                <input type="text" th:field="*{email}" id="email" placeholder="tomcruise10@gmail.com" size=23 required>
 	                <span th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></span>
 	             	<br>
 	                <label for="role">Role: </label>

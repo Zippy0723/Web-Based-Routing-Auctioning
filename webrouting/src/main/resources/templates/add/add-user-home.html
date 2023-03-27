@@ -72,6 +72,9 @@
                         </li>
 						<br><br><br><br><br>
 						<li sec:authorize="hasAnyAuthority('CARRIER', 'MASTERLIST', 'ADMIN','SHIPPER')">
+                            <a class= "navlink" id= "nav_notifications" href="/unreadnotifications" th:inline="text">Alerts ([[${notifications.size()}]])</a>
+                        </li>
+						<li sec:authorize="hasAnyAuthority('CARRIER', 'MASTERLIST', 'ADMIN','SHIPPER')">
 							<a class= "navlink" id= "nav_update_user_details" href="/update-user-details">Update User</a>
 						</li>
                         <li sec:authorize="isAuthenticated()" class="navitem">
@@ -121,7 +124,7 @@
                     <br>
                     <br>
                     <br>
-                    <h3><a href="/addcarrier">Carrier</a></h3>
+                    <h3><a href="/addcarrieruser">Carrier</a></h3>
                     <h4>Add a user with the carrier role</h4>
                     <br>
                     <br>

@@ -72,6 +72,9 @@
                         </li>
 						<br><br><br><br><br>
 						<li sec:authorize="hasAnyAuthority('CARRIER', 'MASTERLIST', 'ADMIN','SHIPPER')">
+                            <a class= "navlink" id= "nav_notifications" href="/unreadnotifications" th:inline="text">Alerts ([[${notifications.size()}]])</a>
+                        </li>
+						<li sec:authorize="hasAnyAuthority('CARRIER', 'MASTERLIST', 'ADMIN','SHIPPER')">
 							<a class= "navlink" id= "nav_update_user_details" href="/update-user-details">Update User</a>
 						</li>
                         <li sec:authorize="isAuthenticated()" class="navitem">
@@ -104,11 +107,7 @@
 				<span class="nav-expand">
   					<button class=""  id="hamburger" style="display:none" onclick="nav_open()">☰</button>
 				</span>
-				 <br>
-               	<div class="alert alert-info" th:if="${message}">
-              	 <span th:text="${message}"></span>
-              	</div>
-				<br>
+				<br><br>
                 <h2 >Add Carrier Account</h2>
                 <br>
                 <br>
@@ -120,67 +119,53 @@
                         <span type="hidden" th:text="${message}" class="loginMessage"></span>
                         <span type="hidden" th:text="${error}" class="loginError"></span>
                         <br>
-                        <h2> Enter Carrier Info</h2>
+                        <h2> Enter Carrier User Info</h2>
                         <br>
-                        <label for="username">Username: </label>
-                        <input type="text" th:field="*{username}" id="username" placeholder="Username"  required>
-
+                        <input type="text" th:field="*{username}" id="username" placeholder="John Wick"  autofocus="true" required>
+                        <p th:if="${#fields.hasErrors('username')}" th:errorclass="username" th:errors="*{username}"></p>
                         <br>
-                        <label for="password">Password: </label>
-                        <input type="password" th:field="*{password}" id="password" placeholder="Password" required>
-   
+                        <input type="password" th:field="*{password}" id="password" placeholder="Enter your Password" required>
+                        <p th:if="${#fields.hasErrors('password')}" th:errorclass="password" th:errors="*{password}"></p>
                         <br>
-                        <label for="email">Email: </label>
-                        <input type="text" th:field="*{email}" id="email" placeholder="Email"  required>
-
+                        <input type="text" th:field="*{email}" id="email" placeholder="johnwick10@gmail.com"  required>
+                        <p th:if="${#fields.hasErrors('email')}" th:errorclass="email" th:errors="*{email}"></p>
                         <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
-
+                        <br><br>
+                    </div>
+                    <div class="form-group2">
                         <br>
- 						<label for="auctioningAllowed">Auctioning: </label>
-                        <select name="auctioningAllowed" th:field="*{auctioningAllowed}" id="auctioningAllowed" required>
-                        <option value="1">Enabled</option>
- 						<option value="0">Disabled</option>
- 						</select>
- 						<br>
- 						
-                	<label for="enabled">Account: </label>
-                        <select name="enabled" th:field="*{enabled}" id="enabled" required>
-                        <option value="1">Enabled</option>
- 						<option value="0">Disabled</option>
- 						</select>
- 						<br>
- 						
+                        <h2> Enter Carrier Information</h2>
+                        <br>
                         <label for="carrierName">Carrier Name: </label>
-                        <input type="text" name="carrierName" placeholder="Carrier Name" size=19 required>
+                        <input type="text" name="carrierName" placeholder="FedEx" size=23 required>
                         <br>
                         <label for="scac">SCAC: </label>  
-                        <input type="text"  name="scac" placeholder="2-4 Characters" size=19 required>
+                        <input type="text" maxlength="4" minlength="2" name="scac" placeholder="MSCU (2-4 Char)" size=23 required>
                         <br>
                         <label for="pallets">Pallets: </label>  
-                        <input type="text" name="pallets" placeholder="Pallets" size=19 required>
+                        <input type="text" name="pallets" placeholder="LTL >=10, FTL <= 24" size=23 required>
                         <br>
                         <label for="weight">Weight: </label> 
-                        <input type="text" name="weight" placeholder="Weight" size=19 required>
+                        <input type="text" name="weight" placeholder="1000" size=23 required>
                         <br>
                         <label for="ltl">LTL: </label>
                         <select name="ltl" required>
                             <th:block>
-                                <option th:text="Yes" th:value="true">Yes</option>
-                                <option th:text="No" th:value="false">No</option>
+                                <option th:text="Yes" th:value="Yes">Yes</option>
+                                <option th:text="No" th:value="No">No</option>
                             </th:block>
                         </select>   
                         <br>
                         <label for="ftl">FTL: </label>
                         <select name="ftl" required>
                             <th:block>
-                                <option th:text="Yes" th:value="true">Yes</option>
-                                <option th:text="No" th:value="false">No</option>
+                                <option th:text="Yes" th:value="Yes">Yes</option>
+                                <option th:text="No" th:value="No">No</option>
                             </th:block>
                         </select>   
                         <br><br>
-                        <button class="buttons4" th:attr="onclick=|window.location.href='${redirectLocation}'|">Back</button>
+                        <button class="buttons7" onclick="window.location.href='./CarrierAdministrationPage';">Back</button>
 						<button class="buttons4" type="submit">Submit</button>
-						<br><br>
 
 					</div>
                 </form>
