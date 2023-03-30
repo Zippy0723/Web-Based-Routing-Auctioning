@@ -61,8 +61,11 @@ body {
 		overflow: auto;
 		height: 64px;
 		line-height: 64px;
+		width:100%;
 		padding-left: 12px;
 		background: #006438;
+		top:0px;
+		position: sticky;
 	}
 
 

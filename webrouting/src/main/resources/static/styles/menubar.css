@@ -107,6 +107,7 @@
 .navSideBar {
 	height: 100%;
 	width: 118px;
+	top:64px;
 	min-width: 115px;
 	max-width: 118px;
 	z-index: 1;
