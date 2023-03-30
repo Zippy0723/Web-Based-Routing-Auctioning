@@ -311,6 +311,7 @@ public class LoginController {
     public String welcome(Model model) {
 		User user = getLoggedInUser();
 		List<Notification> notifications = new ArrayList<>();
+		model.addAttribute("currentPage","/");
 		
 		if(!(user == null)) {
 			notifications = NotificationController.fetchUnreadNotifications(user);

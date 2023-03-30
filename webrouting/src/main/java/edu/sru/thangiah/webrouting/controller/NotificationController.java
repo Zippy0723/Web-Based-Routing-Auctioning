@@ -50,6 +50,7 @@ public class NotificationController {
 		notifications = fetchUnreadNotifications(user);
 		   
 		model.addAttribute("notifications",notifications);
+		model.addAttribute("currentPage","/unreadnotifications");
 			
 		return "unreadnotifications";
 	}
@@ -68,6 +69,7 @@ public class NotificationController {
 		
 		model.addAttribute("unreadcount",unreadNotifications.size());
 		model.addAttribute("notifications",notifications);
+		model.addAttribute("currentPage","/unreadnotifications"); //just for the purpose of selecting the right button on the sidebar
 			
 		return "readnotifications";
 		

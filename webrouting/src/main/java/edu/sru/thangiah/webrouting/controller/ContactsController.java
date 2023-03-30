@@ -80,6 +80,7 @@ public class ContactsController {
 		String redirectLocation = "/contacts";
 		session.setAttribute("redirectLocation", redirectLocation);
 		model.addAttribute("redirectLocation", redirectLocation);
+		model.addAttribute("currentPage","/contacts");
 		
         model.addAttribute("contacts", getLoggedInUser().getCarrier().getContacts());
         
@@ -103,6 +104,7 @@ public class ContactsController {
   		User user = getLoggedInUser();
         model = NotificationController.loadNotificationsIntoModel(user, model);
         model.addAttribute("redirectLocation", (String) session.getAttribute("redirectLocation"));
+        model.addAttribute("currentPage","/contacts");
         
         return "/add/add-contact";
     }
@@ -123,7 +125,8 @@ public class ContactsController {
   		User user = getLoggedInUser();
         model = NotificationController.loadNotificationsIntoModel(user, model);
         String redirectLocation = (String) session.getAttribute("redirectLocation");
-        model.addAttribute("redirectLocation", session.getAttribute("redirectLocation")); 
+        model.addAttribute("redirectLocation", session.getAttribute("redirectLocation"));
+        model.addAttribute("currentPage","/contacts");
   		
   		if (result.hasErrors()) {
   			return "/add/add-contact";
@@ -163,6 +166,7 @@ public class ContactsController {
     
     @RequestMapping({"/uploadcontacts"})
     public String showAddContactsExcel(Model model) {
+       model.addAttribute("currentPage","/contacts");
  	   return "/uploadcontacts";
     }
   	
@@ -180,6 +184,7 @@ public class ContactsController {
         
         User user = getLoggedInUser();
         model = NotificationController.loadNotificationsIntoModel(user, model);
+        model.addAttribute("currentPage","/contacts");
         
         if(!contacts.getDrivers().isEmpty() || !contacts.getTechnicians().isEmpty()) {
         	session.setAttribute("error", "Unable to delete due to dependency conflict."); 
@@ -207,6 +212,7 @@ public class ContactsController {
   		
   		User user = getLoggedInUser();
         model = NotificationController.loadNotificationsIntoModel(user, model);
+        model.addAttribute("currentPage","/contacts");
   		Logger.info("{} successfully deleted the contact with ID {}.", user.getUsername(), contacts.getId());
         contactsRepository.delete(contacts);
         return "redirect:/contacts";
@@ -227,6 +233,7 @@ public class ContactsController {
           .orElseThrow(() -> new IllegalArgumentException("Invalid contact Id:" + id));
         
         model.addAttribute("contacts", contacts);
+        model.addAttribute("currentPage","/contacts");
         
   		User user = getLoggedInUser();
         model = NotificationController.loadNotificationsIntoModel(user, model);

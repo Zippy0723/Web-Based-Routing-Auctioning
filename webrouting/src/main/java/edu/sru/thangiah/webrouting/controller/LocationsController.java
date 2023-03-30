@@ -77,6 +77,7 @@ public class LocationsController {
 		String redirectLocation = "/locations";
 		session.setAttribute("redirectLocation", redirectLocation);
 		model.addAttribute("redirectLocation", redirectLocation);
+		model.addAttribute("currentPage","/locations"); //for sidebar highlight
 		
 		User user = getLoggedInUser();
 		model = NotificationController.loadNotificationsIntoModel(user, model);
@@ -106,6 +107,7 @@ public class LocationsController {
 		model.addAttribute("carriers", user.getCarrier());  
         model = NotificationController.loadNotificationsIntoModel(user, model);
         model.addAttribute("redirectLocation", (String) session.getAttribute("redirectLocation"));
+        model.addAttribute("currentPage","/locations");
 	    return "/add/add-location";
 		
     }
@@ -126,6 +128,7 @@ public class LocationsController {
         model = NotificationController.loadNotificationsIntoModel(user, model);
         String redirectLocation = (String) session.getAttribute("redirectLocation");
         model.addAttribute("redirectLocation", session.getAttribute("redirectLocation"));
+        model.addAttribute("currentPage","/locations");
 
   		if (result.hasErrors()) {
   			return "/add/add-location";
@@ -163,6 +166,7 @@ public class LocationsController {
     
     @RequestMapping({"/uploadlocations"})
     public String showAddLocationsExcel(Model model) {
+       model.addAttribute("currentPage","/locations");
  	   return "/uploadlocations";
     }
 	
@@ -179,6 +183,7 @@ public class LocationsController {
           .orElseThrow(() -> new IllegalArgumentException("Invalid location Id:" + id));
         User user = getLoggedInUser();
         model = NotificationController.loadNotificationsIntoModel(user, model);
+        model.addAttribute("currentPage","/locations");
         if (!location.getVehicles().isEmpty()) {
         	session.setAttribute("error", "Unable to delete due to dependency conflict.");
         	Logger.error("Unable to delete location due to dependecy conflict.");
@@ -204,6 +209,7 @@ public class LocationsController {
   		
   		User loggedInUser = getLoggedInUser();
         model = NotificationController.loadNotificationsIntoModel(loggedInUser, model);
+        model.addAttribute("currentPage","/locations");
   		Logger.info("{} successfully deleted the location with ID {}.",loggedInUser.getUsername(), location.getId());
   		locationsRepository.delete(location);
   	    return "redirect:/locations";
@@ -223,6 +229,7 @@ public class LocationsController {
         
         model.addAttribute("locations", location);
         model.addAttribute("redirectLocation", (String) session.getAttribute("redirectLocation"));
+        model.addAttribute("currentPage","/locations");
         
         User user = getLoggedInUser();
         model = NotificationController.loadNotificationsIntoModel(user, model);

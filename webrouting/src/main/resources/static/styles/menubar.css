@@ -22,6 +22,30 @@
   cursor: pointer;
 }
 
+.dropbtn_selected {
+  display: inline-block;
+  min-width: 105px;
+  height: 24px;
+  line-height: 21px;
+  font-size: 15px;
+  color: black;
+  background: #ccc;
+  text-align: center;
+  text-decoration: none;
+  margin-left: 4px;
+  margin-top: 6px;
+  padding-top: 2px;
+  padding-left: 2px;
+  padding-right: 2px;
+  border: 1px solid grey;
+  box-shadow: 0 0 5px rgb(0, 0, 0);
+  cursor: pointer;
+  
+  font-weight: bold;
+  background: white !important;
+  border-bottom: 1px solid white !important;
+}
+
 .dropbtn:hover {
   background-color: #ddd;
 }
@@ -33,6 +57,20 @@
 
 /* Dropdown button on hover & focus */
 .dropbtn:hover, .dropbtn:focus {
+  background-color: #2980B9;
+}
+
+.dropbtn_selected:hover {
+  background-color: #ddd;
+}
+
+.dropbtn_selected:active {
+  background-color: #aaa;
+  box-shadow: none;
+}
+
+/* Dropdown button on hover & focus */
+.dropbtn_selected:hover, .dropbtn:focus {
   background-color: #2980B9;
 }
 
