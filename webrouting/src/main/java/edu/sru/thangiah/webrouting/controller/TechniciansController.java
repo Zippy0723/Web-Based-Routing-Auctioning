@@ -138,7 +138,7 @@ public class TechniciansController {
   		
   		technician.setCarrier(loggedInUser.getCarrier());
   		techniciansRepository.save(technician);
-  		Logger.info("{} successfully saved Technician with ID {}.",loggedInUser.getUsername(), technician.getId());
+  		Logger.info("{} || successfully saved Technician with ID {}.",loggedInUser.getUsername(), technician.getId());
   		return "redirect:" + redirectLocation;
   	}
 	
@@ -169,7 +169,7 @@ public class TechniciansController {
         
         if(!technician.getOrders().isEmpty()) {
         	session.setAttribute("error", "Unable to delete due to dependency conflict."); 
-        	Logger.error("{} was unable to delete Technician with ID {} due to a dependecy conflict.", loggedInUser.getUsername(), technician.getId());
+        	Logger.error("{} || was unable to delete Technician with ID {} due to a dependecy conflict.", loggedInUser.getUsername(), technician.getId());
         	model.addAttribute("technicians", techniciansRepository.findAll());
         	
         	return "redirect:" + (String) session.getAttribute("redirectLocation");
@@ -192,7 +192,7 @@ public class TechniciansController {
   		
   		User user = getLoggedInUser();
   		model = NotificationController.loadNotificationsIntoModel(user, model);
-  		Logger.info("{} successfully deleted Technician with ID {}.", user.getUsername(), technician.getId());
+  		Logger.info("{} || successfully deleted Technician with ID {}.", user.getUsername(), technician.getId());
   		techniciansRepository.delete(technician);
         return "redirect:/technicians";
     }

@@ -129,7 +129,12 @@
                     <h2 th:case="0">No logs!</h2>
                     <div th:case="*" style="height: 700px; overflow-y: scroll; overflow-x: hidden; width: 80vw;">
                         <h2>Logs</h2>
-                        <br>
+                        <br><br>
+                        <p><h3>Filter    </h3>
+                        <button class="buttons7" onclick="window.location.href='/reverseDateOrder';">Date</button>
+                    	<button class="buttons7" onclick="window.location.href='/levelOrder';">Error</button>
+                   	 </p>
+                        <br><br>
                         <span type="hidden" th:text="${error}" class="loginError"></span>
                         <br>
                         <table class="dataTable" align="center" style=" table-layout:fixed;">
@@ -138,6 +143,7 @@
                                     <th style= "width:100px">Date</th>
                                     <th style= "width:100px">Time</th>
                                     <th style= "width:80px">Level</th>
+                                    <th style= "width:100px">User</th>
                                     <th>Message</th>
                                 </tr>
                             </thead>
@@ -146,6 +152,7 @@
                                     <td th:text="${log.date}"></td>
                                     <td th:text="${log.time}"></td>
                                     <td th:text="${log.level}"></td>
+                                    <td th:text="${log.person}"></td>
                                     <td th:text="${log.msg}"></td>
                                 </tr>
                             </tbody>

@@ -88,7 +88,7 @@ public class ForgottenPasswordController {
 	    emailImpl.forgotPassword(email, webUrl);
 	    User user = getLoggedInUser();
 		model.addAttribute("message", "Your reset password link has been sent to your email");
-		Logger.info("Password reset link has been to {}", user.getUsername());
+		Logger.info("{} || sent themselves a password reset link.", user.getUsername());
 	return "forgotpasswordform";
 	}
 	
@@ -136,13 +136,13 @@ public class ForgottenPasswordController {
 				redirectAttr.addFlashAttribute("org.springframework.validation.BindingResult.userForm", bindingResult);
 				redirectAttr.addFlashAttribute("userForm", userForm);
 				redirect = request.getHeader("Referer");
-				Logger.error("{} failed to reset password.", user.getUsername());
+				Logger.error("{} || failed to reset password.", user.getUsername());
 				return "redirect:" + redirect;
 	       }
 		else { 
 			userService.resetPassword(user,password);
 			model.addAttribute("message", "Your password has been changed");
-			Logger.info("Password has been changed for {}", loggedInUser.getUsername());
+			Logger.info("{} || changed thier password.", loggedInUser.getUsername());
 		}
 		return "resetpasswordform";
 	}
