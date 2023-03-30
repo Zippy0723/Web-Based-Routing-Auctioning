@@ -58,12 +58,12 @@ public class SecurityServiceImpl implements SecurityService {
         authenticationManager.authenticate(usernamePasswordAuthenticationToken);
         
         System.out.println(isAuthenticated());
-        Logger.info("{} attempted to login.", username);
+        Logger.info("{} || attempted to login.", username);
 
         if (usernamePasswordAuthenticationToken.isAuthenticated()) {
             SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
             System.out.println("Auto Login Successful");
-            Logger.info("{} logged in successfully.", username);
+            Logger.info("{} || logged in successfully.", username);
         }
     }
     

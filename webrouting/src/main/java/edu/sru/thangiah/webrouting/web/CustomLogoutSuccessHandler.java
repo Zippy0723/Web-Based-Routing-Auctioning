@@ -25,7 +25,7 @@ public class CustomLogoutSuccessHandler extends SimpleUrlLogoutSuccessHandler im
       Authentication authentication) 
       throws IOException, ServletException {
  
-        Logger.info("{} logged out.", authentication.getName());
+        Logger.info("{} || logged out.", authentication.getName());
 
         super.onLogoutSuccess(request, response, authentication);
     }

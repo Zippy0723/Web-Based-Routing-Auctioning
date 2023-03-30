@@ -324,7 +324,7 @@ public class EditAndAddController {
         
         
 		  shipmentsRepository.save(result);
-	      Logger.info("{} successfully updated the shipment with ID {}",user.getUsername(), result.getId());
+	      Logger.info("{} || successfully updated the shipment with ID {}",user.getUsername(), result.getId());
 	      return "redirect:" + redirectLocation;
         
 	}
@@ -372,7 +372,7 @@ public class EditAndAddController {
 
   		
 	    maintenanceOrdersRepository.save(result);
-        Logger.info("{} successfully updated the maintenance order with ID {}",loggedInUser.getUsername(), maintenanceOrder.getId());
+        Logger.info("{} || successfully updated the maintenance order with ID {}",loggedInUser.getUsername(), maintenanceOrder.getId());
         return "redirect:" + redirectLocation;
     }
 	
@@ -389,7 +389,7 @@ public class EditAndAddController {
 		 String skillGrade = technician.getSkill_grade().strip();
 		 
 		 if (!(skillGrade.length() <= 12 && skillGrade.length() > 0) || !(skillGrade.matches("^[a-zA-Z0-9.]+$"))) {
-				Logger.error("{} attempted to edit a Technician but the Skill Grade was not between 1 and 12 alphanumeric characters long.",user.getUsername());
+				Logger.error("{} || attempted to edit a Technician but the Skill Grade was not between 1 and 12 alphanumeric characters long.",user.getUsername());
 				model.addAttribute("message", "Skill Grade was not between 1 and 12 alphanumeric characters.");
 				return "/edit/edit-technicians";	
 			}
@@ -397,7 +397,7 @@ public class EditAndAddController {
   		result.setSkill_grade(skillGrade);
   		
         techniciansRepository.save(result);
-        Logger.info("{} successfully updated Technician with ID {}", user.getUsername(), result.getId());
+        Logger.info("{} || successfully updated Technician with ID {}", user.getUsername(), result.getId());
         return "redirect:" + redirectLocation;
     }
         
@@ -439,14 +439,14 @@ public class EditAndAddController {
 		for(Locations check: carrierLocations) {
 			String repoLocationName = check.getName().toString().strip();
   			if(locationName.equals(repoLocationName) && (result.getId() != check.getId())) {
-  				Logger.info("{} attempted to save a location with the same name as another location.",user.getUsername());
+  				Logger.info("{} || attempted to save a location with the same name as another location.",user.getUsername());
   				model.addAttribute("message", "Another location already exists with that name.");
   				return "/edit/edit-locations";
   	  		}
   		}
 		
         locationsRepository.save(result);
-  		Logger.info("{} successfully updated location with ID {}.", user.getUsername(), result.getId());
+  		Logger.info("{} || successfully updated location with ID {}.", user.getUsername(), result.getId());
   		
   		return "redirect:" + redirectLocation;
   	}
@@ -495,14 +495,14 @@ public class EditAndAddController {
 		for(VehicleTypes check: carrierVehicleTypes) {
 			String repoMakeModel = check.getMake().strip() + " " + check.getModel().strip();
   			if(repoMakeModel.equals(makeModel) && (result.getId() != check.getId())) {
-  				Logger.info("{} attempted to save a vehicle type with the same make and model as another vehicle type.",user.getUsername());
+  				Logger.info("{} || attempted to save a vehicle type with the same make and model as another vehicle type.",user.getUsername());
   				model.addAttribute("message", "Another vehicle type exists with that make and model.");
   				return "/edit/edit-vehicletypes";
   	  		}
   		}
 		
         vehicleTypesRepository.save(result);
-  		Logger.info("{} successfully updated vehicle type with ID {}.", user.getUsername(), result.getId());
+  		Logger.info("{} || successfully updated vehicle type with ID {}.", user.getUsername(), result.getId());
   		
   		return "redirect:" + redirectLocation;
   	}
@@ -542,14 +542,14 @@ public class EditAndAddController {
 		for(Vehicles check: carrierVehicles) {
 			String repoPlateVin = check.getPlateNumber() + " " + check.getVinNumber().strip();
   			if(repoPlateVin.equals(plateVin) && (result.getId() != check.getId())) {
-  				Logger.info("{} attempted to save a vehicle with the plate and vin as another vehicle type.",user.getUsername());
+  				Logger.info("{} || attempted to save a vehicle with the plate and vin as another vehicle type.",user.getUsername());
   				model.addAttribute("message", "Another vehicle exists with that vin and plate.");
   				return "/edit/edit-vehicles";
   	  		}
   		}
 		
         vehiclesRepository.save(result);
-  		Logger.info("{} successfully updated vehicle with ID {}.", user.getUsername(), result.getId());
+  		Logger.info("{} || successfully updated vehicle with ID {}.", user.getUsername(), result.getId());
 
   		return "redirect:" + redirectLocation;
   	}
@@ -598,14 +598,14 @@ public class EditAndAddController {
 		for(Contacts check: carrierContacts) {
 			String carrierContactsFullName = check.getFirstName() + " " + check.getLastName();
   			if(fullName.equals(carrierContactsFullName) && (result.getId() != check.getId())) {
-  				Logger.info("{} attempted to save a contact with the same name as an existing contact.",user.getUsername());
+  				Logger.info("{} || attempted to save a contact with the same name as an existing contact.",user.getUsername());
   				model.addAttribute("message", "Another contact exists with that name.");
   				return "/edit/edit-contacts";
   	  		}
 		}
 				
         contactsRepository.save(result);
-  		Logger.info("{} successfully updated contact with ID {}.", user.getUsername(), result.getId());
+  		Logger.info("{} || successfully updated contact with ID {}.", user.getUsername(), result.getId());
 
   		return "redirect:" + redirectLocation;
   	}
@@ -649,7 +649,7 @@ public class EditAndAddController {
 		
 		
         driverRepository.save(result);
-  		Logger.info("{} successfully updated driver with ID {}.", user.getUsername(), result.getId());
+  		Logger.info("{} || successfully updated driver with ID {}.", user.getUsername(), result.getId());
 
   		return "redirect:" + redirectLocation;
   	}
@@ -671,13 +671,13 @@ public class EditAndAddController {
         
         
         if(!(emailAddress.length() <= 64 && emailAddress.length() > 0) || !(emailAddress.matches("^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+$"))){
-			Logger.info("{} attempted to edit a shipper but the email address must be between 1 and 64 alphanumeric characters.",loggedInUser.getUsername());
+			Logger.error("{} || attempted to edit a shipper but the email address must be between 1 and 64 alphanumeric characters.",loggedInUser.getUsername());
 			model.addAttribute("message", "Email must be between 1 and 64 alphanumeric characters.");
 			return "/edit/edit-shippers";	
 		}
         
 		if (!(username.length() <= 32 && username.length() > 0) || !(username.matches("^[a-zA-Z0-9.]+$"))) {
-			Logger.error("{} attempted to edit a shipper but the username was not between 1 and 32 alphanumeric characters.",loggedInUser.getUsername());
+			Logger.error("{} || attempted to edit a shipper but the username was not between 1 and 32 alphanumeric characters.",loggedInUser.getUsername());
 			model.addAttribute("message", "Username must be between 1 and 32 alphanumeric characters.");
 			return "/edit/edit-shippers";	
 		}	
@@ -685,7 +685,7 @@ public class EditAndAddController {
 		for(User check: repoUsers) {
 			String repoUsername = check.getUsername().strip();
   			if(username.equals(repoUsername) && id != check.getId()) {
-  				Logger.info("{} attempted to save a shipper with the same username as another user.",loggedInUser.getUsername());
+  				Logger.error("{} || attempted to save a shipper with the same username as another user.",loggedInUser.getUsername());
   				model.addAttribute("message", "Another user already exists with that username.");
   				return "/edit/edit-shippers";
   	  		}
@@ -694,7 +694,7 @@ public class EditAndAddController {
 		for(User check: repoUsers) {
 			String repoEmailAddress = check.getEmail().strip();
   			if(emailAddress.equals(repoEmailAddress) && id != check.getId()) {
-  				Logger.info("{} attempted to save a shipper with the same email as another user.",loggedInUser.getUsername());
+  				Logger.error("{} || attempted to save a shipper with the same email as another user.",loggedInUser.getUsername());
   				model.addAttribute("message", "Another user already exists with that email.");
   				return "/edit/edit-shippers";
   	  		}
@@ -706,7 +706,7 @@ public class EditAndAddController {
 		result.setEnabled(user.isEnabled());
 
         userRepository.save(result);
-  		Logger.info("{} successfully updated a shipper with ID {}.", loggedInUser.getUsername(), result.getId());
+  		Logger.error("{} || successfully updated a shipper with ID {}.", loggedInUser.getUsername(), result.getId());
   		
   		return "redirect:" + redirectLocation;
   	}
@@ -745,13 +745,13 @@ public class EditAndAddController {
 
         
         if(!(emailAddress.length() <= 64 && emailAddress.length() > 0) || !(emailAddress.matches("^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+$"))){
-			Logger.info("{} attempted to add a carrier but the email address must be between 1 and 64 alphanumeric characters.",loggedInUser.getUsername());
+			Logger.error("{} || attempted to add a carrier but the email address must be between 1 and 64 alphanumeric characters.",loggedInUser.getUsername());
 			model.addAttribute("message", "Email must be between 1 and 64 alphanumeric characters.");
 			return "/add/add-carrier";	
 		}
         
 		if (!(username.length() <= 32 && username.length() > 0) || !(username.matches("^[a-zA-Z0-9.]+$"))) {
-			Logger.error("{} attempted to add a carrier but the username was not between 1 and 32 alphanumeric characters.",loggedInUser.getUsername());
+			Logger.error("{} || attempted to add a carrier but the username was not between 1 and 32 alphanumeric characters.",loggedInUser.getUsername());
 			model.addAttribute("message", "Username must be between 1 and 32 alphanumeric characters.");
 			return "/add/add-carrier";	
 		}	
@@ -759,7 +759,7 @@ public class EditAndAddController {
 		for(User check: repoUsers) {
 			String repoUsername = check.getUsername().strip();
   			if(username.equals(repoUsername)) {
-  				Logger.info("{} attempted to add a carrier with the same username as another user.",loggedInUser.getUsername());
+  				Logger.error("{} || attempted to add a carrier with the same username as another user.",loggedInUser.getUsername());
   				model.addAttribute("message", "Another user already exists with that username.");
   				return "/add/add-carrier";
   	  		}
@@ -768,7 +768,7 @@ public class EditAndAddController {
 		for(User check: repoUsers) {
 			String repoEmailAddress = check.getEmail().strip();
   			if(emailAddress.equals(repoEmailAddress)) {
-  				Logger.info("{} attempted to add a carrier with the same email as another user.",loggedInUser.getUsername());
+  				Logger.error("{} || attempted to add a carrier with the same email as another user.",loggedInUser.getUsername());
   				model.addAttribute("message", "Another user already exists with that email.");
   				return "/add/add-carrier";
   	  		}
@@ -777,7 +777,7 @@ public class EditAndAddController {
 		for(Carriers check: repoCarriers) {
 			String repoCarrierName = check.getCarrierName().strip();
   			if(carrierName.equals(repoCarrierName)) {
-  				Logger.info("{} attempted to save a carrier with the same carrier name as another carrier.",loggedInUser.getUsername());
+  				Logger.error("{} || attempted to save a carrier with the same carrier name as another carrier.",loggedInUser.getUsername());
   				model.addAttribute("message", "Another carrier already exists with that carrier name.");
   				return "/add/add-carrier";
   	  		}
@@ -786,27 +786,27 @@ public class EditAndAddController {
 		for(Carriers check: repoCarriers) {
 			String repoScac = check.getScac().strip();
   			if(scac.equals(repoScac)) {
-  				Logger.info("{} attempted to save a carrier with the same scac as another carrier.",loggedInUser.getUsername());
+  				Logger.error("{} || attempted to save a carrier with the same scac as another carrier.",loggedInUser.getUsername());
   				model.addAttribute("message", "Another carrier already exists with that scac.");
   				return "/add/add-carrier";
   	  		}
   		}
 		
 		if(!(scac.length() <= 4 && scac.length() >= 2) || !(scac.matches("^[a-zA-Z0-9]+$"))) {
-				Logger.error("{} attempted to add a carrier but the scac was not between 2 and 4 alphanumeric characters.",loggedInUser.getUsername());
+				Logger.error("{} || attempted to add a carrier but the scac was not between 2 and 4 alphanumeric characters.",loggedInUser.getUsername());
 				model.addAttribute("message", "Scac was not between 2 and 4 alphanumeric characters.");
 				return "/add/add-carrier";
 			}
 		
   	
 		if(!(pallets.length() <= 32 && pallets.length() > 0) || !(pallets.matches("^[0-9]+$"))) {
-			Logger.error("{} attempted to add a carrier but the pallets must be between 1 and 32 numeric chracters.",loggedInUser.getUsername());
+			Logger.error("{} || attempted to add a carrier but the pallets must be between 1 and 32 numeric chracters.",loggedInUser.getUsername());
 			model.addAttribute("message", "Pallets must be between 1 and 32 numeric characters.");
 			return "/add/add-carrier";
 		}
 		
 		if(!(weight.length() <= 32 && weight.length() > 0) || !(weight.matches("^[0-9]+$"))) {
-			Logger.error("{} attempted to add a carrier but the weight must be between 1 and 32 numeric characters.",loggedInUser.getUsername());
+			Logger.error("{} || attempted to add a carrier but the weight must be between 1 and 32 numeric characters.",loggedInUser.getUsername());
 			model.addAttribute("message", "Weight must be be between 1 and 32 numeric characters.");
 			return "/add/add-carrier";
 		}
@@ -840,7 +840,7 @@ public class EditAndAddController {
 		carriersRepository.save(carrierResult);
 		result.setCarrier(carrierResult);
         userRepository.save(result);
-  		Logger.info("{} successfully saved a carrier with ID {}.", loggedInUser.getUsername(), result.getId());
+  		Logger.info("{} || successfully saved a carrier with ID {}.", loggedInUser.getUsername(), result.getId());
   		
   		return "redirect:" + redirectLocation;
   	}

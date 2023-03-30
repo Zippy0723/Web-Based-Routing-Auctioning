@@ -138,7 +138,7 @@ public class VehicleTypesController {
   		
   		if (deny == true) {
   			model.addAttribute("error", "Error: Vehicle Type already exists.");
-  			Logger.error("{} failed to update vehicle type because it already exists.", loggedInUser.getUsername());
+  			Logger.error("{} || failed to update vehicle type because it already exists.", loggedInUser.getUsername());
   			model.addAttribute("vehicletypes", vehicleTypesRepository.findAll());
   			
   			return "vehicletypes";
@@ -146,7 +146,7 @@ public class VehicleTypesController {
   		
   		vehicleTypes.setCarrier(carrier);
   		vehicleTypesRepository.save(vehicleTypes);
-  		Logger.info("{} successfully saved the Vehicle type with ID {}.",loggedInUser.getUsername(), vehicleTypes.getId());
+  		Logger.info("{} || successfully saved the Vehicle type with ID {}.",loggedInUser.getUsername(), vehicleTypes.getId());
   		
   		return "redirect:" + redirectLocation;
   	}
@@ -179,7 +179,7 @@ public class VehicleTypesController {
         model = NotificationController.loadNotificationsIntoModel(loggedInUser, model);
         if(!vehicleTypes.getVehicles().isEmpty()) {
         	session.setAttribute("error", "Unable to delete due to dependency conflict.");
-        	Logger.error("{} failed to delete the vehicle type due to dependency conflict.", loggedInUser.getUsername());
+        	Logger.error("{} || failed to delete the vehicle type due to dependency conflict.", loggedInUser.getUsername());
         	model.addAttribute("vehicletypes", vehicleTypesRepository.findAll());
             
         	return "redirect:" + (String) session.getAttribute("redirectLocation");
@@ -202,7 +202,7 @@ public class VehicleTypesController {
   		
   		User loggedInUser = getLoggedInUser();
   		model = NotificationController.loadNotificationsIntoModel(loggedInUser, model);
-  		Logger.info("{} successfully deleted the Vehicle type with ID {}.", loggedInUser.getUsername(),vehicleTypes.getId());
+  		Logger.info("{} || successfully deleted the Vehicle type with ID {}.", loggedInUser.getUsername(),vehicleTypes.getId());
   		vehicleTypesRepository.delete(vehicleTypes);
         return "redirect:/vehicletypes";
     }

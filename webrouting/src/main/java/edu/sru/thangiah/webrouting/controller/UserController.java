@@ -349,13 +349,13 @@ public class UserController {
   		
   		if(deny == true) {
   			model.addAttribute("error", "Unable to add Carrier. Carrier name or SCAC code already exists");
-  			Logger.error("{} was unable to add {} as a carrier because that Carrier name or SCAC code already exists.",loggedInUser.getUsername(), userForm.getUsername());
+  			Logger.error("{} || was unable to add {} as a carrier because that Carrier name or SCAC code already exists.",loggedInUser.getUsername(), userForm.getUsername());
   			return "/add/add-user-carrier";	 
   		}
         
   		carriersRepository.save(carrier);
         userService.save(userForm);
-        Logger.info("{} successfully added the carrier {}." ,loggedInUser.getUsername(), userForm.getUsername());
+        Logger.info("{} || successfully added the carrier {}." ,loggedInUser.getUsername(), userForm.getUsername());
 
         return "redirect:/CarrierAdministrationPage";
   	}
@@ -377,7 +377,7 @@ public class UserController {
   			return "/add/add-user";
 		}
   		userService.save(user);
-  		Logger.info("{} successfully saved the user {}." ,loggedInUser.getUsername(), user.getUsername());
+  		Logger.info("{} || successfully saved the user {}." ,loggedInUser.getUsername(), user.getUsername());
   		return "redirect:/users";
   	}
   	
@@ -438,7 +438,7 @@ public class UserController {
             		bidsRepository.delete(bid); 
             	}
         		
-        		Logger.info("{} successfully deleted a shipment with ID {}.", user.getUsername(), shipment.getId());
+        		Logger.info("{} || successfully deleted a shipment with ID {}.", user.getUsername(), shipment.getId());
         		shipmentsRepository.delete(shipment);
         	}
         	
@@ -453,7 +453,7 @@ public class UserController {
   		}
         
        
-        Logger.info("{} successfully deleted the user {}.", loggedInUser.getUsername(), user.getUsername());
+        Logger.info("{} || successfully deleted the user {}.", loggedInUser.getUsername(), user.getUsername());
         userRepository.delete(user);
          
         return "redirect:/users";
@@ -625,7 +625,7 @@ public class UserController {
         
         else {
 
-        Logger.info("{} successfully updated the user {}.", loggedInUser.getUsername(), user.getUsername());
+        Logger.info("{} || successfully updated the user {}.", loggedInUser.getUsername(), user.getUsername());
 
         return "redirect:/users";
         }
@@ -655,7 +655,7 @@ public class UserController {
         userService.save(user);
 
 
-        Logger.info("{} successfully updated the user {}.", loggedInUser.getUsername(), user.getUsername());
+        Logger.info("{} || successfully updated the user {}.", loggedInUser.getUsername(), user.getUsername());
 
         return "redirect:/ShipperAdministrationPage";
     }
@@ -684,7 +684,7 @@ public class UserController {
         userService.save(user);
 
 
-        Logger.info("{} successfully updated the user {}.", loggedInUser.getUsername(), user.getUsername());
+        Logger.info("{} || successfully updated the user {}.", loggedInUser.getUsername(), user.getUsername());
 
         return "redirect:/CarrierAdministrationPage";
   	}
@@ -743,7 +743,7 @@ public class UserController {
   		model = NotificationController.loadNotificationsIntoModel(loggedInUser, model);
   		if (result.hasErrors()) {
   			model.addAttribute("error","Error: Information entered is invalid");
-  			Logger.error("{} Failed to update {}.",loggedInUser.getUsername(), user.getUsername());
+  			Logger.error("{} || failed to update the user {}.",loggedInUser.getUsername(), user.getUsername());
   			return "/update/update-user-details";
 		}
   		if(!updateEmail.equals(user.getEmail())) {
@@ -752,7 +752,7 @@ public class UserController {
   			emailImpl.updateUsersEmail(user.getEmail(), websiteUrl, updateEmail);
   		}
   		userService.save(user);
-  		Logger.info("{} sucessfully updated the user infomation for {}.", loggedInUser.getUsername(), user.getUsername());
+  		Logger.info("{} || sucessfully updated the user infomation for {}.", loggedInUser.getUsername(), user.getUsername());
   		model.addAttribute("message", "Information Updated! If you changed your email please re-verify your account!");
   		return "/index";
   	}

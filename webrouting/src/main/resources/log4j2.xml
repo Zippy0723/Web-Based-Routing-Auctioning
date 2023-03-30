@@ -4,27 +4,43 @@
 		<Console name="Console" target="SYSTEM_OUT">
 			<PatternLayout pattern="%d{yyyy-MMM-dd HH:mm:ss} %t %-5p %-50c{1} - %msg%n"	/>
 		</Console>
-			<RollingFile
+	<RollingFile
       name="rollingFile"
       fileName="WebroutingApplication.log"
       filePattern="WebroutingApplication.%i.log.gz"
       ignoreExceptions="false">
-      <PatternLayout pattern= "%d{|yyyy-MMM-dd|HH:mm:ss}|%t|%-5p|%-50c{1}|%msg%n"/>
-      <Policies>
-          <SizeBasedTriggeringPolicy size="1MB" />
-      </Policies>
-      <DefaultRolloverStrategy max="5">
-        <Delete basePath="" maxDepth="2">
-          <IfFileName glob="*/app-*.log.gz" />
-          <IfLastModified age="P30D" />
-        </Delete>
-      </DefaultRolloverStrategy>
+      <PatternLayout pattern= "%d{||yyyy-MMM-dd||HH:mm:ss}||%t||%-5p||%-50c{1}||%msg%n"/>
+     		<Policies>
+          		<SizeBasedTriggeringPolicy size="1000MB" />
+      		</Policies>
+      			<DefaultRolloverStrategy max="5">
+       				<Delete basePath="" maxDepth="2">
+          				<IfFileName glob="*/app-*.log.gz" />
+          				<IfLastModified age="P30D" />
+        			</Delete>
+      			</DefaultRolloverStrategy>
     </RollingFile>
 	</Appenders>
-	<Loggers>
-		<Root level ="info">
-			<AppenderRef ref="Console"	/>
-			<AppenderRef ref="rollingFile"	/>
-		</Root>
-	</Loggers>
+		<Loggers>
+			<logger name="edu.sru.thangiah.webrouting.controller">
+				<level value = "info" />
+				<AppenderRef ref="rollingFile"/>
+		</logger>
+		<logger name="edu.sru.thangiah.webrouting.web">
+				<level value = "info" />
+				<AppenderRef ref="rollingFile"/>
+		</logger>
+		<logger name="edu.sru.thangiah.webrouting.services">
+				<level value = "info" />
+				<AppenderRef ref="rollingFile"/>
+		</logger>
+		<logger name="edu.sru.thangiah.webrouting.error">
+				<level value = "info" />
+				<AppenderRef ref="rollingFile"/>
+		</logger>
+		
+			<Root level ="info">
+				<AppenderRef ref="Console"	/>
+			</Root>
+		</Loggers>
 </Configuration>

@@ -142,7 +142,7 @@ public class ContactsController {
   		
   		if(deny == true) {
   			model.addAttribute("error", "Unable to add Contact. Contact Email already in use");
-  			Logger.error("{} attempted to add contact and it failed because the email address {} is already in use.", user.getUsername(), contacts.getEmailAddress().toString());
+  			Logger.error("{} || attempted to add contact and it failed because the email address {} is already in use.", user.getUsername(), contacts.getEmailAddress().toString());
   			model.addAttribute("contacts", getLoggedInUser().getCarrier().getContacts());
   			
   			return "contacts";
@@ -150,7 +150,7 @@ public class ContactsController {
   		}
   		
   		contactsRepository.save(contacts);
-  		Logger.info("{} successfully added a new contact with ID {}.", user.getUsername(), contacts.getId());
+  		Logger.info("{} || successfully added a new contact with ID {}.", user.getUsername(), contacts.getId());
   		
   		return "redirect:" + redirectLocation;
   	}
@@ -183,7 +183,7 @@ public class ContactsController {
         
         if(!contacts.getDrivers().isEmpty() || !contacts.getTechnicians().isEmpty()) {
         	session.setAttribute("error", "Unable to delete due to dependency conflict."); 
-        	Logger.error("{} attmpted to delete contact. Deletion failed due to dependency conflict.", user.getUsername());
+        	Logger.error("{} || attmpted to delete contact. Deletion failed due to dependency conflict.", user.getUsername());
         	model.addAttribute("contacts", getLoggedInUser().getCarrier().getContacts());
         	
         	return "redirect:" + (String) session.getAttribute("redirectLocation");
@@ -207,7 +207,7 @@ public class ContactsController {
   		
   		User user = getLoggedInUser();
         model = NotificationController.loadNotificationsIntoModel(user, model);
-  		Logger.info("{} successfully deleted the contact with ID {}.", user.getUsername(), contacts.getId());
+  		Logger.info("{} || successfully deleted the contact with ID {}.", user.getUsername(), contacts.getId());
         contactsRepository.delete(contacts);
         return "redirect:/contacts";
     }

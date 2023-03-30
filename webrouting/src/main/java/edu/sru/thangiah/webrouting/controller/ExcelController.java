@@ -381,13 +381,13 @@ public class ExcelController {
 			
 			if (shipments == null) {
 				session.setAttribute("message", "Something went wrong! Please check your excel file!");
-				Logger.info("{} attempted to save shipments but failed.",user.getUsername());
+				Logger.error("{} || attempted to save shipments but failed.",user.getUsername());
 				model.addAttribute("message", session.getAttribute("message"));
 				return "/excel/upload-shipments";
 			}
 			for(Shipments s: shipments) {
 				shipmentsRepository.save(s);
-				Logger.info("{} saved shipment with ID {}.",user.getUsername(),s.getId());
+				Logger.info("{} || saved shipment with ID {}.",user.getUsername(),s.getId());
 			}
 			
 		}
@@ -480,13 +480,13 @@ public class ExcelController {
 			List<VehicleTypes> vehicleTypes = validationServiceImp.validateVehicleTypesSheet(vehicleTypesSheet, session);
 			
 			if (vehicleTypes == null) {
-				Logger.info("{} attempted to save Vehicle Type but failed.",user.getUsername());
+				Logger.error("{} || attempted to save Vehicle Type but failed.",user.getUsername());
 				model.addAttribute("message", session.getAttribute("message"));
 				return "/excel/upload-vehicletypes"; 
 			}
 			for(VehicleTypes vehicleType: vehicleTypes) {
 				vehicleTypesRepository.save(vehicleType);
-				Logger.info("{} saved Vehicle Type with ID {}.",user.getUsername(),vehicleType.getId());
+				Logger.info("{} || saved Vehicle Type with ID {}.",user.getUsername(),vehicleType.getId());
 			}
 			
 		}
@@ -519,13 +519,13 @@ public class ExcelController {
 			List<Locations> locations = validationServiceImp.validateLocationsSheet(locationsSheet, session);
 			
 			if (locations == null) {
-				Logger.info("{} attempted to save Locations but failed.",user.getUsername());
+				Logger.error("{} || attempted to save Locations but failed.",user.getUsername());
 				model.addAttribute("message", session.getAttribute("message"));
 				return "/excel/upload-locations"; 
 			}
 			for(Locations location: locations) {
 				locationsRepository.save(location);
-				Logger.info("{} saved Location with ID {}.",user.getUsername(),location.getId());
+				Logger.info("{} || saved Location with ID {}.",user.getUsername(),location.getId());
 			}
 			
 		}
@@ -558,13 +558,13 @@ public class ExcelController {
 			List<Contacts> contacts = validationServiceImp.validateContactsSheet(contactsSheet, session);
 			
 			if (contacts == null) {
-				Logger.info("{} attempted to save Contacts but failed.",user.getUsername());
+				Logger.error("{} || attempted to save Contacts but failed.",user.getUsername());
 				model.addAttribute("message", session.getAttribute("message"));
 				return "/excel/upload-contacts"; 
 			}
 			for(Contacts contact: contacts) {
 				contactsRepository.save(contact);
-				Logger.info("{} saved Contact with ID {}.",user.getUsername(),contact.getId());
+				Logger.info("{} || saved Contact with ID {}.",user.getUsername(),contact.getId());
 			}
 			
 		}
@@ -597,13 +597,13 @@ public class ExcelController {
 			List<Technicians> technicians = validationServiceImp.validateTechniciansSheet(techniciansSheet,session);
 			
 			if (technicians == null) {
-				Logger.info("{} attempted to save Technician but failed.",user.getUsername());
+				Logger.error("{} || attempted to save Technician but failed.",user.getUsername());
 				model.addAttribute("message", session.getAttribute("message"));
 				return "/excel/upload-technicians"; 
 			}
 			for(Technicians technician: technicians) {
 				techniciansRepository.save(technician);
-				Logger.info("{} saved Technician with ID {}.",user.getUsername(),technician.getId());
+				Logger.info("{} || saved Technician with ID {}.",user.getUsername(),technician.getId());
 			}
 			
 		}
@@ -636,13 +636,13 @@ public class ExcelController {
 			List<Vehicles> vehicles = validationServiceImp.validateVehiclesSheet(vehicleSheet, session);
 			
 			if (vehicles == null) {
-				Logger.info("{} attempted to save Vehicle but failed.",user.getUsername());
+				Logger.error("{} || attempted to save Vehicle but failed.",user.getUsername());
 				model.addAttribute("message", session.getAttribute("message"));
 				return "/excel/upload-vehicles"; 
 			}
 			for(Vehicles vehicle: vehicles) {
 				vehiclesRepository.save(vehicle);
-				Logger.info("{} saved Vehicle with ID {}.",user.getUsername(),vehicle.getId());
+				Logger.info("{} || saved Vehicle with ID {}.",user.getUsername(),vehicle.getId());
 			}
 			
 		}
@@ -675,13 +675,13 @@ public class ExcelController {
 			List<Driver> drivers = validationServiceImp.validateDriverSheet(driverSheet, session);
 			
 			if (drivers == null) {
-				Logger.info("{} attempted to save Driver but failed.",user.getUsername());
+				Logger.error("{} || attempted to save Driver but failed.",user.getUsername());
 				model.addAttribute("message", session.getAttribute("message"));
 				return "/excel/upload-drivers"; 
 			}
 			for(Driver driver: drivers) {
 				driverRepository.save(driver);
-				Logger.info("{} saved Driver with ID {}.",user.getUsername(),driver.getId());
+				Logger.info("{} || saved Driver with ID {}.",user.getUsername(),driver.getId());
 			}
 			
 		}
@@ -714,13 +714,13 @@ public class ExcelController {
 			List<MaintenanceOrders> orders = validationServiceImp.validateMaintenanceOrdersSheet(orderSheet, session);
 			
 			if (orders == null) {
-				Logger.info("{} attempted to save Maintenance Orders but failed.",user.getUsername());
+				Logger.error("{} || attempted to save Maintenance Orders but failed.",user.getUsername());
 				model.addAttribute("message", session.getAttribute("message"));
 				return "/excel/upload-maintenanceorders"; 
 			}
 			for(MaintenanceOrders order: orders) {
 				maintenanceOrdersRepository.save(order);
-				Logger.info("{} saved Maintenance Order with ID {}.",user.getUsername(),order.getId());
+				Logger.info("{} || saved Maintenance Order with ID {}.",user.getUsername(),order.getId());
 			}
 			
 		}

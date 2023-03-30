@@ -1,6 +1,6 @@
 package edu.sru.thangiah.webrouting.domain;
 
-
+import java.time.LocalDate;
 
 /**
  * This sets up the Log object for the ShadowAdmin
@@ -8,30 +8,36 @@ package edu.sru.thangiah.webrouting.domain;
  */
 public class Log {
 	
-	private String date;
+	private LocalDate date;
 	private String time;
 	private String where;
 	private String level;
 	private String who;
+	private String person;
 	private String msg;
 
 	
-	public Log(String date, String time, String where, String level, String who, String msg) {
+	public Log(LocalDate date, String time, String where, String level, String who, String person, String msg) {
 		
 		this.date = date;
 		this.time = time;
 		this.where = where;
 		this.level = level;
 		this.who = who;
+		this.person = person;
 		this.msg = msg;
 		
 	}
-
-	public String getDate() {
+	
+	public LocalDate getDateAsLocalDate() {
 		return date;
 	}
 
-	public void setDate(String date) {
+	public String getDate() {
+		return date.toString();
+	}
+
+	public void setDate(LocalDate date) {
 		this.date = date;
 	}
 
@@ -71,6 +77,14 @@ public class Log {
 		return msg;
 	}
 
+	public String getPerson() {
+		return person;
+	}
+
+	public void setPerson(String person) {
+		this.person = person;
+	}
+	
 	public void setMsg(String msg) {
 		this.msg = msg;
 	}

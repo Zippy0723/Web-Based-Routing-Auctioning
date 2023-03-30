@@ -615,7 +615,7 @@ public class ShipmentsController {
   		
   		if (deny == true) {
   			model.addAttribute("error", "Error adding a shipment: Shipment already exists!");
-  			Logger.error("{} attempted to add a shipment that already exists.", user.getUsername());
+  			Logger.error("{} || attempted to add a shipment that already exists.", user.getUsername());
   			List<Shipments> shipmentsWOCarrier = new ArrayList<>();
   			if (user.getRole().toString().equals("SHIPPER")) {
   				List<Shipments> shipments = user.getShipments();
@@ -645,7 +645,7 @@ public class ShipmentsController {
   		shipment.setFullFreightTerms("PENDING");
   		shipment.setUser(getLoggedInUser());
   		shipmentsRepository.save(shipment);
-  		Logger.info("{} has successfully added a new shipment with ID {}.",user.getUsername(), shipment.getId());       
+  		Logger.info("{} || has successfully added a new shipment with ID {}.",user.getUsername(), shipment.getId());       
   		
         model = NotificationController.loadNotificationsIntoModel(user, model);
   		
@@ -669,7 +669,7 @@ public class ShipmentsController {
         
         if (shipment.getFullFreightTerms().toString().equals("FROZEN") && !user.getRole().toString().equals("MASTERLIST")) {
         	System.out.println("Non-Master user attempted to delete a frozen shipment!");
-        	Logger.error("Non-Master user, {}, attempted to delete a frozen shipment with ID {}.", user.getUsername(), shipment.getId());//TODO: Replace this with a proper error message(what user would see this error?)
+        	Logger.error("{} ||, (Non-Master) attempted to delete a frozen shipment with ID {}.", user.getUsername(), shipment.getId());//TODO: Replace this with a proper error message(what user would see this error?)
         	return redirectLocation; 
         }
         
@@ -705,11 +705,11 @@ public class ShipmentsController {
         		notificationService.addNotification(bidUser, "ALERT: Your bid with ID " + bid.getId() + " placed on shipment with ID " + bid.getShipment().getId() + " was deleted because the shipment was deleted", false);
         		bidsRepository.delete(bid); 
         	}
-        	Logger.info("{} successfully deleted bids.", user.getUsername());
+        	Logger.info("{} || successfully deleted bids.", user.getUsername());
         	
         }
 
-        Logger.info("{} successfully deleted a shipment with ID {}.", user.getUsername(), shipment.getId());
+        Logger.info("{} || successfully deleted a shipment with ID {}.", user.getUsername(), shipment.getId());
         if (user.getId() != shipment.getId()) {
         	notificationService.addNotification(shipment.getUser(), 
         			"ALERT: Your shipment with ID " + shipment.getId() + " and client " + shipment.getClient() + " was deleted by " + user.getUsername(), false);
@@ -776,39 +776,6 @@ public class ShipmentsController {
         return "bids";
     }
 	
-	/**
-  	 * Finds a shipment using the id parameter and if found, adds the details of that shipment
-  	 * to a form and redirects the user to that update form.
-  	 * @param id ID of the shipment being edited
-  	 * @param model Used to add data to the model
-  	 * @return for Master: "/update/update-shipments" for Shipper: "/update/update-shipments-shipper"
-  	 */
-//	@GetMapping("/editshipment/{id}")
-//    public String showEditForm(@PathVariable("id") long id, Model model, HttpSession session) {
-//		Shipments shipment = shipmentsRepository.findById(id)
-//          .orElseThrow(() -> new IllegalArgumentException("Invalid Shipment Id:" + id));
-//        
-//		model.addAttribute("vehicles", vehiclesRepository.findAll());
-//	    model.addAttribute("shipments", shipment);
-//	    model.addAttribute("redirectLocation", session.getAttribute("redirectLocation"));
-//	    
-//	    User user = getLoggedInUser();
-//        model = NotificationController.loadNotificationsIntoModel(user, model);
-//	    
-//        if (shipment.getFullFreightTerms().toString().equals("FROZEN") && !user.getRole().toString().equals("MASTERLIST")) {
-//        	System.out.println("Non-Master user attempted to edit a frozen shipment!");
-//        	Logger.error("Non-Master, {}, attempted to edit a frozen shipment with ID {}.", user.getUsername(), shipment.getId());
-//        	return "/index"; //TODO: Replace this with a proper message and redirect.
-//        }					//TODO: Add notification to this after master editing is implimented properly
-//	    
-//	    if (user.getRole().toString().equals("SHIPPER")) {
-//	    	return "/update/update-shipments-shipper";
-//	    }
-//	    else {
-//	    	return "/update/update-shipments";
-//	    }
-//        
-//    }
 	
 	/**
 	 * Finds a shipment by ID, then Redirects to the Freeze Shipment confirmation page
@@ -851,7 +818,7 @@ public class ShipmentsController {
         
 		shipment.setFullFreightTerms("FROZEN");
 		shipmentsRepository.save(shipment);
-		Logger.info("{} successfully froze shipment with ID {}.", user.getUsername(), shipment.getId());
+		Logger.info("{} || successfully froze shipment with ID {}.", user.getUsername(), shipment.getId());
 		
 		return redirectLocation;
 	}
@@ -900,7 +867,7 @@ public class ShipmentsController {
         		"ALERT: Your shipment with ID " + shipment.getId() + " and Client " + shipment.getClient() + " was unfrozen by " + user.getUsername(), false);
 		
 		shipmentsRepository.save(shipment);
-		Logger.info("{} successsfully unfroze shipment with ID {}.", user.getUsername(), shipment.getId());
+		Logger.info("{} || successsfully unfroze shipment with ID {}.", user.getUsername(), shipment.getId());
 		
 		return "redirect:"+(String) session.getAttribute("redirectLocation");
 	}
