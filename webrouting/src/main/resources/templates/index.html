@@ -59,7 +59,15 @@
                             <a class="navlink" id="nav_shipments_home_masterlist" href="/shipmentshomemaster">Shipments</a>
                         </li>
                         <li sec:authorize="hasAuthority('SHIPPER')" class="navitem">
-                            <a class="navlink" id="nav_shipments_home_shipper" href="/shipmentshomeshipper">Shipments</a>
+              				<button onclick="showDropdown()" class="dropbtn">Shipments</button>
+  							<div id="shipmentsDropdown" class="dropdown-content">
+    							<a href="/allshipments">All Shipments</a>
+    							<a href="/pendingshipments">Pending Shipments</a>
+    							<a href="/createdshipments">Available Shipments</a>
+    							<a href="/frozenshipments">Available Shipments</a>
+    							<a href="/awaitingshipments">Awaiting Acceptance Shipments</a>
+    							<a href="/acceptedshipments">Accepted Shipments</a>
+  							</div>
                         </li>
                         <li sec:authorize="hasAuthority('CARRIER')" class="navitem">
                             <a class="navlink" id="nav_shipments_home_carrier" href="/shipmentshomecarrier">Shipments</a>
@@ -148,6 +156,26 @@
 		    document.getElementById("content").style.marginLeft = "0%";
 		    document.getElementById("mySidebar").style.display = "none";
 		    document.getElementById("hamburger").style.display = "block";
+		}
+		
+		/* When the user clicks on the button,
+		toggle between hiding and showing the dropdown content */
+		function showDropdown() {
+		  document.getElementById("shipmentsDropdown").classList.toggle("show");
+		}
+
+		// Close the dropdown menu if the user clicks outside of it
+		window.onclick = function(event) {
+		  if (!event.target.matches('.dropbtn')) {
+		    var dropdowns = document.getElementsByClassName("dropdown-content");
+		    var i;
+		    for (i = 0; i < dropdowns.length; i++) {
+		      var openDropdown = dropdowns[i];
+		      if (openDropdown.classList.contains('show')) {
+		        openDropdown.classList.remove('show');
+		      }
+		    }
+		  }
 		}
 		</script>
 	</body>
