@@ -63,10 +63,17 @@
         </div>
 		<script>
 		function nav_open() {
-			document.getElementById("content").style.marginLeft = "15%";
-			document.getElementById("mySidebar").style.width = "15%";			
-			document.getElementById("mySidebar").style.display = "block";
-			document.getElementById("hamburger").style.display = "none";
+	    	if (screen.width > 1920) {
+	        	document.getElementById("content").style.marginLeft = "15%";
+	        	document.getElementById("mySidebar").style.width = "15%";
+	        	document.getElementById("mySidebar").style.display = "block";
+	        	document.getElementById("hamburger").style.display = "none";
+	    	} else {
+	        	document.getElementById("content").style.marginLeft = "15%";
+	        	document.getElementById("mySidebar").style.width = "80px";
+	        	document.getElementById("mySidebar").style.display = "block";
+	        	document.getElementById("hamburger").style.display = "none";
+	    	}
 		}
 		
 		function nav_close() {

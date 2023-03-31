@@ -1,6 +1,10 @@
 //This script runs on every pageload, and sets up the navbar.
+
+
 	function nav_open() {
-    	if (screen.width > 1920) {
+		var mediaQuery = window.matchMedia('(max-width: 1920px)');
+		
+    	if (!mediaQuery.matches) {
         	document.getElementById("content").style.marginLeft = "15%";
         	document.getElementById("mySidebar").style.width = "15%";
         	document.getElementById("mySidebar").style.display = "block";

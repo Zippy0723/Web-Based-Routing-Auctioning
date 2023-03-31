@@ -759,7 +759,7 @@ Simple Class Style For Displaying the Email Message
 	#heading {
 		color: white;
 		min-width:1230px;
-		overflow: auto;
+		overflow: hidden;
 		height: 32px;
 		line-height: 64px;
 		width:110%;
@@ -771,5 +771,6 @@ Simple Class Style For Displaying the Email Message
 	.heading_content{
 		margin-top:-15px;
 		font-size:20px;
+		overflow: hidden;
 	}
 }
