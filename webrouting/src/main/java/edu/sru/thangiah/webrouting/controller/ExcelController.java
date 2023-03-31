@@ -586,6 +586,7 @@ public class ExcelController {
 	public String loadTechniciansFromExcel(@RequestParam("file") MultipartFile excelData, HttpSession session, Model model){
 		User user = getLoggedInUser();
 		String redirectLocation = (String) session.getAttribute("redirectLocation");
+		model.addAttribute("currentPage","/technicians");
 		model.addAttribute("redirectLocation",redirectLocation);
 		XSSFWorkbook workbook;
 		model = NotificationController.loadNotificationsIntoModel(user, model);
@@ -734,6 +735,7 @@ public class ExcelController {
 	@GetMapping("/excel/upload-vehicletypes")
 	public String vehicletypesUploadPage(Model model, HttpSession session){
 		model.addAttribute("redirectLocation", session.getAttribute("redirectLocation"));
+		model.addAttribute("currentPage","/vehicletypes");
 		
         session.removeAttribute("message");
 		
@@ -746,7 +748,7 @@ public class ExcelController {
 	@GetMapping("/excel/upload-locations")
 	public String locationsUploadPage(Model model, HttpSession session){
 		model.addAttribute("redirectLocation", session.getAttribute("redirectLocation"));
-		
+		model.addAttribute("currentPage","/locations");
 		
 		session.removeAttribute("message");
 		
@@ -759,6 +761,7 @@ public class ExcelController {
 	@GetMapping("/excel/upload-contacts")
 	public String contactsUploadPage(Model model, HttpSession session){
 		model.addAttribute("redirectLocation", session.getAttribute("redirectLocation"));
+		model.addAttribute("currentPage","/contacts");
 		
 		session.removeAttribute("message");
 		
@@ -771,10 +774,12 @@ public class ExcelController {
 	@GetMapping("/excel/upload-drivers")
 	public String driversUploadPage(Model model, HttpSession session){
 		model.addAttribute("redirectLocation", session.getAttribute("redirectLocation"));
+		model.addAttribute("currentPage","/registrationhome");
 		
 		session.removeAttribute("message");
 		User user = getLoggedInUser();
         model = NotificationController.loadNotificationsIntoModel(user, model);
+        model.addAttribute("currentPage","/drivers");
 		
 		return "/excel/upload-drivers";	
 	}
@@ -786,6 +791,7 @@ public class ExcelController {
 		session.removeAttribute("message");
 		User user = getLoggedInUser();
         model = NotificationController.loadNotificationsIntoModel(user, model);
+        model.addAttribute("currentPage","/maintenanceorders");
 		
 		return "/excel/upload-maintenanceorders";	
 	}
@@ -798,13 +804,15 @@ public class ExcelController {
 		
 		User user = getLoggedInUser();
         model = NotificationController.loadNotificationsIntoModel(user, model);
-		
+        model.addAttribute("currentPage","/technicians");
+        
 		return "/excel/upload-technicians";	
 	}
 	
 	@GetMapping("/excel/upload-vehicles")
 	public String vehiclesUploadPage(Model model, HttpSession session){
 		model.addAttribute("redirectLocation", session.getAttribute("redirectLocation"));
+		model.addAttribute("currentPage","/vehicles");
 		
 		session.removeAttribute("message");
 		
@@ -817,6 +825,7 @@ public class ExcelController {
 	@GetMapping("/uploadshipments")
 	public String ListFromExcelData(Model model, HttpSession session){
 		model.addAttribute("redirectLocation", session.getAttribute("redirectLocation"));
+		model.addAttribute("currentPage","/shipments");
 		
 		User user = getLoggedInUser();
         model = NotificationController.loadNotificationsIntoModel(user, model);

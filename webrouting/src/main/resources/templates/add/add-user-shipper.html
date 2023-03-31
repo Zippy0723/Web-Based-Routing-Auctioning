@@ -52,8 +52,7 @@
 	                <input type="text" th:field="*{email}" id="email" placeholder="Email" size=23 required>
 	                <span th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></span>
 	             	<br>
-	                <label for="role">Role: </label>
-	                <select th:field="*{role}" required>
+	                <select hidden=true th:field="*{role}" required>
 	                    <th:block th:each="role : ${roles}">
 	                        <option th:text="${role.name}" th:value="${role.id}"></option>
 	                    </th:block>

@@ -83,7 +83,7 @@ public class BackupController {
 		User user = getLoggedInUser();
 	    
 		model = NotificationController.loadNotificationsIntoModel(user, model);
-
+		model.addAttribute("currentPage","/database");
 		return "database";
 	}
 	

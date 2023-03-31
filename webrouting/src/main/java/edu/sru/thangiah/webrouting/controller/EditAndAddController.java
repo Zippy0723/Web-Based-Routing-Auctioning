@@ -124,6 +124,7 @@ public class EditAndAddController {
           .orElseThrow(() -> new IllegalArgumentException("Invalid Technician Id:" + id));
 	     model.addAttribute("technicians", technician);
 	     model.addAttribute("redirectLocation", (String) session.getAttribute("redirectLocation"));
+	     model.addAttribute("currentPage","/technicians");
 	     
 	     User user = getLoggedInUser();
 	     model = NotificationController.loadNotificationsIntoModel(user, model);
@@ -138,6 +139,7 @@ public class EditAndAddController {
         
         
         model.addAttribute("redirectLocation", (String) session.getAttribute("redirectLocation"));
+        model.addAttribute("currentPage","/contacts");
   		User user = getLoggedInUser();
         model = NotificationController.loadNotificationsIntoModel(user, model);
         
@@ -156,6 +158,7 @@ public class EditAndAddController {
         
         
         model.addAttribute("redirectLocation", (String) session.getAttribute("redirectLocation"));
+        model.addAttribute("currentPage","/locations");
   		User user = getLoggedInUser();
         model = NotificationController.loadNotificationsIntoModel(user, model);
         
@@ -174,6 +177,7 @@ public class EditAndAddController {
         model.addAttribute("redirectLocation", (String) session.getAttribute("redirectLocation"));
               
 		model.addAttribute("vehicleTypes", vehicleType);
+		model.addAttribute("currentPage","/vehicletypes");
         
   		User user = getLoggedInUser();
         model = NotificationController.loadNotificationsIntoModel(user, model);
@@ -188,6 +192,7 @@ public class EditAndAddController {
 		Vehicles vehicle = vehiclesRepository.findById(id)
           .orElseThrow(() -> new IllegalArgumentException("Invalid Vehicle Id:" + id));
 		 User user = getLoggedInUser();
+		 model.addAttribute("currentPage","/vehicles");
 		 
 		 model = NotificationController.loadNotificationsIntoModel(user, model);
 		 model.addAttribute("redirectLocation", (String) session.getAttribute("redirectLocation"));
@@ -210,6 +215,7 @@ public class EditAndAddController {
 		 
 		 model = NotificationController.loadNotificationsIntoModel(user, model);
 		 model.addAttribute("redirectLocation", (String) session.getAttribute("redirectLocation"));
+		 model.addAttribute("currentPage","/drivers");
 		 
 		 model.addAttribute("driver", driver); 
 
@@ -229,6 +235,7 @@ public class EditAndAddController {
 		 
 		 model = NotificationController.loadNotificationsIntoModel(user, model);
 		 model.addAttribute("redirectLocation", (String) session.getAttribute("redirectLocation"));
+		 model.addAttribute("currentPage","/users");
 		 
 		 model.addAttribute("user", userForm);
 
@@ -244,6 +251,7 @@ public class EditAndAddController {
           .orElseThrow(() -> new IllegalArgumentException("Invalid maintenance Id:" + id));
 		User user = getLoggedInUser();
 		
+		model.addAttribute("currentPage","/maintenanceorders");
 		model.addAttribute("technicians", techniciansRepository.findAll());
 		model.addAttribute("vehicles", user.getCarrier().getVehicles());
 	    model.addAttribute("maintenanceOrders", maintenanceOrder);
@@ -265,6 +273,7 @@ public class EditAndAddController {
 
 	    model.addAttribute("shipments", shipment);
 	    model.addAttribute("redirectLocation", session.getAttribute("redirectLocation"));
+	    model.addAttribute("currentPage","/shipments");
 	    
 	    session.removeAttribute("message");
 
@@ -717,6 +726,7 @@ public class EditAndAddController {
     public String showCarrierAddForm(User user, Model model, HttpSession session) {
 		 model.addAttribute("userForm", new User());
 		 model.addAttribute("redirectLocation", (String) session.getAttribute("redirectLocation"));
+	     model = NotificationController.loadNotificationsIntoModel(getLoggedInUser(), model);
 		 
 
 		 session.removeAttribute("message");
