@@ -1,10 +1,15 @@
 package edu.sru.thangiah.webrouting.controller;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import edu.sru.thangiah.webrouting.domain.User;
 import edu.sru.thangiah.webrouting.repository.RoleRepository;
+import edu.sru.thangiah.webrouting.services.SecurityService;
+import edu.sru.thangiah.webrouting.services.UserService;
 
 /**
  * Handles the Thymeleaf controls for the pages
@@ -15,6 +20,12 @@ import edu.sru.thangiah.webrouting.repository.RoleRepository;
 
 @Controller
 public class RolesController {
+	
+	@Autowired
+	private SecurityService securityService;
+	
+	@Autowired
+	private UserService userService;
 	
 	private RoleRepository roleRepository;
     
@@ -36,6 +47,21 @@ public class RolesController {
     @RequestMapping({"/roles"})
     public String showRoleList(Model model) {
         model.addAttribute("role", roleRepository.findAll());
+        model = NotificationController.loadNotificationsIntoModel(getLoggedInUser(), model);
         return "roles";
+    }
+    
+    public User getLoggedInUser() {
+    	if (securityService.isAuthenticated()) {
+    		org.springframework.security.core.userdetails.User user = 
+    				(org.springframework.security.core.userdetails.User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+    		
+    		User user2 = userService.findByUsername(user.getUsername());
+    		
+    		return user2;
+    	}
+    	else {
+    		return null;
+    	}
     }
 }

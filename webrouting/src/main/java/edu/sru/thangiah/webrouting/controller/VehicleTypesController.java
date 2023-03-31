@@ -74,6 +74,7 @@ public class VehicleTypesController {
 		session.setAttribute("redirectLocation", redirectLocation);
 		model.addAttribute("redirectLocation", redirectLocation);
         model.addAttribute("vehicletypes", carrier.getVehicleTypes());
+        model.addAttribute("currentPage","/vehicletypes");
         
         try {
         	model.addAttribute("error",session.getAttribute("error"));
@@ -100,6 +101,7 @@ public class VehicleTypesController {
 		User user = getLoggedInUser();
 		model = NotificationController.loadNotificationsIntoModel(user, model);
 		model.addAttribute("redirectLocation", (String) session.getAttribute("redirectLocation"));
+		model.addAttribute("currentPage","/vehicletypes");
 		return "/add/add-vehicletype";
 	}
 	
@@ -120,7 +122,8 @@ public class VehicleTypesController {
 		model = NotificationController.loadNotificationsIntoModel(loggedInUser, model);
 		String redirectLocation = (String) session.getAttribute("redirectLocation");
 		model.addAttribute("redirectLocation", session.getAttribute("redirectLocation")); 
-
+		model.addAttribute("currentPage","/vehicletypes");
+		
   		if (result.hasErrors()) {	
   			return "/add/add-vehicletype";
 		}
@@ -160,6 +163,7 @@ public class VehicleTypesController {
     
     @RequestMapping({"/uploadvehicletypes"})
     public String showAddVehicleTypesExcel(Model model) {
+       model.addAttribute("currentPage","/vehicletypes");
  	   return "/uploadvehicletypes";
     }
 	
@@ -177,6 +181,7 @@ public class VehicleTypesController {
         
         User loggedInUser = getLoggedInUser();
         model = NotificationController.loadNotificationsIntoModel(loggedInUser, model);
+        model.addAttribute("currentPage","/vehicletypes");
         if(!vehicleTypes.getVehicles().isEmpty()) {
         	session.setAttribute("error", "Unable to delete due to dependency conflict.");
         	Logger.error("{} || failed to delete the vehicle type due to dependency conflict.", loggedInUser.getUsername());
@@ -202,7 +207,9 @@ public class VehicleTypesController {
   		
   		User loggedInUser = getLoggedInUser();
   		model = NotificationController.loadNotificationsIntoModel(loggedInUser, model);
+  		model.addAttribute("currentPage","/vehicletypes");
   		Logger.info("{} || successfully deleted the Vehicle type with ID {}.", loggedInUser.getUsername(),vehicleTypes.getId());
+
   		vehicleTypesRepository.delete(vehicleTypes);
         return "redirect:/vehicletypes";
     }
@@ -222,6 +229,7 @@ public class VehicleTypesController {
         model.addAttribute("redirectLocation", (String) session.getAttribute("redirectLocation"));
         
         model.addAttribute("vehicletypes", vehicleType);
+        model.addAttribute("currentPage","/vehicletypes");
         
         User user = getLoggedInUser();
         model = NotificationController.loadNotificationsIntoModel(user, model);

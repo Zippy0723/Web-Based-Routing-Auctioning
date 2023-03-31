@@ -115,6 +115,7 @@ public class ShipmentsController {
 		
 		User user = getLoggedInUser();
         model = NotificationController.loadNotificationsIntoModel(user, model);
+        model.addAttribute("currentPage","/shipments");
 		
 		return "shipmentshomeshipper";
 	}
@@ -129,6 +130,7 @@ public class ShipmentsController {
 		
 		User user = getLoggedInUser();
         model = NotificationController.loadNotificationsIntoModel(user, model);
+        model.addAttribute("currentPage","/shipments");
 		
 		return "shipmentshomecarrier";
 	}
@@ -143,6 +145,7 @@ public class ShipmentsController {
 		
 		User user = getLoggedInUser();
         model = NotificationController.loadNotificationsIntoModel(user, model);
+        model.addAttribute("currentPage","/shipments");
         
 		return "shipmentshomemaster";
 	}
@@ -166,6 +169,7 @@ public class ShipmentsController {
 		}
 		
         model = NotificationController.loadNotificationsIntoModel(user, model);
+        model.addAttribute("currentPage","/shipments");
 		
         return "shipments";
     }
@@ -183,6 +187,7 @@ public class ShipmentsController {
 		List<Shipments> shipmentsWOCarrier = new ArrayList<>();
 		User user = getLoggedInUser();
 		model.addAttribute("user",user);
+		model.addAttribute("currentPage","/shipments");
 		session.setAttribute("redirectLocation", "/createdshipments");
 		try {
 			model.addAttribute("message",session.getAttribute("message"));
@@ -236,6 +241,7 @@ public class ShipmentsController {
 	public String showAcceptedShipmentsList(Model model, HttpSession session) {
 		List<Shipments> shipmentsWCarrier = new ArrayList<>();
 		User user = getLoggedInUser();
+		model.addAttribute("currentPage","/shipments");
 		session.setAttribute("redirectLocation", "/acceptedshipments");
 		try {
 			model.addAttribute("message",session.getAttribute("message"));
@@ -312,6 +318,7 @@ public class ShipmentsController {
 		List<Shipments> shipmentsFrozen = new ArrayList<>();
 		User user = getLoggedInUser();
 		session.setAttribute("redirectLocation", "/frozenshipments");
+		model.addAttribute("currentPage","/shipments");
 		List<Shipments> shipments;
 		
 		try {
@@ -362,6 +369,7 @@ public class ShipmentsController {
 		User user = getLoggedInUser();
 		model.addAttribute("user",user);
         model = NotificationController.loadNotificationsIntoModel(user, model);
+        model.addAttribute("currentPage","/shipments");
 		session.setAttribute("redirectLocation", "/pendingshipments");
 		List<Shipments> shipments;
 		
@@ -415,6 +423,7 @@ public class ShipmentsController {
 		model.addAttribute("user",user);
 		String status = "";	
 		model = NotificationController.loadNotificationsIntoModel(user, model);
+		model.addAttribute("currentPage","/shipments");
 		
 		try {
 			model.addAttribute("message",session.getAttribute("message"));
@@ -509,6 +518,7 @@ public class ShipmentsController {
 		List<Shipments> shipmentsAwaitingAcceptance = new ArrayList<>();
 		User user = getLoggedInUser();
         model = NotificationController.loadNotificationsIntoModel(user, model);
+        model.addAttribute("currentPage","/shipments");
 		session.setAttribute("redirectLocation", "/awaitingshipments");
 		List<Shipments> shipments;
 		
@@ -561,6 +571,7 @@ public class ShipmentsController {
 	public String showList(Model model, Shipments shipment, BindingResult result) {
 		model.addAttribute("carriers", carriersRepository.findAll());
 		model.addAttribute("vehicles", vehiclesRepository.findAll());
+		model.addAttribute("currentPage","/shipments");
 		
 		User user = getLoggedInUser();
         model = NotificationController.loadNotificationsIntoModel(user, model);
@@ -755,6 +766,7 @@ public class ShipmentsController {
         
         model.addAttribute("redirectLocation", session.getAttribute("redirectLocation"));
         model.addAttribute("bids", shipment.getBids());
+        model.addAttribute("currentPage","/shipments");
         
         if (shipment.getCarrier() != null) {
         	
@@ -789,6 +801,7 @@ public class ShipmentsController {
 		Shipments shipment = shipmentsRepository.findById(id)
 		.orElseThrow(() -> new IllegalArgumentException("Invalid Shipment Id:" + id));
 		String redirectLocation = (String) session.getAttribute("redirectLocation");
+		model.addAttribute("currentPage","/shipments");
 		
 		model.addAttribute("redirectLocation",redirectLocation);
 		model.addAttribute("shipments", shipment);
@@ -812,6 +825,7 @@ public class ShipmentsController {
 	     .orElseThrow(() -> new IllegalArgumentException("Invalid Shipment Id:" + id));
 		User user = getLoggedInUser();
         model = NotificationController.loadNotificationsIntoModel(user, model);
+        model.addAttribute("currentPage","/shipments");
 		
         notificationService.addNotification(shipment.getUser(), 
         		"ALERT: Your shipment with ID " + shipment.getId() + " and Client " + shipment.getClient() + " was frozen by " + user.getUsername(), false);
@@ -837,6 +851,7 @@ public class ShipmentsController {
 		.orElseThrow(() -> new IllegalArgumentException("Invalid Shipment Id:" + id));
 		
 		model.addAttribute("shipments", shipment);
+		model.addAttribute("currentPage","/shipments");
 		
 		User user = getLoggedInUser();
         model = NotificationController.loadNotificationsIntoModel(user, model);
@@ -885,6 +900,7 @@ public class ShipmentsController {
 		User user = getLoggedInUser();
 		model.addAttribute("user",user);
 		model = NotificationController.loadNotificationsIntoModel(user, model);
+		model.addAttribute("currentPage","/shipments");
 
 		try {
 			model.addAttribute("message",session.getAttribute("message"));
