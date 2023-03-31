@@ -49,16 +49,13 @@
                                     <th>Client</th>
                                     <th>Client Mode</th>
                                     <th>Ship Date</th>
-                                    <th>Full Freight Terms</th>
                                     <th>Commodity Class</th>
                                     <th>Commodity Pieces</th>
                                     <th>Commodity Paid Weight</th>
                                     <th>Shipper City</th>
                                     <th>Shipper State</th>
-                                    <th>Shipper Zip</th>
                                     <th>Consignee City</th>
                                     <th>Consignee State</th>
-                                    <th>Consignee Zip</th>
                                     <th>View Bids</th>
                                     <th>Winning Bid</th>
                                   
@@ -78,16 +75,13 @@
                                     <td th:text="${shipment.client}"></td>
                                     <td th:text="${shipment.clientMode}"></td>
                                     <td th:text="${shipment.shipDate}"></td>
-                                    <td th:text="${shipment.fullFreightTerms}"></td>
                                     <td th:text="${shipment.commodityClass}"></td>
                                     <td th:text="${shipment.commodityPieces}"></td>
                                     <td th:text="${shipment.commodityPaidWeight}"></td>
                                     <td th:text="${shipment.shipperCity}"></td>
                                     <td th:text="${shipment.shipperState}"></td>
-                                    <td th:text="${shipment.shipperZip}"></td>
                                     <td th:text="${shipment.consigneeCity}"></td>
                                     <td th:text="${shipment.consigneeState}"></td>
-                                    <td th:text="${shipment.consigneeZip}"></td>
                                     <td><a th:href="@{/viewshipmentbids/{id}(id=${shipment.id})}"><button class="buttons11" role="button">([[${shipment.getBids().size()}]])</button></a></td>
                                     <td><p th:inline="text">[[${shipment.getLowestBidValue()}]]</p></td>
                                     <td sec:authorize="hasAuthority('CARRIER')"><a th:classappend="${user.auctioningAllowed ? '' : 'disabled-btn'}" th:href="@{/add-bid/{id}(id=${shipment.id})}">Add Bid</a></td>

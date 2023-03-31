@@ -51,7 +51,6 @@
                                     <th>Ship Date</th>
                                     <th>Freightbill Number</th>
                                     <th>Paid Amount</th>
-                                    <th>Full Freight Terms</th>
                                     <th>Commodity Class</th>
                                     <th>Commodity Pieces</th>
                                     <th>Commodity Paid Weight</th>
@@ -77,7 +76,6 @@
                                     <td th:text="${shipment.shipDate}"></td>
                                     <td th:text="${shipment.freightbillNumber}"></td>
                                     <td th:text="${shipment.paidAmount}"></td>
-                                    <td th:text="${shipment.fullFreightTerms}"></td>
                                     <td th:text="${shipment.commodityClass}"></td>
                                     <td th:text="${shipment.commodityPieces}"></td>
                                     <td th:text="${shipment.commodityPaidWeight}"></td>
@@ -104,7 +102,7 @@
 
 		<div class="footer">
         </div>
-		<script src="javascript/pageload.js"> <!-- This is like this because this page can be accessed both in a nested and non nested manor. it is not the best solution as it puts an error into the webconsole but it shows no error on the user end -->
+		<script src="javascript/pageload.js">
 		</script>
 		<script src="../javascript/pageload.js">
 		</script>

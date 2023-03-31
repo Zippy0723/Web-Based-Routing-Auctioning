@@ -282,13 +282,6 @@ a.navlink:hover{
 
 	font-weight: bold;
 	}
-	#hamburger {
-	z-index: 1;
-	position: fixed;
-	max-width:7px;
-	max-height:7px;
-	box-shadow: 0 0 10px rgb(0, 0, 0);
-	}
 	
 	.dropbtn {
   display: inline-block;

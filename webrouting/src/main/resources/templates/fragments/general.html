@@ -15,7 +15,12 @@
                             <a th:class="${currentPage == '/' ? 'selected' : 'navlink'}" id="nav_home" href="/">Home</a>
                         </li>
                         <li sec:authorize="hasAuthority('ADMIN')" class="navitem">
-                            <a th:class="${currentPage == '/users' ? 'selected' : 'navlink'}" id="nav_users" href="/userhome">Users</a>
+              				<button onclick="showDropdown()" th:class="${currentPage == '/users' ? 'dropbtn_selected' : 'dropbtn'}">Users</button>
+  							<div id="shipmentsDropdown" class="dropdown-content">
+    							<a href="/users">All Users</a>
+    							<a href="/CarrierAdministrationPage">Carriers</a>
+    							<a href="/ShipperAdministrationPage">Shippers</a>
+  							</div>
                         </li>
                         <li sec:authorize="hasAuthority('CARRIER')" class="navitem">
                             <a th:class="${currentPage == '/contacts' ? 'selected' : 'navlink'}" id="nav_contacts" href="/contacts">Contacts</a>
@@ -42,7 +47,15 @@
                             <a th:class="${currentPage == '/carriers' ? 'selected' : 'navlink'}" id="nav_carriers" href="/carriers">Carriers</a>
                         </li>
                         <li sec:authorize="hasAuthority('MASTERLIST')" class="navitem">
-                            <a th:class="${currentPage == '/shipmentshomemaster' ? 'selected' : 'navlink'}" id="nav_shipments_home_masterlist" href="/shipmentshomemaster">Shipments</a>
+              				<button onclick="showDropdown()" th:class="${currentPage == '/shipments' ? 'dropbtn_selected' : 'dropbtn'}">Shipments</button>
+  							<div id="shipmentsDropdown" class="dropdown-content">
+    							<a href="/allshipments">All Shipments</a>
+    							<a href="/pendingshipments">Pending Shipments</a>
+    							<a href="/createdshipments">Available Shipments</a>
+    							<a href="/frozenshipments">Frozen Shipments</a>
+    							<a href="/awaitingshipments">Awaiting Acceptance Shipments</a>
+    							<a href="/acceptedshipments">Accepted Shipments</a>
+  							</div>
                         </li>
                         <li sec:authorize="hasAuthority('SHIPPER')" class="navitem">
               				<button onclick="showDropdown()" th:class="${currentPage == '/shipments' ? 'dropbtn_selected' : 'dropbtn'}">Shipments</button>
