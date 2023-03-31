@@ -764,7 +764,12 @@ public class EditAndAddController {
 			Logger.error("{} || attempted to add a carrier but the username was not between 1 and 32 alphanumeric characters.",loggedInUser.getUsername());
 			model.addAttribute("message", "Username must be between 1 and 32 alphanumeric characters.");
 			return "/add/add-carrier";	
-		}	
+		}
+		if (!(password.length() <= 32 && password.length() > 7)) {
+			Logger.error("{} || attempted to add a carrier but the password was not between 1 and 32 alphanumeric characters.",loggedInUser.getUsername());
+			model.addAttribute("message", "password must be between 8 and 32 alphanumeric characters.");
+			return "/add/add-carrier";	
+		}
 		
 		for(User check: repoUsers) {
 			String repoUsername = check.getUsername().strip();
@@ -849,7 +854,7 @@ public class EditAndAddController {
 
 		carriersRepository.save(carrierResult);
 		result.setCarrier(carrierResult);
-        userRepository.save(result);
+        userService.save(result);
   		Logger.info("{} || successfully saved a carrier with ID {}.", loggedInUser.getUsername(), result.getId());
   		
   		return "redirect:" + redirectLocation;
