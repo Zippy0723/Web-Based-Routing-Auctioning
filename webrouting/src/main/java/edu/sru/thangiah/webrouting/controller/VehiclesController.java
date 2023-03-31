@@ -231,32 +231,32 @@ public class VehiclesController {
 
 	    		if (!(manufacturedYear.length() == 4) || !(manufacturedYear.matches("^[0-9]+$"))) {
 	    			workbook.close();
-	    			Logger.error("{} attempted to upload a vehicle but the Manufactured Year must be 4 numeric characters.",user.getUsername());
+	    			Logger.error("{} || attempted to upload a vehicle but the Manufactured Year must be 4 numeric characters.",user.getUsername());
 	    			continue;
 	    		}
 	    		
 	    		
 	    		if(!(plateNumber.length() < 12 && plateNumber.length() > 0 && plateNumber.matches("^[a-zA-Z0-9.]+$"))) { 
 	    			workbook.close();
-	    			Logger.error("{} attempted to upload a vehicle but the Plate Number must be between 0 and 12 alphanumeric characters.",user.getUsername());
+	    			Logger.error("{} || attempted to upload a vehicle but the Plate Number must be between 0 and 12 alphanumeric characters.",user.getUsername());
 	    			continue;
 	    		}
 	    		
 	    		if(!(vinNumber.length() < 17 && vinNumber.length() > 0) || !(vinNumber.matches("^[a-zA-Z0-9]+$"))) {
 	    			workbook.close();
-	    			Logger.error("{} attempted to upload a vehicle but the Vin Number must be between 0 and 17 alphanumeric characters.",user.getUsername());
+	    			Logger.error("{} || attempted to upload a vehicle but the Vin Number must be between 0 and 17 alphanumeric characters.",user.getUsername());
 	    			continue;
 	    		}
 	    		
 	    		if(!(vehicleTypeIdList.contains(vehicleTypeID))) {
 	    			workbook.close();
-	    			Logger.error("{} attempted to upload a vehicle but the Vehicle Type ID does not exist.",user.getUsername());
+	    			Logger.error("{} || attempted to upload a vehicle but the Vehicle Type ID does not exist.",user.getUsername());
 	    			continue;
 	    		}
 	    		
 	    		if(!(locationIdList.contains(locationID))) {
 	    			workbook.close();
-	    			Logger.error("{} attempted to upload a vehicle but the Vehicle Type ID does not exist.",user.getUsername());
+	    			Logger.error("{} || attempted to upload a vehicle but the Vehicle Type ID does not exist.",user.getUsername());
 	    			continue;
 	    		}
 	    		
@@ -269,7 +269,7 @@ public class VehiclesController {
 	    		
 	    		
 		        vehiclesRepository.save(vehicle);
-		        Logger.info("{} successfully saved vehicle with ID {}.", user.getUsername(), vehicle.getId());
+		        Logger.info("{} || successfully saved vehicle with ID {}.", user.getUsername(), vehicle.getId());
 			 		
 			 }
 			 
@@ -321,7 +321,7 @@ public class VehiclesController {
   		
   		if(deny == true) {
   			model.addAttribute("error", "Unable to add Vehicle. Vehicle VIN or Plate Number already exists");
-  			Logger.error("{} was unable to add Vehicle because VIN or Plate Number already exists.", user.getUsername());
+  			Logger.error("{} || was unable to add Vehicle because VIN or Plate Number already exists.", user.getUsername());
   			model.addAttribute("vehicles", user.getCarrier().getVehicles());
   			
   			User users = getLoggedInUser();
@@ -337,7 +337,7 @@ public class VehiclesController {
   		}
   		
   		vehiclesRepository.save(vehicles);
-  		Logger.error("{} successfully added vehicle with ID {}.", user.getUsername(), vehicles.getId());
+  		Logger.info("{} || successfully added vehicle with ID {}.", user.getUsername(), vehicles.getId());
   		
   		User users = getLoggedInUser();
         List<Notification> notifications = new ArrayList<>();
@@ -368,7 +368,7 @@ public class VehiclesController {
         model.addAttribute("currentPage","/vehicles");
         if (!vehicle.getOrders().isEmpty() || !vehicle.getShipments().isEmpty() || !vehicle.getDrivers().isEmpty()){
         	session.setAttribute("error", "Unable to delete due to dependency conflict.");
-        	Logger.error("{} was unable to delete due to dependency conflict.", user.getUsername());
+        	Logger.error("{} || was unable to delete due to dependency conflict.", user.getUsername());
         	model.addAttribute("vehicles", vehiclesRepository.findAll());
         	
         	return "redirect:" + (String) session.getAttribute("redirectLocation");
@@ -398,7 +398,7 @@ public class VehiclesController {
   					"ALERT: Your vehicle with plate number " + vehicle.getPlateNumber() + " was deleted by " + user.getUsername(), false);
   		}
   		
-  		Logger.info("{} successfully deleted the vehicle with ID {}." ,user.getUsername() ,vehicle.getId());
+  		Logger.info("{} || successfully deleted the vehicle with ID {}." ,user.getUsername() ,vehicle.getId());
   		vehiclesRepository.delete(vehicle);
         return "redirect:/vehicles";
     }

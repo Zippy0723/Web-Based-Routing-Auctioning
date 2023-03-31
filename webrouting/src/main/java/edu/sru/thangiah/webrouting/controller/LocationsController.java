@@ -148,13 +148,13 @@ public class LocationsController {
   		
   		if(deny == true) {
   			model.addAttribute("error", "Unable to add Location. Location address or name already exists");
-  			Logger.error("{} was unable to add location {} because the address or name already exists.", user.getUsername(), location.getName());
+  			Logger.error("{} || was unable to add location '{}' because the address or name already exists.", user.getUsername(), location.getName());
   			model.addAttribute("locations", user.getCarrier().getLocations());
   			return "locations";
 			 
   		}
   		locationsRepository.save(location);
-  		Logger.info("{} successfully saved location with ID {}.", user.getUsername(), location.getId());
+  		Logger.info("{} || successfully saved location with ID {}.", user.getUsername(), location.getId());
   		return "redirect:" + redirectLocation;
   	}
 	
@@ -186,7 +186,7 @@ public class LocationsController {
         model.addAttribute("currentPage","/locations");
         if (!location.getVehicles().isEmpty()) {
         	session.setAttribute("error", "Unable to delete due to dependency conflict.");
-        	Logger.error("Unable to delete location due to dependecy conflict.");
+        	Logger.error("{} || attempted to delete location but was unable to due to dependecy conflict.",user.getUsername());
         	model.addAttribute("locations", user.getCarrier().getLocations());
         	
         	return "redirect:" + (String) session.getAttribute("redirectLocation");
@@ -210,7 +210,8 @@ public class LocationsController {
   		User loggedInUser = getLoggedInUser();
         model = NotificationController.loadNotificationsIntoModel(loggedInUser, model);
         model.addAttribute("currentPage","/locations");
-  		Logger.info("{} successfully deleted the location with ID {}.",loggedInUser.getUsername(), location.getId());
+  		Logger.info("{} || successfully deleted the location with ID {}.",loggedInUser.getUsername(), location.getId());
+
   		locationsRepository.delete(location);
   	    return "redirect:/locations";
     }

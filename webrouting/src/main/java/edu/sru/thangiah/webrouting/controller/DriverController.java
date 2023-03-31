@@ -141,14 +141,14 @@ public class DriverController {
   		
   		if(deny == true) {
   			model.addAttribute("error", "Unable to add Driver. Lisence number already exists or Contact already in use");
-  			Logger.error("{} was unable to add a driver because lisence number already exists or contact already in use for driver with ID {}.", user.getUsername(), drivers.getId());
+  			Logger.error("{} || was unable to add a driver because lisence number already exists or contact already in use for driver with ID {}.", user.getUsername(), drivers.getId());
   			model.addAttribute("drivers", user.getCarrier().getDrivers());
   			
   			return "drivers";
   		}
   		
   		driverRepository.save(drivers);
-  		Logger.info("{} sucessfully added new driver with ID {}.", user.getUsername(), drivers.getId());
+  		Logger.info("{} || sucessfully added new driver with ID {}.", user.getUsername(), drivers.getId());
   		
   		return "redirect:" + redirectLocation;
   	}
@@ -198,7 +198,8 @@ public class DriverController {
   		User user = getLoggedInUser();
         model = NotificationController.loadNotificationsIntoModel(user, model);
         model.addAttribute("currentPage","/drivers");
-  		Logger.info("{} successfully deleted driver with ID {}.", user.getUsername(), drivers.getId());
+  		Logger.info("{} || successfully deleted driver with ID {}.", user.getUsername(), drivers.getId());
+
   		driverRepository.delete(drivers);
   	    return "redirect:/drivers";
     }

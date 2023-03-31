@@ -23,7 +23,7 @@ public class CustomLoginSuccessHandler extends SimpleUrlAuthenticationSuccessHan
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
             Authentication authentication) throws IOException, ServletException {
        
-        Logger.info("{} logged in.", authentication.getName());
+        Logger.info("{} || logged in.", authentication.getName());
 
         super.onAuthenticationSuccess(request, response, authentication);
     }

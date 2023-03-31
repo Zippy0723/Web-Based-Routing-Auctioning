@@ -123,6 +123,7 @@ public class LoginController {
     public String registrationShipper(@ModelAttribute("userForm") User userForm,BindingResult bindingResult, RedirectAttributes redirectAttr) throws IOException, MessagingException {
         userValidator.validate(userForm, bindingResult);
         Role role = new Role();
+        
         String websiteUrl;
         role.setName("SHIPPER");
         role.setId(2);
@@ -131,7 +132,6 @@ public class LoginController {
         userForm.setCarrier(null);
         googleResponse= request.getParameter("g-recaptcha-response");
         if(!captcha.VerifyRecaptcha(googleResponse)) {
-        	Logger.error("Failed recaptcha after creating shipper.");
         	return "registrationshipper";
         }
         
@@ -143,7 +143,7 @@ public class LoginController {
         emailImpl.saveVerificationCode(userForm);
         emailImpl.sendVerification(userForm, websiteUrl);
         redirectAttr.addFlashAttribute("emailMessage","Your Account Has been Created Please Check Your Inbox or Spam  to Verify Your Account");
-        Logger.info("{} shipper account was created.", userForm.getUsername());
+        Logger.info("{} || shipper account was created.", userForm.getUsername());
         return "redirect:login";
     }
 
@@ -242,7 +242,6 @@ public class LoginController {
   		
   		if(deny == true) {
   			model.addAttribute("error", "Unable to add Carrier. Carrier name or SCAC code already exists");
-  			Logger.error("Unable to add Carrier. Carrier name or SCAC code already exists");
   			return "registrationcarrier";	 
   		}
   		String websiteUrl;
@@ -253,7 +252,7 @@ public class LoginController {
         emailImpl.saveVerificationCode(userForm);
         emailImpl.sendVerification(userForm, websiteUrl);
         redirectAttr.addFlashAttribute("emailMessage","Your Account Has been Created Please Check Your Email to Verify Your Account");
-        Logger.info("{} account was created.", carrierName);
+        Logger.info("{} || carrier account was created.", carrierName);
         return "redirect:login";
     }
     
@@ -272,7 +271,6 @@ public class LoginController {
 
         if (error != null) {
             model.addAttribute("error", "Your username and password is invalid.");
-            Logger.error("Login attempt failed.");
         }
         return "registrationlogin";
     }
@@ -292,7 +290,6 @@ public class LoginController {
             return "redirect:/";
         }
         if (error != null) {
-        	Logger.error("Login attempt failed.");
             model.addAttribute("error", "Your username or password is invalid.");
         }
         if (logout != null) { 
@@ -328,7 +325,6 @@ public class LoginController {
      */
     @GetMapping("/403")
     public String error403() {
-    	Logger.error("Error 403 occured.");
         return "/403";
     }
     

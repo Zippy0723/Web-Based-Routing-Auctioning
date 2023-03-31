@@ -245,12 +245,12 @@ public class CarriersController {
   		if(deny == true) {
   			model.addAttribute("error", "Unable to update Carrier. Carrier name or SCAC code already exists");
   			model.addAttribute("carriers", user.getCarrier());
-  			Logger.error("{} attempted to update {}, carrier. Update failed because Carrier name or SCAC code already exists.", user.getUsername(), carrier.getCarrierName());
+  			Logger.error("{} || attempted to update {}, carrier. Update failed because Carrier name or SCAC code already exists.", user.getUsername(), carrier.getCarrierName());
   			return "redirect:" + redirectLocation;
   		}
             
         carriersRepository.save(carrier);
-        Logger.info("{} successfully updated the carrier with ID {}.", user.getUsername() , carrier.getId());
+        Logger.info("{} || successfully updated the carrier with ID {}.", user.getUsername() , carrier.getId());
         return "redirect:" + redirectLocation;
     }
 	
