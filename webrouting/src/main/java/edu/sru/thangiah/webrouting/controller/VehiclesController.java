@@ -98,6 +98,7 @@ public class VehiclesController {
 		String redirectLocation = "/vehicles";
 		session.setAttribute("redirectLocation", redirectLocation);
 		model.addAttribute("redirectLocation", redirectLocation);
+		model.addAttribute("currentPage","/vehicles");
 		
 		try {
 			model.addAttribute("error",session.getAttribute("error"));
@@ -152,6 +153,7 @@ public class VehiclesController {
 			model.addAttribute("carriers", user.getCarrier());
 			model.addAttribute("vehicleTypes", user.getCarrier().getVehicleTypes()); 
 		    model.addAttribute("locations", user.getCarrier().getLocations()); 
+		    model.addAttribute("currentPage","/vehicles");
 		    
 	        return "/add/add-vehicle";
 		
@@ -295,6 +297,7 @@ public class VehiclesController {
 		userValidator.addition(vehicles, result);
 		User user = getLoggedInUser();
   		model = NotificationController.loadNotificationsIntoModel(user, model);
+  		model.addAttribute("currentPage","/vehicles");
 		String redirectLocation = (String) session.getAttribute("redirectLocation");
 		model.addAttribute("redirectLocation", session.getAttribute("redirectLocation")); 
 
@@ -362,6 +365,7 @@ public class VehiclesController {
         
         User user = getLoggedInUser();
         model = NotificationController.loadNotificationsIntoModel(user, model);
+        model.addAttribute("currentPage","/vehicles");
         if (!vehicle.getOrders().isEmpty() || !vehicle.getShipments().isEmpty() || !vehicle.getDrivers().isEmpty()){
         	session.setAttribute("error", "Unable to delete due to dependency conflict.");
         	Logger.error("{} was unable to delete due to dependency conflict.", user.getUsername());
@@ -386,6 +390,7 @@ public class VehiclesController {
   	          .orElseThrow(() -> new IllegalArgumentException("Invalid vehicle Id:" + id));
   		User user = getLoggedInUser();
   		model = NotificationController.loadNotificationsIntoModel(user, model);
+  		model.addAttribute("currentPage","/vehicles");
   		User carrierUser = CarriersController.getUserFromCarrier(vehicle.getCarrier());
   		
   		if(user.getId() != carrierUser.getId()) {
@@ -413,6 +418,7 @@ public class VehiclesController {
           .orElseThrow(() -> new IllegalArgumentException("Invalid vehicle Id:" + id));
         
         model.addAttribute("vehicles", vehicle);
+        model.addAttribute("currentPage","/vehicles");
         
         User user = getLoggedInUser();
         model = NotificationController.loadNotificationsIntoModel(user, model);
@@ -435,6 +441,7 @@ public class VehiclesController {
         Vehicles vehicle = vehiclesRepository.findById(id)
           .orElseThrow(() -> new IllegalArgumentException("Invalid vehicle Id:" + id));
         
+        model.addAttribute("currentPage","/drivers");
         model.addAttribute("drivers", vehicle.getDrivers());
         model.addAttribute("redirectLocation", (String) session.getAttribute("redirectLocation"));
         
@@ -458,6 +465,7 @@ public class VehiclesController {
         
         model.addAttribute("shipments", vehicle.getShipments());
         model.addAttribute("redirectLocation", (String) session.getAttribute("redirectLocation"));
+        model.addAttribute("currentPage","/vehicles");
         
         User user = getLoggedInUser();
         model = NotificationController.loadNotificationsIntoModel(user, model);

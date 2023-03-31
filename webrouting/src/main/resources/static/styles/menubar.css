@@ -211,3 +211,140 @@ a.navlink:hover{
 #menu a:hover {
 	cursor: pointer;
 }
+
+/*shrinks the sidebar a bit if the user shrinks the window/has a smaller screen */
+@media only screen and (max-width: 1920px) {
+    .navSideBar {
+	height: 100%;
+	width: 90px;
+	top:32px;
+	min-width: 90px;
+	max-width: 110px;
+	z-index: 1;
+	position: fixed;
+	background: #484848;
+
+	box-shadow: 0 0 20px rgb(0, 0, 0);
+	border-bottom: 1px solid grey;
+    }
+
+    a.navlink {
+ 	display: inline-block;
+	
+	/* float: right; */
+	font-size: 12px;
+	min-width: 75px;
+	height: 19px;
+	line-height: 19px;
+	
+	color: black;
+	background: #ccc;
+	text-align: center;
+	text-decoration: none;
+	
+	margin-left: 4px;
+	margin-top: 6px;
+	padding-top: 2px;
+	padding-left: 2px;
+	padding-right: 2px;
+	
+	border: 1px solid grey;
+
+	box-shadow: 0 0 5px rgb(0, 0, 0);
+    }
+    
+    .selected {
+ 	display: inline-block;
+	
+	/* float: right; */
+	font-size: 12px;
+	min-width: 75px;
+	height: 19px;
+	line-height: 19px;
+	
+	color: black;
+	background: #ccc;
+	text-align: center;
+	text-decoration: none;
+	
+	margin-left: 4px;
+	margin-top: 6px;
+	padding-top: 2px;
+	padding-left: 2px;
+	padding-right: 2px;
+	
+	border: 1px solid grey;
+
+	box-shadow: 0 0 5px rgb(0, 0, 0);
+
+	background: white !important;
+	border-bottom: 1px solid white !important;
+
+	font-weight: bold;
+	}
+	#hamburger {
+	z-index: 1;
+	position: fixed;
+	max-width:7px;
+	max-height:7px;
+	box-shadow: 0 0 10px rgb(0, 0, 0);
+	}
+	
+	.dropbtn {
+  display: inline-block;
+  min-width: 80px;
+  height: 19x;
+  line-height: 19px;
+  font-size: 12px;
+  color: black;
+  background: #ccc;
+  text-align: center;
+  text-decoration: none;
+  margin-left: 4px;
+  margin-top: 6px;
+  padding-top: 2px;
+  padding-left: 2px;
+  padding-right: 2px;
+  border: 1px solid grey;
+  box-shadow: 0 0 5px rgb(0, 0, 0);
+  cursor: pointer;
+}
+
+.dropbtn_selected {
+  display: inline-block;
+  min-width: 80px;
+  height: 19x;
+  line-height: 19px;
+  font-size: 12px;
+  color: black;
+  background: #ccc;
+  text-align: center;
+  text-decoration: none;
+  margin-left: 4px;
+  margin-top: 6px;
+  padding-top: 2px;
+  padding-left: 2px;
+  padding-right: 2px;
+  border: 1px solid grey;
+  box-shadow: 0 0 5px rgb(0, 0, 0);
+  cursor: pointer;
+  
+  font-weight: bold;
+  background: white !important;
+  border-bottom: 1px solid white !important;
+}
+.dropdown-content {
+  position: absolute;
+  background-color: #f1f1f1;
+  min-height: 60px;
+  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+  z-index: 1;
+}
+.dropdown-content a {
+  color: black;
+  padding: 12px 16px;
+  font-size: 12px;
+  text-decoration: none;
+  display: block;
+}
+}

@@ -75,6 +75,7 @@ public class TechniciansController {
 		session.setAttribute("redirectLocation", redirectLocation);
 		model.addAttribute("redirectLocation", redirectLocation);
         model.addAttribute("technicians", user.getCarrier().getTechnicians());
+        model.addAttribute("currentPage","/technicians");
         
         
         model = NotificationController.loadNotificationsIntoModel(user, model);
@@ -94,6 +95,7 @@ public class TechniciansController {
     public String showContactList(Model model, Technicians technician, BindingResult result, HttpSession session) {
         model.addAttribute("contacts", getLoggedInUser().getCarrier().getContacts()); 
         model.addAttribute("redirectLocation", (String) session.getAttribute("redirectLocation"));
+        model.addAttribute("currentPage","/technicians");
         User user = getLoggedInUser();
         model = NotificationController.loadNotificationsIntoModel(user, model);
         
@@ -118,7 +120,8 @@ public class TechniciansController {
   		User loggedInUser = getLoggedInUser();
   		model = NotificationController.loadNotificationsIntoModel(loggedInUser, model);
   		String redirectLocation = (String) session.getAttribute("redirectLocation");
-  		model.addAttribute("redirectLocation", session.getAttribute("redirectLocation")); 
+  		model.addAttribute("redirectLocation", session.getAttribute("redirectLocation"));
+  		model.addAttribute("currentPage","/technicians");
   		
   		List<Technicians> checkTech = new ArrayList<>();
   		checkTech = (List<Technicians>) loggedInUser.getCarrier().getTechnicians();
@@ -150,6 +153,7 @@ public class TechniciansController {
     
     @RequestMapping({"/uploadtechnicians"})
     public String showAddTechniciansExcel(Model model) {
+       model.addAttribute("currentPage","/technicians");
  	   return "/uploadtechnicians";
     }
 	
@@ -166,6 +170,7 @@ public class TechniciansController {
           .orElseThrow(() -> new IllegalArgumentException("Invalid technicians Id:" + id));
         User loggedInUser = getLoggedInUser();
         model = NotificationController.loadNotificationsIntoModel(loggedInUser, model);
+        model.addAttribute("currentPage","/technicians");
         
         if(!technician.getOrders().isEmpty()) {
         	session.setAttribute("error", "Unable to delete due to dependency conflict."); 
@@ -192,6 +197,7 @@ public class TechniciansController {
   		
   		User user = getLoggedInUser();
   		model = NotificationController.loadNotificationsIntoModel(user, model);
+  		model.addAttribute("currentPage","/technicians");
   		Logger.info("{} successfully deleted Technician with ID {}.", user.getUsername(), technician.getId());
   		techniciansRepository.delete(technician);
         return "redirect:/technicians";
@@ -212,6 +218,7 @@ public class TechniciansController {
         model.addAttribute("redirectLocation", (String) session.getAttribute("redirectLocation"));
         
         model.addAttribute("technicians", technician);
+        model.addAttribute("currentPage","/technicians");
         
         User user = getLoggedInUser();
         model = NotificationController.loadNotificationsIntoModel(user, model);
@@ -232,6 +239,7 @@ public class TechniciansController {
   	  	
   	  	model.addAttribute("redirectLocation", (String) session.getAttribute("redirectLocation"));
         model.addAttribute("maintenanceOrder", technician.getOrders());
+        model.addAttribute("currentPage","/maintenanceorders");
         
         User user = getLoggedInUser();
         model = NotificationController.loadNotificationsIntoModel(user, model);

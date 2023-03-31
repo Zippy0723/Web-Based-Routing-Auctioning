@@ -80,6 +80,7 @@ public class MaintenanceOrderController {
 		String redirectLocation = "/maintenanceorders";
 		session.setAttribute("redirectLocation", redirectLocation);
 		model.addAttribute("redirectLocation", redirectLocation);
+		model.addAttribute("currentPage","/maintenanceorders");
 		User user = getLoggedInUser();
 		
         model.addAttribute("maintenanceOrder", user.getCarrier().getOrders());
@@ -110,6 +111,7 @@ public class MaintenanceOrderController {
 		model.addAttribute("technicians", user.getCarrier().getTechnicians());
 		model.addAttribute("drivers", user.getCarrier().getDrivers());
 		model.addAttribute("vehicles", user.getCarrier().getVehicles());
+		model.addAttribute("currentPage","/maintenanceorders");
 		
         model = NotificationController.loadNotificationsIntoModel(user, model);
         
@@ -133,6 +135,7 @@ public class MaintenanceOrderController {
         model = NotificationController.loadNotificationsIntoModel(loggedInUser, model);
         String redirectLocation = (String) session.getAttribute("redirectLocation");
         model.addAttribute("redirectLocation", session.getAttribute("redirectLocation")); 
+        model.addAttribute("currentPage","/maintenanceorders");
 
 		if (result.hasErrors()) {
   			return "/add/add-maintenance";
@@ -171,6 +174,7 @@ public class MaintenanceOrderController {
     
     @RequestMapping({"/uploadmaintenance"})
     public String showAddMaintenanceExcel(Model model) {
+       model.addAttribute("currentPage","/maintenanceorders");
  	   return "/uploadmaintenance";
     }
 	
@@ -186,6 +190,7 @@ public class MaintenanceOrderController {
           .orElseThrow(() -> new IllegalArgumentException("Invalid maintenance Id:" + id));
 
 		model.addAttribute("maintenanceorders", maintenanceOrder);
+		model.addAttribute("currentPage","/maintenanceorders");
 		
 		User user = getLoggedInUser();
         model = NotificationController.loadNotificationsIntoModel(user, model);
@@ -206,6 +211,7 @@ public class MaintenanceOrderController {
   		
   		User loggedInUser = getLoggedInUser();
         model = NotificationController.loadNotificationsIntoModel(loggedInUser, model);
+        model.addAttribute("currentPage","/maintenanceorders");
   		Logger.info("{} successfully deleted the maintenace order with ID {}", loggedInUser.getUsername(), maintenanceOrder.getId());
   		maintenanceOrderRepository.delete(maintenanceOrder);
   		

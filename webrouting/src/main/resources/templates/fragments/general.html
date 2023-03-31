@@ -56,7 +56,13 @@
   							</div>
                         </li>
                         <li sec:authorize="hasAuthority('CARRIER')" class="navitem">
-                            <a th:class="${currentPage == '/shipmentshomecarrier' ? 'selected' : 'navlink'}" id="nav_shipments_home_carrier" href="/shipmentshomecarrier">Shipments</a>
+              				<button onclick="showDropdown()" th:class="${currentPage == '/shipments' ? 'dropbtn_selected' : 'dropbtn'}">Shipments</button>
+  							<div id="shipmentsDropdown" class="dropdown-content">
+    							<a href="/allshipments">All Shipments</a>
+    							<a href="/createdshipments">Available Shipments</a>
+    							<a href="/awaitingshipments">Awaiting Acceptance Shipments</a>
+    							<a href="/acceptedshipments">Accepted Shipments</a>
+  							</div>
                         </li>
                         <li sec:authorize="hasAnyAuthority('CARRIER','MASTERLIST')" class="navitem">
                             <a th:class="${currentPage == '/routes' ? 'selected' : 'navlink'}" id="nav_routes" href="/routes">Routes</a>
@@ -69,7 +75,7 @@
                         </li>
 						<br><br><br><br><br>
 						<li sec:authorize="hasAnyAuthority('CARRIER', 'MASTERLIST', 'ADMIN','SHIPPER')">
-							<a th:class="${currentPage == '/unreadnotifications' ? 'selected' : 'navlink'}" id= "nav_notifications" href="/unreadnotifications" th:inline="text">Notifications ([[${notifications.size()}]])</a>
+							<a th:class="${currentPage == '/unreadnotifications' ? 'selected' : 'navlink'}" id= "nav_notifications" href="/unreadnotifications" th:inline="text">Alerts ([[${notifications.size()}]])</a>
 						</li>
 						<li sec:authorize="hasAnyAuthority('CARRIER', 'MASTERLIST', 'ADMIN','SHIPPER')">
 							<a th:class="${currentPage == '/update-user-details' ? 'selected' : 'navlink'}" id= "nav_update_user_details" href="/update-user-details">Update User</a>

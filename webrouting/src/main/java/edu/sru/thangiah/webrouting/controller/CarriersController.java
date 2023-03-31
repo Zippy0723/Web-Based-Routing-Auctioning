@@ -73,6 +73,7 @@ public class CarriersController {
 		
   		User user = getLoggedInUser();
         model = NotificationController.loadNotificationsIntoModel(user, model);
+        model.addAttribute("currentPage","/carriers");
         String redirectLocation = "/carriers";
         
 		if (user.getRole().toString().equals("CARRIER")) {
@@ -192,6 +193,7 @@ public class CarriersController {
   		
   		String redirectLocation = (String) session.getAttribute("redirectLocation");
   		model.addAttribute("redirectLocation", redirectLocation);
+  		model.addAttribute("currentPage","/carriers");
         Carriers carrier = carriersRepository.findById(id)
           .orElseThrow(() -> new IllegalArgumentException("Invalid carrier Id:" + id));
         
@@ -220,6 +222,7 @@ public class CarriersController {
         model = NotificationController.loadNotificationsIntoModel(user, model);
         String redirectLocation = (String) session.getAttribute("redirectLocation");
         model.addAttribute("redirectLocation", (String) session.getAttribute("redirectLocation"));
+        model.addAttribute("currentPage","/carriers");
 
         if (result.hasErrors()) {
         	carrier.setId(id);
