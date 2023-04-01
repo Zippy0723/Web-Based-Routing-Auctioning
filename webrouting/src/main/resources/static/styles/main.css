@@ -44,7 +44,7 @@ body {
 
 /*Nick Bushee 10_18*/
 #menu-wrapper {
-	width: 100%;
+	width: 110%;
 	min-width:1241.99px;
 	overflow: auto;
 	height: 30 px;
@@ -61,8 +61,11 @@ body {
 		overflow: auto;
 		height: 64px;
 		line-height: 64px;
+		width:130%;
 		padding-left: 12px;
 		background: #006438;
+		top:0px;
+		position: sticky;
 	}
 
 
@@ -803,4 +806,24 @@ Simple Class Style For Displaying the Email Message
 .loginError{
 	color: white;
     text-shadow: 0 0 15px black;
+}
+
+@media only screen and (max-width: 1920px) {
+	#heading {
+		color: white;
+		min-width:1230px;
+		overflow: hidden;
+		height: 32px;
+		line-height: 64px;
+		width:110%;
+		padding-left: 12px;
+		background: #006438;
+		top:0px;
+		position: sticky;
+	}
+	.heading_content{
+		margin-top:-15px;
+		font-size:20px;
+		overflow: hidden;
+	}
 }

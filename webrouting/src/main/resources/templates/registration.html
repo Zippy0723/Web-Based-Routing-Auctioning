@@ -16,83 +16,13 @@
 		<div id="wrapper">
 
             <div id="heading">
-                <h1>Enterprise Routing System &nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;Customer Service: 1 (800) 778-9111</h1>
+                <h1 class="heading_content">Enterprise Routing System&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;Customer Service: 1 (800) 778-9111</h1>
             </div>
             <div id="menu-wrapper">
             	<br><br>
             </div>
-            <div sec:authorize="isAuthenticated()" class = "navSideBar" id="mySidebar">
-                <button onclick="nav_close()" class="bar-item">...</button>
-                <div id="menu">
-                    <ul class="navbar">
-                        <li class="navitem">
-                            <a class="navlink" id="nav_home" href="/">Home</a>
-                        </li>
-                        <li sec:authorize="hasAuthority('ADMIN')" class="navitem">
-                            <a class="navlink" id="nav_users" href="/userhome">Users</a>
-                        </li>
-                        <li sec:authorize="hasAnyAuthority('MANAGER','ASSTMANAGER')" class="navitem">
-                            <a class="navlink" id="nav_contacts" href="/contacts">Contacts</a>
-                        </li>
-                        <li sec:authorize="hasAnyAuthority('MANAGER')" class="navitem">
-                            <a class="navlink" id="nav_locations" href="/locations">Locations</a>
-                        </li>
-                        <li sec:authorize="hasAnyAuthority('MANAGER','OPSMANAGER')" class="navitem">
-                            <a class="navlink" id="nav_vehicles" href="/vehicles">Vehicles</a>
-                        </li>
-                        <li sec:authorize="hasAnyAuthority('MANAGER','OPSMANAGER')" class="navitem">
-                            <a class="navlink" id="nav_vehicletypes" href="/vehicletypes">Vehicle Types</a>
-                        </li>
-                        <li sec:authorize="hasAnyAuthority('MANAGER','ASSTMANAGER')" class="navitem">
-                            <a class="navlink" id="nav_drivers" href="/drivers">Drivers</a>
-                        </li>
-                        <li sec:authorize="hasAnyAuthority('MANAGER','ASSTMANAGER')" class="navitem">
-                            <a class="navlink" id="nav_technicians" href="/technicians">Technicians</a>
-                        </li>
-                        <li sec:authorize="hasAnyAuthority('MANAGER','ASSTMANAGER','OPSMANAGER')" class="navitem">
-                            <a class="navlink" id="nav_maintenanceorders" href="/maintenanceorders">Maintenance Orders</a>
-                        </li>
-                        <li sec:authorize="hasAnyAuthority('CARRIER','MASTERLIST')" class="navitem">
-                            <a class="navlink" id="nav_carriers" href="/carriers">Carriers</a>
-                        </li>
-                        <li sec:authorize="hasAnyAuthority('MANAGER','ASSTMANAGER')" class="navitem">
-                            <a class="navlink" id="nav_shipments" href="/shipments">Shipments</a>
-                        </li>
-                        <li sec:authorize="hasAnyAuthority('CARRIER','MASTERLIST')" class="navitem">
-                            <a class="navlink" id="nav_routes" href="/routes">Routes</a>
-                        </li>
-                        <li sec:authorize="hasAnyAuthority('ADMIN')" class="navitem">
-                            <a class="navlink" id="nav_database" href="/database">Database</a>
-                        </li>
-                          <li sec:authorize="hasAnyAuthority('CARRIER','SHIPPER','MASTERLIST')" class="navitem">
-                            <a class="navlink" id="nav_bids" href="/bids">Bids</a>
-                        </li>
-						<br><br><br><br><br>
-                        <li sec:authorize="isAuthenticated()" class="navitem">
-                            <form id="logoutForm" method="POST" th:action="@{/logout}">
-                                <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
-                            </form>
-                            <a class="navlink" onclick="document.forms['logoutForm'].submit()">Logout</a>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-            <div sec:authorize="!isAuthenticated()" class = "navSideBar" id="mySidebar">
-                <button onclick="nav_close()" class="bar-item">...</button>
-                <ul class="navbar">
-                    <li class="navitem">
-                        <a class="navlink" id="nav_home" href="/">Home</a>
-                    </li>
-                    <br>
-                    <li sec:authorize="!isAuthenticated()" class="navitem">
-                        <a class="navlink" id="nav_login" href="login">Login</a>
-                    </li>
-                    <br>
-                    <li sec:authorize="!isAuthenticated()" class="navitem">
-                        <a class="selected" id="nav_registration" href="registration">Registration</a>
-                    </li>
-                </ul>
-            </div>
+            
+        	<div th:replace="fragments/general.html :: sidebar"></div>
 			
 			<div id="content">
 				<span class="nav-expand">
@@ -122,19 +52,7 @@
 
 		<div class="footer">
         </div>
-		<script>
-		function nav_open() {
-			document.getElementById("content").style.marginLeft = "15%";
-			document.getElementById("mySidebar").style.width = "15%";			
-			document.getElementById("mySidebar").style.display = "block";
-			document.getElementById("hamburger").style.display = "none";
-		}
-		
-		function nav_close() {
-		  	document.getElementById("content").style.marginLeft = "0%";
-		  	document.getElementById("mySidebar").style.display = "none";
-		  	document.getElementById("hamburger").style.display = "block";
-		}
+		<script src="javascript/pageload.js">
 		</script>
 	</body>
 </html>

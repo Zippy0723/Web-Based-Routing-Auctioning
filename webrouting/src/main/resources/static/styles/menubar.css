@@ -1,9 +1,113 @@
 /* @authors Mitchell Nemitz 
 		and Nicholas Bushee */
 
+
+.dropbtn {
+  display: inline-block;
+  min-width: 105px;
+  height: 24px;
+  line-height: 21px;
+  font-size: 15px;
+  color: black;
+  background: #ccc;
+  text-align: center;
+  text-decoration: none;
+  margin-left: 4px;
+  margin-top: 6px;
+  padding-top: 2px;
+  padding-left: 2px;
+  padding-right: 2px;
+  border: 1px solid grey;
+  box-shadow: 0 0 5px rgb(0, 0, 0);
+  cursor: pointer;
+}
+
+.dropbtn_selected {
+  display: inline-block;
+  min-width: 105px;
+  height: 24px;
+  line-height: 21px;
+  font-size: 15px;
+  color: black;
+  background: #ccc;
+  text-align: center;
+  text-decoration: none;
+  margin-left: 4px;
+  margin-top: 6px;
+  padding-top: 2px;
+  padding-left: 2px;
+  padding-right: 2px;
+  border: 1px solid grey;
+  box-shadow: 0 0 5px rgb(0, 0, 0);
+  cursor: pointer;
+  
+  font-weight: bold;
+  background: white !important;
+  border-bottom: 1px solid white !important;
+}
+
+.dropbtn:hover {
+  background-color: #ddd;
+}
+
+.dropbtn:active {
+  background-color: #aaa;
+  box-shadow: none;
+}
+
+/* Dropdown button on hover & focus */
+.dropbtn:hover, .dropbtn:focus {
+  background-color: #2980B9;
+}
+
+.dropbtn_selected:hover {
+  background-color: #ddd;
+}
+
+.dropbtn_selected:active {
+  background-color: #aaa;
+  box-shadow: none;
+}
+
+/* Dropdown button on hover & focus */
+.dropbtn_selected:hover, .dropbtn:focus {
+  background-color: #2980B9;
+}
+
+/* The container <div> - needed to position the dropdown content */
+.dropdown {
+  position: relative;
+  display: inline-block;
+}
+
+/* Dropdown Content (Hidden by Default) */
+.dropdown-content {
+  display: none;
+  position: absolute;
+  background-color: #f1f1f1;
+  min-width: 160px;
+  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+  z-index: 1;
+}
+
+/* Links inside the dropdown */
+.dropdown-content a {
+  color: black;
+  padding: 12px 16px;
+  text-decoration: none;
+  display: block;
+}
+
+/* Change color of dropdown links on hover */
+.dropdown-content a:hover {background-color: #ddd;}
+
+/* Show the dropdown menu (use JS to add this class to the .dropdown-content container when the user clicks on the dropdown button) */
+.show {display:block;}
+
 .navSideBar {
 	height: 100%;
 	width: 118px;
+	top:64px;
 	min-width: 115px;
 	max-width: 118px;
 	z-index: 1;
@@ -106,4 +210,134 @@ a.navlink:hover{
 
 #menu a:hover {
 	cursor: pointer;
+}
+
+/*shrinks the sidebar a bit if the user shrinks the window/has a smaller screen */
+@media only screen and (max-width: 1920px) {
+    .navSideBar {
+	height: 100%;
+	width: 90px;
+	top:32px;
+	min-width: 90px;
+	max-width: 110px;
+	z-index: 1;
+	position: fixed;
+	background: #484848;
+
+	box-shadow: 0 0 20px rgb(0, 0, 0);
+	border-bottom: 1px solid grey;
+    }
+
+    a.navlink {
+ 	display: inline-block;
+	
+	/* float: right; */
+	font-size: 12px;
+	min-width: 75px;
+	height: 19px;
+	line-height: 19px;
+	
+	color: black;
+	background: #ccc;
+	text-align: center;
+	text-decoration: none;
+	
+	margin-left: 4px;
+	margin-top: 6px;
+	padding-top: 2px;
+	padding-left: 2px;
+	padding-right: 2px;
+	
+	border: 1px solid grey;
+
+	box-shadow: 0 0 5px rgb(0, 0, 0);
+    }
+    
+    .selected {
+ 	display: inline-block;
+	
+	/* float: right; */
+	font-size: 12px;
+	min-width: 75px;
+	height: 19px;
+	line-height: 19px;
+	
+	color: black;
+	background: #ccc;
+	text-align: center;
+	text-decoration: none;
+	
+	margin-left: 4px;
+	margin-top: 6px;
+	padding-top: 2px;
+	padding-left: 2px;
+	padding-right: 2px;
+	
+	border: 1px solid grey;
+
+	box-shadow: 0 0 5px rgb(0, 0, 0);
+
+	background: white !important;
+	border-bottom: 1px solid white !important;
+
+	font-weight: bold;
+	}
+	
+	.dropbtn {
+  display: inline-block;
+  min-width: 80px;
+  height: 19x;
+  line-height: 19px;
+  font-size: 12px;
+  color: black;
+  background: #ccc;
+  text-align: center;
+  text-decoration: none;
+  margin-left: 4px;
+  margin-top: 6px;
+  padding-top: 2px;
+  padding-left: 2px;
+  padding-right: 2px;
+  border: 1px solid grey;
+  box-shadow: 0 0 5px rgb(0, 0, 0);
+  cursor: pointer;
+}
+
+.dropbtn_selected {
+  display: inline-block;
+  min-width: 80px;
+  height: 19x;
+  line-height: 19px;
+  font-size: 12px;
+  color: black;
+  background: #ccc;
+  text-align: center;
+  text-decoration: none;
+  margin-left: 4px;
+  margin-top: 6px;
+  padding-top: 2px;
+  padding-left: 2px;
+  padding-right: 2px;
+  border: 1px solid grey;
+  box-shadow: 0 0 5px rgb(0, 0, 0);
+  cursor: pointer;
+  
+  font-weight: bold;
+  background: white !important;
+  border-bottom: 1px solid white !important;
+}
+.dropdown-content {
+  position: absolute;
+  background-color: #f1f1f1;
+  min-height: 60px;
+  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+  z-index: 1;
+}
+.dropdown-content a {
+  color: black;
+  padding: 12px 16px;
+  font-size: 12px;
+  text-decoration: none;
+  display: block;
+}
 }

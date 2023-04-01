@@ -218,6 +218,7 @@ public class UserController {
     
    @RequestMapping({"/signup"})
    public String shownAddHomePage(Model model) {
+	   model = NotificationController.loadNotificationsIntoModel(getLoggedInUser(), model);
 	   return "/add/add-user-home";
    }
    /**
@@ -231,6 +232,7 @@ public class UserController {
    @RequestMapping({"/addcarrieruser"})
    public String showCarrierPage(User user, Model model) {
 	   model.addAttribute("userForm", new User());
+	   model = NotificationController.loadNotificationsIntoModel(getLoggedInUser(), model);
 	   
        return "/add/add-user-carrier";
    }
@@ -263,6 +265,7 @@ public class UserController {
   		  }
   		}
   		model.addAttribute("roles", result);
+  		model = NotificationController.loadNotificationsIntoModel(getLoggedInUser(), model);
   		
   		return "/add/add-user";
     }
@@ -271,6 +274,7 @@ public class UserController {
     public String showShipperPage(User user, Model model) {
 		List<Role> roles = (List<Role>) roleRepository.findAll();
 		List<Role> result = new ArrayList<Role>();
+		model = NotificationController.loadNotificationsIntoModel(user, model);
 
 		for(Role r : roles){
 		  if(r.getName().equals("SHIPPER")){
@@ -301,6 +305,7 @@ public class UserController {
   	public String addUserCarrier(@ModelAttribute("userForm") User userForm, BindingResult bindingResult, Model model,
     		String carrierName, String scac, boolean ltl, boolean ftl, String pallets, String weight) {
   		
+		model = NotificationController.loadNotificationsIntoModel(getLoggedInUser(), model);
   		
   		List<Carriers> carrierList = (List<Carriers>) carriersRepository.findAll();
     	
@@ -373,6 +378,7 @@ public class UserController {
   	public String addUser(@Validated User user, BindingResult result, Model model) {
   		userValidator.validate(user, result);
   		User loggedInUser = getLoggedInUser();
+		model = NotificationController.loadNotificationsIntoModel(loggedInUser, model);
   		if (result.hasErrors()) {
   			return "/add/add-user";
 		}
@@ -772,11 +778,13 @@ public class UserController {
   	@RequestMapping({"/viewavailableroles"})
     public String showAvailableRoleList(Model model) {
         model.addAttribute("role", roleRepository.findAll());
+        model = NotificationController.loadNotificationsIntoModel(getLoggedInUser(), model);
         return "viewavailableroles";
     }
   	
   	@RequestMapping({"/rolesignup"})
     public String shownAddRolePage(Model model) {
+  		model = NotificationController.loadNotificationsIntoModel(getLoggedInUser(), model);
  	   return "/add/add-role";
     }
   	

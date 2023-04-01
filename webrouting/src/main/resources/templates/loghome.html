@@ -16,202 +16,59 @@
 		<div id="wrapper">
 
             <div id="heading">
-                <h1>Enterprise Routing System &nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;Customer Service: 1 (800) 778-9111</h1>
+                <h1 class="heading_content">Enterprise Routing System&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;Customer Service: 1 (800) 778-9111</h1>
             </div>
             <div id="menu-wrapper">
             	<br><br>
             </div>
-            <div sec:authorize="isAuthenticated()" class = "navSideBar" id="mySidebar">
-                <button onclick="nav_close()" class="bar-item">...</button>
-                <div id="menu">
-                    <ul class="navbar">
-                        <li class="navitem">
-                            <a class="navlink" id="nav_home" href="/">Home</a>
-                        </li>
-                        <li sec:authorize="hasAuthority('ADMIN')" class="navitem">
-                            <a class="navlink" id="nav_users" href="/users">Users</a>
-                        </li>
-                        <li sec:authorize="hasAuthority('CARRIER')" class="navitem">
-                            <a class="navlink" id="nav_contacts" href="/contacts">Contacts</a>
-                        </li>
-                        <li sec:authorize="hasAuthority('CARRIER')" class="navitem">
-                            <a class="navlink" id="nav_locations" href="/locations">Locations</a>
-                        </li>
-                        <li sec:authorize="hasAuthority('CARRIER')" class="navitem">
-                            <a class="navlink" id="nav_vehicles" href="/vehicles">Vehicles</a>
-                        </li>
-                        <li sec:authorize="hasAuthority('CARRIER')" class="navitem">
-                            <a class="navlink" id="nav_vehicletypes" href="/vehicletypes">Vehicle Types</a>
-                        </li>
-                        <li sec:authorize="hasAuthority('CARRIER')" class="navitem">
-                            <a class="navlink" id="nav_drivers" href="/drivers">Drivers</a>
-                        </li>
-                        <li sec:authorize="hasAuthority('CARRIER')" class="navitem">
-                            <a class="navlink" id="nav_technicians" href="/technicians">Technicians</a>
-                        </li>
-                        <li sec:authorize="hasAuthority('CARRIER')" class="navitem">
-                            <a class="navlink" id="nav_maintenanceorders" href="/maintenanceorders">Maintenance</a>
-                        </li>
-                        <li sec:authorize="hasAnyAuthority('CARRIER','MASTERLIST')" class="navitem">
-                            <a class="navlink" id="nav_carriers" href="/carriers">Carriers</a>
-                        </li>
-                        <li sec:authorize="hasAuthority('MASTERLIST')" class="navitem">
-                           <a class="navlink" id="nav_shipments_home_masterlist" href="/shipmentshomemaster">Shipments</a>
-                        </li>
-                        <li sec:authorize="hasAuthority('SHIPPER')" class="navitem">
-                            <a class="navlink" id="nav_shipments_home_shipper" href="/shipmentshomeshipper">Shipments</a>
-                        </li>
-                        <li sec:authorize="hasAuthority('CARRIER')" class="navitem">
-                            <a class="navlink" id="nav_shipments_home_carrier" href="/shipmentshomecarrier">Shipments</a>
-                        </li>
-                        <li sec:authorize="hasAnyAuthority('CARRIER','MASTERLIST')" class="navitem">
-                            <a class="navlink" id="nav_routes" href="/routes">Routes</a>
-                        </li>
-                        <li sec:authorize="hasAnyAuthority('SHADOWADMIN')" class="navitem">
-                            <a class="selected" id="nav_log_home" href="/loghome">Logs</a>
-                        </li>
-                        <li sec:authorize="hasAnyAuthority('ADMIN')" class="navitem">
-                            <a class="navlink" id="nav_database" href="/database">Database</a>
-                        </li>
-						<br><br><br><br><br>
-						<li sec:authorize="hasAnyAuthority('CARRIER', 'MASTERLIST', 'ADMIN','SHIPPER')">
-							<a class= "navlink" id= "nav_notifications" href="/unreadnotifications" th:inline="text">Notifications ([[${unreadcount}]])</a>
-						</li>
-						<li sec:authorize="hasAnyAuthority('CARRIER', 'MASTERLIST', 'ADMIN','SHIPPER')">
-							<a class= "navlink" id= "nav_update_user_details" href="/update-user-details">Update User</a>
-						</li>
-                        <li sec:authorize="isAuthenticated()" class="navitem">
-                            <form id="logoutForm" method="POST" th:action="@{/logout}">
-                                <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
-                            </form>
-                            <a class="navlink" onclick="document.forms['logoutForm'].submit()">Logout</a>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-            <div sec:authorize="!isAuthenticated()" class = "navSideBar" id="mySidebar">
-                <button onclick="nav_close()" class="bar-item">...</button>
-                <ul class="navbar">
-                    <li class="navitem">
-                        <a class="selected" id="nav_home" href="/">Home</a>
-                    </li>
-                    <br>
-                    <li sec:authorize="!isAuthenticated()" class="navitem">
-                        <a class="navlink" id="nav_login" href="login">Login</a>
-                    </li>
-                    <br>
-                    <li sec:authorize="!isAuthenticated()" class="navitem">
-                        <a class="navlink" id="nav_registration" href="/registrationhome">Register</a>
-                    </li>
-                </ul>
-           </div>
-
-            <div id="sub_heading">
-                <div id="loginDiv">
-                    <div sec:authorize="isAuthenticated()" style="float: right;">
-                        <form id="logoutForm" method="POST" th:action="@{/logout}">
-                            <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
-                        </form>
-                        Hello <span sec:authentication="name"></span> | <a onclick="document.forms['logoutForm'].submit()">Logout</a>
+            
+        	<div th:replace="fragments/general.html :: sidebar"></div>
+			
+			<div id="content">
+				<span class="nav-expand">
+  					<button class=""  id="hamburger" style="display:none" onclick="nav_open()">☰</button>
+				</span>
+				<br><br>
+				<div th:switch="${logs.size()}">
+                    <h2 th:case="0">No logs!</h2>
+                    <div th:case="*" style="height: 700px; overflow-y: scroll; overflow-x: hidden; width: 80vw;">
+                        <h2>Logs</h2>
+                        <br><br>
+                        <p><h3>Filter    </h3>
+                        <button class="buttons7" onclick="window.location.href='/reverseDateOrder';">Date</button>
+                    	<button class="buttons7" onclick="window.location.href='/levelOrder';">Error</button>
+                   	 </p>
+                        <br><br>
+                        <span type="hidden" th:text="${error}" class="loginError"></span>
+                        <br>
+                        <table class="dataTable" align="center" style=" table-layout:fixed;">
+                            <thead>
+                                <tr>
+                                    <th style= "width:100px">Date</th>
+                                    <th style= "width:100px">Time</th>
+                                    <th style= "width:80px">Level</th>
+                                    <th style= "width:100px">User</th>
+                                    <th>Message</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr th:each="log : ${logs}">
+                                    <td th:text="${log.date}"></td>
+                                    <td th:text="${log.time}"></td>
+                                    <td th:text="${log.level}"></td>
+                                    <td th:text="${log.person}"></td>
+                                    <td th:text="${log.msg}"></td>
+                                </tr>
+                            </tbody>
+                        </table>
                     </div>
-                    <div sec:authorize="!isAuthenticated()" style="float: right;">
-                        <a id="loginLink" class="ui-button" href="/login">Login</a>
-                    </div>
-                </div>
+                    </div> 
             </div>
-
-		<div id="content">
-			<span class="nav-expand">
-				<button class="" id="hamburger" style="display: none"
-					onclick="nav_open()">☰</button>
-			</span> <br>
-			<br> <span type="hidden" th:text="${message}" class=errorMessage></span>
-			<br> <br>
-
-			<div class="filterContainer">
-				<form action="#" th:action="@{/applyFilter}" th:object="${filter}"
-					method="post">
-
-					<label class="filterContent" for="startDate">Start Date:</label>
-					<input class="filterInput" type="date" th:field="*{startDate}" name="stateDate" id="startDate" placeholder="01/01/1970" size=19>
-
-
-					<label class="filterContent" for="endDate">End Date:</label> 
-					<input class="filterInput" type="date" th:field="*{endDate}" name="endDate" id="endDate" placeholder="01/01/1990" size=19>
-
-
-					<label class="filterContent" for="level">Level: </label> 
-					<select	class="filterInput" name="level" th:field="*{level}" id="level">
-						<option value="">-- Select a level --</option>
-						<option value="ERROR">ERROR</option>
-						<option value="INFO">INFO</option>
-					</select> 
-					
-					
-					<label class="filterContent" for="username">User:</label>
-					<select class="filterInput" id="username" th:field="*{user}">
-						<option value="-1">-- Select a user --</option>
-						<option th:each="user : ${users}" th:value="${user.username}" th:text="${user.username}"></option>
-					</select> 
-					
-					<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
-
-					<button class="filterButton" type="submit">Apply</button>
-					<button class="filterButton" type="button" th:attr="onclick=|window.location.href='${redirectLocation}'|">Reset</button>
-
-				</form>
-			</div>
-			<br>
-
-
-
-
-			<div th:switch="${logs.size()}">
-				<h2 th:case="0">No logs!</h2>
-				<div th:case="*"
-					style="height: 700px; overflow-y: scroll; overflow-x: hidden; width: 80vw;">
-					<span type="hidden" th:text="${error}" class="loginError"></span> <br>
-					<table class="dataTable" align="center"
-						style="table-layout: fixed;">
-						<thead>
-							<tr>
-								<th style="width: 100px">Date</th>
-								<th style="width: 100px">Time</th>
-								<th style="width: 80px">Level</th>
-								<th style="width: 100px">User</th>
-								<th>Message</th>
-							</tr>
-						</thead>
-						<tbody>
-							<tr th:each="log : ${logs}">
-								<td th:text="${log.date}"></td>
-								<td th:text="${log.time}"></td>
-								<td th:text="${log.level}"></td>
-								<td th:text="${log.user}"></td>
-								<td th:text="${log.msg}"></td>
-							</tr>
-						</tbody>
-					</table>
-				</div>
-			</div>
-		</div>
-	</div>
+        </div>
 
 		<div class="footer">
         </div>
-		<script>
-		function nav_open() {
-			document.getElementById("content").style.marginLeft = "15%";
-			document.getElementById("mySidebar").style.width = "15%";			
-			document.getElementById("mySidebar").style.display = "block";
-			document.getElementById("hamburger").style.display = "none";
-		}
-		
-		function nav_close() {
-		  	document.getElementById("content").style.marginLeft = "0%";
-		  	document.getElementById("mySidebar").style.display = "none";
-		  	document.getElementById("hamburger").style.display = "block";
-		}
+		<script src="javascript/pageload.js">
 		</script>
 	</body>
 </html>

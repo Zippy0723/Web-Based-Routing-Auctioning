@@ -72,6 +72,7 @@ public class DriverController {
 		String redirectLocation = "/drivers";
 		session.setAttribute("redirectLocation", redirectLocation);
 		model.addAttribute("redirectLocation", redirectLocation);
+		model.addAttribute("currentPage","/drivers");
 		User user = getLoggedInUser();
         model = NotificationController.loadNotificationsIntoModel(user, model);
 		if (user.getRole().toString().equals("CARRIER")) {
@@ -102,6 +103,7 @@ public class DriverController {
 		model.addAttribute("carriers", user.getCarrier());
 		model.addAttribute("contacts", user.getCarrier().getContacts());
 		model.addAttribute("vehicles", user.getCarrier().getVehicles());
+		model.addAttribute("currentPage","/drivers");
 		
         return "/add/add-driver";
     }
@@ -121,6 +123,7 @@ public class DriverController {
         model = NotificationController.loadNotificationsIntoModel(user, model);
         String redirectLocation = (String) session.getAttribute("redirectLocation");
         model.addAttribute("redirectLocation", redirectLocation);
+        model.addAttribute("currentPage","/drivers");
   		if (result.hasErrors()) {
   			return "/add/add-driver";
 		}
@@ -158,6 +161,7 @@ public class DriverController {
     
     @RequestMapping({"/uploaddrivers"})
     public String showAddDriversExcel(Model model) {
+       model.addAttribute("currentPage","/drivers");
  	   return "/uploaddrivers";
     }
 	
@@ -172,6 +176,7 @@ public class DriverController {
         Driver drivers = driverRepository.findById(id)
           .orElseThrow(() -> new IllegalArgumentException("Invalid driver Id:" + id));
         model.addAttribute("drivers", drivers);
+        model.addAttribute("currentPage","/drivers");
         
         User user = getLoggedInUser();
         model = NotificationController.loadNotificationsIntoModel(user, model);
@@ -192,7 +197,9 @@ public class DriverController {
   		
   		User user = getLoggedInUser();
         model = NotificationController.loadNotificationsIntoModel(user, model);
+        model.addAttribute("currentPage","/drivers");
   		Logger.info("{} || successfully deleted driver with ID {}.", user.getUsername(), drivers.getId());
+
   		driverRepository.delete(drivers);
   	    return "redirect:/drivers";
     }
@@ -213,6 +220,7 @@ public class DriverController {
         
         User user = getLoggedInUser();
         model = NotificationController.loadNotificationsIntoModel(user, model);
+        model.addAttribute("currentPage","/drivers");
         
         return "drivers";
     }
