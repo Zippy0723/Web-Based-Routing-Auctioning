@@ -269,7 +269,7 @@ public class UserController {
   		List<Role> result = new ArrayList<Role>();
   		model.addAttribute("currentPage","/users");
   		for(Role r : roles){
-  		  if(!r.getName().equals("SHIPPER") && !r.getName().equals("CARRIER")){
+  		  if(!r.getName().equals("SHIPPER") && !r.getName().equals("CARRIER") && !r.getName().equals("SHADOWADMIN")){
   		    result.add(r);
   		  }
   		}
