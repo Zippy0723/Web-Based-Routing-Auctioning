@@ -49,6 +49,7 @@ public class LogController {
 		session.removeAttribute("message");
 		session.setAttribute("redirectLocation", "/loghome");
 		model.addAttribute("redirectLocation", "/loghome");
+		model.addAttribute("currentPage","/loghome");
 		ArrayList<Log> logs = getLogs();
 		ArrayList<User> users = getAllUsers();
 		model.addAttribute("logs",logs);
@@ -60,6 +61,7 @@ public class LogController {
 	public String applyFilter(Filter filter, Model model, HttpSession session) {
 		session.removeAttribute("message");
 		model.addAttribute("redirectLocation", (String) session.getAttribute("redirectLocation"));
+		model.addAttribute("currentPage","/loghome");
 		Boolean dateOrderCheck = false;
 		ArrayList<Log> logs = new ArrayList<Log>();
 		logs = getLogs();
