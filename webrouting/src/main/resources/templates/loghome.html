@@ -24,46 +24,78 @@
             
         	<div th:replace="fragments/general.html :: sidebar"></div>
 			
-			<div id="content">
-				<span class="nav-expand">
-  					<button class=""  id="hamburger" style="display:none" onclick="nav_open()">☰</button>
-				</span>
-				<br><br>
-				<div th:switch="${logs.size()}">
-                    <h2 th:case="0">No logs!</h2>
-                    <div th:case="*" style="height: 700px; overflow-y: scroll; overflow-x: hidden; width: 80vw;">
-                        <h2>Logs</h2>
-                        <br><br>
-                        <p><h3>Filter    </h3>
-                        <button class="buttons7" onclick="window.location.href='/reverseDateOrder';">Date</button>
-                    	<button class="buttons7" onclick="window.location.href='/levelOrder';">Error</button>
-                   	 </p>
-                        <br><br>
-                        <span type="hidden" th:text="${error}" class="loginError"></span>
-                        <br>
-                        <table class="dataTable" align="center" style=" table-layout:fixed;">
-                            <thead>
-                                <tr>
-                                    <th style= "width:100px">Date</th>
-                                    <th style= "width:100px">Time</th>
-                                    <th style= "width:80px">Level</th>
-                                    <th style= "width:100px">User</th>
-                                    <th>Message</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr th:each="log : ${logs}">
-                                    <td th:text="${log.date}"></td>
-                                    <td th:text="${log.time}"></td>
-                                    <td th:text="${log.level}"></td>
-                                    <td th:text="${log.person}"></td>
-                                    <td th:text="${log.msg}"></td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                    </div> 
-            </div>
+				<div id="content">
+			<span class="nav-expand">
+				<button class="" id="hamburger" style="display: none"
+					onclick="nav_open()">☰</button>
+			</span> <br>
+			<br> <span type="hidden" th:text="${message}" class=errorMessage></span>
+			<br> <br>
+
+			<div class="filterContainer">
+				<form action="#" th:action="@{/applyFilter}" th:object="${filter}"
+					method="post">
+
+					<label class="filterContent" for="startDate">Start Date:</label>
+					<input class="filterInput" type="date" th:field="*{startDate}" name="stateDate" id="startDate" placeholder="01/01/1970" size=19>
+
+
+					<label class="filterContent" for="endDate">End Date:</label> 
+					<input class="filterInput" type="date" th:field="*{endDate}" name="endDate" id="endDate" placeholder="01/01/1990" size=19>
+
+
+					<label class="filterContent" for="level">Level: </label> 
+					<select	class="filterInput" name="level" th:field="*{level}" id="level">
+						<option value="">-- Select a level --</option>
+						<option value="ERROR">ERROR</option>
+						<option value="INFO">INFO</option>
+					</select> 
+					
+					
+					<label class="filterContent" for="username">User:</label>
+					<select class="filterInput" id="username" th:field="*{user}">
+						<option value="-1">-- Select a user --</option>
+						<option th:each="user : ${users}" th:value="${user.username}" th:text="${user.username}"></option>
+					</select> 
+					
+					<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
+
+					<button class="filterButton" type="submit">Apply</button>
+					<button class="filterButton" type="button" th:attr="onclick=|window.location.href='${redirectLocation}'|">Reset</button>
+
+				</form>
+			</div>
+			<br>
+
+			<div th:switch="${logs.size()}">
+				<h2 th:case="0">No logs!</h2>
+				<div th:case="*"
+					style="height: 700px; overflow-y: scroll; overflow-x: hidden; width: 80vw;">
+					<span type="hidden" th:text="${error}" class="loginError"></span> <br>
+					<table class="dataTable" align="center"
+						style="table-layout: fixed;">
+						<thead>
+							<tr>
+								<th style="width: 100px">Date</th>
+								<th style="width: 100px">Time</th>
+								<th style="width: 80px">Level</th>
+								<th style="width: 100px">User</th>
+								<th>Message</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr th:each="log : ${logs}">
+								<td th:text="${log.date}"></td>
+								<td th:text="${log.time}"></td>
+								<td th:text="${log.level}"></td>
+								<td th:text="${log.user}"></td>
+								<td th:text="${log.msg}"></td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+			</div>
+		</div>
         </div>
 
 		<div class="footer">
