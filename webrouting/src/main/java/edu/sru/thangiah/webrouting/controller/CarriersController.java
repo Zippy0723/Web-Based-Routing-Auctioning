@@ -98,6 +98,7 @@ public class CarriersController {
 	   
 	   @RequestMapping({"/uploadcarrier"})
 	   public String showAddCarrierExcel(Model model) {
+		   model.addAttribute("currentPage","/carriers");
 		   return "/uploadcarrier";
 	   }
 	
@@ -115,6 +116,7 @@ public class CarriersController {
   		User user = getLoggedInUser();
         model = NotificationController.loadNotificationsIntoModel(user, model);
         model.addAttribute("redirectLocation", (String) session.getAttribute("redirectLocation"));
+        model.addAttribute("currentPage","/carriers");
         if (carrier.equals(user.getCarrier())) {
         	model.addAttribute("carriers", carrier); 
    
@@ -139,6 +141,7 @@ public class CarriersController {
         String redirectLocation = (String) session.getAttribute("redirectLocation");
   		model.addAttribute("redirectLocation", redirectLocation);
         model.addAttribute("shipments", carrier.getShipments());
+        model.addAttribute("currentPage","/shipments");
         
   		User user = getLoggedInUser();
         model = NotificationController.loadNotificationsIntoModel(user, model);
@@ -161,6 +164,7 @@ public class CarriersController {
   		User user = getLoggedInUser();
         model = NotificationController.loadNotificationsIntoModel(user, model);
         model.addAttribute("redirectLocation",session.getAttribute("redirectLocation"));
+        model.addAttribute("currentPage","/bids");
         if (user.getRole().toString().equals("SHIPPER")) {
         	if (carrier.equals(user.getCarrier())) {
         		model.addAttribute("bids", carrier.getBids());

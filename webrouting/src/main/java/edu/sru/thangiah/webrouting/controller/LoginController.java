@@ -88,6 +88,7 @@ public class LoginController {
      */
     @GetMapping("/registrationhome")
     public String registrationHome(Model model) {
+    	model.addAttribute("currentPage","/registrationhome");
     	return "registrationhome";
     }
     
@@ -98,6 +99,7 @@ public class LoginController {
      */
     @GetMapping("/registrationshipper")
     public String registrationShipperInitial(Model model) {
+    	model.addAttribute("currentPage","/registrationhome");
         if (securityService.isAuthenticated()) {
             return "redirect:/";
         }
@@ -121,7 +123,7 @@ public class LoginController {
 
     @PostMapping("/registrationshipper")
     public String registrationShipper(@ModelAttribute("userForm") User userForm,BindingResult bindingResult, RedirectAttributes redirectAttr) throws IOException, MessagingException {
-        userValidator.validate(userForm, bindingResult);
+    	userValidator.validate(userForm, bindingResult);
         Role role = new Role();
         
         String websiteUrl;
@@ -155,6 +157,7 @@ public class LoginController {
      */
     @GetMapping("/registrationcarrier")
     public String registrationCarrierInitial(Model model) {
+    	model.addAttribute("currentPage","/registrationhome");
         if (securityService.isAuthenticated()) {
             return "redirect:/";
         }
@@ -286,6 +289,7 @@ public class LoginController {
      */
     @GetMapping("/login")
     public String login(Model model, String error, String logout) {
+    	model.addAttribute("currentPage","/login");
         if (securityService.isAuthenticated()) {
             return "redirect:/";
         }

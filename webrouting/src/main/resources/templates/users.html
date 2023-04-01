@@ -138,7 +138,7 @@
                                     </td>
                                     <td th:text= "${user.enabled}"></td>
                                     <td th:text="${user.auctioningAllowed}"></td>
-                                    <td><a th:href="@{/edituser/{id}(id=${user.id})}"><button style='font-size:11px'><i class='far fa-edit'></i></button></a></td>
+                                    <td><a th:href="@{/editcarriers/{id}(id=${user.id})}"><button style='font-size:11px'><i class='far fa-edit'></i></button></a></td>
                                     <td><a th:href="@{/deleteuser/{id}(id=${user.id})}"><button class="fa fa-times" style="color: red;" onclick="deleteFunction()"></button></a></td>                     
                                 </tr>
                             </tbody>
@@ -177,18 +177,20 @@
                                     <td th:text="${user.role}"></td>
                                     <td th:text= "${user.enabled}"></td>
                                     <td th:text="${user.auctioningAllowed}"></td>
-                                    <td><a class="disabled-btn" th:href="@{/edituser/{id}(id=${user.id})}"><button style='font-size:11px'><i class='far fa-edit'></i></button></a></td>
+                                    <td><a class="disabled-btn" th:href="@{/editcarriers/{id}(id=${user.id})}"><button style='font-size:11px'><i class='far fa-edit'></i></button></a></td>
                                     <td><a class="disabled-btn" th:href="@{/deleteuser/{id}(id=${user.id})}"><button class="fa fa-times" style="color: red;" onclick="deleteFunction()"></button></a></td>                       
                                 </tr>
                             </tbody>
                         </table>
                     </div>  
                     <br>    
-                    <p><button class="buttons7" onclick="window.location.href='./signup';">Add New User</button>
+                    <p><button class="buttons7" onclick="window.location.href='/signup';">Add New User</button>
+                    <button class="buttons7" onclick="window.location.href='/roles';">View Available Roles</button></p>
                 </div>
+         		<br><br><br><br>
         </div>
         </div>
-		<br><br>
+        </div>
 		<div class="footer">
         </div>
 		<script src="javascript/pageload.js">

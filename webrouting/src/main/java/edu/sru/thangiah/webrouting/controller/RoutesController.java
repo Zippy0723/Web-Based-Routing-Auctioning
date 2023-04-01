@@ -59,6 +59,7 @@ public class RoutesController {
 	@RequestMapping(path = {"/search"})
 	public String showVehicleRoute(Model model, String id, String date, boolean anydate) {
 		Long vehicleId = Long.parseLong(id);
+		model.addAttribute("currentPage","/routes");
 		
 		Vehicles vehicle = vehiclesRepository.findById(vehicleId)
 		          .orElseThrow(() -> new IllegalArgumentException("Invalid vehicle Id:" + id));
@@ -112,6 +113,7 @@ public class RoutesController {
 	@RequestMapping({"/routes"})
     public String showVehiclesList(Model model, HttpSession session) {
 		String redirectLocation = "/routes";
+		model.addAttribute("currentPage","/routes");
 		session.setAttribute("redirectLocation", redirectLocation);
 		model.addAttribute("redirectLocation", redirectLocation);
 		if (getLoggedInUser().getRole().getName().equals("CARRIER")) {

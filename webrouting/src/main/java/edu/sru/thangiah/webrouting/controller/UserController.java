@@ -121,6 +121,7 @@ public class UserController {
         User user = getLoggedInUser();
         model = NotificationController.loadNotificationsIntoModel(user, model);
         session.setAttribute("redirectLocation", "/userhome");
+        model.addAttribute("currentPage","/users");
         
         return "userhome";
     }
@@ -139,7 +140,7 @@ public class UserController {
     	List<User> userOtherList = new ArrayList<User>();
     	
     	session.setAttribute("redirectLocation", "/users");
-    	
+    	model.addAttribute("currentPage","/users");
     	
     	for (User user : userList) {
     		if (user.getRole().toString().equals("SHIPPER"))  {
@@ -173,6 +174,7 @@ public class UserController {
     public String carrierAdministrationPage(Model model, HttpSession session) {
     	List<User> userList = userRepository.findAll();
     	List<User> userCarrierList = new ArrayList<User>();
+    	model.addAttribute("currentPage","/users");
     	
     	for (User user : userList) {
     		if (user.getRole().toString().equals("CARRIER")) {
@@ -194,6 +196,7 @@ public class UserController {
     	List<User> userList = userRepository.findAll();
     	List<User> finalUserList = new ArrayList<User>();
     	session.setAttribute("redirectLocation", "/ShipperAdministrationPage");
+    	model.addAttribute("currentPage","/users");
     	
     	for (User user : userList) {
     		if (user.getRole().toString().equals("SHIPPER")) {
@@ -219,6 +222,7 @@ public class UserController {
    @RequestMapping({"/signup"})
    public String shownAddHomePage(Model model) {
 	   model = NotificationController.loadNotificationsIntoModel(getLoggedInUser(), model);
+	   model.addAttribute("currentPage","/users");
 	   return "/add/add-user-home";
    }
    /**
@@ -233,6 +237,7 @@ public class UserController {
    public String showCarrierPage(User user, Model model) {
 	   model.addAttribute("userForm", new User());
 	   model = NotificationController.loadNotificationsIntoModel(getLoggedInUser(), model);
+	   model.addAttribute("currentPage","/users");
 	   
        return "/add/add-user-carrier";
    }
@@ -245,6 +250,9 @@ public class UserController {
    
    @RequestMapping({"/uploadusers"})
    public String showAddUserExcel(Model model) {
+       model = NotificationController.loadNotificationsIntoModel(getLoggedInUser(), model);
+	   model.addAttribute("currentPage","/users");
+	   model.addAttribute("currentPage","/users");
 	   return "/uploadusers";
    }
     
@@ -259,8 +267,9 @@ public class UserController {
       public String showOtherPage(User user, Model model) {
   		List<Role> roles = (List<Role>) roleRepository.findAll();
   		List<Role> result = new ArrayList<Role>();
+  		model.addAttribute("currentPage","/users");
   		for(Role r : roles){
-  		  if(!r.getName().equals("SHIPPER") && !r.getName().equals("CARRIER")){
+  		  if(!r.getName().equals("SHIPPER") && !r.getName().equals("CARRIER") && !r.getName().equals("SHADOWADMIN")){
   		    result.add(r);
   		  }
   		}
@@ -271,11 +280,14 @@ public class UserController {
     }
   	
   	@RequestMapping({"/addshipperuser"})
-    public String showShipperPage(User user, Model model) {
+    public String showShipperPage(User user, Model model, HttpSession session) {
 		List<Role> roles = (List<Role>) roleRepository.findAll();
 		List<Role> result = new ArrayList<Role>();
-		model = NotificationController.loadNotificationsIntoModel(user, model);
-
+		model = NotificationController.loadNotificationsIntoModel(getLoggedInUser(), model);
+		model.addAttribute("currentPage","/users");
+		 model.addAttribute("userForm", new User());
+		 model.addAttribute("redirectLocation", (String) session.getAttribute("redirectLocation"));
+		
 		for(Role r : roles){
 		  if(r.getName().equals("SHIPPER")){
 		    result.add(r);
@@ -306,7 +318,8 @@ public class UserController {
     		String carrierName, String scac, boolean ltl, boolean ftl, String pallets, String weight) {
   		
 		model = NotificationController.loadNotificationsIntoModel(getLoggedInUser(), model);
-  		
+		model.addAttribute("currentPage","/users");
+		
   		List<Carriers> carrierList = (List<Carriers>) carriersRepository.findAll();
     	
     	Carriers carrier = new Carriers();
@@ -378,6 +391,7 @@ public class UserController {
   	public String addUser(@Validated User user, BindingResult result, Model model) {
   		userValidator.validate(user, result);
   		User loggedInUser = getLoggedInUser();
+  		model.addAttribute("currentPage","/users");
 		model = NotificationController.loadNotificationsIntoModel(loggedInUser, model);
   		if (result.hasErrors()) {
   			return "/add/add-user";
@@ -388,14 +402,69 @@ public class UserController {
   	}
   	
   	@RequestMapping({"/addusershipper"})
-  	public String addUserShipper(@Validated User user, BindingResult result, Model model) {
-  		userValidator.validate(user, result);
-  		if (result.hasErrors()) {
-  			return "/add/add-user-shipper";
+  	public String addUserShipper(@ModelAttribute("userForm") User userForm, Model model, HttpSession session) {
+  		String redirectLocation = (String) session.getAttribute("redirectLocation");
+  		model.addAttribute("redirectLocation", session.getAttribute("redirectLocation"));
+  		User loggedInUser = getLoggedInUser();
+        model = NotificationController.loadNotificationsIntoModel(loggedInUser, model);
+        
+        List <User> repoUsers =  userRepository.findAll();
+        
+        String username = userForm.getUsername().strip();
+        String emailAddress = userForm.getEmail().strip();
+        String password = userForm.getPassword().strip();
+        
+        if(!(emailAddress.length() <= 64 && emailAddress.length() > 0) || !(emailAddress.matches("^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+$"))){
+			Logger.error("{} || attempted to add a shipper but the email address must be between 1 and 64 alphanumeric characters.",loggedInUser.getUsername());
+			model.addAttribute("message", "Email must be between 1 and 64 alphanumeric characters.");
+			return "/add/add-user-shipper";	
 		}
-  		
-  		userService.save(user);
-  		return "redirect:/ShipperAdministrationPage";
+        
+		if (!(username.length() <= 32 && username.length() > 0) || !(username.matches("^[a-zA-Z0-9.]+$"))) {
+			Logger.error("{} || attempted to add a shipper but the username was not between 1 and 32 alphanumeric characters.",loggedInUser.getUsername());
+			model.addAttribute("message", "Username must be between 1 and 32 alphanumeric characters.");
+			return "/add/add-user-shipper";	
+		}
+		if (!(password.length() <= 32 && password.length() > 7)) {
+			Logger.error("{} || attempted to add a shipper but the password was not between 8 and 32 alphanumeric characters.",loggedInUser.getUsername());
+			model.addAttribute("message", "Username must be between 8 and 32 alphanumeric characters.");
+			return "/add/add-user-shipper";	
+		}
+		
+		for(User check: repoUsers) {
+			String repoUsername = check.getUsername().strip();
+  			if(username.equals(repoUsername)) {
+  				Logger.error("{} || attempted to add a carrier with the same username as another user.",loggedInUser.getUsername());
+  				model.addAttribute("message", "Another user already exists with that username.");
+  				return "/add/add-user-shipper";
+  	  		}
+  		}
+		
+		for(User check: repoUsers) {
+			String repoEmailAddress = check.getEmail().strip();
+  			if(emailAddress.equals(repoEmailAddress)) {
+  				Logger.error("{} || attempted to add a carrier with the same email as another user.",loggedInUser.getUsername());
+  				model.addAttribute("message", "Another user already exists with that email.");
+  				return "/add/add-user-shipper";
+  	  		}
+		}
+		
+		User result = new User();
+		Role role = new Role();
+		
+		role.setId(2);
+		
+		result.setEmail(emailAddress);
+		result.setUsername(username);
+		result.setPassword(password);
+		result.setAuctioningAllowed(userForm.getAuctioningAllowed());
+		result.setEnabled(userForm.isEnabled());
+		result.setRole(role);
+		
+        userService.save(result);
+ 		Logger.info("{} || successfully saved a shipper with ID {}.", loggedInUser.getUsername(), result.getId());
+ 		
+  		return "redirect:" + redirectLocation;
   	} 
   	
   	/**
@@ -412,7 +481,8 @@ public class UserController {
           
         User loggedInUser = getLoggedInUser();
         model = NotificationController.loadNotificationsIntoModel(loggedInUser, model);
-         
+        model.addAttribute("currentPage","/users"); 
+        
         model.addAttribute("users", user);
         return "/delete/deleteuserconfirm";
     }
@@ -430,6 +500,7 @@ public class UserController {
         
         User loggedInUser = getLoggedInUser();
         model = NotificationController.loadNotificationsIntoModel(loggedInUser, model);
+        model.addAttribute("currentPage","/users");
         
       if (!user.getShipments().isEmpty()) {
         	
@@ -480,6 +551,7 @@ public class UserController {
   		model.addAttribute("roles", roleRepository.findAll());
   		model.addAttribute("carriers", carriersRepository.findAll());
         model.addAttribute("user", user);
+        model.addAttribute("currentPage","/users");
         
        if(user.getRole().toString().equals("SHIPPER")) {
         List<Role> roles = (List<Role>) roleRepository.findAll();
@@ -538,6 +610,7 @@ public class UserController {
   		model.addAttribute("roles", roleRepository.findAll());
   		model.addAttribute("carriers", carriersRepository.findAll());
         model.addAttribute("user", user);
+        model.addAttribute("currentPage","/users");
         
        if(user.getRole().toString().equals("SHIPPER")) {
         List<Role> roles = (List<Role>) roleRepository.findAll();
@@ -566,6 +639,7 @@ public class UserController {
   		model.addAttribute("roles", roleRepository.findAll());
   		model.addAttribute("carriers", carriersRepository.findAll());
         model.addAttribute("user", user);
+        model.addAttribute("currentPage","/users");
         
        if(user.getRole().toString().equals("CARRIER")) {
         List<Role> roles = (List<Role>) roleRepository.findAll();
@@ -603,6 +677,7 @@ public class UserController {
       BindingResult result, Model model, boolean nocarrier, boolean resetPassword, RedirectAttributes redirectAttr, String updateEmail) {
   		updateEmail = user.getUpdateEmail();
   		User loggedInUser = getLoggedInUser();
+  		model.addAttribute("currentPage","/users");
   		model = NotificationController.loadNotificationsIntoModel(loggedInUser, model);
   		userValidator.validateEmail(user, result);
         if (result.hasErrors()) {
@@ -643,6 +718,7 @@ public class UserController {
   		updateEmail = user.getUpdateEmail();
   		User loggedInUser = getLoggedInUser();
   		model = NotificationController.loadNotificationsIntoModel(loggedInUser, model);
+  		model.addAttribute("currentPage","/users");
   		userValidator.validateEmail(user, result);
         if (result.hasErrors()) {
         	user.setId(id);
@@ -672,6 +748,7 @@ public class UserController {
   		updateEmail = user.getUpdateEmail();
   		User loggedInUser = getLoggedInUser();
   		model = NotificationController.loadNotificationsIntoModel(loggedInUser, model);
+  		model.addAttribute("currentPage","/users");
   		userValidator.validateEmail(user, result);
         if (result.hasErrors()) {
         	user.setId(id);
@@ -705,6 +782,7 @@ public class UserController {
   	public String showUserDetailsForm(Model model, HttpSession session) {
   		session.setAttribute("redirectLocation", "/update-user-details");
   		model.addAttribute("redirectLocation", session.getAttribute("redirectLocation"));
+  		model.addAttribute("currentPage","/update-user-details");
   		
   		User user = getLoggedInUser();
   		String status = "CARRIER";
@@ -747,6 +825,7 @@ public class UserController {
   		userValidator.validateUpdate(user, result);
   		User loggedInUser = getLoggedInUser();
   		model = NotificationController.loadNotificationsIntoModel(loggedInUser, model);
+  		model.addAttribute("currentPage","/users");
   		if (result.hasErrors()) {
   			model.addAttribute("error","Error: Information entered is invalid");
   			Logger.error("{} || failed to update the user {}.",loggedInUser.getUsername(), user.getUsername());
@@ -778,12 +857,14 @@ public class UserController {
   	@RequestMapping({"/viewavailableroles"})
     public String showAvailableRoleList(Model model) {
         model.addAttribute("role", roleRepository.findAll());
+        model.addAttribute("currentPage","/users");
         model = NotificationController.loadNotificationsIntoModel(getLoggedInUser(), model);
         return "viewavailableroles";
     }
   	
   	@RequestMapping({"/rolesignup"})
     public String shownAddRolePage(Model model) {
+  		model.addAttribute("currentPage","/users");
   		model = NotificationController.loadNotificationsIntoModel(getLoggedInUser(), model);
  	   return "/add/add-role";
     }
@@ -792,6 +873,7 @@ public class UserController {
   	public String addRole(@RequestParam("roleName") String roleName, Model model) {
   		Role role = new Role(roleName);
   		roleRepository.save(role);
+  		model.addAttribute("currentPage","/users");
   		return "redirect:/viewavailableroles";
   	}
 

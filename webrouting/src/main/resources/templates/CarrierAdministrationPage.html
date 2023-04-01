@@ -100,14 +100,15 @@
                                     </td>
                                     <td th:text= "${user.enabled}"></td>
                                     <td th:text="${user.auctioningAllowed}"></td>
-                                    <td><a th:href="@{/editcarrieruser/{id}(id=${user.id})}"><button style='font-size:11px'><i class='far fa-edit'></i></button></a></td>
+                                    <td><a th:href="@{/editcarriers/{id}(id=${user.id})}"><button style='font-size:11px'><i class='far fa-edit'></i></button></a></td>
                                     <td><a th:href="@{/deleteuser/{id}(id=${user.id})}"><button class="fa fa-times" style="color: red;" onclick="deleteFunction()"></button></a></td>                        
                                 </tr>
                             </tbody>
                         </table>
                     </div>      
                     <br>
-                    <p><button class="buttons7" onclick="window.location.href='./addcarrieruser';">Add New User</button></p>
+                    <p><button class="buttons7" onclick="window.location.href='/addcarrier';">Add New User</button>
+                    <button class="buttons7" onclick="window.location.href='/roles';">View Available Roles</button></p>
                 </div>
             </div>
         </div>

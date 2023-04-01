@@ -67,7 +67,8 @@ public class ForgottenPasswordController {
 	 * @return forgotpasswordform - the form the user will fill out to recieve a link
 	 */
 	@GetMapping("/forgotpassword")
-	public String forgotPassword() {
+	public String forgotPassword(Model model) {
+		model.addAttribute("currentPage","/login");
 		return "forgotpasswordform";
 	}
 	

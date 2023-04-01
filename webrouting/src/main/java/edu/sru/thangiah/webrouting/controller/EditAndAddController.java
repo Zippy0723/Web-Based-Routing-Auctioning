@@ -124,6 +124,7 @@ public class EditAndAddController {
           .orElseThrow(() -> new IllegalArgumentException("Invalid Technician Id:" + id));
 	     model.addAttribute("technicians", technician);
 	     model.addAttribute("redirectLocation", (String) session.getAttribute("redirectLocation"));
+	     model.addAttribute("currentPage","/technicians");
 	     
 	     User user = getLoggedInUser();
 	     model = NotificationController.loadNotificationsIntoModel(user, model);
@@ -138,6 +139,7 @@ public class EditAndAddController {
         
         
         model.addAttribute("redirectLocation", (String) session.getAttribute("redirectLocation"));
+        model.addAttribute("currentPage","/contacts");
   		User user = getLoggedInUser();
         model = NotificationController.loadNotificationsIntoModel(user, model);
         
@@ -156,6 +158,7 @@ public class EditAndAddController {
         
         
         model.addAttribute("redirectLocation", (String) session.getAttribute("redirectLocation"));
+        model.addAttribute("currentPage","/locations");
   		User user = getLoggedInUser();
         model = NotificationController.loadNotificationsIntoModel(user, model);
         
@@ -174,6 +177,7 @@ public class EditAndAddController {
         model.addAttribute("redirectLocation", (String) session.getAttribute("redirectLocation"));
               
 		model.addAttribute("vehicleTypes", vehicleType);
+		model.addAttribute("currentPage","/vehicletypes");
         
   		User user = getLoggedInUser();
         model = NotificationController.loadNotificationsIntoModel(user, model);
@@ -188,6 +192,7 @@ public class EditAndAddController {
 		Vehicles vehicle = vehiclesRepository.findById(id)
           .orElseThrow(() -> new IllegalArgumentException("Invalid Vehicle Id:" + id));
 		 User user = getLoggedInUser();
+		 model.addAttribute("currentPage","/vehicles");
 		 
 		 model = NotificationController.loadNotificationsIntoModel(user, model);
 		 model.addAttribute("redirectLocation", (String) session.getAttribute("redirectLocation"));
@@ -210,6 +215,7 @@ public class EditAndAddController {
 		 
 		 model = NotificationController.loadNotificationsIntoModel(user, model);
 		 model.addAttribute("redirectLocation", (String) session.getAttribute("redirectLocation"));
+		 model.addAttribute("currentPage","/drivers");
 		 
 		 model.addAttribute("driver", driver); 
 
@@ -224,11 +230,12 @@ public class EditAndAddController {
 	@GetMapping("/editshippers/{id}")
     public String showUserEditForm(@PathVariable("id") long id, Model model, HttpSession session) {
 		User userForm = userRepository.findById(id)
-          .orElseThrow(() -> new IllegalArgumentException("Invalid Vehicle Id:" + id));
+          .orElseThrow(() -> new IllegalArgumentException("Invalid Shippers Id:" + id));
 		 User user = getLoggedInUser();
 		 
 		 model = NotificationController.loadNotificationsIntoModel(user, model);
 		 model.addAttribute("redirectLocation", (String) session.getAttribute("redirectLocation"));
+		 model.addAttribute("currentPage","/users");
 		 
 		 model.addAttribute("user", userForm);
 
@@ -238,12 +245,37 @@ public class EditAndAddController {
 		 
 	}
 	
+	@GetMapping("/editcarriers/{id}")
+    public String showCarrierEditForm(@PathVariable("id") long id, Model model, HttpSession session) {
+		User userForm = userRepository.findById(id)
+          .orElseThrow(() -> new IllegalArgumentException("Invalid User Id:" + id));
+		 User user = getLoggedInUser();
+		 Carriers carrierForm = userForm.getCarrier();
+		 if(carrierForm == null) {
+			 System.out.println("Something has gone horribly horribly wrong, abort");
+			 return "redirect:/";
+		 }
+		 
+		 model = NotificationController.loadNotificationsIntoModel(user, model);
+		 model.addAttribute("redirectLocation", (String) session.getAttribute("redirectLocation"));
+		 model.addAttribute("currentPage","/users");
+		 
+		 model.addAttribute("user", userForm);
+		 model.addAttribute("carrier",carrierForm);
+
+		 session.removeAttribute("message");
+			    
+		 return "/edit/edit-carriers";
+		 
+	}
+	
 	@GetMapping("/editorder/{id}")
     public String showOrdersEditForm(@PathVariable("id") long id, Model model, HttpSession session ) {
 		MaintenanceOrders maintenanceOrder = maintenanceOrdersRepository.findById(id)
           .orElseThrow(() -> new IllegalArgumentException("Invalid maintenance Id:" + id));
 		User user = getLoggedInUser();
 		
+		model.addAttribute("currentPage","/maintenanceorders");
 		model.addAttribute("technicians", techniciansRepository.findAll());
 		model.addAttribute("vehicles", user.getCarrier().getVehicles());
 	    model.addAttribute("maintenanceOrders", maintenanceOrder);
@@ -265,6 +297,7 @@ public class EditAndAddController {
 
 	    model.addAttribute("shipments", shipment);
 	    model.addAttribute("redirectLocation", session.getAttribute("redirectLocation"));
+	    model.addAttribute("currentPage","/shipments");
 	    
 	    session.removeAttribute("message");
 
@@ -711,12 +744,120 @@ public class EditAndAddController {
   		return "redirect:" + redirectLocation;
   	}
   	
+  	@PostMapping("edit-carrier/{id}")
+  	public String carrierUpdateForm(@PathVariable("id") long id, User user, Carriers carrier, Model model, HttpSession session) {
+  		String redirectLocation = (String) session.getAttribute("redirectLocation");
+  		model.addAttribute("redirectLocation", session.getAttribute("redirectLocation"));
+  		User loggedInUser = getLoggedInUser();
+        model = NotificationController.loadNotificationsIntoModel(loggedInUser, model);
+        User result = userRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Invalid User Id:" + id));
+        Carriers carrierResult = result.getCarrier();
+        
+        List <User> repoUsers =  userRepository.findAll();
+        List<Carriers> repoCarriers = (List<Carriers>) carriersRepository.findAll();
+        
+        
+        String username = user.getUsername().strip();
+        String emailAddress = user.getEmail().strip();
+        String scac = carrier.getScac();
+        String carrierName = carrier.getCarrierName();
+        String pallets = carrier.getPallets();
+        String weight = carrier.getWeight();
+        
+		model.addAttribute("carrier",carrier);
+        
+        if(!(emailAddress.length() <= 64 && emailAddress.length() > 0) || !(emailAddress.matches("^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+$"))){
+			Logger.error("{} || attempted to edit a carrier but the email address must be between 1 and 64 alphanumeric characters.",loggedInUser.getUsername());
+			model.addAttribute("message", "Email must be between 1 and 64 alphanumeric characters.");
+			return "/edit/edit-carriers";	
+		}
+        
+		if (!(username.length() <= 32 && username.length() > 0) || !(username.matches("^[a-zA-Z0-9.]+$"))) {
+			Logger.error("{} || attempted to edit a carrier but the username was not between 1 and 32 alphanumeric characters.",loggedInUser.getUsername());
+			model.addAttribute("message", "Username must be between 1 and 32 alphanumeric characters.");
+			return "/edit/edit-carriers";		
+		}	
+		
+		for(User check: repoUsers) {
+			String repoUsername = check.getUsername().strip();
+  			if(username.equals(repoUsername) && id != check.getId()) {
+  				Logger.error("{} || attempted to save a carrier with the same username as another user.",loggedInUser.getUsername());
+  				model.addAttribute("message", "Another user already exists with that username.");
+  				return "/edit/edit-carriers";	
+  	  		}
+  		}
+		
+		for(User check: repoUsers) {
+			String repoEmailAddress = check.getEmail().strip();
+  			if(emailAddress.equals(repoEmailAddress) && id != check.getId()) {
+  				Logger.error("{} || attempted to carrier a shipper with the same email as another user.",loggedInUser.getUsername());
+  				model.addAttribute("message", "Another user already exists with that email.");
+  				return "/edit/edit-carriers";	
+  	  		}
+  		}
+		
+		for(Carriers check: repoCarriers) {
+			String repoCarrierName = check.getCarrierName().strip();
+  			if(carrierName.equals(repoCarrierName) && result.getCarrier().getId() != check.getId()) {
+  				Logger.error("{} || attempted to save a carrier with the same carrier name as another carrier.",loggedInUser.getUsername());
+  				model.addAttribute("message", "Another carrier already exists with that carrier name.");
+  				return "/edit/edit-carriers";	
+  	  		}
+  		}
+		
+		for(Carriers check: repoCarriers) {
+			String repoScac = check.getScac().strip();
+  			if(scac.equals(repoScac) && result.getCarrier().getId() != check.getId()) {
+  				Logger.error("{} || attempted to save a carrier with the same scac as another carrier.",loggedInUser.getUsername());
+  				model.addAttribute("message", "Another carrier already exists with that scac.");
+  				return "/edit/edit-carriers";	
+  	  		}
+  		}
+		
+		if(!(scac.length() <= 4 && scac.length() >= 2) || !(scac.matches("^[a-zA-Z0-9]+$"))) {
+				Logger.error("{} || attempted to edit a carrier but the scac was not between 2 and 4 alphanumeric characters.",loggedInUser.getUsername());
+				model.addAttribute("message", "Scac was not between 2 and 4 alphanumeric characters.");
+				return "/edit/edit-carriers";	
+			}
+		
+  	
+		if(!(pallets.length() <= 32 && pallets.length() > 0) || !(pallets.matches("^[0-9]+$"))) {
+			Logger.error("{} || attempted to edit a carrier but the pallets must be between 1 and 32 numeric chracters.",loggedInUser.getUsername());
+			model.addAttribute("message", "Pallets must be between 1 and 32 numeric characters.");
+			return "/edit/edit-carriers";	
+		}
+		
+		if(!(weight.length() <= 32 && weight.length() > 0) || !(weight.matches("^[0-9]+$"))) {
+			Logger.error("{} || attempted to edit a carrier but the weight must be between 1 and 32 numeric characters.",loggedInUser.getUsername());
+			model.addAttribute("message", "Weight must be be between 1 and 32 numeric characters.");
+			return "/edit/edit-carriers";	
+		}
+		
+		result.setEmail(emailAddress);
+		result.setUsername(username);
+		result.setAuctioningAllowed(user.getAuctioningAllowed());
+		result.setEnabled(user.isEnabled());
+		
+		carrierResult.setCarrierName(carrierName);
+		carrierResult.setScac(scac);
+		carrierResult.setWeight(weight);
+		carrierResult.setPallets(pallets);
+
+        userRepository.save(result);
+        carriersRepository.save(carrierResult);
+  		Logger.error("{} || successfully updated a carrier with ID {}.", loggedInUser.getUsername(), result.getId());
+  		
+  		return "redirect:" + redirectLocation;
+  	}
+  	
   	
   	
   	@GetMapping("/addcarrier")
     public String showCarrierAddForm(User user, Model model, HttpSession session) {
 		 model.addAttribute("userForm", new User());
 		 model.addAttribute("redirectLocation", (String) session.getAttribute("redirectLocation"));
+	     model = NotificationController.loadNotificationsIntoModel(getLoggedInUser(), model);
 		 
 
 		 session.removeAttribute("message");
@@ -754,7 +895,12 @@ public class EditAndAddController {
 			Logger.error("{} || attempted to add a carrier but the username was not between 1 and 32 alphanumeric characters.",loggedInUser.getUsername());
 			model.addAttribute("message", "Username must be between 1 and 32 alphanumeric characters.");
 			return "/add/add-carrier";	
-		}	
+		}
+		if (!(password.length() <= 32 && password.length() > 7)) {
+			Logger.error("{} || attempted to add a carrier but the password was not between 1 and 32 alphanumeric characters.",loggedInUser.getUsername());
+			model.addAttribute("message", "password must be between 8 and 32 alphanumeric characters.");
+			return "/add/add-carrier";	
+		}
 		
 		for(User check: repoUsers) {
 			String repoUsername = check.getUsername().strip();
@@ -839,7 +985,7 @@ public class EditAndAddController {
 
 		carriersRepository.save(carrierResult);
 		result.setCarrier(carrierResult);
-        userRepository.save(result);
+        userService.save(result);
   		Logger.info("{} || successfully saved a carrier with ID {}.", loggedInUser.getUsername(), result.getId());
   		
   		return "redirect:" + redirectLocation;

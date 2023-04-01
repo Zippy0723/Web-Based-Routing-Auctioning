@@ -213,7 +213,7 @@
 	                <input type="text" th:field="*{consigneeLongitude}" id="consigneeLongitude" placeholder="Consignee Longitude" size=23 required>
 	                <span th:if="${#fields.hasErrors('consigneeLongitude')}" th:errors="*{consigneeLongitude}"></span>
 	                <br><br>
-	                <p sec:authorize="hasAuthority('SHIPPER')"><button class="buttons7" th:attr="onclick=|window.location.href='${redirectLocation}'|">Back</button>
+	                <p sec:authorize="hasAuthority('SHIPPER')"><button class="buttons7" type="button" th:attr="onclick=|window.location.href='${redirectLocation}'|">Back</button>
 						<button class="buttons4" type="submit">Update Shipment</button>
 					</p>
 				</div>

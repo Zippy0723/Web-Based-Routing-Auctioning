@@ -744,6 +744,7 @@ public class ShipmentsController {
         String redirectLocation = (String) session.getAttribute("redirectLocation");
         model.addAttribute("redirectLocation", redirectLocation);
         model.addAttribute("shipments", shipment);
+        model.addAttribute("currentPage","/shipments");
         
         User user = getLoggedInUser();
         model = NotificationController.loadNotificationsIntoModel(user, model);
