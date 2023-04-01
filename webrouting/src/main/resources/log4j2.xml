@@ -9,7 +9,7 @@
       fileName="WebroutingApplication.log"
       filePattern="WebroutingApplication.%i.log.gz"
       ignoreExceptions="false">
-      <PatternLayout pattern= "%d{||yyyy-MMM-dd||HH:mm:ss}||%t||%-5p||%-50c{1}||%msg%n"/>
+      <PatternLayout pattern= "%d{||MM-dd-yyyy||HH:mm:ss}||%t||%-5p||%-50c{1}||%msg%n"/>
      		<Policies>
           		<SizeBasedTriggeringPolicy size="1000MB" />
       		</Policies>

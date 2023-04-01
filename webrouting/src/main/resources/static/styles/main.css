@@ -132,6 +132,59 @@ body {
 	position: fixed;
 }
 
+
+/* errorMessage */
+.errorMessage{
+	background-color:#FF0000;
+	font-weight:bold;
+}
+
+.filterContainer{
+	background: #006438;
+	overflow: hidden;
+	width: 95%;
+	border: 3px solid #484848;
+	padding-top: 2px;
+	padding-bottom: 2px;
+	position: sticky;
+	left: 15%;
+	
+}
+
+.filterContent{
+	font-weight: bold;
+	font: Comic Sans;
+	color: white;
+	padding: 0;
+	margin: 0;
+	position: relative;
+	left: 0%;
+}
+
+.filterInput{
+	font: Comic Sans;
+	padding: 0;
+	margin: 0;
+	position: relative;
+	left: 0%;
+}
+
+.filterButton{
+	padding: 5px 10px;
+	border-radius: 25px;
+	border: 2px solid white;
+	color: white;
+	background-color: #006438;
+	font-weight: bold;
+	font-size: 16px;    
+	margin: 1 3px;
+	cursor: pointer;
+	padding-right: 10px;
+	position: relative;
+	left: 0%;
+
+}
+
 /*Altered by Nick Bushee 9/17/22, 9/18/22 */
 #indexHome {
 	align-items: center;
