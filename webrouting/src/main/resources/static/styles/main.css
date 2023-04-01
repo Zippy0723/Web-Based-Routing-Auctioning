@@ -18,12 +18,13 @@ html, body {
 	padding: 0px;
 	border: none;
 	height: 100%;
-	width: 100%;
+	max-width: 100%;
 }
 
 body {
 	background: #fff;
 	font-family: Sans-serif;
+	overflow-x: hidden;
 }
 
 
@@ -31,15 +32,14 @@ body {
 /* ------------------ */
 /* Container elements */
 #wrapper {
-	width: 100%;
+	max-width: 100%;
 	min-width: 1241.99px;
-	
 	min-height: 100%;
 	height: auto !important;
 	height: 100%;
 	background: #fff;
-	
 	margin: 0px auto -24px;
+	position: relative;
 }
 
 /*Nick Bushee 10_18*/
@@ -73,13 +73,12 @@ body {
 		padding: 6px;
 		padding-bottom: 30px;
 		z-index: 1;
-		margin-left: 15%;
+		margin-left: 9%;
 	}
 
 		#dataContainer {
 		clear: both;
-		
-		width: 100%;
+		max-width: 100%;
 		overflow: auto;
 		border: 1px solid grey;
 		}
@@ -126,13 +125,14 @@ body {
 	
 	width: 100%;
 	height: 24px;
-
+	display: flex;
 	color: white;
 	line-height: 24px;
 	background: #134b33;
 	text-align: center;
 	margin: 0px auto;
 	position: fixed;
+	bottom: 0;
 }
 
 /*Altered by Nick Bushee 9/17/22, 9/18/22 */
@@ -354,7 +354,7 @@ input#routeDate {
 	position: relative;
 	top: 40px; 
 	margin: auto;
-	border: 2px solid #006438;
+	border: 2px solid black;
 	margin: 0px auto;
 	min-width: 320px;
 	max-width: 500px;  
@@ -400,7 +400,7 @@ input#date {
 	bottom: 30px;
 	padding-bottom: .75em;
 
-	border: 2px solid #006438;
+	border: 2px solid black;
 	margin: 0px auto;
 	min-width: 320px;
 	max-width: 500px;  
@@ -755,6 +755,16 @@ Simple Class Style For Displaying the Email Message
     text-shadow: 0 0 15px black;
 }
 
+.error{
+    color: red;
+}
+.center {
+  border: 5px solid;
+  position: absolute;
+  top: 50%;
+  transform: translate(0, -50%);
+  padding: 10px;
+}
 @media only screen and (max-width: 1920px) {
 	#heading {
 		color: white;

@@ -392,7 +392,7 @@ public class ExcelController {
 			
 		}
 		catch(Exception e ) {
-			session.setAttribute("message", "Something went wrong! Please check your excel file!");
+			session.setAttribute("message", "<span style='color:red'>Something went wrong! Please check your excel file!</span>");
 			e.printStackTrace();
 		}
 		
@@ -416,7 +416,7 @@ public class ExcelController {
 			userRepository.save(user);
 			
 		} catch (Exception e){
-			session.setAttribute("message", "Uploaiding freight rate table has failed, please check your excel file");
+			session.setAttribute("message", "<span style='color:red'>Uploaiding freight rate table has failed, please check your excel file</span>");
 		}
 		
 		return "redirect:" + (String) session.getAttribute("redirectLocation");
