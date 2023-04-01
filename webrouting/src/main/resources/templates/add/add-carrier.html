@@ -118,15 +118,15 @@
                         <h2> Enter Carrier Info</h2>
                         <br>
                         <label for="username">Username: </label>
-                        <input type="text" th:field="*{username}" id="username" placeholder="Username" size=19 required>
+                        <input type="text" th:field="*{username}" id="username" placeholder="John Wick" size=19 required>
 
                         <br>
                         <label for="password">Password: </label>
-                        <input type="password" th:field="*{password}" id="password" placeholder="Password" size=19  required>
+                        <input type="password" th:field="*{password}" id="password" placeholder="Enter your Password" size=19  required>
    
                         <br>
                         <label for="email">Email: </label>
-                        <input type="text" th:field="*{email}" id="email" placeholder="Email" size=19 required>
+                        <input type="text" th:field="*{email}" id="email" placeholder="johnwick10@gmail.com" size=19 required>
 
                         <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
 

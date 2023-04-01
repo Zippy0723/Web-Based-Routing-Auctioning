@@ -147,7 +147,7 @@
 	                <span th:if="${#fields.hasErrors('shipDate')}" th:errors="*{shipDate}"></span>
 	             	<br>
 	                <label for="commodityClass">Commodity Class: </label> 
-	                <input type="text" th:field="*{commodityClass}" id="commodityClass" placeholder="50 - 500" size=23 required>
+	                <input type="text" th:field="*{commodityClass}" id="commodityClass" placeholder="500 or AB05" size=23 required>
 	                <span th:if="${#fields.hasErrors('commodityClass')}" th:errors="*{commodityClass}"></span>
 	             	<br>
 	                <label for="commodityPieces">Commodity Pieces: </label>   
@@ -227,11 +227,11 @@
 	                <span th:if="${#fields.hasErrors('shipperZip')}" th:errors="*{shipperZip}"></span>
 	             	<br>
 	                <label for="shipperLatitude">Shipper Latitude: </label>  
-	                <input type="text" th:field="*{shipperLatitude}" id="shipperLatitude" placeholder="-39.4532612" size=23 required>
+	                <input type="text" th:field="*{shipperLatitude}" id="shipperLatitude" placeholder="-89.4532612 or without '-'" size=23 required>
 	                <span th:if="${#fields.hasErrors('shipperLatitude')}" th:errors="*{shipperLatitude}"></span>
 	             	<br>
 	                <label for="shipperLongitude">Shipper Longitude: </label> 
-	                <input type="text" th:field="*{shipperLongitude}" id="shipperLongitude" placeholder="-98.5742489" size=23 required>
+	                <input type="text" th:field="*{shipperLongitude}" id="shipperLongitude" placeholder="-179.5742489 or without '-'" size=23 required>
 	                <span th:if="${#fields.hasErrors('shipperLongitude')}" th:errors="*{shipperLongitude}"></span>
 	             	<br>
 	                <label for="consigneeCity">Consignee City: </label>  
@@ -300,11 +300,11 @@
 	                <span th:if="${#fields.hasErrors('consigneeZip')}" th:errors="*{consigneeZip}"></span>
 	             	<br>
 	                <label for="consigneeLatitude">Consignee Latitude: </label> 
-	                <input type="text" th:field="*{consigneeLatitude}" id="consigneeLatitude" placeholder="-42.628502" size=23 required>
+	                <input type="text" th:field="*{consigneeLatitude}" id="consigneeLatitude" placeholder="-89.628502 or without '-'" size=23 required>
 	                <span th:if="${#fields.hasErrors('consigneeLatitude')}" th:errors="*{consigneeLatitude}"></span>
 	             	<br>
 	                <label for="consigneeLongitude">Consignee Longitude: </label>
-	                <input type="text" th:field="*{consigneeLongitude}" id="consigneeLongitude" placeholder="-94.7265037" size=23 required>
+	                <input type="text" th:field="*{consigneeLongitude}" id="consigneeLongitude" placeholder="-179.7265037 or without '-'" size=23 required>
 	                <span th:if="${#fields.hasErrors('consigneeLongitude')}" th:errors="*{consigneeLongitude}"></span>
 	                <br><br>
 	                <p sec:authorize="hasAuthority('SHIPPER')"><button class="buttons7" onclick="window.location.href='./pendingshipments';">Back</button>

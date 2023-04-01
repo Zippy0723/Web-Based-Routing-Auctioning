@@ -145,15 +145,15 @@
                  
                 	<br>
                     <label for="details">Details: </label>
-                    <input type="text" th:field="*{details}" id="details" placeholder="Details" size=19 >
+                    <input type="text" th:field="*{details}" id="details" placeholder="Brake Replacement" size=19 >
 			
 					<br>
                     <label for="service_type_key">Service Type: </label>
-                    <input type="text" th:field="*{service_type_key}" id="service_type_key" placeholder="Service Type" size=19>
+                    <input type="text" th:field="*{service_type_key}" id="service_type_key" placeholder="Repair" size=19>
                   
                 	<br>
                     <label for="cost">Cost: </label>
-                    <input type="text" th:field="*{cost}" id="cost" placeholder="Cost" size=19 >
+                    <input type="text" th:field="*{cost}" id="cost" placeholder="200" size=19 >
                    
                 	<br>
                     <label for="status_key">Status: </label>
@@ -172,7 +172,7 @@
                     </select>  
                  	<br>
                     <label for="maintenance_type">Maintenance Type: </label>
-                    <input type="text" th:field="*{maintenance_type}" id="maintenance_type" placeholder="Maintenance Type" size=19 required>
+                    <input type="text" th:field="*{maintenance_type}" id="maintenance_type" placeholder="Brakes" size=19 required>
                     
               		<br><br>
               		<button class="buttons4" type="button" th:attr="onclick=|window.location.href='${redirectLocation}'|">Back</button>

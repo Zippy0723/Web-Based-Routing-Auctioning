@@ -134,7 +134,7 @@
 					<h2> Edit Shipment Info</h2>
 					<br>
 	                <label for="client">Client: </label> 
-	                <input type="text" th:field="*{client}" id="client" placeholder="Client" size=19 required>
+	                <input type="text" th:field="*{client}" id="client" placeholder="Amazon" size=19 required>
 
 	            	<br>
 	                <label for="clientMode">Client Mode: </label>
@@ -150,19 +150,19 @@
 
 	             	<br>
 	                <label for="commodityClass">Commodity Class: </label> 
-	                <input type="text" th:field="*{commodityClass}" id="commodityClass" placeholder="Commodity Class" size=19 required>
+	                <input type="text" th:field="*{commodityClass}" id="commodityClass" placeholder="500 or AB05" size=19 required>
 
 	             	<br>
 	                <label for="commodityPieces">Commodity Pieces: </label>   
-	                <input type="text" th:field="*{commodityPieces}" id="commodityPieces" placeholder="Commodity Pieces"size=19 required>
+	                <input type="text" th:field="*{commodityPieces}" id="commodityPieces" placeholder="300"size=19 required>
 
 	             	<br>
 	                <label for="commodityPaidWeight">Commodity Paid Weight: </label>
-	                <input type="text" th:field="*{commodityPaidWeight}" id="commodityPaidWeight" placeholder="Commodity Paid Weight" size=19 required>
+	                <input type="text" th:field="*{commodityPaidWeight}" id="commodityPaidWeight" placeholder="4000" size=19 required>
 	                
 	             	<br>
 	                <label for="shipperCity">Shipper City: </label> 
-	                <input type="text" th:field="*{shipperCity}" id="shipperCity" placeholder="Shipper City" size=19 required>
+	                <input type="text" th:field="*{shipperCity}" id="shipperCity" placeholder="Slippery Rock" size=19 required>
 
 	             	<br>
 	                <label for="shipperState">Shipper State: </label> 
@@ -221,19 +221,19 @@
                         </select>
 	             	<br>
 	                <label for="shipperZip">Shipper Zip: </label> 
-	                <input type="text" th:field="*{shipperZip}" id="shipperZip" placeholder="Shipper Zip" size=19 required >
+	                <input type="text" th:field="*{shipperZip}" id="shipperZip" placeholder="16057" size=19 required >
 
 	             	<br>
 	                <label for="shipperLatitude">Shipper Latitude: </label>  
-	                <input type="text" th:field="*{shipperLatitude}" id="shipperLatitude" placeholder="Shipper Latitude"size=19 required>
+	                <input type="text" th:field="*{shipperLatitude}" id="shipperLatitude" placeholder="-89.4532612 or without '-'"size=19 required>
 
 	             	<br>
 	                <label for="shipperLongitude">Shipper Longitude: </label> 
-	                <input type="text" th:field="*{shipperLongitude}" id="shipperLongitude" placeholder="Shipper Longitude"size=19 required>
+	                <input type="text" th:field="*{shipperLongitude}" id="shipperLongitude" placeholder="-179.5742489 or without '-'"size=19 required>
 	
 	             	<br>
 	                <label for="consigneeCity">Consignee City: </label>  
-	                <input type="text" th:field="*{consigneeCity}" id="consigneeCity" placeholder="Consignee City" size=19 required>
+	                <input type="text" th:field="*{consigneeCity}" id="consigneeCity" placeholder="Philadelphia" size=19 required>
 
 	             	<br>
 	                <label for="consigneeState">Consignee State: </label>   
@@ -292,15 +292,15 @@
                         </select>
 	             	<br>
 	                <label for="consigneeZip">Consignee Zip: </label>   
-	                <input type="text" th:field="*{consigneeZip}" id="consigneeZip" placeholder="Consignee Zip" size=19 required>
+	                <input type="text" th:field="*{consigneeZip}" id="consigneeZip" placeholder="17482" size=19 required>
 	              
 	             	<br>
 	                <label for="consigneeLatitude">Consignee Latitude: </label> 
-	                <input type="text" th:field="*{consigneeLatitude}" id="consigneeLatitude" placeholder="Consignee Latitude"size=19 required>
+	                <input type="text" th:field="*{consigneeLatitude}" id="consigneeLatitude" placeholder="-89.628502 or without '-'"size=19 required>
 	                
 	             	<br>
 	                <label for="consigneeLongitude">Consignee Longitude: </label>
-	                <input type="text" th:field="*{consigneeLongitude}" id="consigneeLongitude" placeholder="Consignee Longitude" size=19 required>
+	                <input type="text" th:field="*{consigneeLongitude}" id="consigneeLongitude" placeholder="-179.7265037 or without '-'" size=19 required>
 	             
 	                <br><br>
 	                	<button class="buttons4" type="button" th:attr="onclick=|window.location.href='${redirectLocation}'|">Back</button>
