@@ -31,9 +31,8 @@
 				<br><br>
                 <h2>Update Contact</h2>
                 <br>
-               <div class="alert alert-info" th:if="${message}">
-               <span th:text="${message}"></span>
-               </div>
+               <span type="hidden" th:text="${message}" class=errorMessage></span>
+               <br>
                     <form action="#" th:action="@{/edit-contact/{id}(id=${contacts.id})}" th:object="${contacts}" method="post">
                     <hr>
 	                    <div class="form-group">

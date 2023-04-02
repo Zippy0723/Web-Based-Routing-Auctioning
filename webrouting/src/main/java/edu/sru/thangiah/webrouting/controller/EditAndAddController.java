@@ -27,6 +27,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 
 import edu.sru.thangiah.webrouting.controller.ExcelController;
+import edu.sru.thangiah.webrouting.domain.Bids;
 import edu.sru.thangiah.webrouting.domain.Carriers;
 import edu.sru.thangiah.webrouting.domain.Contacts;
 import edu.sru.thangiah.webrouting.domain.Driver;
@@ -287,6 +288,34 @@ public class EditAndAddController {
         return "/edit/edit-orders";
     }
 	
+	@GetMapping("/editbids/{id}")
+    public String showBidsEditForm(@PathVariable("id") long id, Model model, HttpSession session ) {
+		Bids bid = bidsRepository.findById(id)
+          .orElseThrow(() -> new IllegalArgumentException("Invalid bid Id:" + id));
+		User user = getLoggedInUser();
+		
+		
+		model = NotificationController.loadNotificationsIntoModel(user, model);
+		
+		model.addAttribute("currentPage","/shipments");
+	
+	
+	    model.addAttribute("bid", bid);
+	    model.addAttribute("redirectLocation", (String) session.getAttribute("redirectLocation"));
+
+	    try{
+	    	model.addAttribute("message", (String) session.getAttribute("message"));
+	    }
+	    catch(Exception e){
+	    	//do nothing
+	    }
+	    
+        session.removeAttribute("message");
+        
+        return "/edit/edit-bids";
+    }
+	
+	
 	@GetMapping("/editshipment/{id}")
     public String showShipmentsEditForm(@PathVariable("id") long id, Model model, HttpSession session) {
 		Shipments shipment = shipmentsRepository.findById(id)
@@ -304,6 +333,44 @@ public class EditAndAddController {
        return "/edit/edit-shipments";
         
     }
+	
+	@PostMapping("/editbids/{id}")
+	public String updateBid(@PathVariable("id") Long id, Bids bid, Model model, HttpSession session) {
+
+		String redirectLocation = (String) session.getAttribute("redirectLocation");
+		model.addAttribute("redirectLocation", session.getAttribute("redirectLocation"));
+
+		Bids temp = bidsRepository.findById(id)
+				.orElseThrow(() -> new IllegalArgumentException("Invalid Bid Id:" + id));
+
+		User user = getLoggedInUser();
+		
+		
+		String price = bid.getPrice().strip();
+		
+		if (!(price.length() <= 12 && price.length() > 0) || !(price.matches("^[0-9.]+$"))) {
+			Logger.error("{} || attempted to edit a bid but the price was not between 1 and 16 numeric characters long.",user.getUsername());
+			session.setAttribute("message", "Price was not between 1 and 16 numeric characters.");
+			return "redirect:/editbids/"+id.toString() ;	
+		}
+		
+		Bids result = new Bids();
+		
+		result.setId(temp.getId());
+		result.setDate(temp.getDate());
+		result.setTime(temp.getTime());
+		result.setPrice(price);
+		result.setCarrier(temp.getCarrier());
+		result.setShipment(temp.getShipment());
+
+
+		bidsRepository.save(result);
+		Logger.info("{} || successfully updated the bid with ID {}",user.getUsername(), result.getId());
+		return "redirect:" + redirectLocation;
+
+	}
+	
+	
 	
 	@PostMapping("/updateshipment/{id}")
     public String updateShipment(@PathVariable("id") long id, Shipments shipment, 
@@ -353,7 +420,7 @@ public class EditAndAddController {
 			result.setFreightbillNumber(temp.getFreightbillNumber());
 			result.setId(id);
 			result.setCarrier(temp.getCarrier());
-			result.setUser(user);
+			result.setUser(temp.getUser());
         
         
 		  shipmentsRepository.save(result);
