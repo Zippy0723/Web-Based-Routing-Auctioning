@@ -42,7 +42,7 @@
 	            	<h2> Enter Account Info</h2>
 	            	<br><br>
 	                <label for="username">UserName: </label>
-	                <input type="text" th:field="*{username}" id="username" placeholder="Tom Cruise" required>
+	                <input type="text" th:field="*{username}" id="username" placeholder="TomCruise" required>
 	                <span th:if="${#fields.hasErrors('username')}" th:errors="*{username}"></span>
 	             	<br>
 	                <label for="password">Password: </label>

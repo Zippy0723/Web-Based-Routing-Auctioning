@@ -39,7 +39,7 @@
                 	<br>
                 	<h2> Enter Account Info</h2>
                 	<br><br>
-                	<input type="hidden" th:field="*{username}" id="username" placeholder="Tom Cruise" required>
+                	<input type="hidden" th:field="*{username}" id="username" placeholder="TomCruise" required>
                   	<span th:if="${#fields.hasErrors('username')}" th:errors="*{username}"></span>
 				    <br>
                     <input type="hidden" th:field="*{password}" id="password" placeholder="Enter your Password" required>
