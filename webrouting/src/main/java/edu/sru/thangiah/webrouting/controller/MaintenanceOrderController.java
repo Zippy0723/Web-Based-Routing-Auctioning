@@ -77,6 +77,13 @@ public class MaintenanceOrderController {
 	        }
 	        session.removeAttribute("error");
 	        
+	        try {
+		    	  model.addAttribute("successMessage",session.getAttribute("successMessage"));
+				} catch (Exception e) {
+					//do nothing
+				}
+				session.removeAttribute("successMessage");
+	        
 		String redirectLocation = "/maintenanceorders";
 		session.setAttribute("redirectLocation", redirectLocation);
 		model.addAttribute("redirectLocation", redirectLocation);

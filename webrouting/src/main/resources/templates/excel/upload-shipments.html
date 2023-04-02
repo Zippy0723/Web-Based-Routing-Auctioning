@@ -29,9 +29,9 @@
   				<button class=""  id="hamburger" style="display:none" onclick="nav_open()">☰</button>
 			</span>
 			<br><br>
-			<div class="alert alert-info" th:if="${message}">
-            <span th:text="${message}"></span>
-            </div>
+			<div class="alert alert-info" th:if="${successMessage}">
+    		<span th:text="${successMessage}" style="color: green;"></span>
+			</div>
             <br>
         	<h2>Upload file</h2>
 	        <br><br>

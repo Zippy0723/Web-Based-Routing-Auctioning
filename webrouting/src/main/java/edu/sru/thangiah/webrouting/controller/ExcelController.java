@@ -396,6 +396,7 @@ public class ExcelController {
 			e.printStackTrace();
 		}
 		
+		model.addAttribute("successMessage", session.getAttribute("successMessage"));
 		return "redirect:" + redirectLocation;	
 	}
 	
@@ -494,6 +495,7 @@ public class ExcelController {
 			e.printStackTrace();
 			return "redirect:" + redirectLocation;
 		}
+		model.addAttribute("successMessage", session.getAttribute("successMessage"));
 		return "redirect:" + redirectLocation;
 	}
 	
@@ -533,6 +535,7 @@ public class ExcelController {
 			e.printStackTrace();
 			return "redirect:" + redirectLocation;
 		}
+		model.addAttribute("successMessage", session.getAttribute("successMessage"));
 		return "redirect:" + redirectLocation;
 	}
 	
@@ -572,6 +575,7 @@ public class ExcelController {
 			e.printStackTrace();
 			return "redirect:" + redirectLocation;
 		}
+		model.addAttribute("successMessage", session.getAttribute("successMessage"));
 		return "redirect:" + redirectLocation;
 	}
 
@@ -612,6 +616,7 @@ public class ExcelController {
 			e.printStackTrace();
 			return "redirect:" + redirectLocation;
 		}
+		model.addAttribute("successMessage", session.getAttribute("successMessage"));
 		return "redirect:" + redirectLocation;
 	}
 	
@@ -651,6 +656,7 @@ public class ExcelController {
 			e.printStackTrace();
 			return "redirect:" + redirectLocation;
 		}
+		model.addAttribute("successMessage", session.getAttribute("successMessage"));
 		return "redirect:" + redirectLocation;
 	}
 	
@@ -690,6 +696,7 @@ public class ExcelController {
 			e.printStackTrace();
 			return "redirect:" + redirectLocation;
 		}
+		model.addAttribute("successMessage", session.getAttribute("successMessage"));
 		return "redirect:" + redirectLocation;
 	}
 	
@@ -729,6 +736,7 @@ public class ExcelController {
 			e.printStackTrace();
 			return "redirect:" + redirectLocation;
 		}
+		model.addAttribute("successMessage", session.getAttribute("successMessage"));
 		return "redirect:" + redirectLocation;
 	}
 	

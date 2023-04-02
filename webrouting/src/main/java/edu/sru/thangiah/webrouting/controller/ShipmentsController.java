@@ -398,10 +398,16 @@ public class ShipmentsController {
 						
 				}
 			}
+			try {
+				model.addAttribute("successMessage",session.getAttribute("successMessage"));
+			} catch (Exception e) {
+				//do nothing
+			}
+			session.removeAttribute("successMessage");
 		}
 		
 		if (shipmentsPending.size() != 0 && shipmentsPending != null) {
-			model.addAttribute("shipments", shipmentsPending);   
+			model.addAttribute("shipments", shipmentsPending);
 		}
 		
 		
@@ -509,6 +515,13 @@ public class ShipmentsController {
 			model.addAttribute("shipmentsAccepted", shipmentsAccepted);
 			model.addAttribute("shipmentsAwaiting", shipmentsAwaiting);
 			model.addAttribute("status", status);
+			
+			try {
+				model.addAttribute("successMessage",session.getAttribute("successMessage"));
+			} catch (Exception e) {
+				//do nothing
+			}
+			session.removeAttribute("successMessage");
 			return "/allshipments";
 			
 	}

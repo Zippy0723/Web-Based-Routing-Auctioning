@@ -34,6 +34,9 @@
                 <div class="alert alert-info" th:if="${message}">
        		    <span th:text="${message}"></span>
        	        </div>
+       	        <div class="alert alert-info" th:if="${successMessage}">
+    			<span th:text="${successMessage}" style="color: green;"></span>
+				</div>
 				<div th:if="${status != 'CARRIER'}">
 				<div th:switch="${shipmentsPending.size()}">
                     <h2 th:case="0">No Pending Shipments Yet!</h2>

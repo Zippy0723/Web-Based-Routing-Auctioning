@@ -83,6 +83,13 @@ public class VehicleTypesController {
         }
         session.removeAttribute("error");
         
+        try {
+			model.addAttribute("successMessage",session.getAttribute("successMessage"));
+		} catch (Exception e) {
+			//do nothing
+		}
+		session.removeAttribute("successMessage");
+		
         model = NotificationController.loadNotificationsIntoModel(user, model);
         
         return "vehicletypes";

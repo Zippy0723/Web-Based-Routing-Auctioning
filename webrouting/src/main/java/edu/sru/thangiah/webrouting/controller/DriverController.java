@@ -69,6 +69,13 @@ public class DriverController {
         }
         session.removeAttribute("error");
         
+        try {
+	    	  model.addAttribute("successMessage",session.getAttribute("successMessage"));
+			} catch (Exception e) {
+				//do nothing
+			}
+			session.removeAttribute("successMessage");
+        
 		String redirectLocation = "/drivers";
 		session.setAttribute("redirectLocation", redirectLocation);
 		model.addAttribute("redirectLocation", redirectLocation);
