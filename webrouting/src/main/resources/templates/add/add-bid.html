@@ -46,7 +46,7 @@
 	                </select>
 	             	<br>
 	                <label for="price">Price: </label>
-	                <input type="text" th:field="*{price}" id="price" placeholder="Price" required oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1');">
+	                <input type="text" th:field="*{price}" id="price" placeholder="100" required oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1');">
 	                <br>
 	                <span th:if="${#fields.hasErrors('price')}" th:errors="*{price}"></span>
 	                <br>

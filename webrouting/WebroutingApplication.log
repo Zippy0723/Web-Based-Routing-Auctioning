@@ -271,3 +271,9 @@
 ||04-01-2023||09:08:00||http-nio-8080-exec-5||INFO||ExampleController||WillyWonka||Successfully saved a Contact with ID 30.
 ||04-01-2023||00:30:00||http-nio-8080-exec-5||ERROR||ExampleController||Ship4U||Successfully updated a Vehicle with ID 27.
 ||04-01-2023||00:27:00||http-nio-8080-exec-5||ERROR||ExampleController||ShadowAdmin||Successfully updated a Maintenance Order with ID 31.
+||04-01-2023||20:48:32||http-nio-8080-exec-4||INFO ||CustomLoginSuccessHandler                         ||AdminTry || logged in.
+||04-01-2023||21:32:13||http-nio-8080-exec-5||INFO ||CustomLoginSuccessHandler                         ||AdminTry || logged in.
+||04-01-2023||21:33:27||http-nio-8080-exec-5||INFO ||CustomLogoutSuccessHandler                        ||AdminTry || logged out.
+||04-01-2023||21:33:36||http-nio-8080-exec-9||INFO ||CustomLoginSuccessHandler                         ||Shipper || logged in.
+||04-01-2023||21:37:48||http-nio-8080-exec-6||INFO ||CustomLogoutSuccessHandler                        ||Shipper || logged out.
+||04-01-2023||21:37:54||http-nio-8080-exec-4||INFO ||CustomLoginSuccessHandler                         ||Carrier || logged in.
