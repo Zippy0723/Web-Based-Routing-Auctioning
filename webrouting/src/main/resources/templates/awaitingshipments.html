@@ -50,15 +50,10 @@
 	                                    <th>Shipment ID</th>
 	                                    <th>Client</th>
 	                                    <th>Carrier Name</th>
-	                                    <th>Vehicle</th>
 	                                    <th>Client Mode</th>
 	                                    <th>Ship Date</th>
 	                                    <th>Freightbill Number</th>
 	                                    <th>Paid Amount</th>
-	                                    <th>Full Freight Terms</th>
-	                                    <th>Commodity Class</th>
-	                                    <th>Commodity Pieces</th>
-	                                    <th>Commodity Paid Weight</th>
 	                                    <th>Shipper City</th>
 	                                    <th>Shipper State</th>
 	                                    <th>Shipper Zip</th>
@@ -77,15 +72,10 @@
 	                                    <td th:text="${shipment.id}"></td>
 	                                    <td th:text="${shipment.client}"></td>
 	                                    <td><a th:text="${shipment.carrier.carrierName}"></a></td>
-	                                    <td th:text="${shipment.vehicle}"></td>
 	                                    <td th:text="${shipment.clientMode}"></td>
 	                                    <td th:text="${shipment.shipDate}"></td>
 	                                    <td th:text="${shipment.freightbillNumber}"></td>
 	                                    <td th:text="${shipment.paidAmount}"></td>
-	                                    <td th:text="${shipment.fullFreightTerms}"></td>
-	                                    <td th:text="${shipment.commodityClass}"></td>
-	                                    <td th:text="${shipment.commodityPieces}"></td>
-	                                    <td th:text="${shipment.commodityPaidWeight}"></td>
 	                                    <td th:text="${shipment.shipperCity}"></td>
 	                                    <td th:text="${shipment.shipperState}"></td>
 	                                    <td th:text="${shipment.shipperZip}"></td>

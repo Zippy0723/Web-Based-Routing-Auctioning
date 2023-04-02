@@ -32,7 +32,7 @@
                 <h2>Update Shipment</h2>
                 <br>
                <div class="alert alert-info" th:if="${message}">
-               <span th:text="${message}"></span>
+               <span th:utext="${message}"></span>
                </div>
                 <form action="#" th:action="@{/updateshipment/{id}(id=${shipments.id})}" th:object="${shipments}" method="post">
 				<hr>

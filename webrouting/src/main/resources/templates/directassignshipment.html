@@ -38,21 +38,25 @@
                         <span type="hidden" th:text="${error}" class="loginError"></span>
                         <br>
                         <form th:action="@{/selectcarrier}" method="post">
+                        <div class="form-group">
 							<span th:if="${message}" th:text="${message}" class="error"></span>
                         	<input type="hidden" th:field="${selectedCarrierId}" th:value="${selectedCarrierId}"/>
                         	<input type="hidden" th:name="shipmentId" th:value="${shipmentId}"/>
-    				 		<div th:each="carrier, carrierIndex : ${carriers}" class="carrier-box">
+    				 		<div th:each="carrier, carrierIndex : ${carriers}" class="carrier-box" >
     				 			<div class="radio-container">
        					  			<input type="radio" th:name="selectedCarrierId" th:value="${carrier.id}" th:checked="${carrier.id == selectedCarrierId}"/>
-       					  			<label th:for="'selectedCarrierId_' + ${carrier.id}" th:text="${carrier.carrierName} + ' (' + ${carrier.scac} + ')'"></label>
+       					  			<label th:for="'selectedCarrierId_' + ${carrier.id}" th:text="${carrier.carrierName} + ' (' + ${carrier.scac} + ')'" ></label>
        				      			<br/>
        				      		</div>
     			        	</div>
-    			        <label for="inputPrice">Enter the price of the shipment:</label>
-						<input type="text" id="inputPrice" name="inputPrice">
+    			        	<br>
+    			        <label for="inputPrice" style="text-align: left;">Enter the price of the shipment:</label>
+						<input type="text" id="inputPrice" name="inputPrice" style="font-size: 16px;">
+						<br><br>
 						<button type="button" onclick="fetchPrice()">Fetch Price from Freight Rate Table</button>
     			        <br></br>
     				    <button type="submit">Select this Carrier</button>
+    				    </div>
 				      </form>
 					</div>
 				</div>

@@ -32,7 +32,7 @@
                 <h2>Update Driver</h2>
                 <br>
                 <div class="alert alert-info" th:if="${message}">
-              	 <span th:text="${message}"></span>
+              	 <span th:utext="${message}"></span>
               	</div>
                 <form action="#" th:action="@{/edit-drivers/{id}(id=${driver.id})}" th:object="${driver}" method="post">
 				<hr>
@@ -50,7 +50,7 @@
      
                 	<br>
                     <label for="lisence_number">License Number: </label>
-                    <input type="text" th:field="*{lisence_number}" id="lisence_number" placeholder="License Number" size=19 required>
+                    <input type="text" th:field="*{lisence_number}" id="lisence_number" placeholder="License Number" size=23 required>
                   
                  	<br>
                     <label for="lisence_expiration">License Expiration: </label>
@@ -58,7 +58,7 @@
                    
                 	<br>
                     <label for="lisence_class">License Class: </label>
-                    <input type="text" th:field="*{lisence_class}" id="lisence_class" placeholder="License Class" size=19>
+                    <input type="text" th:field="*{lisence_class}" id="lisence_class" placeholder="License Class" size=23>
                    
                     <br><br>
                     <button class="buttons4" type="button" th:attr="onclick=|window.location.href='${redirectLocation}'|">Back</button>

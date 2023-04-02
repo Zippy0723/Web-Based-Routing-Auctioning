@@ -32,38 +32,38 @@
                 <h2>Update Contact</h2>
                 <br>
                <div class="alert alert-info" th:if="${message}">
-               <span th:text="${message}"></span>
+               <span th:utext="${message}"></span>
                </div>
                     <form action="#" th:action="@{/edit-contact/{id}(id=${contacts.id})}" th:object="${contacts}" method="post">
                     <hr>
 	                    <div class="form-group">
 	                        <br>
 	                        <label for="firstName">First Name: </label>
-	                        <input type="text" th:field="*{firstName}" id="firstName" placeholder="First Name" size=19 >
+	                        <input type="text" th:field="*{firstName}" id="firstName" placeholder="First Name" size=23 >
 	                       
 							<br>
 	                        <label for="lastName">Last Name: </label>
-	                        <input type="text" th:field="*{lastName}" id="lastName" placeholder="Last Name" size=19 >
+	                        <input type="text" th:field="*{lastName}" id="lastName" placeholder="Last Name" size=23 >
 	                        
 							<br>
 	                        <label for="middleInitial">Middle Initial: </label>
-	                        <input type="text" th:field="*{middleInitial}" id="middleInitial" placeholder="Middle Initial" size=19>
+	                        <input type="text" th:field="*{middleInitial}" id="middleInitial" placeholder="Middle Initial" size=23>
 	                       
 							<br>
 	                        <label for="emailAddress">Email Address: </label>
-	                        <input type="text" th:field="*{emailAddress}" id="emailAddress" placeholder="Email Address" size=19 >
+	                        <input type="text" th:field="*{emailAddress}" id="emailAddress" placeholder="Email Address" size=23 >
 	                        
 							<br>					
 	                        <label for="streetAddress1">Street Address 1: </label>
-	                        <input type="text" th:field="*{streetAddress1}" id="streetAddress1" placeholder="Street Address 1"  size=19 >
+	                        <input type="text" th:field="*{streetAddress1}" id="streetAddress1" placeholder="Street Address 1"  size=23 >
 	                        
 							<br>
 	                        <label for="streetAddress2">Street Address 2: </label>
-	                        <input type="text" th:field="*{streetAddress2}" id="streetAddress2" placeholder="Street Address 2"  size=19 >
+	                        <input type="text" th:field="*{streetAddress2}" id="streetAddress2" placeholder="Street Address 2"  size=23 >
 	                      
 							<br>
 	                        <label for="city">City: </label>
-	                        <input type="text" th:field="*{city}" id="city" placeholder="City"  size=19 >
+	                        <input type="text" th:field="*{city}" id="city" placeholder="City"  size=23 >
 	                        
 							<br>
 	                        <label for="state">State: </label>
@@ -122,15 +122,15 @@
                         </select>
 							<br>
 	                        <label for="zip">Zip Code: </label>
-	                        <input type="text" th:field="*{zip}" id="zip" placeholder="Zip Code"  size=19>
+	                        <input type="text" th:field="*{zip}" id="zip" placeholder="Zip Code"  size=23>
 	                        
 							<br>
 	                        <label for="primaryPhone">Primary Phone: </label>
-	                        <input type="text" th:field="*{primaryPhone}" id="primaryPhone" placeholder="Primary Phone"  size=19 >
+	                        <input type="text" th:field="*{primaryPhone}" id="primaryPhone" placeholder="Primary Phone"  size=23 >
 	                       
 							<br>
 	                        <label for="workPhone">Work Phone: </label>
-	                        <input type="text" th:field="*{workPhone}" id="workPhone" placeholder="Work Phone"  size=19 >
+	                        <input type="text" th:field="*{workPhone}" id="workPhone" placeholder="Work Phone"  size=23 >
 	                        
 	                        <br>
 	                        <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
