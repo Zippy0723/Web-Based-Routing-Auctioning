@@ -24,6 +24,7 @@ html, body {
 body {
 	background: #fff;
 	font-family: Sans-serif;
+	overflow-x: hidden;
 }
 
 
