@@ -380,6 +380,13 @@ public class ShipmentsController {
 		}
 		session.removeAttribute("message");
 		
+		try {
+			model.addAttribute("successMessage",session.getAttribute("successMessage"));
+		} catch (Exception e) {
+			//do nothing
+		}
+		session.removeAttribute("successMessage");
+		
 		if (user.getRole().toString().equals("SHIPPER")) {  
 			shipments = user.getShipments();
 		}
@@ -398,19 +405,11 @@ public class ShipmentsController {
 						
 				}
 			}
-			try {
-				model.addAttribute("successMessage",session.getAttribute("successMessage"));
-			} catch (Exception e) {
-				//do nothing
-			}
-			session.removeAttribute("successMessage");
 		}
 		
 		if (shipmentsPending.size() != 0 && shipmentsPending != null) {
 			model.addAttribute("shipments", shipmentsPending);
-		}
-		
-		
+		}		
 		
 		return "pendingshipments";
 	}
@@ -436,6 +435,12 @@ public class ShipmentsController {
 		} catch (Exception e) {
 			//do nothing
 		}
+		try {
+			model.addAttribute("successMessage",session.getAttribute("successMessage"));
+		} catch (Exception e) {
+			//do nothing
+		}
+		session.removeAttribute("successMessage");
 		
 		if (user.getRole().toString().equals("SHIPPER")) {  
 			ownShipments = user.getShipments();
@@ -516,12 +521,6 @@ public class ShipmentsController {
 			model.addAttribute("shipmentsAwaiting", shipmentsAwaiting);
 			model.addAttribute("status", status);
 			
-			try {
-				model.addAttribute("successMessage",session.getAttribute("successMessage"));
-			} catch (Exception e) {
-				//do nothing
-			}
-			session.removeAttribute("successMessage");
 			return "/allshipments";
 			
 	}
