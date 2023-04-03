@@ -31,27 +31,26 @@
 				<br><br>
                 <h2>Update Location</h2>
                  <br>
-               <div class="alert alert-info" th:if="${message}">
-               <span th:text="${message}"></span>
-               </div>
+               <span type="hidden" th:text="${message}" class=errorMessage></span>
+               <br>
                     <form action="#" th:action="@{/edit-locations/{id}(id=${locations.id})}" th:object="${locations}" method="post">
                 	<hr>
                 	<div class="form-group">
                  		<br>
                  		<label for="name">Location Name: </label>
-                    	<input type="text" th:field="*{name}" id="name" placeholder="Location Name" size=19 required>
+                    	<input type="text" th:field="*{name}" id="name" placeholder="Ian's Office" size=19 required>
                  
 						<br>					
                      	<label for="streetAddress1">Street Address 1: </label>
-                     	<input type="text" th:field="*{streetAddress1}" id="streetAddress1" placeholder="Street Address 1" size=19 required>
+                     	<input type="text" th:field="*{streetAddress1}" id="streetAddress1" placeholder="1 Morrow Way" size=19 required>
               
 						<br>
                      	<label for="streetAddress2">Street Address 2: </label>
-                     	<input type="text" th:field="*{streetAddress2}" id="streetAddress2" placeholder="Street Address 2" size=19>
+                     	<input type="text" th:field="*{streetAddress2}" id="streetAddress2" placeholder="North Hall #101" size=19>
                      
 						<br>
                      	<label for="city">City: </label>
-                     	<input type="text" th:field="*{city}" id="city" placeholder="City" size=19 required>
+                     	<input type="text" th:field="*{city}" id="city" placeholder="Slippery Rock" size=19 required>
                      	
 						<br>
                      	 <label for="state">State: </label>
@@ -111,19 +110,19 @@
                
 						<br>
                      	<label for="zip">Zip Code: </label>
-                     	<input type="text" th:field="*{zip}" id="zip" placeholder="Zip Code" size=19 >
+                     	<input type="text" th:field="*{zip}" id="zip" placeholder="16057" size=19 >
 				
                  		<br>
                     	<label for="latitude">Latitude: </label>
-                        <input type="text" th:field="*{latitude}" id="latitude" placeholder="Latitude" size=19>
+                        <input type="text" th:field="*{latitude}" id="latitude" placeholder="-79.4532612 or without '-'" size=19>
                         
 						<br>
                         <label for="longitude">Longitude: </label>
-                        <input type="text" th:field="*{longitude}" id="longitude" placeholder="Longitude" size=19>
+                        <input type="text" th:field="*{longitude}" id="longitude" placeholder="-179.5742489 or without '-'" size=19>
                         
                     	<br> 
                         <label for="locationType">Location Type: </label>
-                        <input type="text" th:field="*{locationType}" id="locationType" placeholder="Location Type" size=19 required>
+                        <input type="text" th:field="*{locationType}" id="locationType" placeholder="Office" size=19 required>
                           
                     	<br>
 					<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>

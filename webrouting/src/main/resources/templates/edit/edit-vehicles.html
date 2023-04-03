@@ -31,9 +31,8 @@
 				<br><br>
                 <h2>Update Vehicle</h2>
                 <br>
-               	<div class="alert alert-info" th:if="${message}">
-              	 <span th:text="${message}"></span>
-              	</div>
+               <span type="hidden" th:text="${message}" class=errorMessage></span>
+               <br>
                 <form action="#" th:action="@{/edit-vehicles/{id}(id=${vehicles.id})}" th:object="${vehicles}" method="post">
                 <hr>
 				<div class="form-group">
@@ -41,14 +40,14 @@
                     <h2> Enter Vehicle Info</h2>
                     <br>
                     <label for="plateNumber">Plate Number: </label>
-                    <input type="text" th:field="*{plateNumber}" name="plateNumber" id="plateNumber" placeholder="Plate Number" size=19 required>
+                    <input type="text" th:field="*{plateNumber}" name="plateNumber" id="plateNumber" placeholder="11479TE" size=19 required>
                  	<br>
                     <label for="vinNumber">VIN Number: </label>
-                    <input type="text" th:field="*{vinNumber}" id="vinNumber" placeholder="VIN Number" size=19 required>
+                    <input type="text" th:field="*{vinNumber}" id="vinNumber" placeholder="1J4FA241X7L251987" size=19 required>
                     
                  	<br>
                     <label for="manufacturedYear">Manufactured Year: </label>
-                    <input type="text" th:field="*{manufacturedYear}" id="manufacturedYear" placeholder="Manufactured Year" size=19 required>
+                    <input type="text" th:field="*{manufacturedYear}" id="manufacturedYear" placeholder="1995" size=19 required>
 
                 	<br>
                     <label for="vehicleType">Vehicle Type: </label>

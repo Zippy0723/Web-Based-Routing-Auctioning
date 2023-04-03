@@ -31,9 +31,8 @@
 				<br><br>
                 <h2>Update Shipper</h2>
                 <br>
-               	<div class="alert alert-info" th:if="${message}">
-              	 <span th:text="${message}"></span>
-              	</div>
+               <span type="hidden" th:text="${message}" class=errorMessage></span>
+               <br>
                 <form action="#" th:action="@{/edit-shipper/{id}(id=${user.id})}" th:object="${user}" method="post">
                 <hr>
 				<div class="form-group">
@@ -41,11 +40,11 @@
                     <h2> Enter Shipper Info</h2>
                     <br>
                     <label for="username">Username: </label>
-                    <input type="text" th:field="*{username}" name="username" id="username" placeholder="Username" size=19 required>
+                    <input type="text" th:field="*{username}" name="username" id="username" placeholder="TomCruise" size=19 required>
                     
                  	<br>
                     <label for="email">Email: </label>
-                    <input type="text" th:field="*{email}" id="email" placeholder="Email" size=19 required>
+                    <input type="text" th:field="*{email}" id="email" placeholder="tomcruise10@gmail.com" size=19 required>
                     
                  	<br>
                 	<label for="enabled">Account: </label>

@@ -38,14 +38,14 @@
                 	<br>
                 	<h2> Enter Account Info</h2>
                 	<br><br>
-                	<input type="hidden" th:field="*{username}" id="username" placeholder="UserName" required>
+                	<input type="hidden" th:field="*{username}" id="username" placeholder="TomCruise" required>
                   	<span th:if="${#fields.hasErrors('username')}" th:errors="*{username}"></span>
 				    <br>
-                    <input type="hidden" th:field="*{password}" id="password" placeholder="Password" required>
+                    <input type="hidden" th:field="*{password}" id="password" placeholder="Enter your Password" required>
                     <span th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></span>
                     <br>
                     <label for="email">Email: </label>
-                    <input type="text" th:field="*{email}" id="email" placeholder="Email" size=23 required>
+                    <input type="text" th:field="*{email}" id="email" placeholder="tomcruise10@gmail.com" size=23 required>
                     <p th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></p>
                     
                     <input type="hidden" th:field="*{updateEmail}" id="updateEmail" placeholder="updateEmail" required>

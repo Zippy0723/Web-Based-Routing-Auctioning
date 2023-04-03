@@ -42,15 +42,15 @@
 	            	<h2> Enter Account Info</h2>
 	            	<br><br>
 	                <label for="username">UserName: </label>
-	                <input type="text" th:field="*{username}" id="username" placeholder="UserName" required>
+	                <input type="text" th:field="*{username}" id="username" placeholder="TomCruise" required>
 	                <span th:if="${#fields.hasErrors('username')}" th:errors="*{username}"></span>
 	             	<br>
 	                <label for="password">Password: </label>
-	                <input type="password" th:field="*{password}" id="password" placeholder="Password" required>
+	                <input type="password" th:field="*{password}" id="password" placeholder="Enter your Password" required>
 	                <span th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></span>
 	            	<br>
 	                <label for="email">Email: </label>
-	                <input type="text" th:field="*{email}" id="email" placeholder="Email" required>
+	                <input type="text" th:field="*{email}" id="email" placeholder="tomcruise10@gmail.com" required>
 	                <span th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></span>
 	             	<br>
 	                <label for="role">Role: </label>
