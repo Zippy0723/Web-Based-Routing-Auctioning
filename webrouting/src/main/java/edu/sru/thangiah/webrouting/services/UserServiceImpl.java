@@ -6,6 +6,7 @@ import java.io.UnsupportedEncodingException;
 import javax.mail.MessagingException;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -36,13 +37,16 @@ import net.bytebuddy.utility.RandomString;
 public class UserServiceImpl implements UserService {
 	
 	@Autowired
+	private SecurityService securityService;
+	
+	@Autowired
 	private UserRepository userRepository;
-	
-    private BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
-    
+
+	private BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
+
 	private String otpCode;
-	
-	
+
+
 	/**
 	 * Constructor for the UserServiceImpl Class
 	 * @param userRepository - used to instantiate the user Repository
@@ -53,28 +57,28 @@ public class UserServiceImpl implements UserService {
 	}
 
 	/**
-     * Saves the user in the userRepository and encodes the password <br>
-     * The password is encrypted using the BCryptPasswordEncoder
-     * @param user User being saved
-     * @throws MessagingException 
-     * @throws UnsupportedEncodingException 
-     */
+	 * Saves the user in the userRepository and encodes the password <br>
+	 * The password is encrypted using the BCryptPasswordEncoder
+	 * @param user User being saved
+	 * @throws MessagingException 
+	 * @throws UnsupportedEncodingException 
+	 */
 	@Override
 	public void save(User user) {
 		user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
-	    userRepository.save(user);
+		userRepository.save(user);
 	}
-	
-	  /**
-     * finds the user in the database by searching the username
-     * @param username for the User being found
-     * @return the user found
-     */
+
+	/**
+	 * finds the user in the database by searching the username
+	 * @param username for the User being found
+	 * @return the user found
+	 */
 	@Override
 	public User findByUsername(String username) {
-			return userRepository.findByUsername(username);		
+		return userRepository.findByUsername(username);		
 	}
-	
+
 	/**
 	 * Finds the user in the database by searching the otpcode
 	 * @param otpCode - for the user being found
@@ -83,10 +87,10 @@ public class UserServiceImpl implements UserService {
 	 */
 	@Override
 	public User findByOtp(String otpCode) {
-			return userRepository.findByOtpCode(otpCode);
+		return userRepository.findByOtpCode(otpCode);
 	}
-	
-	
+
+
 	/**
 	 * Finds the user in the database by searching for their email
 	 * @param email - users email for finding the user
@@ -95,9 +99,9 @@ public class UserServiceImpl implements UserService {
 	 */
 	@Override
 	public User findByEmail(String email) {
-			return userRepository.findByEmail(email);
+		return userRepository.findByEmail(email);
 	}
-	
+
 	/**
 	 * Creates a One Time Password 
 	 * @return otpCode - the One Time Password that is created
@@ -105,7 +109,7 @@ public class UserServiceImpl implements UserService {
 	 */
 	public String createOtpCode() {
 		otpCode= RandomString.make(6);
-		
+
 		return otpCode;
 	}
 	/**
@@ -120,12 +124,12 @@ public class UserServiceImpl implements UserService {
 		user = new User();
 		user = findByEmail(email);
 		if(user.getOtpCode() != null) {
-		user.setOtpCode(createOtpCode());
+			user.setOtpCode(createOtpCode());
 		}else {
 			user.setOtpCode(createOtpCode());
 		}
 	}
-	
+
 	/**
 	 * Method for resetting the users password
 	 * @param user - users being reset
@@ -139,7 +143,21 @@ public class UserServiceImpl implements UserService {
 		save(user);
 	}
 	
+	
+	
+	public User getLoggedInUser() {
+		if (securityService.isAuthenticated()) {
+			org.springframework.security.core.userdetails.User user = 
+					(org.springframework.security.core.userdetails.User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
+			User user2 = findByUsername(user.getUsername());
+
+			return user2;
+		}
+		else {
+			return null;
+		}
+	}
 
 
 }

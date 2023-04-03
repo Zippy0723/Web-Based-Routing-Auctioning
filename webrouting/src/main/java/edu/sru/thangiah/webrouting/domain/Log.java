@@ -8,7 +8,7 @@ import java.time.format.DateTimeFormatter;
  * @author Dakota Myers
  */
 public class Log {
-	
+
 	private LocalDate date;
 	private String time;
 	private String where;
@@ -17,9 +17,9 @@ public class Log {
 	private String user;
 	private String msg;
 
-	
+
 	public Log(LocalDate date, String time, String where, String level, String who, String user, String msg) {
-		
+
 		this.date = date;
 		this.time = time;
 		this.where = where;
@@ -27,19 +27,19 @@ public class Log {
 		this.who = who;
 		this.user = user;
 		this.msg = msg;
-		
+
 	}
-	
+
 	public LocalDate getDateAsLocalDate() {
 		return date;
 	}
 
 	public String getDate() {
-		
+
 		LocalDate localDate = LocalDate.parse(date.toString());
-	    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM-dd-yyyy");
-	    String formattedDate = localDate.format(formatter);
-	    
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM-dd-yyyy");
+		String formattedDate = localDate.format(formatter);
+
 		return formattedDate;
 	}
 
@@ -90,9 +90,9 @@ public class Log {
 	public void setPerson(String user) {
 		this.user = user;
 	}
-	
+
 	public void setMsg(String msg) {
 		this.msg = msg;
 	}
 }
-	
+

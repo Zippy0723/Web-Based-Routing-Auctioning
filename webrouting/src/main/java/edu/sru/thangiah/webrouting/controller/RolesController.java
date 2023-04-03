@@ -20,48 +20,32 @@ import edu.sru.thangiah.webrouting.services.UserService;
 
 @Controller
 public class RolesController {
-	
-	@Autowired
-	private SecurityService securityService;
-	
+
 	@Autowired
 	private UserService userService;
-	
+
 	private RoleRepository roleRepository;
-    
+
 	/**
 	 * Constructor for roles. <br>
 	 * Instantiates the roleRepository
 	 * @param roleRepository Used to interact with the roles in the database
 	 */
-    public RolesController(RoleRepository roleRepository) {
+	public RolesController(RoleRepository roleRepository) {
 		this.roleRepository = roleRepository;
 	}
-    
-    /**
+
+	/**
 	 * Adds all of the roles to the "role" model and redirects user to
 	 * the roles page.
 	 * @param model Used to add data to the model
 	 * @return "roles"
 	 */
-    @RequestMapping({"/roles"})
-    public String showRoleList(Model model) {
-        model.addAttribute("role", roleRepository.findAll());
-        model = NotificationController.loadNotificationsIntoModel(getLoggedInUser(), model);
-        return "roles";
-    }
-    
-    public User getLoggedInUser() {
-    	if (securityService.isAuthenticated()) {
-    		org.springframework.security.core.userdetails.User user = 
-    				(org.springframework.security.core.userdetails.User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-    		
-    		User user2 = userService.findByUsername(user.getUsername());
-    		
-    		return user2;
-    	}
-    	else {
-    		return null;
-    	}
-    }
+	@RequestMapping({"/roles"})
+	public String showRoleList(Model model) {
+		model.addAttribute("role", roleRepository.findAll());
+		model = NotificationController.loadNotificationsIntoModel(userService.getLoggedInUser(), model);
+		return "roles";
+	}
+
 }

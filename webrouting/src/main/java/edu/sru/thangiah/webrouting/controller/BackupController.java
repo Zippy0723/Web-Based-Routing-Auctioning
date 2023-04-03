@@ -34,29 +34,29 @@ import edu.sru.thangiah.webrouting.utilities.BackupUtil;
 
 @Controller
 public class BackupController {
-	
+
 	@Value("${spring.datasource.username}")
 	private String dbUsername;
-	
+
 	@Value("${spring.datasource.password}")
 	private String dbPassword;
-	
-	@Autowired
-    private UserService userService;
 
-    @Autowired
-    private SecurityService securityService;
-	
+	@Autowired
+	private UserService userService;
+
+	@Autowired
+	private SecurityService securityService;
+
 	private String dbName;
 	private String outputFile;
-	
+
 	final static DateTimeFormatter CUSTOM_FORMATTER = DateTimeFormatter.ofPattern("yyyy_MM_dd_hh.mm");
-	
+
 	public BackupController() {
 		this.dbName = "webrouting";
 		this.outputFile = "";
 	}
-	
+
 	@Scheduled(fixedRate = 1200000) //Every twenty minutes
 	public void executeBackup() {
 		try {
@@ -80,17 +80,17 @@ public class BackupController {
 	 */
 	@GetMapping("/database")
 	public String database(Model model) {
-		User user = getLoggedInUser();
-	    
+		User user = userService.getLoggedInUser();
+
 		model = NotificationController.loadNotificationsIntoModel(user, model);
 		model.addAttribute("currentPage","/database");
 		return "database";
 	}
-	
+
 	@PostMapping("/restore-database")
 	public String restoreDatabase(Model model, @RequestParam("file") MultipartFile backupFile) throws AccessException, IOException {
 		File tmpFile = convertMultipartFileToFile(backupFile);
-		
+
 		try {
 			BackupUtil.restoreDatabase(dbUsername, dbPassword, dbName,tmpFile.getAbsolutePath(),model);
 		} catch (IOException e) {
@@ -102,18 +102,18 @@ public class BackupController {
 			e.printStackTrace();
 			model.addAttribute("message", "There was a problem loading the database! Please check your input file.");
 		}
-		
+
 		tmpFile.delete();
-		
-		User user = getLoggedInUser();
+
+		User user = userService.getLoggedInUser();
 		model = NotificationController.loadNotificationsIntoModel(user, model);
-		
+
 		return "database";
 	}
-	
+
 	//Borrowed from https://stackoverflow.com/questions/29923682/how-does-one-specify-a-temp-directory-for-file-uploads-in-spring-boot
 	//TODO: citation of code
-	
+
 	/**
 	 * 
 	 * @param file
@@ -121,30 +121,12 @@ public class BackupController {
 	 * @throws IOException
 	 */
 	private File convertMultipartFileToFile(MultipartFile file) throws IOException
-    {    
-        File convFile = File.createTempFile("temp", ".xlsx"); // choose your own extension I guess? Filename accessible with convFile.getAbsolutePath()
-        FileOutputStream fos = new FileOutputStream(convFile); 
-        fos.write(file.getBytes());
-        fos.close(); 
-        return convFile;
-    }
-	
-	/**
-	 * Returns the user that is currently logged into the system. <br>
-	 * If there is no user logged in, null is returned.
-	 * @return user2 or null
-	 */
-	public User getLoggedInUser() {
-    	if (securityService.isAuthenticated()) {
-    		org.springframework.security.core.userdetails.User user = 
-    				(org.springframework.security.core.userdetails.User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-    		
-    		User user2 = userService.findByUsername(user.getUsername());
-    		
-    		return user2;
-    	}
-    	else {
-    		return null;
-    	}
-    }
+	{    
+		File convFile = File.createTempFile("temp", ".xlsx"); // choose your own extension I guess? Filename accessible with convFile.getAbsolutePath()
+		FileOutputStream fos = new FileOutputStream(convFile); 
+		fos.write(file.getBytes());
+		fos.close(); 
+		return convFile;
+	}
+
 }

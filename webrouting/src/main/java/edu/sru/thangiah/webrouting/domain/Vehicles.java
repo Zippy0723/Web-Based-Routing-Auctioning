@@ -25,42 +25,42 @@ import org.springframework.lang.NonNull;
 @Entity
 @Table(name="vehicles")
 public class Vehicles {
-	
+
 	@Id
 	@GenericGenerator(name="generate" , strategy="increment")
 	@GeneratedValue(generator="generate")
-    private long id;
-	
+	private long id;
+
 	@NonNull
 	@Column(name="plate_number", columnDefinition="varchar(12) default NULL")
 	private String plateNumber;
-	
+
 	@NonNull
 	@Column(name="vin_number", columnDefinition="varchar(17) default NULL")
 	private String vinNumber;
-	
+
 	@NonNull
 	@Column(name="manufactured_year", columnDefinition="varchar(4) default NULL")
 	private String manufacturedYear;
-	
+
 	@ManyToOne
 	@JoinColumn(name = "vehicle_type_id")
 	private VehicleTypes vehicleType;
-	
+
 	@ManyToOne
 	@JoinColumn(name = "location_id")
 	private Locations location;
-	
+
 	@ManyToOne
 	@JoinColumn(name = "carrier_id")
 	private Carriers carrier;
-	
+
 	@OneToMany(mappedBy = "vehicle")
 	private List<MaintenanceOrders> orders = new ArrayList<>();
-	
+
 	@OneToMany(mappedBy = "vehicle")
 	private List<Shipments> shipments = new ArrayList<>();
-	
+
 	@OneToMany(mappedBy = "vehicle")
 	private List<Driver> drivers = new ArrayList<>();
 
@@ -175,7 +175,7 @@ public class Vehicles {
 	public void setCarrier(Carriers carrier) {
 		this.carrier = carrier;
 	}
-	
+
 	/**
 	 * Gets the Vehicle Orders List
 	 * @return orders

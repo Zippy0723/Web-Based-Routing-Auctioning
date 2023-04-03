@@ -25,20 +25,20 @@ public class Bids {
 	@GenericGenerator(name="generate" , strategy="increment")
 	@GeneratedValue(generator="generate")
 	private Long id;
-	
+
 	@Column(name="price", nullable= true, columnDefinition="varchar(16) default NULL")
 	private String price;
-	
+
 	@Column(name="date", nullable= true, columnDefinition="varchar(10) default NULL")
 	private String date;
-	
+
 	@Column(name="time", nullable= true, columnDefinition="varchar(11) default NULL")
 	private String time;
-	
+
 	@ManyToOne
 	@JoinColumn(name = "shipment_id")
 	private Shipments shipment;
-	
+
 	@ManyToOne
 	@JoinColumn(name = "carrier_id")
 	private Carriers carrier;

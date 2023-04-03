@@ -3,24 +3,24 @@ package edu.sru.thangiah.webrouting.domain;
 public class Filter {
 
 	private String startDate;
-	
+
 	private String endDate;
-	
+
 	private String level;
-	
+
 	private String user;
-	
-	
+
+
 	public Filter(String startDate, String endDate, String level, String user) {
-		
+
 		this.startDate = startDate;
 		this.endDate = endDate;
 		this.level = level;
 		this.user = user;
 	}
-	
+
 	public Filter() {}
-	
+
 
 
 	public String getStartDate() {
@@ -61,6 +61,6 @@ public class Filter {
 	public void setUser(String user) {
 		this.user = user;
 	}
-	
-	
+
+
 }

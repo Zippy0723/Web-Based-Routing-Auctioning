@@ -14,27 +14,27 @@ import org.springframework.lang.NonNull;
 @Entity
 @Table(name="notifications")
 public class Notification {
-	
+
 	@Id
 	@GenericGenerator(name="generate" , strategy="increment")
 	@GeneratedValue(generator="generate")
-    private long id;
-	
+	private long id;
+
 	@ManyToOne
 	@JoinColumn(name="user_id")
 	private User user;
-	
+
 	@NonNull
 	@Column(name="message", nullable = false, columnDefinition="varchar(225)")
-    private String message;
-	
+	private String message;
+
 	@NonNull
 	@Column(name="timesent", nullable = false, columnDefinition="varchar(225)")
 	private String timesent; //Converted from LocalDateTime.now()
-	
+
 	@Column(name = "isread", nullable=false, columnDefinition="bit(1) default false")
-    private boolean isread;
-	
+	private boolean isread;
+
 	/**
 	 * Constructor for Notification
 	 * 
@@ -48,7 +48,7 @@ public class Notification {
 		this.timesent = timesent;
 		this.message = message;
 	}
-	
+
 	/**
 	 * Null Constructor for iterablility
 	 */

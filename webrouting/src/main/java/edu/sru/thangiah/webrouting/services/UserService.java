@@ -10,7 +10,7 @@ import edu.sru.thangiah.webrouting.domain.User;
 
 public interface UserService {
 
-    User findByUsername(String username);
+	User findByUsername(String username);
 
 	void save(User user);
 
@@ -21,11 +21,13 @@ public interface UserService {
 	void assignOtpCode(String email);
 
 	void resetPassword(User user, String password);
-	
+
 	String createOtpCode();
-
-
 	
+	User getLoggedInUser();
+
+
+
 
 
 }

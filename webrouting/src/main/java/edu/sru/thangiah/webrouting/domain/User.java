@@ -31,60 +31,60 @@ public class User {
 	@Id
 	@GenericGenerator(name="generate" , strategy="increment")
 	@GeneratedValue(generator="generate")
-    private long id;
-    
-    @NonNull
+	private long id;
+
+	@NonNull
 	@Column(name="username", nullable= false, columnDefinition="varchar(32)")
-    private String username;
-    
-    @NonNull
+	private String username;
+
+	@NonNull
 	@Column(name="password", nullable= false, columnDefinition="varchar(255)")
-    private String password;
-    
-    @NonNull
+	private String password;
+
+	@NonNull
 	@Column(name="email", nullable= false, columnDefinition="varchar(64)")
-    private String email;
-    
-    @ManyToOne
-    @JoinColumn(name = "role_id")
-    private Role role;
-    
-    @ManyToOne
-    @JoinColumn(name = "carrier_id")
-    private Carriers carrier;
-    
-    @OneToMany(mappedBy = "user")
+	private String email;
+
+	@ManyToOne
+	@JoinColumn(name = "role_id")
+	private Role role;
+
+	@ManyToOne
+	@JoinColumn(name = "carrier_id")
+	private Carriers carrier;
+
+	@OneToMany(mappedBy = "user")
 	private List<Shipments> shipments = new ArrayList<>();
-    
-    @OneToMany(mappedBy = "user")
+
+	@OneToMany(mappedBy = "user")
 	private List<Notification> notifications = new ArrayList<>();
-    
-    @Column(name = "verification_code", nullable=true, length=64)
-    private String verificationCode;
-    
-    @Column(name = "enabled", nullable=false, columnDefinition="bit(1) default false")
-    private boolean enabled;
 
-    @Column(name = "otp", nullable=true, columnDefinition="varchar(6) default NULL")
-    private String otpCode;
-    
-    @Transient
-    private String confirmPassword;
-    
-    @Transient
-    private String updateEmail;
-    
-    @NonNull
-    private boolean auctioningAllowed;
-    
-    @Lob
-    @Column(name= "freightratetable",nullable=true)
-    private byte[] freightRateTables;
+	@Column(name = "verification_code", nullable=true, length=64)
+	private String verificationCode;
 
-    /**
-     * Gets the User ID
-     * @return id
-     */
+	@Column(name = "enabled", nullable=false, columnDefinition="bit(1) default false")
+	private boolean enabled;
+
+	@Column(name = "otp", nullable=true, columnDefinition="varchar(6) default NULL")
+	private String otpCode;
+
+	@Transient
+	private String confirmPassword;
+
+	@Transient
+	private String updateEmail;
+
+	@NonNull
+	private boolean auctioningAllowed;
+
+	@Lob
+	@Column(name= "freightratetable",nullable=true)
+	private byte[] freightRateTables;
+
+	/**
+	 * Gets the User ID
+	 * @return id
+	 */
 	public long getId() {
 		return id;
 	}
@@ -144,7 +144,7 @@ public class User {
 	public void setEmail(String email) {
 		this.email = email.trim();
 	}
-	
+
 	/**
 	 * Gets the User Role
 	 * @return role
@@ -216,18 +216,18 @@ public class User {
 	public void setVerificationCode(String verificationCode) {
 		this.verificationCode = verificationCode;
 	}
-	
+
 	/**
 	 * gets the enabled status of a user
 	 * @return enabled whether the user is or is not enabled
 	 * @author Josh Gearhart	jjg1018@sru.edu
 	 */
 	public boolean isEnabled() {
-		
-		
+
+
 		return enabled;
 	}
-	
+
 	/**
 	 * sets the enabled status of a user
 	 * @param enable status being set to true or false
@@ -246,7 +246,7 @@ public class User {
 	public String getOtpCode() {
 		return otpCode;
 	}
-	
+
 	/**
 	 * sets the specified otpCode for the user
 	 * @param otpCode - code being set
@@ -255,7 +255,7 @@ public class User {
 	public void setOtpCode(String otpCode) {
 		this.otpCode = otpCode;
 	}
-	
+
 	/**
 	 * Gets the users confirmedPassword
 	 * @return confirmPassword - users retyped password
@@ -264,7 +264,7 @@ public class User {
 	public String getConfirmPassword() {
 		return confirmPassword;
 	}
-	
+
 	/**
 	 * Sets the users confirmed password
 	 * @param confirmPassword - confirmed password being set
@@ -273,7 +273,7 @@ public class User {
 	public void setConfirmPassword(String confirmPassword) {
 		this.confirmPassword = confirmPassword;
 	}
-	
+
 	/**
 	 * Gets the updateEmail String
 	 * @return update Email - used for updating the users email

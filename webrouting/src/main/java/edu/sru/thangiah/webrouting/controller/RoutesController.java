@@ -29,14 +29,11 @@ import edu.sru.thangiah.webrouting.services.UserService;
 
 @Controller
 public class RoutesController {
-	
-	private VehiclesRepository vehiclesRepository;
-	
-	@Autowired
-    private UserService userService;
 
-    @Autowired
-    private SecurityService securityService;
+	private VehiclesRepository vehiclesRepository;
+
+	@Autowired
+	private UserService userService;
 
 	/**
 	 * Constructor for RoutesController. <br>
@@ -46,7 +43,7 @@ public class RoutesController {
 	public RoutesController (VehiclesRepository vehiclesRepository) {
 		this.vehiclesRepository = vehiclesRepository;
 	}
-	
+
 	/**
 	 * User selects a vehicle from a dropdown list and the shipments associated with that vehicle are then
 	 * listed in that on the routes page
@@ -60,30 +57,30 @@ public class RoutesController {
 	public String showVehicleRoute(Model model, String id, String date, boolean anydate) {
 		Long vehicleId = Long.parseLong(id);
 		model.addAttribute("currentPage","/routes");
-		
+
 		Vehicles vehicle = vehiclesRepository.findById(vehicleId)
-		          .orElseThrow(() -> new IllegalArgumentException("Invalid vehicle Id:" + id));
-		
+				.orElseThrow(() -> new IllegalArgumentException("Invalid vehicle Id:" + id));
+
 		if (anydate) {
 			model.addAttribute("shipments", vehicle.getShipments());
 			model.addAttribute("vehicle", vehiclesRepository.findAll());
-			
-			User users = getLoggedInUser();
-	        List<Notification> notifications = new ArrayList<>();
-	        
-	        if(!(users == null)) {
-	            notifications = NotificationController.fetchUnreadNotifications(users);
-	        }
-	        
-	        model.addAttribute("notifications",notifications);
-			
+
+			User users = userService.getLoggedInUser();
+			List<Notification> notifications = new ArrayList<>();
+
+			if(!(users == null)) {
+				notifications = NotificationController.fetchUnreadNotifications(users);
+			}
+
+			model.addAttribute("notifications",notifications);
+
 			return "routes";
 		}
-		
+
 		else {
 			List<Shipments> shipments = vehicle.getShipments();
 			List<Shipments> shownShipments = new ArrayList<>();
-			
+
 			for (Shipments shipment : shipments) {
 				System.out.println("\n\n" + shipment.getShipDate() + "\n" + date);
 				String shipDate = shipment.getShipDate();
@@ -92,14 +89,14 @@ public class RoutesController {
 					shownShipments.add(shipment);
 				}
 			}
-			
+
 			System.out.println(shownShipments);
 			model.addAttribute("shipments", shownShipments);
 			model.addAttribute("vehicle", getVehiclesWithShipments());
-			
-			User user = getLoggedInUser();
-	        model = NotificationController.loadNotificationsIntoModel(user, model);
-	        
+
+			User user = userService.getLoggedInUser();
+			model = NotificationController.loadNotificationsIntoModel(user, model);
+
 			return "routes";
 		}
 	}
@@ -111,24 +108,24 @@ public class RoutesController {
 	 * @return "routes"
 	 */
 	@RequestMapping({"/routes"})
-    public String showVehiclesList(Model model, HttpSession session) {
+	public String showVehiclesList(Model model, HttpSession session) {
 		String redirectLocation = "/routes";
 		model.addAttribute("currentPage","/routes");
 		session.setAttribute("redirectLocation", redirectLocation);
 		model.addAttribute("redirectLocation", redirectLocation);
-		if (getLoggedInUser().getRole().getName().equals("CARRIER")) {
-			model.addAttribute("vehicle", getVehiclesWithShipmentsFromList(getLoggedInUser().getCarrier().getVehicles()));
+		if (userService.getLoggedInUser().getRole().getName().equals("CARRIER")) {
+			model.addAttribute("vehicle", getVehiclesWithShipmentsFromList(userService.getLoggedInUser().getCarrier().getVehicles()));
 		}
 		else {
 			model.addAttribute("vehicle", getVehiclesWithShipments());
 		}
-		
-		User user = getLoggedInUser();
-        model = NotificationController.loadNotificationsIntoModel(user, model);
-		
-        return "routes";
-    }
-	
+
+		User user = userService.getLoggedInUser();
+		model = NotificationController.loadNotificationsIntoModel(user, model);
+
+		return "routes";
+	}
+
 	/**
 	 * Looks through the list of vehicles and determines if that vehicle has shipments associated with it. <br>
 	 * If there are shipments, it is added to a list called displayedList which is returned to the user.
@@ -144,7 +141,7 @@ public class RoutesController {
 		}
 		return displayedList;
 	}
-	
+
 	public List<Vehicles> getVehiclesWithShipmentsFromList(List<Vehicles> vehicles) {
 		List<Vehicles> displayedList = new ArrayList<>();
 		for (Vehicles vehicle : vehicles) {
@@ -154,25 +151,7 @@ public class RoutesController {
 		}
 		return displayedList;
 	}
-	
-	/**
-	 * Returns the user that is currently logged into the system. <br>
-	 * If there is no user logged in, null is returned.
-	 * @return user2 or null
-	 */
-	public User getLoggedInUser() {
-    	if (securityService.isAuthenticated()) {
-    		org.springframework.security.core.userdetails.User user = 
-    				(org.springframework.security.core.userdetails.User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-    		
-    		User user2 = userService.findByUsername(user.getUsername());
-    		
-    		return user2;
-    	}
-    	else {
-    		return null;
-    	}
-    }
+
 }
-	
+
 

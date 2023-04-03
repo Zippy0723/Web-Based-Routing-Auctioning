@@ -8,9 +8,9 @@ package edu.sru.thangiah.webrouting.services;
  */
 
 public interface SecurityService {
-	
+
 	boolean isAuthenticated();
-	
+
 
 
 	/**
@@ -19,9 +19,5 @@ public interface SecurityService {
 	 * @param password Password of the user
 	 */
 	void autoLogin(String username, String password);
-
-
-
-
 
 }

@@ -12,6 +12,8 @@ import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Random;
 import javax.servlet.http.HttpSession;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -21,7 +23,7 @@ import edu.sru.thangiah.webrouting.domain.Filter;
 import edu.sru.thangiah.webrouting.domain.Log;
 import edu.sru.thangiah.webrouting.domain.User;
 import edu.sru.thangiah.webrouting.repository.UserRepository;
-
+import edu.sru.thangiah.webrouting.services.UserService;
 
 
 @Controller
@@ -274,7 +276,7 @@ public class LogController {
 
 					randomNumber = rand.nextInt(9);
 					completeMessage += entity[randomNumber] + " ";
-					
+
 					randomNumber = rand.nextInt(50)+ 1;
 					completeMessage += "with ID "+ randomNumber + ".";
 
