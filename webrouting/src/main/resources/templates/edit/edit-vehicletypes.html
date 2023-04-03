@@ -31,9 +31,8 @@
 				<br><br>
                 <h2>Update Vehicle Type</h2>
  				<br>
-               	<div class="alert alert-info" th:if="${message}">
-              	 <span th:text="${message}"></span>
-              	</div>
+               	<span type="hidden" th:text="${message}" class=errorMessage></span>
+               	<br>
                     <form action="#" th:action="@{/edit-vehicletypes/{id}(id=${vehicleTypes.id})}" th:object="${vehicleTypes}" method="post">
 						<hr>
 						<div class="form-group">

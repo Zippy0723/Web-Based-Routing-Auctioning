@@ -474,14 +474,15 @@ public class ValidationServiceImp {
 	
 	public VehicleTypes validateVehicleTypes(Hashtable<String, String> hashtable, HttpSession session) {
 		
-		ArrayList <VehicleTypes> repoVehicleTypes = (ArrayList) vehicleTypesRepository.findAll();
+		
+		User user = getLoggedInUser();
+		List <VehicleTypes> repoVehicleTypes =  user.getCarrier().getVehicleTypes();
 		ArrayList <String> allVehicleTypes = new ArrayList<>();
 		
 		for(VehicleTypes v : repoVehicleTypes) {
 			allVehicleTypes.add(v.getMake() + " " + v.getModel());	
 		}
-		
-		User user = getLoggedInUser();			
+				
 	
 		String type = (String) hashtable.get("type");
 	    String subType = (String) hashtable.get("subType");
@@ -698,7 +699,8 @@ public class ValidationServiceImp {
 		return result;
 	}
 		public Locations validateLocations(Hashtable<String, String> hashtable, HttpSession session) {
-			ArrayList <Locations> repoLocations = (ArrayList) locationsRepository.findAll();
+			User user = getLoggedInUser();
+			List <Locations> repoLocations = user.getCarrier().getLocations();
 			ArrayList <String> allLocations = new ArrayList<>();
 			for(Locations l: repoLocations) {
 				allLocations.add(l.getName());	
@@ -707,7 +709,6 @@ public class ValidationServiceImp {
 			List<String> states = Arrays.asList("Alabama", "Alaska", "Arizona", "Arkansas", "California", "Colorado", "Connecticut", "Delaware", "Florida", "Georgia", "Hawaii", "Idaho", "Illinois", "Indiana", "Iowa", "Kansas", "Kentucky", "Louisiana", "Maine", "Maryland", "Massachusetts", "Michigan", "Minnesota", "Mississippi", "Missouri", "Montana", "Nebraska", "Nevada", "New Hampshire", "New Jersey", "New Mexico", "New York", "North Carolina", "North Dakota", "Ohio", "Oklahoma", "Oregon", "Pennsylvania", "Rhode Island", "South Carolina", "South Dakota", "Tennessee", "Texas", "Utah", "Vermont", "Virginia", "Washington", "West Virginia", "Wisconsin", "Wyoming");
 			List<String> stateAbbreviations = Arrays.asList("AL", "AK", "AZ", "AR", "CA", "CO", "CT", "DE", "FL", "GA", "HI", "ID", "IL", "IN", "IA", "KS", "KY", "LA", "ME", "MD", "MA", "MI", "MN", "MS", "MO", "MT", "NE", "NV", "NH", "NJ", "NM", "NY", "NC", "ND", "OH", "OK", "OR", "PA", "RI", "SC", "SD", "TN", "TX", "UT", "VT", "VA", "WA", "WV", "WI", "WY");
 			
-			User user = getLoggedInUser();
 			
 			String locationName = (String) hashtable.get("locationName");
 			String streetAddress1 = (String)hashtable.get("streetAddress1");
@@ -869,7 +870,8 @@ public class ValidationServiceImp {
 		return result;
 	}
 		public Contacts validateContact(Hashtable<String, String> hashtable, HttpSession session) {
-			ArrayList <Contacts> repoContacts = (ArrayList) contactsRepository.findAll();
+			User user = getLoggedInUser();
+			List <Contacts> repoContacts =  user.getCarrier().getContacts();
 			ArrayList <String> allContacts = new ArrayList<>();
 			
 			for(Contacts c: repoContacts) {
@@ -880,7 +882,7 @@ public class ValidationServiceImp {
 			List<String> states = Arrays.asList("Alabama", "Alaska", "Arizona", "Arkansas", "California", "Colorado", "Connecticut", "Delaware", "Florida", "Georgia", "Hawaii", "Idaho", "Illinois", "Indiana", "Iowa", "Kansas", "Kentucky", "Louisiana", "Maine", "Maryland", "Massachusetts", "Michigan", "Minnesota", "Mississippi", "Missouri", "Montana", "Nebraska", "Nevada", "New Hampshire", "New Jersey", "New Mexico", "New York", "North Carolina", "North Dakota", "Ohio", "Oklahoma", "Oregon", "Pennsylvania", "Rhode Island", "South Carolina", "South Dakota", "Tennessee", "Texas", "Utah", "Vermont", "Virginia", "Washington", "West Virginia", "Wisconsin", "Wyoming");
 			List<String> stateAbbreviations = Arrays.asList("AL", "AK", "AZ", "AR", "CA", "CO", "CT", "DE", "FL", "GA", "HI", "ID", "IL", "IN", "IA", "KS", "KY", "LA", "ME", "MD", "MA", "MI", "MN", "MS", "MO", "MT", "NE", "NV", "NH", "NJ", "NM", "NY", "NC", "ND", "OH", "OK", "OR", "PA", "RI", "SC", "SD", "TN", "TX", "UT", "VT", "VA", "WA", "WV", "WI", "WY");
 			
-			User user = getLoggedInUser();
+			
 			
 			String firstName = (String) hashtable.get("firstName");
 			String lastName = (String)hashtable.get("lastName");
@@ -1043,9 +1045,10 @@ public class ValidationServiceImp {
 	
 	
 	public Technicians validateTechnicians(Hashtable<String, String> hashtable, HttpSession session) {
-		ArrayList <Contacts> repoContacts = (ArrayList) contactsRepository.findAll();
-		ArrayList <Technicians> repoTechnicians = (ArrayList) techniciansRepository.findAll();
 		User user = getLoggedInUser();
+		List <Contacts> repoContacts = user.getCarrier().getContacts();
+		List <Technicians> repoTechnicians = user.getCarrier().getTechnicians();
+		
 		Long contactId = null;
 		
 		String skillGrade = (String) hashtable.get("skillGrade");
@@ -1154,9 +1157,9 @@ public class ValidationServiceImp {
 	
 	public Vehicles validateVehicles(Hashtable<String, String> hashtable, HttpSession session) {
 		User user = getLoggedInUser();
-		ArrayList <VehicleTypes> repoVehicleTypes = (ArrayList) vehicleTypesRepository.findAll();
-		ArrayList <Locations> repoLocations = (ArrayList) locationsRepository.findAll();
-		ArrayList <Vehicles> repoVehicles = (ArrayList) vehiclesRepository.findAll();
+		List <VehicleTypes> repoVehicleTypes =  user.getCarrier().getVehicleTypes();
+		List <Locations> repoLocations = user.getCarrier().getLocations();
+		List <Vehicles> repoVehicles = user.getCarrier().getVehicles();
 		Long vehicleTypeId = null;
 		Long locationId = null;
 		
@@ -1295,9 +1298,9 @@ public class ValidationServiceImp {
 	
 			public Driver validateDriver(Hashtable<String, String> hashtable, HttpSession session) {
 				User user = getLoggedInUser();
-				ArrayList <Contacts> repoContacts = (ArrayList) contactsRepository.findAll();
-				ArrayList <Driver> repoDrivers = (ArrayList) driverRepository.findAll();
-				ArrayList <Vehicles> repoVehicles = (ArrayList) vehiclesRepository.findAll();
+				List <Contacts> repoContacts = user.getCarrier().getContacts();
+				List <Driver> repoDrivers =  user.getCarrier().getDrivers();
+				List <Vehicles> repoVehicles = user.getCarrier().getVehicles();
 				
 				
 				Long contactId = null;
@@ -1433,13 +1436,13 @@ public class ValidationServiceImp {
 		return result;
 	}
 	public MaintenanceOrders validateMaintenanceOrder(Hashtable<String, String> hashtable, HttpSession session) {
-		ArrayList <Technicians> repoTechnicians = (ArrayList) techniciansRepository.findAll();
-		ArrayList <Vehicles> repoVehicles = (ArrayList) vehiclesRepository.findAll();
+		User user = getLoggedInUser();
+		List <Technicians> repoTechnicians = user.getCarrier().getTechnicians();
+		List <Vehicles> repoVehicles = user.getCarrier().getVehicles();
 		
 		Long vehicleId = null;
 		Long technicianId = null;
 		
-		User user = getLoggedInUser();
 		
 		String date = hashtable.get("date");
 		String details = (String)hashtable.get("details");

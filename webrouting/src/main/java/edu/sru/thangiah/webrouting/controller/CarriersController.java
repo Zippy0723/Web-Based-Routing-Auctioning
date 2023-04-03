@@ -76,6 +76,8 @@ public class CarriersController {
         model.addAttribute("currentPage","/carriers");
         String redirectLocation = "/carriers";
         
+        session.removeAttribute("message");
+        
 		if (user.getRole().toString().equals("CARRIER")) {
 			
 			 model.addAttribute("carriers", user.getCarrier());

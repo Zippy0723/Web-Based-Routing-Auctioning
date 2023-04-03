@@ -329,39 +329,39 @@ public class BidsController {
   	 * @param model Used to add data to the model
   	 * @return "/update/update-bid" or "redirect:/createdshipments"
   	 */
-	@GetMapping("/editbid/{id}")
-    public String showEditForm(@PathVariable("id") long id, Model model, HttpSession session) {
-		Bids bid = bidsRepository.findById(id)
-          .orElseThrow(() -> new IllegalArgumentException("Invalid Bid Id:" + id));
-		
-		String redirectLocation = (String) session.getAttribute("redirectLocation");
-		model.addAttribute("redirectLocation", redirectLocation);
-  		 User user = getLoggedInUser();
-  		 model = NotificationController.loadNotificationsIntoModel(user, model);
-		 User bidUser;
-		 
-		 if (bid.getShipment().getFullFreightTerms().toString().equals("FROZEN") && !user.getRole().toString().equals("MASTERLIST")) {
-			 System.out.println("User attempeted to edit a bid on a frozen shipment");
-			 Logger.error("{} || attempted to edit a bid with ID {}, on a frozen shipment.", user.getUsername(), bid.getId());//Replace this with a proper error message and redirect, for now it just dumps carriers out of the edit menu
-			 return "redirect:/createdshipments";
-		 }
-		 
-		 if (bid.getCarrier().equals(user.getCarrier()) || user.getRole().toString().equals("MASTERLIST")) {
-			 model.addAttribute("bids", bid);
-			 model.addAttribute("shipments", shipmentsRepository.findAll());  
-			 model.addAttribute("carriers", carriersRepository.findAll());
-			 
-			 return "/update/update-bid";
-	    }
-        
-		 bidUser = CarriersController.getUserFromCarrier(bid.getCarrier());
-		 notificationService.addNotification(bidUser, 
-				 "Your bid with Id " + bid.getId() + " on shipment with id " + bid.getShipment().getId() + " was edited by " + user.getUsername(), false);
-	     
-        
-        return "redirect:"+ redirectLocation;
-    }
-	
+//	@GetMapping("/editbid/{id}")
+//    public String showEditForm(@PathVariable("id") long id, Model model, HttpSession session) {
+//		Bids bid = bidsRepository.findById(id)
+//          .orElseThrow(() -> new IllegalArgumentException("Invalid Bid Id:" + id));
+//		
+//		String redirectLocation = (String) session.getAttribute("redirectLocation");
+//		model.addAttribute("redirectLocation", redirectLocation);
+//  		 User user = getLoggedInUser();
+//  		 model = NotificationController.loadNotificationsIntoModel(user, model);
+//		 User bidUser;
+//		 
+//		 if (bid.getShipment().getFullFreightTerms().toString().equals("FROZEN") && !user.getRole().toString().equals("MASTERLIST")) {
+//			 System.out.println("User attempeted to edit a bid on a frozen shipment");
+//			 Logger.error("{} || attempted to edit a bid with ID {}, on a frozen shipment.", user.getUsername(), bid.getId());//Replace this with a proper error message and redirect, for now it just dumps carriers out of the edit menu
+//			 return "redirect:/createdshipments";
+//		 }
+//		 
+//		 if (bid.getCarrier().equals(user.getCarrier()) || user.getRole().toString().equals("MASTERLIST")) {
+//			 model.addAttribute("bids", bid);
+//			 model.addAttribute("shipments", shipmentsRepository.findAll());  
+//			 model.addAttribute("carriers", carriersRepository.findAll());
+//			 
+//			 return "/update/update-bid";
+//	    }
+//        
+//		 bidUser = CarriersController.getUserFromCarrier(bid.getCarrier());
+//		 notificationService.addNotification(bidUser, 
+//				 "Your bid with Id " + bid.getId() + " on shipment with id " + bid.getShipment().getId() + " was edited by " + user.getUsername(), false);
+//	     
+//        
+//        return "redirect:"+ redirectLocation;
+//    }
+//	
 	/**
   	 * Updates a bid to the database. Checks if there are errors in the form. <br>
   	 * If there are no errors, the bid is updated in the bidsRepository. and the user is redirected to /createdshipments <br>

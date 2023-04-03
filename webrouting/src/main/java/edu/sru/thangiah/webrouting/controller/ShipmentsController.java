@@ -425,6 +425,8 @@ public class ShipmentsController {
 		model = NotificationController.loadNotificationsIntoModel(user, model);
 		model.addAttribute("currentPage","/shipments");
 		
+		session.removeAttribute("message");
+		
 		try {
 			model.addAttribute("message",session.getAttribute("message"));
 		} catch (Exception e) {
