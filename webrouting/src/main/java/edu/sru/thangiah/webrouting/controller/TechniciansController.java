@@ -40,9 +40,6 @@ public class TechniciansController {
 	@Autowired
 	private UserService userService;
 
-	@Autowired
-	private SecurityService securityService;
-
 	private static final Logger Logger = LoggerFactory.getLogger(TechniciansController.class);
 
 	/**
@@ -63,7 +60,7 @@ public class TechniciansController {
 	@RequestMapping({"/technicians"})
 	public String showTechList(Model model, HttpSession session) {
 
-		User user = getLoggedInUser();
+		User user = userService.getLoggedInUser();
 		try {
 			model.addAttribute("error",session.getAttribute("error"));
 		} catch(Exception e){
@@ -100,10 +97,10 @@ public class TechniciansController {
 	 */
 	@GetMapping({"/add-technician"})
 	public String showContactList(Model model, Technicians technician, BindingResult result, HttpSession session) {
-		model.addAttribute("contacts", getLoggedInUser().getCarrier().getContacts()); 
+		model.addAttribute("contacts", userService.getLoggedInUser().getCarrier().getContacts()); 
 		model.addAttribute("redirectLocation", (String) session.getAttribute("redirectLocation"));
 		model.addAttribute("currentPage","/technicians");
-		User user = getLoggedInUser();
+		User user = userService.getLoggedInUser();
 		model = NotificationController.loadNotificationsIntoModel(user, model);
 
 		return "/add/add-technician";
@@ -124,7 +121,7 @@ public class TechniciansController {
 			return "/add/add-technician";
 		}
 		Boolean deny = false;
-		User loggedInUser = getLoggedInUser();
+		User loggedInUser = userService.getLoggedInUser();
 		model = NotificationController.loadNotificationsIntoModel(loggedInUser, model);
 		String redirectLocation = (String) session.getAttribute("redirectLocation");
 		model.addAttribute("redirectLocation", session.getAttribute("redirectLocation"));
@@ -175,7 +172,7 @@ public class TechniciansController {
 	public String deletetechnician(@PathVariable("id") long id, Model model, HttpSession session) {
 		Technicians technician = techniciansRepository.findById(id)
 				.orElseThrow(() -> new IllegalArgumentException("Invalid technicians Id:" + id));
-		User loggedInUser = getLoggedInUser();
+		User loggedInUser = userService.getLoggedInUser();
 		model = NotificationController.loadNotificationsIntoModel(loggedInUser, model);
 		model.addAttribute("currentPage","/technicians");
 
@@ -202,7 +199,7 @@ public class TechniciansController {
 		Technicians technician = techniciansRepository.findById(id)
 				.orElseThrow(() -> new IllegalArgumentException("Invalid technicians Id:" + id));
 
-		User user = getLoggedInUser();
+		User user = userService.getLoggedInUser();
 		model = NotificationController.loadNotificationsIntoModel(user, model);
 		model.addAttribute("currentPage","/technicians");
 		Logger.info("{} || successfully deleted Technician with ID {}.", user.getUsername(), technician.getId());
@@ -228,7 +225,7 @@ public class TechniciansController {
 		model.addAttribute("technicians", technician);
 		model.addAttribute("currentPage","/technicians");
 
-		User user = getLoggedInUser();
+		User user = userService.getLoggedInUser();
 		model = NotificationController.loadNotificationsIntoModel(user, model);
 
 		return "technicians";
@@ -249,7 +246,7 @@ public class TechniciansController {
 		model.addAttribute("maintenanceOrder", technician.getOrders());
 		model.addAttribute("currentPage","/maintenanceorders");
 
-		User user = getLoggedInUser();
+		User user = userService.getLoggedInUser();
 		model = NotificationController.loadNotificationsIntoModel(user, model);
 
 		return "maintenanceorders";
@@ -264,7 +261,7 @@ public class TechniciansController {
 		model.addAttribute("redirectLocation", (String) session.getAttribute("redirectLocation"));
 		model.addAttribute("currentPage","/technicians");
 
-		User user = getLoggedInUser();
+		User user = userService.getLoggedInUser();
 		model = NotificationController.loadNotificationsIntoModel(user, model);
 
 		return "/edit/edit-technicians";
@@ -273,7 +270,7 @@ public class TechniciansController {
 	@PostMapping("/edittechnicians/{id}")
 	public String updateTechnician(@PathVariable("id") long id, Technicians technician, 
 			Model model, HttpSession session) {
-		User user = getLoggedInUser();
+		User user = userService.getLoggedInUser();
 		model = NotificationController.loadNotificationsIntoModel(user, model);
 		String redirectLocation = (String) session.getAttribute("redirectLocation");
 		model.addAttribute("redirectLocation", session.getAttribute("redirectLocation")); 
@@ -295,22 +292,4 @@ public class TechniciansController {
 		return "redirect:" + redirectLocation;
 	}
 
-	/**
-	 * Returns the user that is currently logged into the system. <br>
-	 * If there is no user logged in, null is returned.
-	 * @return user2 or null
-	 */
-	public User getLoggedInUser() {
-		if (securityService.isAuthenticated()) {
-			org.springframework.security.core.userdetails.User user = 
-					(org.springframework.security.core.userdetails.User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-
-			User user2 = userService.findByUsername(user.getUsername());
-
-			return user2;
-		}
-		else {
-			return null;
-		}
-	}
 }

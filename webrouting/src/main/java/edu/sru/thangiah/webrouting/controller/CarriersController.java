@@ -43,9 +43,6 @@ public class CarriersController {
 	@Autowired
 	private UserService userService;
 
-	@Autowired
-	private SecurityService securityService;
-
 	private CarriersRepository carriersRepository;
 
 	private static final Logger Logger = LoggerFactory.getLogger(CarriersController.class);
@@ -73,7 +70,7 @@ public class CarriersController {
 	@RequestMapping({"/carriers"})
 	public String showCarriersList(Model model, HttpSession session) {
 
-		User user = getLoggedInUser();
+		User user = userService.getLoggedInUser();
 		model = NotificationController.loadNotificationsIntoModel(user, model);
 		model.addAttribute("currentPage","/carriers");
 		String redirectLocation = "/carriers";
@@ -117,7 +114,7 @@ public class CarriersController {
 	public String showEditForm(@PathVariable("id") long id, Model model, HttpSession session) {
 		Carriers carrier = carriersRepository.findById(id)
 				.orElseThrow(() -> new IllegalArgumentException("Invalid carrier Id:" + id));
-		User user = getLoggedInUser();
+		User user = userService.getLoggedInUser();
 		model = NotificationController.loadNotificationsIntoModel(user, model);
 		model.addAttribute("redirectLocation", (String) session.getAttribute("redirectLocation"));
 		model.addAttribute("currentPage","/carriers");
@@ -147,7 +144,7 @@ public class CarriersController {
 		model.addAttribute("shipments", carrier.getShipments());
 		model.addAttribute("currentPage","/shipments");
 
-		User user = getLoggedInUser();
+		User user = userService.getLoggedInUser();
 		model = NotificationController.loadNotificationsIntoModel(user, model);
 
 		return "shipments";
@@ -165,7 +162,7 @@ public class CarriersController {
 		Carriers carrier = carriersRepository.findById(id)
 				.orElseThrow(() -> new IllegalArgumentException("Invalid carrier Id:" + id));
 
-		User user = getLoggedInUser();
+		User user = userService.getLoggedInUser();
 		model = NotificationController.loadNotificationsIntoModel(user, model);
 		model.addAttribute("redirectLocation",session.getAttribute("redirectLocation"));
 		model.addAttribute("currentPage","/bids");
@@ -207,7 +204,7 @@ public class CarriersController {
 
 		model.addAttribute("carriers", carrier);
 
-		User user = getLoggedInUser();
+		User user = userService.getLoggedInUser();
 		model = NotificationController.loadNotificationsIntoModel(user, model);
 
 		return "carriers";
@@ -226,7 +223,7 @@ public class CarriersController {
 	@PostMapping("/updatecarrier/{id}")
 	public String updateCarrier(@PathVariable("id") long id, @Validated Carriers carrier, 
 			BindingResult result, Model model, HttpSession session) {
-		User user = getLoggedInUser();
+		User user = userService.getLoggedInUser();
 		model = NotificationController.loadNotificationsIntoModel(user, model);
 		String redirectLocation = (String) session.getAttribute("redirectLocation");
 		model.addAttribute("redirectLocation", (String) session.getAttribute("redirectLocation"));
@@ -290,7 +287,7 @@ public class CarriersController {
 	public String showCarrierEditForm(@PathVariable("id") long id, Model model, HttpSession session) {
 		User userForm = userRepository.findById(id)
 				.orElseThrow(() -> new IllegalArgumentException("Invalid User Id:" + id));
-		User user = getLoggedInUser();
+		User user = userService.getLoggedInUser();
 		Carriers carrierForm = userForm.getCarrier();
 		if(carrierForm == null) {
 			System.out.println("Something has gone horribly horribly wrong, abort");
@@ -316,7 +313,7 @@ public class CarriersController {
 	public String carrierUpdateForm(@PathVariable("id") long id, User user, Carriers carrier, Model model, HttpSession session) {
 		String redirectLocation = (String) session.getAttribute("redirectLocation");
 		model.addAttribute("redirectLocation", session.getAttribute("redirectLocation"));
-		User loggedInUser = getLoggedInUser();
+		User loggedInUser = userService.getLoggedInUser();
 		model = NotificationController.loadNotificationsIntoModel(loggedInUser, model);
 		User result = userRepository.findById(id)
 				.orElseThrow(() -> new IllegalArgumentException("Invalid User Id:" + id));
@@ -424,7 +421,7 @@ public class CarriersController {
 	public String showCarrierAddForm(User user, Model model, HttpSession session) {
 		model.addAttribute("userForm", new User());
 		model.addAttribute("redirectLocation", (String) session.getAttribute("redirectLocation"));
-		model = NotificationController.loadNotificationsIntoModel(getLoggedInUser(), model);
+		model = NotificationController.loadNotificationsIntoModel(userService.getLoggedInUser(), model);
 
 
 		session.removeAttribute("message");
@@ -438,7 +435,7 @@ public class CarriersController {
 			String carrierName, String scac, boolean ltl, boolean ftl, String pallets, String weight, HttpSession session) {
 		String redirectLocation = (String) session.getAttribute("redirectLocation");
 		model.addAttribute("redirectLocation", session.getAttribute("redirectLocation"));
-		User loggedInUser = getLoggedInUser();
+		User loggedInUser = userService.getLoggedInUser();
 		model = NotificationController.loadNotificationsIntoModel(loggedInUser, model);
 
 		List <User> repoUsers =  userRepository.findAll();
@@ -558,23 +555,4 @@ public class CarriersController {
 		return "redirect:" + redirectLocation;
 	}
 
-
-	/**
-	 * Returns the user that is currently logged into the system. <br>
-	 * If there is no user logged in, null is returned.
-	 * @return user2 or null
-	 */
-	public User getLoggedInUser() {
-		if (securityService.isAuthenticated()) {
-			org.springframework.security.core.userdetails.User user = 
-					(org.springframework.security.core.userdetails.User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-
-			User user2 = userService.findByUsername(user.getUsername());
-
-			return user2;
-		}
-		else {
-			return null;
-		}
-	}
 }

@@ -70,9 +70,6 @@ public class ShipmentsController {
 	private UserService userService;
 
 	@Autowired
-	private SecurityService securityService;
-
-	@Autowired
 	private NotificationService notificationService;
 
 	@Autowired
@@ -117,7 +114,7 @@ public class ShipmentsController {
 	@GetMapping("/shipmentshomeshipper")
 	public String shipmentsHomeShipper(Model model) {
 
-		User user = getLoggedInUser();
+		User user = userService.getLoggedInUser();
 		model = NotificationController.loadNotificationsIntoModel(user, model);
 		model.addAttribute("currentPage","/shipments");
 
@@ -132,7 +129,7 @@ public class ShipmentsController {
 	@GetMapping("/shipmentshomecarrier")
 	public String shipmentsHomeCarrier(Model model) {
 
-		User user = getLoggedInUser();
+		User user = userService.getLoggedInUser();
 		model = NotificationController.loadNotificationsIntoModel(user, model);
 		model.addAttribute("currentPage","/shipments");
 
@@ -147,7 +144,7 @@ public class ShipmentsController {
 	@GetMapping("/shipmentshomemaster")
 	public String shipmentsHomeMaster(Model model) {
 
-		User user = getLoggedInUser();
+		User user = userService.getLoggedInUser();
 		model = NotificationController.loadNotificationsIntoModel(user, model);
 		model.addAttribute("currentPage","/shipments");
 
@@ -163,7 +160,7 @@ public class ShipmentsController {
 	@RequestMapping({"/shipments"})
 	public String showShipmentList(Model model) {
 
-		User user = getLoggedInUser();
+		User user = userService.getLoggedInUser();
 		if (user.getRole().toString().equals("SHIPPER")) {
 
 			model.addAttribute("shipments", user.getShipments());
@@ -189,7 +186,7 @@ public class ShipmentsController {
 	public String showCreatedShipmentsList(Model model, HttpSession session) {
 
 		List<Shipments> shipmentsWOCarrier = new ArrayList<>();
-		User user = getLoggedInUser();
+		User user = userService.getLoggedInUser();
 		model.addAttribute("user",user);
 		model.addAttribute("currentPage","/shipments");
 		session.setAttribute("redirectLocation", "/createdshipments");
@@ -244,7 +241,7 @@ public class ShipmentsController {
 	@RequestMapping({"/acceptedshipments"})
 	public String showAcceptedShipmentsList(Model model, HttpSession session) {
 		List<Shipments> shipmentsWCarrier = new ArrayList<>();
-		User user = getLoggedInUser();
+		User user = userService.getLoggedInUser();
 		model.addAttribute("currentPage","/shipments");
 		session.setAttribute("redirectLocation", "/acceptedshipments");
 		try {
@@ -320,7 +317,7 @@ public class ShipmentsController {
 	@RequestMapping({"/frozenshipments"})
 	public String showFrozenShipmentsList(Model model, HttpSession session) {
 		List<Shipments> shipmentsFrozen = new ArrayList<>();
-		User user = getLoggedInUser();
+		User user = userService.getLoggedInUser();
 		session.setAttribute("redirectLocation", "/frozenshipments");
 		model.addAttribute("currentPage","/shipments");
 		List<Shipments> shipments;
@@ -370,7 +367,7 @@ public class ShipmentsController {
 	@RequestMapping({"/pendingshipments"})
 	public String showPendingShipmentsList(Model model, HttpSession session) {
 		List<Shipments> shipmentsPending = new ArrayList<>();
-		User user = getLoggedInUser();
+		User user = userService.getLoggedInUser();
 		model.addAttribute("user",user);
 		model = NotificationController.loadNotificationsIntoModel(user, model);
 		model.addAttribute("currentPage","/shipments");
@@ -428,7 +425,7 @@ public class ShipmentsController {
 		List<Shipments> shipmentsAwaiting = new ArrayList<>();
 		List<Shipments> allShipments = new ArrayList<>();
 		List<Shipments> ownShipments = new ArrayList<>();
-		User user = getLoggedInUser();
+		User user = userService.getLoggedInUser();
 		model.addAttribute("user",user);
 		String status = "";	
 		model = NotificationController.loadNotificationsIntoModel(user, model);
@@ -534,7 +531,7 @@ public class ShipmentsController {
 	@RequestMapping({"/awaitingshipments"})
 	public String showAwaitingShipmentsList(Model model, HttpSession session) {
 		List<Shipments> shipmentsAwaitingAcceptance = new ArrayList<>();
-		User user = getLoggedInUser();
+		User user = userService.getLoggedInUser();
 		model = NotificationController.loadNotificationsIntoModel(user, model);
 		model.addAttribute("currentPage","/shipments");
 		session.setAttribute("redirectLocation", "/awaitingshipments");
@@ -591,7 +588,7 @@ public class ShipmentsController {
 		model.addAttribute("vehicles", vehiclesRepository.findAll());
 		model.addAttribute("currentPage","/shipments");
 
-		User user = getLoggedInUser();
+		User user = userService.getLoggedInUser();
 		model = NotificationController.loadNotificationsIntoModel(user, model);
 
 		return "/add/add-shipments";
@@ -613,7 +610,7 @@ public class ShipmentsController {
 		userValidator.addition(shipment, result);
 		if (result.hasErrors()) {
 
-			User users = getLoggedInUser();
+			User users = userService.getLoggedInUser();
 			List<Notification> notifications = new ArrayList<>();
 
 			if(!(users == null)) {
@@ -625,7 +622,7 @@ public class ShipmentsController {
 			return "/add/add-shipments";
 		}
 
-		User user = getLoggedInUser();
+		User user = userService.getLoggedInUser();
 
 		boolean deny = false;
 		List<Shipments> shipmentsList = (List<Shipments>) shipmentsRepository.findAll();
@@ -672,7 +669,7 @@ public class ShipmentsController {
 		shipment.setScac("");
 		shipment.setFreightbillNumber("");
 		shipment.setFullFreightTerms("PENDING");
-		shipment.setUser(getLoggedInUser());
+		shipment.setUser(userService.getLoggedInUser());
 		shipmentsRepository.save(shipment);
 		Logger.info("{} || has successfully added a new shipment with ID {}.",user.getUsername(), shipment.getId());       
 
@@ -693,7 +690,7 @@ public class ShipmentsController {
 	public String deleteShipment(@PathVariable("id") long id, Model model, HttpSession session) {
 		Shipments shipment = shipmentsRepository.findById(id)
 				.orElseThrow(() -> new IllegalArgumentException("Invalid shipment Id:" + id));
-		User user = getLoggedInUser();
+		User user = userService.getLoggedInUser();
 		String redirectLocation = (String) session.getAttribute("redirectLocation");
 
 		if (shipment.getFullFreightTerms().toString().equals("FROZEN") && !user.getRole().toString().equals("MASTERLIST")) {
@@ -722,7 +719,7 @@ public class ShipmentsController {
 		Shipments shipment = shipmentsRepository.findById(id)
 				.orElseThrow(() -> new IllegalArgumentException("Invalid shipment Id:" + id));
 
-		User user = getLoggedInUser();
+		User user = userService.getLoggedInUser();
 		model = NotificationController.loadNotificationsIntoModel(user, model);
 
 		if(!shipment.getBids().isEmpty()) {
@@ -764,7 +761,7 @@ public class ShipmentsController {
 		model.addAttribute("shipments", shipment);
 		model.addAttribute("currentPage","/shipments");
 
-		User user = getLoggedInUser();
+		User user = userService.getLoggedInUser();
 		model = NotificationController.loadNotificationsIntoModel(user, model);
 
 		return "viewfullshipment";
@@ -789,7 +786,7 @@ public class ShipmentsController {
 
 		if (shipment.getCarrier() != null) {
 
-			User users = getLoggedInUser();
+			User users = userService.getLoggedInUser();
 			List<Notification> notifications = new ArrayList<>();
 
 			if(!(users == null)) {
@@ -801,7 +798,7 @@ public class ShipmentsController {
 			return "viewbidscomplete"; //TODO: rework this system, i dont like there being two separate bids.html pages, it makes things confusing. 
 		}
 
-		User user = getLoggedInUser();
+		User user = userService.getLoggedInUser();
 		model = NotificationController.loadNotificationsIntoModel(user, model);
 
 		return "bids";
@@ -825,7 +822,7 @@ public class ShipmentsController {
 		model.addAttribute("redirectLocation",redirectLocation);
 		model.addAttribute("shipments", shipment);
 
-		User user = getLoggedInUser();
+		User user = userService.getLoggedInUser();
 		model = NotificationController.loadNotificationsIntoModel(user, model);
 
 		return "/freeze/freezeshipmentconfirm";
@@ -842,7 +839,7 @@ public class ShipmentsController {
 		String redirectLocation = "redirect:" + (String) session.getAttribute("redirectLocation");
 		Shipments shipment = shipmentsRepository.findById(id)
 				.orElseThrow(() -> new IllegalArgumentException("Invalid Shipment Id:" + id));
-		User user = getLoggedInUser();
+		User user = userService.getLoggedInUser();
 		model = NotificationController.loadNotificationsIntoModel(user, model);
 		model.addAttribute("currentPage","/shipments");
 
@@ -872,7 +869,7 @@ public class ShipmentsController {
 		model.addAttribute("shipments", shipment);
 		model.addAttribute("currentPage","/shipments");
 
-		User user = getLoggedInUser();
+		User user = userService.getLoggedInUser();
 		model = NotificationController.loadNotificationsIntoModel(user, model);
 
 		return "/freeze/unfreezeshipmentconfirm";
@@ -888,7 +885,7 @@ public class ShipmentsController {
 	public String unfreezeShipmentConfirmation(@PathVariable("id") long id, Model model, HttpSession session) {
 		Shipments shipment = shipmentsRepository.findById(id)
 				.orElseThrow(() -> new IllegalArgumentException("Invalid Shipment Id:" + id));
-		User user = getLoggedInUser();
+		User user = userService.getLoggedInUser();
 		model = NotificationController.loadNotificationsIntoModel(user, model);
 
 		if (shipment.getBids().isEmpty()) {
@@ -916,7 +913,7 @@ public class ShipmentsController {
 				.orElseThrow(() -> new IllegalArgumentException("Invalid Shipment Id:" + id));
 		ArrayList<Carriers> carriers = (ArrayList<Carriers>) carriersRepository.findAll();
 
-		User user = getLoggedInUser();
+		User user = userService.getLoggedInUser();
 		model.addAttribute("user",user);
 		model = NotificationController.loadNotificationsIntoModel(user, model);
 		model.addAttribute("currentPage","/shipments");
@@ -1030,7 +1027,7 @@ public class ShipmentsController {
 				.orElseThrow(() -> new IllegalArgumentException("Invalid shipment Id:" + shipmentid));
 		Carriers carrier = carriersRepository.findById(Long.parseLong(carrierid))
 				.orElseThrow(() -> new IllegalArgumentException("Invalid carrier Id:" + carrierid));
-		User user = getLoggedInUser();
+		User user = userService.getLoggedInUser();
 
 		long Weight;
 		String commodityClass;
@@ -1128,7 +1125,7 @@ public class ShipmentsController {
 		Shipments shipment = shipmentsRepository.findById(id)
 				.orElseThrow(() -> new IllegalArgumentException("Invalid Shipment Id:" + id));
 
-		User user = getLoggedInUser();
+		User user = userService.getLoggedInUser();
 		model = NotificationController.loadNotificationsIntoModel(user, model);
 
 		model.addAttribute("shipments", shipment);
@@ -1153,7 +1150,7 @@ public class ShipmentsController {
 				.orElseThrow(() -> new IllegalArgumentException("Invalid Shipment Id:" + id));
 
 
-		User user = getLoggedInUser();
+		User user = userService.getLoggedInUser();
 		model = NotificationController.loadNotificationsIntoModel(user, model);
 
 
@@ -1200,22 +1197,4 @@ public class ShipmentsController {
 
 	}
 
-	/**
-	 * Returns the user that is currently logged into the system. <br>
-	 * If there is no user logged in, null is returned.
-	 * @return user2 or null
-	 */
-	public User getLoggedInUser() {
-		if (securityService.isAuthenticated()) {
-			org.springframework.security.core.userdetails.User user = 
-					(org.springframework.security.core.userdetails.User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-
-			User user2 = userService.findByUsername(user.getUsername());
-
-			return user2;
-		}
-		else {
-			return null;
-		}
-	}
 }

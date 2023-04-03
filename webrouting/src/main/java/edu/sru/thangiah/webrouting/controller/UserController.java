@@ -68,9 +68,6 @@ public class UserController {
 	private UserService userService;
 
 	@Autowired
-	private SecurityService securityService;
-
-	@Autowired
 	private UserValidator userValidator;
 
 	@Autowired  
@@ -118,7 +115,7 @@ public class UserController {
 
 	@GetMapping("/userhome")
 	public String showUserHome(Model model, HttpSession session) {
-		User user = getLoggedInUser();
+		User user = userService.getLoggedInUser();
 		model = NotificationController.loadNotificationsIntoModel(user, model);
 		session.setAttribute("redirectLocation", "/userhome");
 		model.addAttribute("currentPage","/users");
@@ -164,7 +161,7 @@ public class UserController {
 		model.addAttribute("carriers", userCarrierList);
 		model.addAttribute("others", userOtherList);
 
-		User user = getLoggedInUser();
+		User user = userService.getLoggedInUser();
 		model = NotificationController.loadNotificationsIntoModel(user, model);
 
 		return "users";
@@ -184,7 +181,7 @@ public class UserController {
 
 		model.addAttribute("carriers", userCarrierList);
 
-		User user = getLoggedInUser();
+		User user = userService.getLoggedInUser();
 		model = NotificationController.loadNotificationsIntoModel(user, model);
 		session.setAttribute("redirectLocation", "/CarrierAdministrationPage");
 
@@ -207,7 +204,7 @@ public class UserController {
 
 		model.addAttribute("userstable", finalUserList);
 
-		User user = getLoggedInUser();
+		User user = userService.getLoggedInUser();
 		model = NotificationController.loadNotificationsIntoModel(user, model);
 
 		return "ShipperAdministrationPage";
@@ -221,7 +218,7 @@ public class UserController {
 
 	@RequestMapping({"/signup"})
 	public String shownAddHomePage(Model model) {
-		model = NotificationController.loadNotificationsIntoModel(getLoggedInUser(), model);
+		model = NotificationController.loadNotificationsIntoModel(userService.getLoggedInUser(), model);
 		model.addAttribute("currentPage","/users");
 		return "/add/add-user-home";
 	}
@@ -236,7 +233,7 @@ public class UserController {
 	@RequestMapping({"/addcarrieruser"})
 	public String showCarrierPage(User user, Model model) {
 		model.addAttribute("userForm", new User());
-		model = NotificationController.loadNotificationsIntoModel(getLoggedInUser(), model);
+		model = NotificationController.loadNotificationsIntoModel(userService.getLoggedInUser(), model);
 		model.addAttribute("currentPage","/users");
 
 		return "/add/add-user-carrier";
@@ -250,7 +247,7 @@ public class UserController {
 
 	@RequestMapping({"/uploadusers"})
 	public String showAddUserExcel(Model model) {
-		model = NotificationController.loadNotificationsIntoModel(getLoggedInUser(), model);
+		model = NotificationController.loadNotificationsIntoModel(userService.getLoggedInUser(), model);
 		model.addAttribute("currentPage","/users");
 		model.addAttribute("currentPage","/users");
 		return "/uploadusers";
@@ -274,7 +271,7 @@ public class UserController {
 			}
 		}
 		model.addAttribute("roles", result);
-		model = NotificationController.loadNotificationsIntoModel(getLoggedInUser(), model);
+		model = NotificationController.loadNotificationsIntoModel(userService.getLoggedInUser(), model);
 
 		return "/add/add-user";
 	}
@@ -283,7 +280,7 @@ public class UserController {
 	public String showShipperPage(User user, Model model, HttpSession session) {
 		List<Role> roles = (List<Role>) roleRepository.findAll();
 		List<Role> result = new ArrayList<Role>();
-		model = NotificationController.loadNotificationsIntoModel(getLoggedInUser(), model);
+		model = NotificationController.loadNotificationsIntoModel(userService.getLoggedInUser(), model);
 		model.addAttribute("currentPage","/users");
 		model.addAttribute("userForm", new User());
 		model.addAttribute("redirectLocation", (String) session.getAttribute("redirectLocation"));
@@ -317,14 +314,14 @@ public class UserController {
 	public String addUserCarrier(@ModelAttribute("userForm") User userForm, BindingResult bindingResult, Model model,
 			String carrierName, String scac, boolean ltl, boolean ftl, String pallets, String weight) {
 
-		model = NotificationController.loadNotificationsIntoModel(getLoggedInUser(), model);
+		model = NotificationController.loadNotificationsIntoModel(userService.getLoggedInUser(), model);
 		model.addAttribute("currentPage","/users");
 
 		List<Carriers> carrierList = (List<Carriers>) carriersRepository.findAll();
 
 		Carriers carrier = new Carriers();
 
-		User loggedInUser = getLoggedInUser();
+		User loggedInUser = userService.getLoggedInUser();
 
 		Long carrierId;
 
@@ -390,7 +387,7 @@ public class UserController {
 	@RequestMapping({"/adduser"})
 	public String addUser(@Validated User user, BindingResult result, Model model) {
 		userValidator.validate(user, result);
-		User loggedInUser = getLoggedInUser();
+		User loggedInUser = userService.getLoggedInUser();
 		model.addAttribute("currentPage","/users");
 		model = NotificationController.loadNotificationsIntoModel(loggedInUser, model);
 		if (result.hasErrors()) {
@@ -405,7 +402,7 @@ public class UserController {
 	public String addUserShipper(@ModelAttribute("userForm") User userForm, Model model, HttpSession session) {
 		String redirectLocation = (String) session.getAttribute("redirectLocation");
 		model.addAttribute("redirectLocation", session.getAttribute("redirectLocation"));
-		User loggedInUser = getLoggedInUser();
+		User loggedInUser = userService.getLoggedInUser();
 		model = NotificationController.loadNotificationsIntoModel(loggedInUser, model);
 
 		List <User> repoUsers =  userRepository.findAll();
@@ -479,7 +476,7 @@ public class UserController {
 		User user = userRepository.findById(id)
 				.orElseThrow(() -> new IllegalArgumentException("Invalid user Id:" + id));
 
-		User loggedInUser = getLoggedInUser();
+		User loggedInUser = userService.getLoggedInUser();
 		model = NotificationController.loadNotificationsIntoModel(loggedInUser, model);
 		model.addAttribute("currentPage","/users"); 
 
@@ -498,7 +495,7 @@ public class UserController {
 		User user = userRepository.findById(id)
 				.orElseThrow(() -> new IllegalArgumentException("Invalid user Id:" + id));
 
-		User loggedInUser = getLoggedInUser();
+		User loggedInUser = userService.getLoggedInUser();
 		model = NotificationController.loadNotificationsIntoModel(loggedInUser, model);
 		model.addAttribute("currentPage","/users");
 
@@ -564,7 +561,7 @@ public class UserController {
 			}
 
 			model.addAttribute("roles",results);
-			User loggedInUser = getLoggedInUser();
+			User loggedInUser = userService.getLoggedInUser();
 			model = NotificationController.loadNotificationsIntoModel(loggedInUser, model);
 			return "/update/update-shipper-user";
 		}
@@ -580,7 +577,7 @@ public class UserController {
 			}
 
 			model.addAttribute("roles",results);
-			User loggedInUser = getLoggedInUser();
+			User loggedInUser = userService.getLoggedInUser();
 			model = NotificationController.loadNotificationsIntoModel(loggedInUser, model);
 			return "/update/update-carrier-user";
 		}
@@ -595,7 +592,7 @@ public class UserController {
 			}
 
 			model.addAttribute("roles",results);
-			User loggedInUser = getLoggedInUser();
+			User loggedInUser = userService.getLoggedInUser();
 			model = NotificationController.loadNotificationsIntoModel(loggedInUser, model);
 
 			return "/update/update-user";
@@ -624,7 +621,7 @@ public class UserController {
 
 			model.addAttribute("roles",results);
 		}
-		User loggedInUser = getLoggedInUser();
+		User loggedInUser = userService.getLoggedInUser();
 		model = NotificationController.loadNotificationsIntoModel(loggedInUser, model);
 
 		return "/update/update-shipper-user";
@@ -653,7 +650,7 @@ public class UserController {
 
 			model.addAttribute("roles",results);
 		}
-		User loggedInUser = getLoggedInUser();
+		User loggedInUser = userService.getLoggedInUser();
 		model = NotificationController.loadNotificationsIntoModel(loggedInUser, model);
 
 		return "/update/update-carrier-user";
@@ -676,7 +673,7 @@ public class UserController {
 	public String updateUser(@PathVariable("id") long id, @Validated User user, 
 			BindingResult result, Model model, boolean nocarrier, boolean resetPassword, RedirectAttributes redirectAttr, String updateEmail) {
 		updateEmail = user.getUpdateEmail();
-		User loggedInUser = getLoggedInUser();
+		User loggedInUser = userService.getLoggedInUser();
 		model.addAttribute("currentPage","/users");
 		model = NotificationController.loadNotificationsIntoModel(loggedInUser, model);
 		userValidator.validateEmail(user, result);
@@ -716,7 +713,7 @@ public class UserController {
 	public String updateShipperUser(@PathVariable("id") long id, @Validated User user, 
 			BindingResult result, Model model, boolean nocarrier, boolean resetPassword, RedirectAttributes redirectAttr, String updateEmail) {
 		updateEmail = user.getUpdateEmail();
-		User loggedInUser = getLoggedInUser();
+		User loggedInUser = userService.getLoggedInUser();
 		model = NotificationController.loadNotificationsIntoModel(loggedInUser, model);
 		model.addAttribute("currentPage","/users");
 		userValidator.validateEmail(user, result);
@@ -746,7 +743,7 @@ public class UserController {
 	public String updateCarrierUser(@PathVariable("id") long id, @Validated User user, 
 			BindingResult result, Model model, boolean nocarrier, boolean resetPassword, RedirectAttributes redirectAttr, String updateEmail) {
 		updateEmail = user.getUpdateEmail();
-		User loggedInUser = getLoggedInUser();
+		User loggedInUser = userService.getLoggedInUser();
 		model = NotificationController.loadNotificationsIntoModel(loggedInUser, model);
 		model.addAttribute("currentPage","/users");
 		userValidator.validateEmail(user, result);
@@ -784,18 +781,18 @@ public class UserController {
 		model.addAttribute("redirectLocation", session.getAttribute("redirectLocation"));
 		model.addAttribute("currentPage","/update-user-details");
 
-		User user = getLoggedInUser();
+		User user = userService.getLoggedInUser();
 		String status = "CARRIER";
 		if(user.getRole().toString().equals("CARRIER")) {
 			model.addAttribute("status", status);
 		}
 
-		model.addAttribute("user", getLoggedInUser());
+		model.addAttribute("user", userService.getLoggedInUser());
 		dtoUser = new User();
-		dtoUser = getLoggedInUser();
+		dtoUser = userService.getLoggedInUser();
 		dtoUser.setUpdateEmail(dtoUser.getEmail());
 
-		User loggedInUser = getLoggedInUser();
+		User loggedInUser = userService.getLoggedInUser();
 		model = NotificationController.loadNotificationsIntoModel(loggedInUser, model);
 
 		return "/update/update-user-details";
@@ -817,13 +814,13 @@ public class UserController {
 	@PostMapping("/updatedetails")
 	public String updateDetails( User user, BindingResult result, Model model,String updateEmail) {  
 		updateEmail = user.getUpdateEmail();
-		user.setRole(getLoggedInUser().getRole());
-		user.setShipments(getLoggedInUser().getShipments());
-		user.setCarrier(getLoggedInUser().getCarrier());
-		user.setId(getLoggedInUser().getId());
+		user.setRole(userService.getLoggedInUser().getRole());
+		user.setShipments(userService.getLoggedInUser().getShipments());
+		user.setCarrier(userService.getLoggedInUser().getCarrier());
+		user.setId(userService.getLoggedInUser().getId());
 		user.setEnabled(true);
 		userValidator.validateUpdate(user, result);
-		User loggedInUser = getLoggedInUser();
+		User loggedInUser = userService.getLoggedInUser();
 		model = NotificationController.loadNotificationsIntoModel(loggedInUser, model);
 		model.addAttribute("currentPage","/users");
 		if (result.hasErrors()) {
@@ -858,14 +855,14 @@ public class UserController {
 	public String showAvailableRoleList(Model model) {
 		model.addAttribute("role", roleRepository.findAll());
 		model.addAttribute("currentPage","/users");
-		model = NotificationController.loadNotificationsIntoModel(getLoggedInUser(), model);
+		model = NotificationController.loadNotificationsIntoModel(userService.getLoggedInUser(), model);
 		return "viewavailableroles";
 	}
 
 	@RequestMapping({"/rolesignup"})
 	public String shownAddRolePage(Model model) {
 		model.addAttribute("currentPage","/users");
-		model = NotificationController.loadNotificationsIntoModel(getLoggedInUser(), model);
+		model = NotificationController.loadNotificationsIntoModel(userService.getLoggedInUser(), model);
 		return "/add/add-role";
 	}
 
@@ -883,7 +880,7 @@ public class UserController {
 	public String showUserEditForm(@PathVariable("id") long id, Model model, HttpSession session) {
 		User userForm = userRepository.findById(id)
 				.orElseThrow(() -> new IllegalArgumentException("Invalid Shippers Id:" + id));
-		User user = getLoggedInUser();
+		User user = userService.getLoggedInUser();
 
 		model = NotificationController.loadNotificationsIntoModel(user, model);
 		model.addAttribute("redirectLocation", (String) session.getAttribute("redirectLocation"));
@@ -902,7 +899,7 @@ public class UserController {
 	public String shipperUpdateForm(@PathVariable("id") long id, User user, Model model, HttpSession session) {
 		String redirectLocation = (String) session.getAttribute("redirectLocation");
 		model.addAttribute("redirectLocation", session.getAttribute("redirectLocation"));
-		User loggedInUser = getLoggedInUser();
+		User loggedInUser = userService.getLoggedInUser();
 		model = NotificationController.loadNotificationsIntoModel(loggedInUser, model);
 		User result = userRepository.findById(id)
 				.orElseThrow(() -> new IllegalArgumentException("Invalid User Id:" + id));
@@ -953,27 +950,6 @@ public class UserController {
 		Logger.error("{} || successfully updated a shipper with ID {}.", loggedInUser.getUsername(), result.getId());
 
 		return "redirect:" + redirectLocation;
-	}
-
-
-
-	/**
-	 * Returns the user that is currently logged into the system. <br>
-	 * If there is no user logged in, null is returned.
-	 * @return user2 or null
-	 */
-	public User getLoggedInUser() {
-		if (securityService.isAuthenticated()) {
-			org.springframework.security.core.userdetails.User user = 
-					(org.springframework.security.core.userdetails.User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-
-			User user2 = userService.findByUsername(user.getUsername());
-
-			return user2;
-		}
-		else {
-			return null;
-		}
 	}
 
 }

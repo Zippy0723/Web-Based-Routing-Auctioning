@@ -29,12 +29,11 @@ import edu.sru.thangiah.webrouting.services.UserService;
 
 @Controller
 public class AuctionController {
-
+	
+	
 	@Autowired
 	private UserService userService;
 
-	@Autowired
-	private SecurityService securityService;
 
 	@Autowired
 	private NotificationService notificationService;
@@ -66,7 +65,7 @@ public class AuctionController {
 		Shipments shipment = shipmentsRepository.findById(id)
 				.orElseThrow(() -> new IllegalArgumentException("Invalid shipment Id:" + id));
 
-		User user = getLoggedInUser();
+		User user = userService.getLoggedInUser();
 		model = NotificationController.loadNotificationsIntoModel(user, model);
 		String redirectLocation = (String) session.getAttribute("redirectLocation");
 		List<Bids> bids = shipment.getBids(); 
@@ -95,7 +94,7 @@ public class AuctionController {
 	public String pushShipment(@PathVariable("id") long id, Model model, HttpSession session) {
 		Shipments shipment = shipmentsRepository.findById(id)
 				.orElseThrow(() -> new IllegalArgumentException("Invalid shipment Id:" + id));
-		User user = getLoggedInUser();
+		User user = userService.getLoggedInUser();
 		String redirectLocation = (String) session.getAttribute("redirectLocation");
 		model.addAttribute("redirectLocation", redirectLocation);
 		model = NotificationController.loadNotificationsIntoModel(user, model);
@@ -120,7 +119,7 @@ public class AuctionController {
 		model.addAttribute("redirectLocation", redirectLocation);
 		Shipments shipment = shipmentsRepository.findById(id)
 				.orElseThrow(() -> new IllegalArgumentException("Invalid Shipment Id:" + id));
-		User user = getLoggedInUser();
+		User user = userService.getLoggedInUser();
 		model = NotificationController.loadNotificationsIntoModel(user, model);
 
 		if (user.getRole().toString().equals("CARRIER") || (user.getRole().toString().equals("SHIPPER") && !user.getShipments().contains(shipment))) {
@@ -148,7 +147,7 @@ public class AuctionController {
 	public String removeFromAuction(@PathVariable("id") long id, Model model, HttpSession session) {
 		Shipments shipment = shipmentsRepository.findById(id)
 				.orElseThrow(() -> new IllegalArgumentException("Invalid Shipment Id:" + id));
-		User user = getLoggedInUser();
+		User user = userService.getLoggedInUser();
 		model = NotificationController.loadNotificationsIntoModel(user, model);
 		String redirectLocation = (String) session.getAttribute("redirectLocation");
 		model.addAttribute("redirectLocation",redirectLocation);
@@ -179,7 +178,7 @@ public class AuctionController {
 	public String removeFromAuctionConfirmation(@PathVariable("id") long id, Model model, HttpSession session) {
 		Shipments shipment = shipmentsRepository.findById(id)
 				.orElseThrow(() -> new IllegalArgumentException("Invalid Shipment Id:" + id));
-		User user = getLoggedInUser();
+		User user = userService.getLoggedInUser();
 		model = NotificationController.loadNotificationsIntoModel(user, model);
 
 		if(user.getRole().toString().equals("MASTERLIST")) {
@@ -210,7 +209,7 @@ public class AuctionController {
 		Shipments shipment = shipmentsRepository.findById(id)
 				.orElseThrow(() -> new IllegalArgumentException("Invalid shipment Id:" + id));
 		String redirectLocation = (String) session.getAttribute("redirectLocation");
-		User user = getLoggedInUser();
+		User user = userService.getLoggedInUser();
 		model = NotificationController.loadNotificationsIntoModel(user, model);
 
 		User bidUser;
@@ -252,7 +251,7 @@ public class AuctionController {
 	public String toggleAuctioning(@PathVariable("id") long id, Model model, HttpSession session) {
 		User user = userRepository.findById(id)
 				.orElseThrow(() -> new IllegalArgumentException("Invalid shipment Id:" + id));
-		User loggedinuser = getLoggedInUser();
+		User loggedinuser = userService.getLoggedInUser();
 		model = NotificationController.loadNotificationsIntoModel(loggedinuser, model);
 		String redirectLocation = (String) session.getAttribute("redirectLocation");
 
@@ -272,7 +271,7 @@ public class AuctionController {
 	public String toggleAuctioningconfirmation(@PathVariable("id") long id, Model model, HttpSession session) {
 		User user = userRepository.findById(id)
 				.orElseThrow(() -> new IllegalArgumentException("Invalid shipment Id:" + id));
-		User loggedInUser = getLoggedInUser();
+		User loggedInUser = userService.getLoggedInUser();
 		model = NotificationController.loadNotificationsIntoModel(loggedInUser, model);
 
 		if (user.getAuctioningAllowed()) {
@@ -293,22 +292,4 @@ public class AuctionController {
 		return "redirect:" + session.getAttribute("redirectLocation");
 	}
 
-	/**
-	 * Returns the user that is currently logged into the system. <br>
-	 * If there is no user logged in, null is returned.
-	 * @return user2 or null
-	 */
-	public User getLoggedInUser() {
-		if (securityService.isAuthenticated()) {
-			org.springframework.security.core.userdetails.User user = 
-					(org.springframework.security.core.userdetails.User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-
-			User user2 = userService.findByUsername(user.getUsername());
-
-			return user2;
-		}
-		else {
-			return null;
-		}
-	}
 }

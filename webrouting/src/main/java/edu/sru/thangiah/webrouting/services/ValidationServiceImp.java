@@ -50,12 +50,6 @@ public class ValidationServiceImp {
 	@Autowired
 	private UserService userService;
 
-	@Autowired
-	private SecurityService securityService;
-
-	@Autowired
-	private UserValidator userValidator;
-
 	private CarriersRepository carriersRepository;
 
 	private ShipmentsRepository shipmentsRepository;
@@ -101,7 +95,7 @@ public class ValidationServiceImp {
 		List <Shipments> result = new ArrayList<>();
 
 		try {
-			User user = getLoggedInUser();
+			User user = userService.getLoggedInUser();
 
 			for(int i=1; i<worksheet.getPhysicalNumberOfRows(); i++) {
 				Boolean isNull = false;
@@ -207,7 +201,7 @@ public class ValidationServiceImp {
 		List<String> states = Arrays.asList("Alabama", "Alaska", "Arizona", "Arkansas", "California", "Colorado", "Connecticut", "Delaware", "Florida", "Georgia", "Hawaii", "Idaho", "Illinois", "Indiana", "Iowa", "Kansas", "Kentucky", "Louisiana", "Maine", "Maryland", "Massachusetts", "Michigan", "Minnesota", "Mississippi", "Missouri", "Montana", "Nebraska", "Nevada", "New Hampshire", "New Jersey", "New Mexico", "New York", "North Carolina", "North Dakota", "Ohio", "Oklahoma", "Oregon", "Pennsylvania", "Rhode Island", "South Carolina", "South Dakota", "Tennessee", "Texas", "Utah", "Vermont", "Virginia", "Washington", "West Virginia", "Wisconsin", "Wyoming");
 		List<String> stateAbbreviations = Arrays.asList("AL", "AK", "AZ", "AR", "CA", "CO", "CT", "DE", "FL", "GA", "HI", "ID", "IL", "IN", "IA", "KS", "KY", "LA", "ME", "MD", "MA", "MI", "MN", "MS", "MO", "MT", "NE", "NV", "NH", "NJ", "NM", "NY", "NC", "ND", "OH", "OK", "OR", "PA", "RI", "SC", "SD", "TN", "TX", "UT", "VT", "VA", "WA", "WV", "WI", "WY");
 
-		User user = getLoggedInUser();
+		User user = userService.getLoggedInUser();
 
 		String clientName = (String) hashtable.get("clientName");
 		String clientMode = (String)hashtable.get("clientMode");
@@ -385,7 +379,7 @@ public class ValidationServiceImp {
 
 	public List<VehicleTypes> validateVehicleTypesSheet(XSSFSheet worksheet, HttpSession session){
 		List <VehicleTypes> result = new ArrayList<>();
-		User user = getLoggedInUser();
+		User user = userService.getLoggedInUser();
 		try {
 			for(int i=1; i<worksheet.getPhysicalNumberOfRows(); i++) {
 				ArrayList <String> allVehicleTypes = new ArrayList<>();
@@ -474,8 +468,7 @@ public class ValidationServiceImp {
 
 	public VehicleTypes validateVehicleTypes(Hashtable<String, String> hashtable, HttpSession session) {
 
-
-		User user = getLoggedInUser();
+		User user = userService.getLoggedInUser();
 		List <VehicleTypes> repoVehicleTypes =  user.getCarrier().getVehicleTypes();
 		ArrayList <String> allVehicleTypes = new ArrayList<>();
 
@@ -634,7 +627,7 @@ public class ValidationServiceImp {
 
 	public List<Locations> validateLocationsSheet(XSSFSheet worksheet, HttpSession session){
 		List <Locations> result = new ArrayList<>();
-		User user = getLoggedInUser();
+		User user = userService.getLoggedInUser();
 		try {
 			for(int i=1; i<worksheet.getPhysicalNumberOfRows(); i++) {
 				List<String> allLocations = new ArrayList<>();
@@ -700,7 +693,7 @@ public class ValidationServiceImp {
 		return result;
 	}
 	public Locations validateLocations(Hashtable<String, String> hashtable, HttpSession session) {
-		User user = getLoggedInUser();
+		User user = userService.getLoggedInUser();
 		List <Locations> repoLocations = user.getCarrier().getLocations();
 		ArrayList <String> allLocations = new ArrayList<>();
 		for(Locations l: repoLocations) {
@@ -803,7 +796,7 @@ public class ValidationServiceImp {
 
 	public List<Contacts> validateContactsSheet(XSSFSheet worksheet, HttpSession session){
 		List <Contacts> result = new ArrayList<>();
-		User user = getLoggedInUser();
+		User user = userService.getLoggedInUser();
 		try {
 			for(int i=1; i<worksheet.getPhysicalNumberOfRows(); i++) {
 				List<String> allContacts = new ArrayList<>();
@@ -872,7 +865,7 @@ public class ValidationServiceImp {
 		return result;
 	}
 	public Contacts validateContact(Hashtable<String, String> hashtable, HttpSession session) {
-		User user = getLoggedInUser();
+		User user = userService.getLoggedInUser();
 		List <Contacts> repoContacts =  user.getCarrier().getContacts();
 		ArrayList <String> allContacts = new ArrayList<>();
 
@@ -901,7 +894,7 @@ public class ValidationServiceImp {
 		for(Contacts c: repoContacts) {
 			if((c.getFirstName() + " " + c.getLastName()) == (firstName + " " + lastName));
 			Logger.error("{} || attempted to upload a contact but a contact with the same First Name and Last Name already exists.",user.getUsername());
-			session.setAttribute("message", "contact with the same First Name and Last Name already exists.");
+			session.setAttribute("message", "Contact with the same first name and last name already exists.");
 			return null;
 		}
 
@@ -997,7 +990,7 @@ public class ValidationServiceImp {
 
 	public List<Technicians> validateTechniciansSheet(XSSFSheet worksheet, HttpSession session){
 		List <Technicians> result = new ArrayList<>();
-		User user = getLoggedInUser();
+		User user = userService.getLoggedInUser();
 		{
 			try {	
 
@@ -1049,7 +1042,7 @@ public class ValidationServiceImp {
 
 
 	public Technicians validateTechnicians(Hashtable<String, String> hashtable, HttpSession session) {
-		User user = getLoggedInUser();
+		User user = userService.getLoggedInUser();
 		List <Contacts> repoContacts = user.getCarrier().getContacts();
 		List <Technicians> repoTechnicians = user.getCarrier().getTechnicians();
 
@@ -1102,7 +1095,7 @@ public class ValidationServiceImp {
 		return technician;
 	}
 	public List<Vehicles> validateVehiclesSheet(XSSFSheet worksheet, HttpSession session){
-		User user = getLoggedInUser();
+		User user = userService.getLoggedInUser();
 		List <Vehicles> result = new ArrayList<>();
 		try {
 			for(int i=1; i<worksheet.getPhysicalNumberOfRows(); i++) {
@@ -1160,7 +1153,7 @@ public class ValidationServiceImp {
 	}
 
 	public Vehicles validateVehicles(Hashtable<String, String> hashtable, HttpSession session) {
-		User user = getLoggedInUser();
+		User user = userService.getLoggedInUser();
 		List <VehicleTypes> repoVehicleTypes =  user.getCarrier().getVehicleTypes();
 		List <Locations> repoLocations = user.getCarrier().getLocations();
 		List <Vehicles> repoVehicles = user.getCarrier().getVehicles();
@@ -1245,7 +1238,7 @@ public class ValidationServiceImp {
 
 	public List<Driver> validateDriverSheet(XSSFSheet worksheet, HttpSession session){
 		List <Driver> result = new ArrayList<>();
-		User user = getLoggedInUser();
+		User user = userService.getLoggedInUser();
 		{
 			try {	
 
@@ -1302,7 +1295,7 @@ public class ValidationServiceImp {
 	}
 
 	public Driver validateDriver(Hashtable<String, String> hashtable, HttpSession session) {
-		User user = getLoggedInUser();
+		User user = userService.getLoggedInUser();
 		List <Contacts> repoContacts = user.getCarrier().getContacts();
 		List <Driver> repoDrivers =  user.getCarrier().getDrivers();
 		List <Vehicles> repoVehicles = user.getCarrier().getVehicles();
@@ -1441,7 +1434,7 @@ public class ValidationServiceImp {
 		return result;
 	}
 	public MaintenanceOrders validateMaintenanceOrder(Hashtable<String, String> hashtable, HttpSession session) {
-		User user = getLoggedInUser();
+		User user = userService.getLoggedInUser();
 		List <Technicians> repoTechnicians = user.getCarrier().getTechnicians();
 		List <Vehicles> repoVehicles = user.getCarrier().getVehicles();
 
@@ -1551,7 +1544,7 @@ public class ValidationServiceImp {
 		List<String> states = Arrays.asList("Alabama", "Alaska", "Arizona", "Arkansas", "California", "Colorado", "Connecticut", "Delaware", "Florida", "Georgia", "Hawaii", "Idaho", "Illinois", "Indiana", "Iowa", "Kansas", "Kentucky", "Louisiana", "Maine", "Maryland", "Massachusetts", "Michigan", "Minnesota", "Mississippi", "Missouri", "Montana", "Nebraska", "Nevada", "New Hampshire", "New Jersey", "New Mexico", "New York", "North Carolina", "North Dakota", "Ohio", "Oklahoma", "Oregon", "Pennsylvania", "Rhode Island", "South Carolina", "South Dakota", "Tennessee", "Texas", "Utah", "Vermont", "Virginia", "Washington", "West Virginia", "Wisconsin", "Wyoming");
 		List<String> stateAbbreviations = Arrays.asList("DC", "AL", "AK", "AZ", "AR", "CA", "CO", "CT", "DE", "FL", "GA", "HI", "ID", "IL", "IN", "IA", "KS", "KY", "LA", "ME", "MD", "MA", "MI", "MN", "MS", "MO", "MT", "NE", "NV", "NH", "NJ", "NM", "NY", "NC", "ND", "OH", "OK", "OR", "PA", "RI", "SC", "SD", "TN", "TX", "UT", "VT", "VA", "WA", "WV", "WI", "WY");
 
-		User user = getLoggedInUser();
+		User user = userService.getLoggedInUser();
 
 		String firstName = (String) hashtable.get("firstName");
 		String lastName = (String)hashtable.get("lastName");
@@ -1657,7 +1650,7 @@ public class ValidationServiceImp {
 
 	public VehicleTypes validateVehicleTypesForm(Hashtable<String, String> hashtable, HttpSession session) {
 
-		User user = getLoggedInUser();			
+		User user = userService.getLoggedInUser();			
 
 		String type = (String) hashtable.get("type");
 		String subType = (String) hashtable.get("subType");
@@ -1807,7 +1800,7 @@ public class ValidationServiceImp {
 		List<String> states = Arrays.asList("Alabama", "Alaska", "Arizona", "Arkansas", "California", "Colorado", "Connecticut", "Delaware", "Florida", "Georgia", "Hawaii", "Idaho", "Illinois", "Indiana", "Iowa", "Kansas", "Kentucky", "Louisiana", "Maine", "Maryland", "Massachusetts", "Michigan", "Minnesota", "Mississippi", "Missouri", "Montana", "Nebraska", "Nevada", "New Hampshire", "New Jersey", "New Mexico", "New York", "North Carolina", "North Dakota", "Ohio", "Oklahoma", "Oregon", "Pennsylvania", "Rhode Island", "South Carolina", "South Dakota", "Tennessee", "Texas", "Utah", "Vermont", "Virginia", "Washington", "West Virginia", "Wisconsin", "Wyoming");
 		List<String> stateAbbreviations = Arrays.asList("DC","AL", "AK", "AZ", "AR", "CA", "CO", "CT", "DE", "FL", "GA", "HI", "ID", "IL", "IN", "IA", "KS", "KY", "LA", "ME", "MD", "MA", "MI", "MN", "MS", "MO", "MT", "NE", "NV", "NH", "NJ", "NM", "NY", "NC", "ND", "OH", "OK", "OR", "PA", "RI", "SC", "SD", "TN", "TX", "UT", "VT", "VA", "WA", "WV", "WI", "WY");
 
-		User user = getLoggedInUser();
+		User user = userService.getLoggedInUser();
 
 		String locationName = (String) hashtable.get("locationName");
 		String streetAddress1 = (String)hashtable.get("streetAddress1");
@@ -1894,7 +1887,7 @@ public class ValidationServiceImp {
 	}
 
 	public Vehicles validateVehiclesForm(Hashtable<String, String> hashtable, HttpSession session) {
-		User user = getLoggedInUser();
+		User user = userService.getLoggedInUser();
 		String plate = (String) hashtable.get("plate");
 		String vin = (String) hashtable.get("vin");
 		String manufacturedYear = (String) hashtable.get("manufacturedYear");
@@ -1938,7 +1931,7 @@ public class ValidationServiceImp {
 	}
 
 	public Driver validateDriverForm(Hashtable<String, String> hashtable, HttpSession session) {
-		User user = getLoggedInUser();
+		User user = userService.getLoggedInUser();
 
 
 		String licenseNumber = (String)hashtable.get("licenseNumber");
@@ -1980,7 +1973,7 @@ public class ValidationServiceImp {
 
 	public MaintenanceOrders validateMaintenanceOrderForm(Hashtable<String, String> hashtable, HttpSession session) {
 
-		User user = getLoggedInUser();
+		User user = userService.getLoggedInUser();
 
 		String date = hashtable.get("date");
 		String details = (String)hashtable.get("details");
@@ -2053,7 +2046,7 @@ public class ValidationServiceImp {
 		List<String> states = Arrays.asList("Alabama", "Alaska", "Arizona", "Arkansas", "California", "Colorado", "Connecticut", "Delaware", "Florida", "Georgia", "Hawaii", "Idaho", "Illinois", "Indiana", "Iowa", "Kansas", "Kentucky", "Louisiana", "Maine", "Maryland", "Massachusetts", "Michigan", "Minnesota", "Mississippi", "Missouri", "Montana", "Nebraska", "Nevada", "New Hampshire", "New Jersey", "New Mexico", "New York", "North Carolina", "North Dakota", "Ohio", "Oklahoma", "Oregon", "Pennsylvania", "Rhode Island", "South Carolina", "South Dakota", "Tennessee", "Texas", "Utah", "Vermont", "Virginia", "Washington", "West Virginia", "Wisconsin", "Wyoming");
 		List<String> stateAbbreviations = Arrays.asList("DC", "AL", "AK", "AZ", "AR", "CA", "CO", "CT", "DE", "FL", "GA", "HI", "ID", "IL", "IN", "IA", "KS", "KY", "LA", "ME", "MD", "MA", "MI", "MN", "MS", "MO", "MT", "NE", "NV", "NH", "NJ", "NM", "NY", "NC", "ND", "OH", "OK", "OR", "PA", "RI", "SC", "SD", "TN", "TX", "UT", "VT", "VA", "WA", "WV", "WI", "WY");
 
-		User user = getLoggedInUser();
+		User user = userService.getLoggedInUser();
 
 		String clientName = (String) hashtable.get("clientName");
 		String clientMode = (String)hashtable.get("clientMode");
@@ -2194,17 +2187,5 @@ public class ValidationServiceImp {
 		return shipment;	
 
 	}
-	public User getLoggedInUser() {
-		if (securityService.isAuthenticated()) {
-			org.springframework.security.core.userdetails.User user = 
-					(org.springframework.security.core.userdetails.User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
-			User user2 = userService.findByUsername(user.getUsername());
-
-			return user2;
-		}
-		else {
-			return null;
-		}
-	}
 }

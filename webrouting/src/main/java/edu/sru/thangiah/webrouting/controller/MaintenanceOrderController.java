@@ -48,9 +48,6 @@ public class MaintenanceOrderController {
 	@Autowired
 	private UserService userService;
 
-	@Autowired
-	private SecurityService securityService;
-
 	private static final Logger Logger = LoggerFactory.getLogger(MaintenanceOrderController.class);
 
 	/**
@@ -93,11 +90,11 @@ public class MaintenanceOrderController {
 		session.setAttribute("redirectLocation", redirectLocation);
 		model.addAttribute("redirectLocation", redirectLocation);
 		model.addAttribute("currentPage","/maintenanceorders");
-		User user = getLoggedInUser();
+		User user = userService.getLoggedInUser();
 
 		model.addAttribute("maintenanceOrder", user.getCarrier().getOrders());
 
-		User users = getLoggedInUser();
+		User users = userService.getLoggedInUser();
 		List<Notification> notifications = new ArrayList<>();
 
 		if(!(users == null)) {
@@ -118,7 +115,7 @@ public class MaintenanceOrderController {
 	 */
 	@GetMapping({"/add-maintenance"})
 	public String showOrderList(Model model, MaintenanceOrders maintenanceOrder, BindingResult result, HttpSession session) {
-		User user = getLoggedInUser();
+		User user = userService.getLoggedInUser();
 		model.addAttribute("redirectLocation", (String) session.getAttribute("redirectLocation"));
 		model.addAttribute("technicians", user.getCarrier().getTechnicians());
 		model.addAttribute("drivers", user.getCarrier().getDrivers());
@@ -141,9 +138,9 @@ public class MaintenanceOrderController {
 	 */
 	@RequestMapping({"/addmaintenance"})
 	public String addMaintenanceOrder(@Validated MaintenanceOrders maintenanceOrder, BindingResult result, Model model, HttpSession session) {
-		maintenanceOrder.setCarrier(getLoggedInUser().getCarrier());
+		maintenanceOrder.setCarrier(userService.getLoggedInUser().getCarrier());
 
-		User loggedInUser = getLoggedInUser();
+		User loggedInUser = userService.getLoggedInUser();
 		model = NotificationController.loadNotificationsIntoModel(loggedInUser, model);
 		String redirectLocation = (String) session.getAttribute("redirectLocation");
 		model.addAttribute("redirectLocation", session.getAttribute("redirectLocation")); 
@@ -169,7 +166,7 @@ public class MaintenanceOrderController {
 		if(deny == true) {
 			model.addAttribute("error", "Unable to add Maintenance Request. Same Request is currently pending.");
 			Logger.error("{} || was unable to add Maintenance Request. Same Request is currently pending.", loggedInUser.getUsername());
-			model.addAttribute("maintenanceOrder", getLoggedInUser().getCarrier().getOrders());
+			model.addAttribute("maintenanceOrder", userService.getLoggedInUser().getCarrier().getOrders());
 			return "maintenanceorders";
 
 		}
@@ -204,7 +201,7 @@ public class MaintenanceOrderController {
 		model.addAttribute("maintenanceorders", maintenanceOrder);
 		model.addAttribute("currentPage","/maintenanceorders");
 
-		User user = getLoggedInUser();
+		User user = userService.getLoggedInUser();
 		model = NotificationController.loadNotificationsIntoModel(user, model);
 
 		return "/delete/deleteorderconfirm";
@@ -221,7 +218,7 @@ public class MaintenanceOrderController {
 		MaintenanceOrders maintenanceOrder = maintenanceOrderRepository.findById(id)
 				.orElseThrow(() -> new IllegalArgumentException("Invalid maintenance Id:" + id));
 
-		User loggedInUser = getLoggedInUser();
+		User loggedInUser = userService.getLoggedInUser();
 		model = NotificationController.loadNotificationsIntoModel(loggedInUser, model);
 		model.addAttribute("currentPage","/maintenanceorders");
 		Logger.info("{} || successfully deleted the maintenace order with ID {}", loggedInUser.getUsername(), maintenanceOrder.getId());
@@ -235,7 +232,7 @@ public class MaintenanceOrderController {
 	public String showOrdersEditForm(@PathVariable("id") long id, Model model, HttpSession session ) {
 		MaintenanceOrders maintenanceOrder = maintenanceOrderRepository.findById(id)
 				.orElseThrow(() -> new IllegalArgumentException("Invalid maintenance Id:" + id));
-		User user = getLoggedInUser();
+		User user = userService.getLoggedInUser();
 
 		model.addAttribute("currentPage","/maintenanceorders");
 		model.addAttribute("technicians", techniciansRepository.findAll());
@@ -254,7 +251,7 @@ public class MaintenanceOrderController {
 			Model model, HttpSession session) {
 
 
-		User loggedInUser = getLoggedInUser();
+		User loggedInUser = userService.getLoggedInUser();
 		model = NotificationController.loadNotificationsIntoModel(loggedInUser, model);
 		String redirectLocation = (String) session.getAttribute("redirectLocation");
 		model.addAttribute("redirectLocation", session.getAttribute("redirectLocation"));
@@ -295,24 +292,4 @@ public class MaintenanceOrderController {
 		return "redirect:" + redirectLocation;
 	}
 
-
-
-	/**
-	 * Returns the user that is currently logged into the system. <br>
-	 * If there is no user logged in, null is returned.
-	 * @return user2 or null
-	 */
-	public User getLoggedInUser() {
-		if (securityService.isAuthenticated()) {
-			org.springframework.security.core.userdetails.User user = 
-					(org.springframework.security.core.userdetails.User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-
-			User user2 = userService.findByUsername(user.getUsername());
-
-			return user2;
-		}
-		else {
-			return null;
-		}
-	}
 }

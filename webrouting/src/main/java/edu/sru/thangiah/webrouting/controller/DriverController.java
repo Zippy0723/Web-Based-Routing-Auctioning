@@ -45,9 +45,6 @@ public class DriverController {
 	@Autowired
 	private ValidationServiceImp validationServiceImp;
 
-	@Autowired
-	private SecurityService securityService;
-
 	private static final Logger Logger = LoggerFactory.getLogger(DriverController.class);
 
 	/**
@@ -85,7 +82,7 @@ public class DriverController {
 		session.setAttribute("redirectLocation", redirectLocation);
 		model.addAttribute("redirectLocation", redirectLocation);
 		model.addAttribute("currentPage","/drivers");
-		User user = getLoggedInUser();
+		User user = userService.getLoggedInUser();
 		model = NotificationController.loadNotificationsIntoModel(user, model);
 		if (user.getRole().toString().equals("CARRIER")) {
 
@@ -109,7 +106,7 @@ public class DriverController {
 	 */
 	@GetMapping({"/add-driver"})
 	public String showLists(Model model, Driver drivers, BindingResult result, HttpSession session) {
-		User user = getLoggedInUser();
+		User user = userService.getLoggedInUser();
 		model = NotificationController.loadNotificationsIntoModel(user, model);
 		model.addAttribute("redirectLocation", (String) session.getAttribute("redirectLocation"));
 		model.addAttribute("carriers", user.getCarrier());
@@ -131,7 +128,7 @@ public class DriverController {
 	 */
 	@RequestMapping({"/adddriver"})
 	public String addDriver(@Validated Driver drivers, BindingResult result, Model model, HttpSession session) {
-		User user = getLoggedInUser();
+		User user = userService.getLoggedInUser();
 		model = NotificationController.loadNotificationsIntoModel(user, model);
 		String redirectLocation = (String) session.getAttribute("redirectLocation");
 		model.addAttribute("redirectLocation", redirectLocation);
@@ -190,7 +187,7 @@ public class DriverController {
 		model.addAttribute("drivers", drivers);
 		model.addAttribute("currentPage","/drivers");
 
-		User user = getLoggedInUser();
+		User user = userService.getLoggedInUser();
 		model = NotificationController.loadNotificationsIntoModel(user, model);
 
 		return "/delete/deletedriverconfirm";
@@ -207,7 +204,7 @@ public class DriverController {
 		Driver drivers = driverRepository.findById(id)
 				.orElseThrow(() -> new IllegalArgumentException("Invalid driver Id:" + id));
 
-		User user = getLoggedInUser();
+		User user = userService.getLoggedInUser();
 		model = NotificationController.loadNotificationsIntoModel(user, model);
 		model.addAttribute("currentPage","/drivers");
 		Logger.info("{} || successfully deleted driver with ID {}.", user.getUsername(), drivers.getId());
@@ -230,7 +227,7 @@ public class DriverController {
 
 		model.addAttribute("drivers", driver);
 
-		User user = getLoggedInUser();
+		User user = userService.getLoggedInUser();
 		model = NotificationController.loadNotificationsIntoModel(user, model);
 		model.addAttribute("currentPage","/drivers");
 
@@ -242,7 +239,7 @@ public class DriverController {
 	public String showDriversEditForm(@PathVariable("id") long id, Model model, HttpSession session) {
 		Driver driver = driverRepository.findById(id)
 				.orElseThrow(() -> new IllegalArgumentException("Invalid Driver Id:" + id));
-		User user = getLoggedInUser();
+		User user = userService.getLoggedInUser();
 
 		model = NotificationController.loadNotificationsIntoModel(user, model);
 		model.addAttribute("redirectLocation", (String) session.getAttribute("redirectLocation"));
@@ -263,7 +260,7 @@ public class DriverController {
 	public String driverUpdateForm(@PathVariable("id") long id, Driver driver, Model model, HttpSession session) {
 		String redirectLocation = (String) session.getAttribute("redirectLocation");
 		model.addAttribute("redirectLocation", session.getAttribute("redirectLocation"));
-		User user = getLoggedInUser();
+		User user = userService.getLoggedInUser();
 
 		Driver temp = driverRepository.findById(id)
 				.orElseThrow(() -> new IllegalArgumentException("Invalid Driver Id:" + id));
@@ -303,22 +300,4 @@ public class DriverController {
 		return "redirect:" + redirectLocation;
 	}
 
-	/**
-	 * Returns the user that is currently logged into the system. <br>
-	 * If there is no user logged in, null is returned.
-	 * @return user2 or null
-	 */
-	public User getLoggedInUser() {
-		if (securityService.isAuthenticated()) {
-			org.springframework.security.core.userdetails.User user = 
-					(org.springframework.security.core.userdetails.User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-
-			User user2 = userService.findByUsername(user.getUsername());
-
-			return user2;
-		}
-		else {
-			return null;
-		}
-	}
 }

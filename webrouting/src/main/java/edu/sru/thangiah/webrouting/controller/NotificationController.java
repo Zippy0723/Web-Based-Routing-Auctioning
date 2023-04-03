@@ -25,9 +25,6 @@ public class NotificationController {
 	@Autowired
 	UserService userService;
 
-	@Autowired
-	private SecurityService securityService;
-
 	/**
 	 * Constructor for NotificationController.
 	 */
@@ -44,7 +41,7 @@ public class NotificationController {
 	 */
 	@RequestMapping("/unreadnotifications")
 	public String unreadNotifications(Model model) {
-		User user = getLoggedInUser();
+		User user = userService.getLoggedInUser();
 		List<Notification> notifications = new ArrayList<>();
 
 		notifications = fetchUnreadNotifications(user);
@@ -60,7 +57,7 @@ public class NotificationController {
 	 */
 	@RequestMapping("/readnotifications")
 	public String readNotifications(Model model) {
-		User user = getLoggedInUser();
+		User user = userService.getLoggedInUser();
 		List<Notification> notifications = new ArrayList<>();
 		List<Notification> unreadNotifications = new ArrayList<>();
 
@@ -112,7 +109,7 @@ public class NotificationController {
 	 */
 	@RequestMapping("/markallasread")
 	public String markAllAsRead(Model model) {
-		User user = getLoggedInUser();
+		User user = userService.getLoggedInUser();
 		List<Notification> noitifications = NotificationController.fetchUnreadNotifications(user);
 
 		for (Notification n : noitifications) {
@@ -173,22 +170,4 @@ public class NotificationController {
 		return model;
 	}
 
-	/**
-	 * Returns the user that is currently logged into the system. <br>
-	 * If there is no user logged in, null is returned.
-	 * @return user2 or null
-	 */
-	public User getLoggedInUser() {
-		if (securityService.isAuthenticated()) {
-			org.springframework.security.core.userdetails.User user = 
-					(org.springframework.security.core.userdetails.User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-
-			User user2 = userService.findByUsername(user.getUsername());
-
-			return user2;
-		}
-		else {
-			return null;
-		}
-	}
 }

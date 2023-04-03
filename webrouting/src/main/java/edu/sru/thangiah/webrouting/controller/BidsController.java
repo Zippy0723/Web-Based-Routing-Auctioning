@@ -48,9 +48,6 @@ public class BidsController {
 	private UserService userService;
 
 	@Autowired
-	private SecurityService securityService;
-
-	@Autowired
 	private NotificationService notificationService;
 
 	private BidsRepository bidsRepository;
@@ -96,7 +93,7 @@ public class BidsController {
 				.orElseThrow(() -> new IllegalArgumentException("Invalid shipment Id: " + id));
 		model.addAttribute("shipments", shipment);
 		model.addAttribute("carriers", carriersRepository.findAll());
-		User loggedInUser = getLoggedInUser();
+		User loggedInUser = userService.getLoggedInUser();
 		model = NotificationController.loadNotificationsIntoModel(loggedInUser, model);
 
 		if (!shipment.getFullFreightTerms().toString().equals("AVAILABLE SHIPMENT")) {
@@ -123,7 +120,7 @@ public class BidsController {
 		String redirectLocation = (String) session.getAttribute("redirectLocation");
 		model.addAttribute("redirectLocation", redirectLocation);
 		userValidator.addition(bid, result);
-		User user = getLoggedInUser();
+		User user = userService.getLoggedInUser();
 		model = NotificationController.loadNotificationsIntoModel(user, model);
 		if (result.hasErrors()) {
 			return "/add/add-bid";
@@ -177,7 +174,7 @@ public class BidsController {
 	public String deleteBid(@PathVariable("id") long id, Model model, HttpSession session) {
 		Bids bid = bidsRepository.findById(id)
 				.orElseThrow(() -> new IllegalArgumentException("Invalid bid Id:" + id));
-		User user = getLoggedInUser();
+		User user = userService.getLoggedInUser();
 		model = NotificationController.loadNotificationsIntoModel(user, model);
 		String redirectLocation = (String) session.getAttribute("redirectLocation");
 
@@ -208,7 +205,7 @@ public class BidsController {
 	public String deleteUserConfirm(@PathVariable("id") long id, Model model, HttpSession session) {
 		Bids bid = bidsRepository.findById(id)
 				.orElseThrow(() -> new IllegalArgumentException("Invalid bid Id:" + id));
-		User user = getLoggedInUser();
+		User user = userService.getLoggedInUser();
 		model = NotificationController.loadNotificationsIntoModel(user, model);
 		User bidUser = CarriersController.getUserFromCarrier(bid.getCarrier());
 
@@ -217,7 +214,7 @@ public class BidsController {
 					"ALERT: Your bid with ID " + bid.getId() + " placed on shipment with ID " + bid.getShipment().getId() + " was deleted by " + user.getUsername(), false);
 		}
 
-		User loggedInUser = getLoggedInUser();
+		User loggedInUser = userService.getLoggedInUser();
 		Logger.info("{} || successfully deleted Bid with ID {}.", loggedInUser.getUsername(), bid.getId());
 		bidsRepository.delete(bid);
 		return "redirect:" + session.getAttribute("redirectLocation");
@@ -238,7 +235,7 @@ public class BidsController {
 		model.addAttribute("shipment",shipment);
 		model.addAttribute("redirectLocation",session.getAttribute("redirectLocation"));
 
-		User user = getLoggedInUser();
+		User user = userService.getLoggedInUser();
 		model = NotificationController.loadNotificationsIntoModel(user, model);
 
 		return "/reset/resetshipmentbidsconfirm";
@@ -256,7 +253,7 @@ public class BidsController {
 		Shipments shipment = shipmentsRepository.findById(id)
 				.orElseThrow(() -> new IllegalArgumentException("Invalid shipment Id:" + id));
 
-		User user = getLoggedInUser();
+		User user = userService.getLoggedInUser();
 		model = NotificationController.loadNotificationsIntoModel(user, model);
 		User bidUser;
 
@@ -293,7 +290,7 @@ public class BidsController {
 
 		String redirectLocation = (String) session.getAttribute("redirectLocation");
 		model.addAttribute("redirectLocation", redirectLocation);
-		User user = getLoggedInUser();
+		User user = userService.getLoggedInUser();
 		model = NotificationController.loadNotificationsIntoModel(user, model);
 		User bidUser;
 
@@ -326,7 +323,7 @@ public class BidsController {
 	public String showBidsEditForm(@PathVariable("id") long id, Model model, HttpSession session ) {
 		Bids bid = bidsRepository.findById(id)
 				.orElseThrow(() -> new IllegalArgumentException("Invalid bid Id:" + id));
-		User user = getLoggedInUser();
+		User user = userService.getLoggedInUser();
 
 
 		model = NotificationController.loadNotificationsIntoModel(user, model);
@@ -349,88 +346,41 @@ public class BidsController {
 		return "/edit/edit-bids";
 	}
 
-	@PostMapping("/updatebid/{id}")
-	public String updateBid(@PathVariable("id") long id, @Validated Bids bid, //TODO: rewrite this to work with MASTERLIST able to edit bids. 
-			BindingResult result, Model model, HttpSession session) {
+	
+	@PostMapping("/editbids/{id}")
+	public String updateBid(@PathVariable("id") Long id, Bids bid, Model model, HttpSession session) {
+
 		String redirectLocation = (String) session.getAttribute("redirectLocation");
-		model.addAttribute("redirectLocation", redirectLocation);
-		Bids oldbid = bidsRepository.findById(id)
-				.orElseThrow(() -> new IllegalArgumentException("Invalid Bid Id:" + id));;
-				Carriers carrier = oldbid.getCarrier();
-				userValidator.addition(bid, result);
-				if (result.hasErrors()) {
-					bid.setId(id);
-					return "/update/update-bid";
-				}
+		model.addAttribute("redirectLocation", session.getAttribute("redirectLocation"));
 
-				DateTimeFormatter date = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-				DateTimeFormatter time = DateTimeFormatter.ofPattern("HH:mm:ss");
+		Bids temp = bidsRepository.findById(id)
+				.orElseThrow(() -> new IllegalArgumentException("Invalid Bid Id:" + id));
 
-				LocalDateTime now = LocalDateTime.now();
+		User user = userService.getLoggedInUser();
+		
+		
+		String price = bid.getPrice().strip();
+		
+		if (!(price.length() <= 12 && price.length() > 0) || !(price.matches("^[0-9.]+$"))) {
+			Logger.error("{} || attempted to edit a bid but the price was not between 1 and 16 numeric characters long.",user.getUsername());
+			session.setAttribute("message", "Price was not between 1 and 16 numeric characters.");
+			return "redirect:/editbids/"+id.toString() ;	
+		}
+		
+		Bids result = new Bids();
+		
+		result.setId(temp.getId());
+		result.setDate(temp.getDate());
+		result.setTime(temp.getTime());
+		result.setPrice(price);
+		result.setCarrier(temp.getCarrier());
+		result.setShipment(temp.getShipment());
 
-				User user = getLoggedInUser();
-				model = NotificationController.loadNotificationsIntoModel(user, model);
 
-				if(user.getRole().getName().equals("MASTERLIST")) {
-					bid.setCarrier(carrier);
-				} else {
-					bid.setCarrier(user.getCarrier());
-				}
+		bidsRepository.save(result);
+		Logger.info("{} || successfully updated the bid with ID {}",user.getUsername(), result.getId());
+		return "redirect:" + redirectLocation;
 
-				bid.setDate(date.format(now));
-				bid.setTime(time.format(now));
-
-				boolean deny = false;
-
-				List<Bids> bids = (List<Bids>) bidsRepository.findAll();
-
-				for (int i = 0; i < bids.size(); i++) {
-
-					Bids currentBid = bids.get(i);
-
-					if (currentBid.getCarrier().getCarrierName().equals(bid.getCarrier().getCarrierName())
-							&& currentBid.getPrice().equals(bid.getPrice())
-							&& currentBid.getShipment().getId().equals(bid.getShipment().getId())) {
-						deny = true;
-					}
-				}
-
-				if (deny == true) {
-					model.addAttribute("error", "Error: Bid with the same carrier and price has already been placed.");
-					Logger.error("{} || failed to place bid becuase it has already been placed.",user.getUsername());
-					model.addAttribute("shipments", bid.getShipment());
-					model.addAttribute("carriers", carriersRepository.findAll());
-					return "/update/update-bid";
-				}
-
-				User carrierUser = CarriersController.getUserFromCarrier(carrier);
-
-				if(user.getId() != carrierUser.getId()) {
-					notificationService.addNotification(carrierUser, 
-							"ALERT: Your bid with ID " + bid.getId() + " was editing by user " + user.getUsername(), false);
-				}
-
-				bidsRepository.save(bid);
-				Logger.info("{} || successfully updated the bid with ID {}", user.getUsername(), bid.getId());
-				return "redirect:" + redirectLocation;
 	}
 
-	/**
-	 * Returns the user that is currently logged into the system. <br>
-	 * If there is no user logged in, null is returned.
-	 * @return user2 or null
-	 */
-	public User getLoggedInUser() {
-		if (securityService.isAuthenticated()) {
-			org.springframework.security.core.userdetails.User user = 
-					(org.springframework.security.core.userdetails.User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-
-			User user2 = userService.findByUsername(user.getUsername());
-
-			return user2;
-		}
-		else {
-			return null;
-		}
-	}
 }

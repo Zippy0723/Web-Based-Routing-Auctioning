@@ -66,9 +66,6 @@ public class VehiclesController {
 	private UserService userService;
 
 	@Autowired
-	private SecurityService securityService;
-
-	@Autowired
 	private UserValidator userValidator;
 
 	@Autowired
@@ -119,12 +116,12 @@ public class VehiclesController {
 		}
 		session.removeAttribute("successMessage");
 
-		User user = getLoggedInUser();
+		User user = userService.getLoggedInUser();
 		if (user.getRole().toString().equals("CARRIER")) {
 
 			model.addAttribute("vehicles", user.getCarrier().getVehicles());
 
-			User users = getLoggedInUser();
+			User users = userService.getLoggedInUser();
 			List<Notification> notifications = new ArrayList<>();
 
 			if(!(users == null)) {
@@ -137,7 +134,7 @@ public class VehiclesController {
 		}
 		model.addAttribute("vehicles", vehiclesRepository.findAll());
 
-		User users = getLoggedInUser();
+		User users = userService.getLoggedInUser();
 		List<Notification> notifications = new ArrayList<>();
 
 		if(!(users == null)) {
@@ -159,7 +156,7 @@ public class VehiclesController {
 	@GetMapping({"/add-vehicle"})
 	public String showLists(Model model, Vehicles vehicles, BindingResult result, HttpSession session) {
 
-		User user = getLoggedInUser();
+		User user = userService.getLoggedInUser();
 		model = NotificationController.loadNotificationsIntoModel(user, model);
 		model.addAttribute("redirectLocation", (String) session.getAttribute("redirectLocation"));
 		model.addAttribute("carriers", user.getCarrier());
@@ -187,7 +184,7 @@ public class VehiclesController {
 	public String LoadFromExcelData(@RequestParam("file") MultipartFile excelData){
 		XSSFWorkbook workbook;
 		try {
-			User user = getLoggedInUser();
+			User user = userService.getLoggedInUser();
 			workbook = new XSSFWorkbook(excelData.getInputStream());
 
 
@@ -307,7 +304,7 @@ public class VehiclesController {
 	@RequestMapping({"/addvehicles"})
 	public String addVehicle(@Validated Vehicles vehicles, BindingResult result, Model model, HttpSession session) {
 		userValidator.addition(vehicles, result);
-		User user = getLoggedInUser();
+		User user = userService.getLoggedInUser();
 		model = NotificationController.loadNotificationsIntoModel(user, model);
 		model.addAttribute("currentPage","/vehicles");
 		String redirectLocation = (String) session.getAttribute("redirectLocation");
@@ -336,7 +333,7 @@ public class VehiclesController {
 			Logger.error("{} || was unable to add Vehicle because VIN or Plate Number already exists.", user.getUsername());
 			model.addAttribute("vehicles", user.getCarrier().getVehicles());
 
-			User users = getLoggedInUser();
+			User users = userService.getLoggedInUser();
 			List<Notification> notifications = new ArrayList<>();
 
 			if(!(users == null)) {
@@ -351,7 +348,7 @@ public class VehiclesController {
 		vehiclesRepository.save(vehicles);
 		Logger.info("{} || successfully added vehicle with ID {}.", user.getUsername(), vehicles.getId());
 
-		User users = getLoggedInUser();
+		User users = userService.getLoggedInUser();
 		List<Notification> notifications = new ArrayList<>();
 
 		if(!(users == null)) {
@@ -375,7 +372,7 @@ public class VehiclesController {
 		Vehicles vehicle = vehiclesRepository.findById(id)
 				.orElseThrow(() -> new IllegalArgumentException("Invalid vehicle Id:" + id));
 
-		User user = getLoggedInUser();
+		User user = userService.getLoggedInUser();
 		model = NotificationController.loadNotificationsIntoModel(user, model);
 		model.addAttribute("currentPage","/vehicles");
 		if (!vehicle.getOrders().isEmpty() || !vehicle.getShipments().isEmpty() || !vehicle.getDrivers().isEmpty()){
@@ -400,7 +397,7 @@ public class VehiclesController {
 	public String deleteVehicleConfirmation(@PathVariable("id") long id, Model model) {
 		Vehicles vehicle = vehiclesRepository.findById(id)
 				.orElseThrow(() -> new IllegalArgumentException("Invalid vehicle Id:" + id));
-		User user = getLoggedInUser();
+		User user = userService.getLoggedInUser();
 		model = NotificationController.loadNotificationsIntoModel(user, model);
 		model.addAttribute("currentPage","/vehicles");
 		User carrierUser = CarriersController.getUserFromCarrier(vehicle.getCarrier());
@@ -432,7 +429,7 @@ public class VehiclesController {
 		model.addAttribute("vehicles", vehicle);
 		model.addAttribute("currentPage","/vehicles");
 
-		User user = getLoggedInUser();
+		User user = userService.getLoggedInUser();
 		model = NotificationController.loadNotificationsIntoModel(user, model);
 
 		return "vehicles";
@@ -457,7 +454,7 @@ public class VehiclesController {
 		model.addAttribute("drivers", vehicle.getDrivers());
 		model.addAttribute("redirectLocation", (String) session.getAttribute("redirectLocation"));
 
-		User user = getLoggedInUser();
+		User user = userService.getLoggedInUser();
 		model = NotificationController.loadNotificationsIntoModel(user, model);
 
 		return "drivers";
@@ -479,7 +476,7 @@ public class VehiclesController {
 		model.addAttribute("redirectLocation", (String) session.getAttribute("redirectLocation"));
 		model.addAttribute("currentPage","/vehicles");
 
-		User user = getLoggedInUser();
+		User user = userService.getLoggedInUser();
 		model = NotificationController.loadNotificationsIntoModel(user, model);
 
 		return "shipments";
@@ -490,7 +487,7 @@ public class VehiclesController {
 	public String showVehiclesEditForm(@PathVariable("id") long id, Model model, HttpSession session) {
 		Vehicles vehicle = vehiclesRepository.findById(id)
 				.orElseThrow(() -> new IllegalArgumentException("Invalid Vehicle Id:" + id));
-		User user = getLoggedInUser();
+		User user = userService.getLoggedInUser();
 		model.addAttribute("currentPage","/vehicles");
 
 		model = NotificationController.loadNotificationsIntoModel(user, model);
@@ -512,7 +509,7 @@ public class VehiclesController {
 	public String vehicleUpdateForm(@PathVariable("id") long id, Vehicles vehicle, Model model, HttpSession session) {
 		String redirectLocation = (String) session.getAttribute("redirectLocation");
 		model.addAttribute("redirectLocation", session.getAttribute("redirectLocation"));
-		User user = getLoggedInUser();
+		User user = userService.getLoggedInUser();
 		model = NotificationController.loadNotificationsIntoModel(user, model);
 		model.addAttribute("vehicleTypes", user.getCarrier().getVehicleTypes()); 
 		model.addAttribute("locations", user.getCarrier().getLocations());
@@ -554,26 +551,5 @@ public class VehiclesController {
 
 		return "redirect:" + redirectLocation;
 	}
-
-
-	/**
-	 * Returns the user that is currently logged into the system. <br>
-	 * If there is no user logged in, null is returned.
-	 * @return user2 or null
-	 */
-	public User getLoggedInUser() {
-		if (securityService.isAuthenticated()) {
-			org.springframework.security.core.userdetails.User user = 
-					(org.springframework.security.core.userdetails.User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-
-			User user2 = userService.findByUsername(user.getUsername());
-
-			return user2;
-		}
-		else {
-			return null;
-		}
-	}
-
 
 }

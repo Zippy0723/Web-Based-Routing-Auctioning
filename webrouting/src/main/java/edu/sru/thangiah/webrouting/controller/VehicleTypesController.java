@@ -45,9 +45,6 @@ public class VehicleTypesController {
 	private UserService userService;
 
 	@Autowired
-	private SecurityService securityService;
-
-	@Autowired
 	private UserValidator userValidator;
 
 	@Autowired
@@ -72,7 +69,7 @@ public class VehicleTypesController {
 	 */
 	@RequestMapping({"/vehicletypes"})
 	public String showVehicleTypeList(Model model, HttpSession session) {
-		User user = getLoggedInUser();
+		User user = userService.getLoggedInUser();
 		Carriers carrier = user.getCarrier();
 		String redirectLocation = "/vehicletypes";
 
@@ -110,7 +107,7 @@ public class VehicleTypesController {
 	@RequestMapping({"/signupvehicletype"})
 	public String showVehicleTypeSignUpForm(Model model, VehicleTypes vehicleTypes, BindingResult result, HttpSession session) {
 
-		User user = getLoggedInUser();
+		User user = userService.getLoggedInUser();
 		model = NotificationController.loadNotificationsIntoModel(user, model);
 		model.addAttribute("redirectLocation", (String) session.getAttribute("redirectLocation"));
 		model.addAttribute("currentPage","/vehicletypes");
@@ -129,7 +126,7 @@ public class VehicleTypesController {
 	@RequestMapping({"/addvehicletypes"})
 	public String addVehicleType(@Validated VehicleTypes vehicleTypes, BindingResult result, Model model, HttpSession session) {
 		userValidator.addition(vehicleTypes, result);
-		User loggedInUser = getLoggedInUser();
+		User loggedInUser = userService.getLoggedInUser();
 		Carriers carrier = loggedInUser.getCarrier();
 		model = NotificationController.loadNotificationsIntoModel(loggedInUser, model);
 		String redirectLocation = (String) session.getAttribute("redirectLocation");
@@ -191,7 +188,7 @@ public class VehicleTypesController {
 		VehicleTypes vehicleTypes = vehicleTypesRepository.findById(id)
 				.orElseThrow(() -> new IllegalArgumentException("Invalid vehicle type Id:" + id));
 
-		User loggedInUser = getLoggedInUser();
+		User loggedInUser = userService.getLoggedInUser();
 		model = NotificationController.loadNotificationsIntoModel(loggedInUser, model);
 		model.addAttribute("currentPage","/vehicletypes");
 		if(!vehicleTypes.getVehicles().isEmpty()) {
@@ -217,7 +214,7 @@ public class VehicleTypesController {
 		VehicleTypes vehicleTypes = vehicleTypesRepository.findById(id)
 				.orElseThrow(() -> new IllegalArgumentException("Invalid vehicle type Id:" + id));
 
-		User loggedInUser = getLoggedInUser();
+		User loggedInUser = userService.getLoggedInUser();
 		model = NotificationController.loadNotificationsIntoModel(loggedInUser, model);
 		model.addAttribute("currentPage","/vehicletypes");
 		Logger.info("{} || successfully deleted the Vehicle type with ID {}.", loggedInUser.getUsername(),vehicleTypes.getId());
@@ -243,7 +240,7 @@ public class VehicleTypesController {
 		model.addAttribute("vehicletypes", vehicleType);
 		model.addAttribute("currentPage","/vehicletypes");
 
-		User user = getLoggedInUser();
+		User user = userService.getLoggedInUser();
 		model = NotificationController.loadNotificationsIntoModel(user, model);
 
 		return "vehicletypes";
@@ -259,7 +256,7 @@ public class VehicleTypesController {
 		model.addAttribute("vehicleTypes", vehicleType);
 		model.addAttribute("currentPage","/vehicletypes");
 
-		User user = getLoggedInUser();
+		User user = userService.getLoggedInUser();
 		model = NotificationController.loadNotificationsIntoModel(user, model);
 
 		session.removeAttribute("message");
@@ -272,7 +269,7 @@ public class VehicleTypesController {
 	public String vehicleTypeUpdateForm(@PathVariable("id") long id, VehicleTypes vehicleType, Model model, HttpSession session) {
 		String redirectLocation = (String) session.getAttribute("redirectLocation");
 		model.addAttribute("redirectLocation", session.getAttribute("redirectLocation"));
-		User user = getLoggedInUser();
+		User user = userService.getLoggedInUser();
 		model = NotificationController.loadNotificationsIntoModel(user, model);
 		List <VehicleTypes> carrierVehicleTypes = user.getCarrier().getVehicleTypes();
 
@@ -321,21 +318,6 @@ public class VehicleTypesController {
 		Logger.info("{} || successfully updated vehicle type with ID {}.", user.getUsername(), result.getId());
 
 		return "redirect:" + redirectLocation;
-	}
-
-
-	public User getLoggedInUser() {
-		if (securityService.isAuthenticated()) {
-			org.springframework.security.core.userdetails.User user = 
-					(org.springframework.security.core.userdetails.User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-
-			User user2 = userService.findByUsername(user.getUsername());
-
-			return user2;
-		}
-		else {
-			return null;
-		}
 	}
 
 }

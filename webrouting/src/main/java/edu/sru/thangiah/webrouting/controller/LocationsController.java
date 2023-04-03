@@ -44,9 +44,6 @@ public class LocationsController {
 	private UserService userService;
 
 	@Autowired
-	private SecurityService securityService;
-
-	@Autowired
 	private UserValidator userValidator;
 
 	@Autowired
@@ -84,7 +81,7 @@ public class LocationsController {
 		model.addAttribute("redirectLocation", redirectLocation);
 		model.addAttribute("currentPage","/locations"); //for sidebar highlight
 
-		User user = getLoggedInUser();
+		User user = userService.getLoggedInUser();
 		model = NotificationController.loadNotificationsIntoModel(user, model);
 		if (user.getRole().toString().equals("CARRIER")) {
 
@@ -121,7 +118,7 @@ public class LocationsController {
 	@GetMapping({"/add-location"})
 	public String showCarriersList(Model model, Locations location, BindingResult result, HttpSession session) {
 
-		User user = getLoggedInUser();
+		User user = userService.getLoggedInUser();
 		model.addAttribute("carriers", user.getCarrier());  
 		model = NotificationController.loadNotificationsIntoModel(user, model);
 		model.addAttribute("redirectLocation", (String) session.getAttribute("redirectLocation"));
@@ -142,7 +139,7 @@ public class LocationsController {
 	@RequestMapping({"/addlocations"})
 	public String addLocation(@Validated Locations location, BindingResult result, Model model, HttpSession session) {
 		userValidator.addition(location, result);
-		User user = getLoggedInUser();
+		User user = userService.getLoggedInUser();
 		model = NotificationController.loadNotificationsIntoModel(user, model);
 		String redirectLocation = (String) session.getAttribute("redirectLocation");
 		model.addAttribute("redirectLocation", session.getAttribute("redirectLocation"));
@@ -199,7 +196,7 @@ public class LocationsController {
 	public String deleteLocation(@PathVariable("id") long id, Model model, HttpSession session ) {
 		Locations location = locationsRepository.findById(id)
 				.orElseThrow(() -> new IllegalArgumentException("Invalid location Id:" + id));
-		User user = getLoggedInUser();
+		User user = userService.getLoggedInUser();
 		model = NotificationController.loadNotificationsIntoModel(user, model);
 		model.addAttribute("currentPage","/locations");
 		if (!location.getVehicles().isEmpty()) {
@@ -225,7 +222,7 @@ public class LocationsController {
 		Locations location = locationsRepository.findById(id)
 				.orElseThrow(() -> new IllegalArgumentException("Invalid location Id:" + id));
 
-		User loggedInUser = getLoggedInUser();
+		User loggedInUser = userService.getLoggedInUser();
 		model = NotificationController.loadNotificationsIntoModel(loggedInUser, model);
 		model.addAttribute("currentPage","/locations");
 		Logger.info("{} || successfully deleted the location with ID {}.",loggedInUser.getUsername(), location.getId());
@@ -250,7 +247,7 @@ public class LocationsController {
 		model.addAttribute("redirectLocation", (String) session.getAttribute("redirectLocation"));
 		model.addAttribute("currentPage","/locations");
 
-		User user = getLoggedInUser();
+		User user = userService.getLoggedInUser();
 		model = NotificationController.loadNotificationsIntoModel(user, model);
 
 		return "locations";
@@ -264,7 +261,7 @@ public class LocationsController {
 
 		model.addAttribute("redirectLocation", (String) session.getAttribute("redirectLocation"));
 		model.addAttribute("currentPage","/locations");
-		User user = getLoggedInUser();
+		User user = userService.getLoggedInUser();
 		model = NotificationController.loadNotificationsIntoModel(user, model);
 
 		session.removeAttribute("message");
@@ -278,7 +275,7 @@ public class LocationsController {
 	public String locationsUpdateForm(@PathVariable("id") long id, Locations locations, Model model, HttpSession session) {
 		String redirectLocation = (String) session.getAttribute("redirectLocation");
 		model.addAttribute("redirectLocation", session.getAttribute("redirectLocation"));
-		User user = getLoggedInUser();
+		User user = userService.getLoggedInUser();
 		model = NotificationController.loadNotificationsIntoModel(user, model);
 		List <Locations> carrierLocations = user.getCarrier().getLocations();
 
@@ -321,26 +318,6 @@ public class LocationsController {
 		Logger.info("{} || successfully updated location with ID {}.", user.getUsername(), result.getId());
 
 		return "redirect:" + redirectLocation;
-	}
-
-
-	/**
-	 * Returns the user that is currently logged into the system. <br>
-	 * If there is no user logged in, null is returned.
-	 * @return user2 or null
-	 */
-	public User getLoggedInUser() {
-		if (securityService.isAuthenticated()) {
-			org.springframework.security.core.userdetails.User user = 
-					(org.springframework.security.core.userdetails.User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-
-			User user2 = userService.findByUsername(user.getUsername());
-
-			return user2;
-		}
-		else {
-			return null;
-		}
 	}
 
 }

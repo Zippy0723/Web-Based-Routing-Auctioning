@@ -80,7 +80,7 @@ public class BackupController {
 	 */
 	@GetMapping("/database")
 	public String database(Model model) {
-		User user = getLoggedInUser();
+		User user = userService.getLoggedInUser();
 
 		model = NotificationController.loadNotificationsIntoModel(user, model);
 		model.addAttribute("currentPage","/database");
@@ -105,7 +105,7 @@ public class BackupController {
 
 		tmpFile.delete();
 
-		User user = getLoggedInUser();
+		User user = userService.getLoggedInUser();
 		model = NotificationController.loadNotificationsIntoModel(user, model);
 
 		return "database";
@@ -129,22 +129,4 @@ public class BackupController {
 		return convFile;
 	}
 
-	/**
-	 * Returns the user that is currently logged into the system. <br>
-	 * If there is no user logged in, null is returned.
-	 * @return user2 or null
-	 */
-	public User getLoggedInUser() {
-		if (securityService.isAuthenticated()) {
-			org.springframework.security.core.userdetails.User user = 
-					(org.springframework.security.core.userdetails.User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-
-			User user2 = userService.findByUsername(user.getUsername());
-
-			return user2;
-		}
-		else {
-			return null;
-		}
-	}
 }

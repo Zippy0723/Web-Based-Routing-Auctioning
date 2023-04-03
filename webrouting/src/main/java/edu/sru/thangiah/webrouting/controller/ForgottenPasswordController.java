@@ -55,10 +55,7 @@ public class ForgottenPasswordController {
 
 	@Autowired
 	private UserValidator userValidator;
-
-	@Autowired
-	private SecurityService securityService;
-
+	
 	private String redirect;
 
 	private static final Logger Logger = LoggerFactory.getLogger(ForgottenPasswordController.class);
@@ -87,7 +84,7 @@ public class ForgottenPasswordController {
 		userService.assignOtpCode(email);
 		webUrl = MailSending.getUrl(mailRequest);
 		emailImpl.forgotPassword(email, webUrl);
-		User user = getLoggedInUser();
+		User user = userService.getLoggedInUser();
 		model.addAttribute("message", "Your reset password link has been sent to your email");
 		Logger.info("{} || sent themselves a password reset link.", user.getUsername());
 		return "forgotpasswordform";
@@ -129,7 +126,7 @@ public class ForgottenPasswordController {
 		otpCode = request.getParameter("otpCode");
 		password = request.getParameter("password");
 		user = userService.findByOtp(otpCode);
-		User loggedInUser = getLoggedInUser();
+		User loggedInUser = userService.getLoggedInUser();
 		if(user == null) {
 			model.addAttribute("message", "Invalid OTP Code");
 		} 
@@ -146,20 +143,6 @@ public class ForgottenPasswordController {
 			Logger.info("{} || changed thier password.", loggedInUser.getUsername());
 		}
 		return "resetpasswordform";
-	}
-
-	public User getLoggedInUser() {
-		if (securityService.isAuthenticated()) {
-			org.springframework.security.core.userdetails.User user = 
-					(org.springframework.security.core.userdetails.User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-
-			User user2 = userService.findByUsername(user.getUsername());
-
-			return user2;
-		}
-		else {
-			return null;
-		}
 	}
 
 }

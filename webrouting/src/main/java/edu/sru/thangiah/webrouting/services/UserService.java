@@ -24,6 +24,7 @@ public interface UserService {
 
 	String createOtpCode();
 	
+	User getLoggedInUser();
 
 
 

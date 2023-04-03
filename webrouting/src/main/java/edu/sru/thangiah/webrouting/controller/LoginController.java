@@ -310,7 +310,7 @@ public class LoginController {
 	 */
 	@GetMapping({"/"})
 	public String welcome(Model model) {
-		User user = getLoggedInUser();
+		User user = userService.getLoggedInUser();
 		List<Notification> notifications = new ArrayList<>();
 		model.addAttribute("currentPage","/");
 
@@ -332,23 +332,4 @@ public class LoginController {
 		return "/403";
 	}
 
-	/**
-	 * Returns the user that is currently logged into the system. <br>
-	 * If there is no user logged in, null is returned.
-	 * @return user2 or null
-	 */
-	public User getLoggedInUser() {
-		if (securityService.isAuthenticated()) {
-			org.springframework.security.core.userdetails.User user = 
-					(org.springframework.security.core.userdetails.User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-
-			User user2 = userService.findByUsername(user.getUsername());
-
-
-			return user2;
-		}
-		else {
-			return null;
-		}
-	}
 }

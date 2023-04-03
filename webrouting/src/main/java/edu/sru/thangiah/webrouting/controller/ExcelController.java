@@ -71,9 +71,6 @@ public class ExcelController {
 	private UserService userService;
 
 	@Autowired
-	private SecurityService securityService;
-
-	@Autowired
 	private UserValidator userValidator;
 
 	private CarriersRepository carriersRepository;
@@ -137,7 +134,7 @@ public class ExcelController {
 		XSSFSheet driversWorksheet = workbook.createSheet("Drivers");
 		XSSFSheet maintenanceOrdersWorksheet = workbook.createSheet("Maintenance Orders");
 
-		User user = getLoggedInUser();
+		User user = userService.getLoggedInUser();
 		Carriers carrier = user.getCarrier();
 
 		List<Contacts> contacts = carrier.getContacts();
@@ -369,7 +366,7 @@ public class ExcelController {
 	public String LoadShipmentExcelForm(@RequestParam("file") MultipartFile excelData, HttpSession session, Model model){
 		String redirectLocation = (String) session.getAttribute("redirectLocation");
 		XSSFWorkbook workbook;
-		User user = getLoggedInUser();
+		User user = userService.getLoggedInUser();
 		model = NotificationController.loadNotificationsIntoModel(user, model);
 		model.addAttribute("redirectLocation",redirectLocation);
 
@@ -402,7 +399,7 @@ public class ExcelController {
 	public String uploadFreightRateTable(@RequestParam("file") MultipartFile excelData, HttpSession session, Model model) {
 		String redirectLocation = (String) session.getAttribute("redirectLocation");
 		XSSFWorkbook workbook;
-		User user = getLoggedInUser();
+		User user = userService.getLoggedInUser();
 		model = NotificationController.loadNotificationsIntoModel(user, model);
 
 		try {
@@ -466,7 +463,7 @@ public class ExcelController {
 
 	@PostMapping("/excel-upload-vehicletypes")
 	public String loadVehicleTypesFromExcel(@RequestParam("file") MultipartFile excelData, HttpSession session, Model model){
-		User user = getLoggedInUser();
+		User user = userService.getLoggedInUser();
 		String redirectLocation = (String) session.getAttribute("redirectLocation");
 		model.addAttribute("redirectLocation",redirectLocation);
 		XSSFWorkbook workbook;
@@ -505,7 +502,7 @@ public class ExcelController {
 
 	@PostMapping("/excel-upload-locations")
 	public String loadLocationsFromExcel(@RequestParam("file") MultipartFile excelData, HttpSession session, Model model){
-		User user = getLoggedInUser();
+		User user = userService.getLoggedInUser();
 		String redirectLocation = (String) session.getAttribute("redirectLocation");
 		model.addAttribute("redirectLocation",redirectLocation);
 		XSSFWorkbook workbook;
@@ -544,7 +541,7 @@ public class ExcelController {
 
 	@PostMapping("/excel-upload-contacts")
 	public String loadContactsFromExcel(@RequestParam("file") MultipartFile excelData, HttpSession session, Model model){
-		User user = getLoggedInUser();
+		User user = userService.getLoggedInUser();
 		String redirectLocation = (String) session.getAttribute("redirectLocation");
 		model.addAttribute("redirectLocation",redirectLocation);
 		XSSFWorkbook workbook;
@@ -583,7 +580,7 @@ public class ExcelController {
 
 	@PostMapping("/excel-upload-technicians")
 	public String loadTechniciansFromExcel(@RequestParam("file") MultipartFile excelData, HttpSession session, Model model){
-		User user = getLoggedInUser();
+		User user = userService.getLoggedInUser();
 		String redirectLocation = (String) session.getAttribute("redirectLocation");
 		model.addAttribute("currentPage","/technicians");
 		model.addAttribute("redirectLocation",redirectLocation);
@@ -623,7 +620,7 @@ public class ExcelController {
 
 	@PostMapping("/excel-upload-vehicles")
 	public String loadVehicleFromExcel(@RequestParam("file") MultipartFile excelData, HttpSession session, Model model){
-		User user = getLoggedInUser();
+		User user = userService.getLoggedInUser();
 		String redirectLocation = (String) session.getAttribute("redirectLocation");
 		model.addAttribute("redirectLocation",redirectLocation);
 		XSSFWorkbook workbook;
@@ -662,7 +659,7 @@ public class ExcelController {
 
 	@PostMapping("/excel-upload-drivers")
 	public String loadDriverFromExcel(@RequestParam("file") MultipartFile excelData, HttpSession session, Model model){
-		User user = getLoggedInUser();
+		User user = userService.getLoggedInUser();
 		String redirectLocation = (String) session.getAttribute("redirectLocation");
 		model.addAttribute("redirectLocation",redirectLocation);
 		XSSFWorkbook workbook;
@@ -701,7 +698,7 @@ public class ExcelController {
 
 	@PostMapping("/excel-upload-maintenanceOrders")
 	public String loadMaintenanceOrdersFromExcel(@RequestParam("file") MultipartFile excelData, HttpSession session, Model model){
-		User user = getLoggedInUser();
+		User user = userService.getLoggedInUser();
 		String redirectLocation = (String) session.getAttribute("redirectLocation");
 		model.addAttribute("redirectLocation",redirectLocation);
 		XSSFWorkbook workbook;
@@ -738,7 +735,7 @@ public class ExcelController {
 
 		session.removeAttribute("message");
 
-		User user = getLoggedInUser();
+		User user = userService.getLoggedInUser();
 		model = NotificationController.loadNotificationsIntoModel(user, model);
 
 		return "/excel/upload-vehicletypes";	
@@ -751,7 +748,7 @@ public class ExcelController {
 
 		session.removeAttribute("message");
 
-		User user = getLoggedInUser();
+		User user = userService.getLoggedInUser();
 		model = NotificationController.loadNotificationsIntoModel(user, model);
 
 		return "/excel/upload-locations";	
@@ -764,7 +761,7 @@ public class ExcelController {
 
 		session.removeAttribute("message");
 
-		User user = getLoggedInUser();
+		User user = userService.getLoggedInUser();
 		model = NotificationController.loadNotificationsIntoModel(user, model);
 
 		return "/excel/upload-contacts";	
@@ -776,7 +773,7 @@ public class ExcelController {
 		model.addAttribute("currentPage","/registrationhome");
 
 		session.removeAttribute("message");
-		User user = getLoggedInUser();
+		User user = userService.getLoggedInUser();
 		model = NotificationController.loadNotificationsIntoModel(user, model);
 		model.addAttribute("currentPage","/drivers");
 
@@ -788,7 +785,7 @@ public class ExcelController {
 		model.addAttribute("redirectLocation", session.getAttribute("redirectLocation"));
 
 		session.removeAttribute("message");
-		User user = getLoggedInUser();
+		User user = userService.getLoggedInUser();
 		model = NotificationController.loadNotificationsIntoModel(user, model);
 		model.addAttribute("currentPage","/maintenanceorders");
 
@@ -801,7 +798,7 @@ public class ExcelController {
 
 		session.removeAttribute("message");
 
-		User user = getLoggedInUser();
+		User user = userService.getLoggedInUser();
 		model = NotificationController.loadNotificationsIntoModel(user, model);
 		model.addAttribute("currentPage","/technicians");
 
@@ -815,7 +812,7 @@ public class ExcelController {
 
 		session.removeAttribute("message");
 
-		User user = getLoggedInUser();
+		User user = userService.getLoggedInUser();
 		model = NotificationController.loadNotificationsIntoModel(user, model);
 
 		return "/excel/upload-vehicles";	
@@ -826,30 +823,11 @@ public class ExcelController {
 		model.addAttribute("redirectLocation", session.getAttribute("redirectLocation"));
 		model.addAttribute("currentPage","/shipments");
 
-		User user = getLoggedInUser();
+		User user = userService.getLoggedInUser();
 		model = NotificationController.loadNotificationsIntoModel(user, model);
 		session.removeAttribute("message");
 
 		return "/excel/upload-shipments";	
 	}
 
-
-	/**
-	 * Returns the user that is currently logged into the system. <br>
-	 * If there is no user logged in, null is returned.
-	 * @return user2 or null
-	 */
-	public User getLoggedInUser() {
-		if (securityService.isAuthenticated()) {
-			org.springframework.security.core.userdetails.User user = 
-					(org.springframework.security.core.userdetails.User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-
-			User user2 = userService.findByUsername(user.getUsername());
-
-			return user2;
-		}
-		else {
-			return null;
-		}
-	}
 }

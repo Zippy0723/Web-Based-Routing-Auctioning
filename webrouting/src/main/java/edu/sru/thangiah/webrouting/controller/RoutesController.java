@@ -35,9 +35,6 @@ public class RoutesController {
 	@Autowired
 	private UserService userService;
 
-	@Autowired
-	private SecurityService securityService;
-
 	/**
 	 * Constructor for RoutesController. <br>
 	 * Instantiates the vehiclesRepository <br>
@@ -68,7 +65,7 @@ public class RoutesController {
 			model.addAttribute("shipments", vehicle.getShipments());
 			model.addAttribute("vehicle", vehiclesRepository.findAll());
 
-			User users = getLoggedInUser();
+			User users = userService.getLoggedInUser();
 			List<Notification> notifications = new ArrayList<>();
 
 			if(!(users == null)) {
@@ -97,7 +94,7 @@ public class RoutesController {
 			model.addAttribute("shipments", shownShipments);
 			model.addAttribute("vehicle", getVehiclesWithShipments());
 
-			User user = getLoggedInUser();
+			User user = userService.getLoggedInUser();
 			model = NotificationController.loadNotificationsIntoModel(user, model);
 
 			return "routes";
@@ -116,14 +113,14 @@ public class RoutesController {
 		model.addAttribute("currentPage","/routes");
 		session.setAttribute("redirectLocation", redirectLocation);
 		model.addAttribute("redirectLocation", redirectLocation);
-		if (getLoggedInUser().getRole().getName().equals("CARRIER")) {
-			model.addAttribute("vehicle", getVehiclesWithShipmentsFromList(getLoggedInUser().getCarrier().getVehicles()));
+		if (userService.getLoggedInUser().getRole().getName().equals("CARRIER")) {
+			model.addAttribute("vehicle", getVehiclesWithShipmentsFromList(userService.getLoggedInUser().getCarrier().getVehicles()));
 		}
 		else {
 			model.addAttribute("vehicle", getVehiclesWithShipments());
 		}
 
-		User user = getLoggedInUser();
+		User user = userService.getLoggedInUser();
 		model = NotificationController.loadNotificationsIntoModel(user, model);
 
 		return "routes";
@@ -155,24 +152,6 @@ public class RoutesController {
 		return displayedList;
 	}
 
-	/**
-	 * Returns the user that is currently logged into the system. <br>
-	 * If there is no user logged in, null is returned.
-	 * @return user2 or null
-	 */
-	public User getLoggedInUser() {
-		if (securityService.isAuthenticated()) {
-			org.springframework.security.core.userdetails.User user = 
-					(org.springframework.security.core.userdetails.User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-
-			User user2 = userService.findByUsername(user.getUsername());
-
-			return user2;
-		}
-		else {
-			return null;
-		}
-	}
 }
 
 

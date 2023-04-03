@@ -43,9 +43,6 @@ public class ContactsController {
 	private UserService userService;
 
 	@Autowired
-	private SecurityService securityService;
-
-	@Autowired
 	private ValidationServiceImp validationServiceImp;
 
 	private ContactsRepository contactsRepository;
@@ -93,9 +90,9 @@ public class ContactsController {
 		model.addAttribute("redirectLocation", redirectLocation);
 		model.addAttribute("currentPage","/contacts");
 
-		model.addAttribute("contacts", getLoggedInUser().getCarrier().getContacts());
+		model.addAttribute("contacts", userService.getLoggedInUser().getCarrier().getContacts());
 
-		User user = getLoggedInUser();
+		User user = userService.getLoggedInUser();
 		model = NotificationController.loadNotificationsIntoModel(user, model);
 
 		return "contacts";
@@ -112,7 +109,7 @@ public class ContactsController {
 	@RequestMapping({"/signupcontact"})
 	public String showContactSignUpForm(Model model, Contacts contact, BindingResult result, HttpSession session) {
 
-		User user = getLoggedInUser();
+		User user = userService.getLoggedInUser();
 		model = NotificationController.loadNotificationsIntoModel(user, model);
 		model.addAttribute("redirectLocation", (String) session.getAttribute("redirectLocation"));
 		model.addAttribute("currentPage","/contacts");
@@ -132,8 +129,8 @@ public class ContactsController {
 	@RequestMapping({"/addcontact"})
 	public String addContact(@Validated Contacts contacts, BindingResult result, Model model, HttpSession session) {
 		userValidator.addition(contacts, result);
-		contacts.setCarrier(getLoggedInUser().getCarrier());
-		User user = getLoggedInUser();
+		contacts.setCarrier(userService.getLoggedInUser().getCarrier());
+		User user = userService.getLoggedInUser();
 		model = NotificationController.loadNotificationsIntoModel(user, model);
 		String redirectLocation = (String) session.getAttribute("redirectLocation");
 		model.addAttribute("redirectLocation", session.getAttribute("redirectLocation"));
@@ -157,7 +154,7 @@ public class ContactsController {
 		if(deny == true) {
 			model.addAttribute("error", "Unable to add Contact. Contact Email already in use");
 			Logger.error("{} || attempted to add contact and it failed because the email address {} is already in use.", user.getUsername(), contacts.getEmailAddress().toString());
-			model.addAttribute("contacts", getLoggedInUser().getCarrier().getContacts());
+			model.addAttribute("contacts", userService.getLoggedInUser().getCarrier().getContacts());
 
 			return "contacts";
 
@@ -193,14 +190,14 @@ public class ContactsController {
 		Contacts contacts = contactsRepository.findById(id)
 				.orElseThrow(() -> new IllegalArgumentException("Invalid contact Id:" + id));
 
-		User user = getLoggedInUser();
+		User user = userService.getLoggedInUser();
 		model = NotificationController.loadNotificationsIntoModel(user, model);
 		model.addAttribute("currentPage","/contacts");
 
 		if(!contacts.getDrivers().isEmpty() || !contacts.getTechnicians().isEmpty()) {
 			session.setAttribute("error", "Unable to delete due to dependency conflict."); 
 			Logger.error("{} || attmpted to delete contact. Deletion failed due to dependency conflict.", user.getUsername());
-			model.addAttribute("contacts", getLoggedInUser().getCarrier().getContacts());
+			model.addAttribute("contacts", userService.getLoggedInUser().getCarrier().getContacts());
 
 			return "redirect:" + (String) session.getAttribute("redirectLocation");
 		}
@@ -221,7 +218,7 @@ public class ContactsController {
 		Contacts contacts = contactsRepository.findById(id)
 				.orElseThrow(() -> new IllegalArgumentException("Invalid contact Id:" + id));
 
-		User user = getLoggedInUser();
+		User user = userService.getLoggedInUser();
 		model = NotificationController.loadNotificationsIntoModel(user, model);
 		model.addAttribute("currentPage","/contacts");
 		Logger.info("{} || successfully deleted the contact with ID {}.", user.getUsername(), contacts.getId());
@@ -247,7 +244,7 @@ public class ContactsController {
 		model.addAttribute("contacts", contacts);
 		model.addAttribute("currentPage","/contacts");
 
-		User user = getLoggedInUser();
+		User user = userService.getLoggedInUser();
 		model = NotificationController.loadNotificationsIntoModel(user, model);
 
 		return "contacts";
@@ -261,7 +258,7 @@ public class ContactsController {
 
 		model.addAttribute("redirectLocation", (String) session.getAttribute("redirectLocation"));
 		model.addAttribute("currentPage","/contacts");
-		User user = getLoggedInUser();
+		User user = userService.getLoggedInUser();
 		model = NotificationController.loadNotificationsIntoModel(user, model);
 
 		session.removeAttribute("message");
@@ -276,7 +273,7 @@ public class ContactsController {
 	public String contactsUpdateForm(@PathVariable("id") long id, Contacts contacts, Model model, HttpSession session) {
 		String redirectLocation = (String) session.getAttribute("redirectLocation");
 		model.addAttribute("redirectLocation", session.getAttribute("redirectLocation"));
-		User user = getLoggedInUser();
+		User user = userService.getLoggedInUser();
 		model = NotificationController.loadNotificationsIntoModel(user, model);
 
 		List<Contacts> carrierContacts = user.getCarrier().getContacts();
@@ -328,23 +325,4 @@ public class ContactsController {
 		return "redirect:" + redirectLocation;
 	}
 
-
-	/**
-	 * Returns the user that is currently logged into the system. <br>
-	 * If there is no user logged in, null is returned.
-	 * @return user2 or null
-	 */
-	public User getLoggedInUser() {
-		if (securityService.isAuthenticated()) {
-			org.springframework.security.core.userdetails.User user = 
-					(org.springframework.security.core.userdetails.User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-
-			User user2 = userService.findByUsername(user.getUsername());
-
-			return user2;
-		}
-		else {
-			return null;
-		}
-	}
 }

@@ -22,9 +22,6 @@ import edu.sru.thangiah.webrouting.services.UserService;
 public class RolesController {
 
 	@Autowired
-	private SecurityService securityService;
-
-	@Autowired
 	private UserService userService;
 
 	private RoleRepository roleRepository;
@@ -47,21 +44,8 @@ public class RolesController {
 	@RequestMapping({"/roles"})
 	public String showRoleList(Model model) {
 		model.addAttribute("role", roleRepository.findAll());
-		model = NotificationController.loadNotificationsIntoModel(getLoggedInUser(), model);
+		model = NotificationController.loadNotificationsIntoModel(userService.getLoggedInUser(), model);
 		return "roles";
 	}
 
-	public User getLoggedInUser() {
-		if (securityService.isAuthenticated()) {
-			org.springframework.security.core.userdetails.User user = 
-					(org.springframework.security.core.userdetails.User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-
-			User user2 = userService.findByUsername(user.getUsername());
-
-			return user2;
-		}
-		else {
-			return null;
-		}
-	}
 }

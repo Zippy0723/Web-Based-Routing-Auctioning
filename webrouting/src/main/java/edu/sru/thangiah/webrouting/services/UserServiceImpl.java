@@ -37,6 +37,9 @@ import net.bytebuddy.utility.RandomString;
 public class UserServiceImpl implements UserService {
 	
 	@Autowired
+	private SecurityService securityService;
+	
+	@Autowired
 	private UserRepository userRepository;
 
 	private BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
@@ -141,6 +144,20 @@ public class UserServiceImpl implements UserService {
 	}
 	
 	
+	
+	public User getLoggedInUser() {
+		if (securityService.isAuthenticated()) {
+			org.springframework.security.core.userdetails.User user = 
+					(org.springframework.security.core.userdetails.User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+			User user2 = findByUsername(user.getUsername());
+
+			return user2;
+		}
+		else {
+			return null;
+		}
+	}
 
 
 }
