@@ -85,8 +85,21 @@ public class LocationsController {
 			
 			 model.addAttribute("locations", user.getCarrier().getLocations());
 			 
+			 try {
+					model.addAttribute("successMessage",session.getAttribute("successMessage"));
+				} catch (Exception e) {
+					//do nothing
+				}
+				session.removeAttribute("successMessage");
+				
 			 return "locations";
 		}
+		try {
+			model.addAttribute("successMessage",session.getAttribute("successMessage"));
+		} catch (Exception e) {
+			//do nothing
+		}
+		session.removeAttribute("successMessage");
 		
         model.addAttribute("locations", locationsRepository.findAll());
         

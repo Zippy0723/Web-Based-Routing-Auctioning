@@ -190,9 +190,8 @@ public class ValidationServiceImp {
 		        shipment.setUser(user);						//THIS USER
 		        
 		        result.add(shipment);
-			 		
+				session.setAttribute("successMessage", "Successfully Added Shippers from Excel Sheet!");
 			 }
-			
 			}
 		catch (Exception e) {
 			// TODO Auto-generated catch block
@@ -462,6 +461,7 @@ public class ValidationServiceImp {
 	    			return null;
 	    		}
 	    		 result.add(VehicleType);
+	 			session.setAttribute("successMessage", "Successfully Added Vehicle Types from Excel Sheet!");
 			 	}
 			}
 		catch (Exception e) {
@@ -688,6 +688,7 @@ public class ValidationServiceImp {
 	    		}
 	    		
 	    		 result.add(location);	
+	    		 session.setAttribute("successMessage", "Successfully Added Locations from Excel Sheet!");
 			}
 		}
 		catch (Exception e) {
@@ -859,6 +860,7 @@ public class ValidationServiceImp {
 	    			return null;
 	    		}
 	    		result.add(contact);
+				session.setAttribute("successMessage", "Successfully Added Contacts from Excel Sheet!");
 			}
 		}
 		catch (Exception e) {
@@ -1031,7 +1033,9 @@ public class ValidationServiceImp {
 		    			return null;
 		    		}
 		    		
-			        result.add(technician);	
+			        result.add(technician);
+					session.setAttribute("successMessage", "Successfully Added Technicians from Excel Sheet!");
+
 				}
 			}
 			catch (Exception e) {
@@ -1144,7 +1148,7 @@ public class ValidationServiceImp {
 	    		}
 
 		        result.add(vehicle);
-			 		
+				session.setAttribute("successMessage", "Successfully Added Vehicles from Excel Sheet!");
 			 	}
 			}
 		catch (Exception e) {
@@ -1285,6 +1289,7 @@ public class ValidationServiceImp {
 		    		}
 		    		
 			        result.add(driver);	
+			        session.setAttribute("successMessage", "Successfully Added Drivers from Excel Sheet!");
 				}
 			}
 			catch (Exception e) {
@@ -1425,7 +1430,7 @@ public class ValidationServiceImp {
 	    		}
 	    		
 		        result.add(maintenanceOrder);
-			 		
+				session.setAttribute("successMessage", "Successfully Added Maintenance Orders from Excel Sheet!");
 			 	}
 			}
 		catch (Exception e) {

@@ -76,6 +76,12 @@ public class ContactsController {
 	            //do nothing
 	        }
 	        session.removeAttribute("error");
+	      try {
+	    	  model.addAttribute("successMessage",session.getAttribute("successMessage"));
+			} catch (Exception e) {
+				//do nothing
+			}
+			session.removeAttribute("successMessage");
 	        
 		String redirectLocation = "/contacts";
 		session.setAttribute("redirectLocation", redirectLocation);

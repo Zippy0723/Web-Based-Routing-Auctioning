@@ -395,7 +395,6 @@ public class ExcelController {
 			session.setAttribute("message", "Something went wrong! Please check your excel file!");
 			e.printStackTrace();
 		}
-		
 		return "redirect:" + redirectLocation;	
 	}
 	
