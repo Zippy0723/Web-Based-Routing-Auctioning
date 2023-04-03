@@ -20,7 +20,7 @@ import org.springframework.lang.NonNull;
 @Entity
 @Table(name="maintenance_orders")
 public class MaintenanceOrders {
-	
+
 	@Id
 	@GenericGenerator(name="generate" , strategy="increment")
 	@GeneratedValue(generator="generate")
@@ -29,32 +29,32 @@ public class MaintenanceOrders {
 	@ManyToOne
 	@JoinColumn(name = "technician_id")
 	private Technicians technician;
-	
+
 	@Column(name="scheduled_date", nullable= true, columnDefinition="varchar(12) default NULL")
 	private String scheduled_date;
-	
+
 	@Column(name="details", nullable= true, columnDefinition="varchar(128) default NULL")
 	private String details;
-	
+
 	@NonNull
 	@Column(name="service_type_key", nullable= false, columnDefinition="varchar(12)")
 	private String service_type_key;
-	
+
 	@Column(name="cost", nullable= true, columnDefinition="varchar(16) default NULL")
 	private String cost;
-	
+
 	@NonNull
 	@Column(name="status_key", nullable= false, columnDefinition="varchar(64)")
 	private String status_key;
-	
+
 	@ManyToOne
 	@JoinColumn(name = "vehicle_id")
 	private Vehicles vehicle;
-	
+
 	@NonNull
 	@Column(name="maintenance_type", nullable= false, columnDefinition="varchar(64)")
 	private String maintenance_type;
-	
+
 	@ManyToOne
 	@JoinColumn(name = "carrier_id")
 	private Carriers carrier;
@@ -219,7 +219,7 @@ public class MaintenanceOrders {
 	public void setCarrier(Carriers carrier) {
 		this.carrier = carrier;
 	}
-	
+
 	public String toString() {
 		return details + " for " + vehicle.toString();
 	}

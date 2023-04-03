@@ -29,18 +29,18 @@ public class Technicians {
 	@GenericGenerator(name="generate" , strategy="increment")
 	@GeneratedValue(generator="generate")
 	private Long id;
-	
+
 	@ManyToOne
 	@JoinColumn(name = "contact_id")
 	private Contacts contact;
-	
+
 	@NonNull
 	@Column(name="skill_grade",  columnDefinition="varchar(12) default NULL")
 	private String skill_grade;
-	
+
 	@OneToMany(mappedBy = "technician")
 	private List<MaintenanceOrders> orders = new ArrayList<>();
-	
+
 	@ManyToOne
 	@JoinColumn(name = "carrier_id")
 	private Carriers carrier;
@@ -92,7 +92,7 @@ public class Technicians {
 	public void setSkill_grade(String skill_grade) {
 		this.skill_grade = skill_grade;
 	}
-	
+
 	/**
 	 * Gets the Orders List
 	 * @return orders

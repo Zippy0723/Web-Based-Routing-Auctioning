@@ -36,31 +36,31 @@ public class ForgottenPasswordController {
 
 	@Autowired
 	private Emailing emailImpl;
-	
+
 	private User user;
-	
+
 	private String email;
-	
+
 	@Autowired
 	private UserService userService;
-	
+
 	private String webUrl;
-		
+
 	private String otpCode;
-	
+
 	private String password;
-	
+
 	@Autowired
 	private HttpServletRequest mailRequest; 
-	
+
 	@Autowired
 	private UserValidator userValidator;
-	
-    @Autowired
-    private SecurityService securityService;
-	
+
+	@Autowired
+	private SecurityService securityService;
+
 	private String redirect;
-	
+
 	private static final Logger Logger = LoggerFactory.getLogger(ForgottenPasswordController.class);
 	/**
 	 * Used to handle the request and shows the user the form
@@ -71,7 +71,7 @@ public class ForgottenPasswordController {
 		model.addAttribute("currentPage","/login");
 		return "forgotpasswordform";
 	}
-	
+
 	/**
 	 * Method for handling the input from the user and sending the userfound 
 	 * a reset password email
@@ -86,13 +86,13 @@ public class ForgottenPasswordController {
 		email = request.getParameter("email");
 		userService.assignOtpCode(email);
 		webUrl = MailSending.getUrl(mailRequest);
-	    emailImpl.forgotPassword(email, webUrl);
-	    User user = getLoggedInUser();
+		emailImpl.forgotPassword(email, webUrl);
+		User user = getLoggedInUser();
 		model.addAttribute("message", "Your reset password link has been sent to your email");
 		Logger.info("{} || sent themselves a password reset link.", user.getUsername());
-	return "forgotpasswordform";
+		return "forgotpasswordform";
 	}
-	
+
 	/**
 	 * method that finds the user by their OTP code, if the user does not have the same code
 	 * they will not be able to proceed
@@ -107,13 +107,13 @@ public class ForgottenPasswordController {
 		if(user == null ) {
 			model.addAttribute("message", "Invalid OTP Code");
 			return "forgotpassword";
-			}
+		}
 		if(!model.containsAttribute("userForm")) {
 			model.addAttribute("userForm", new User());
 		}
 		return "resetpasswordform";
 	}
-	
+
 	/**
 	 * Method that takes in the password and code and resets the users password
 	 * @param userForm - Used to hold the users password
@@ -132,14 +132,14 @@ public class ForgottenPasswordController {
 		User loggedInUser = getLoggedInUser();
 		if(user == null) {
 			model.addAttribute("message", "Invalid OTP Code");
-			} 
+		} 
 		else if (bindingResult.hasErrors()) {
-				redirectAttr.addFlashAttribute("org.springframework.validation.BindingResult.userForm", bindingResult);
-				redirectAttr.addFlashAttribute("userForm", userForm);
-				redirect = request.getHeader("Referer");
-				Logger.error("{} || failed to reset password.", user.getUsername());
-				return "redirect:" + redirect;
-	       }
+			redirectAttr.addFlashAttribute("org.springframework.validation.BindingResult.userForm", bindingResult);
+			redirectAttr.addFlashAttribute("userForm", userForm);
+			redirect = request.getHeader("Referer");
+			Logger.error("{} || failed to reset password.", user.getUsername());
+			return "redirect:" + redirect;
+		}
 		else { 
 			userService.resetPassword(user,password);
 			model.addAttribute("message", "Your password has been changed");
@@ -147,19 +147,19 @@ public class ForgottenPasswordController {
 		}
 		return "resetpasswordform";
 	}
-	
+
 	public User getLoggedInUser() {
-    	if (securityService.isAuthenticated()) {
-    		org.springframework.security.core.userdetails.User user = 
-    				(org.springframework.security.core.userdetails.User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-    		
-    		User user2 = userService.findByUsername(user.getUsername());
-    		
-    		return user2;
-    	}
-    	else {
-    		return null;
-    	}
-    }
-	
+		if (securityService.isAuthenticated()) {
+			org.springframework.security.core.userdetails.User user = 
+					(org.springframework.security.core.userdetails.User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+			User user2 = userService.findByUsername(user.getUsername());
+
+			return user2;
+		}
+		else {
+			return null;
+		}
+	}
+
 }

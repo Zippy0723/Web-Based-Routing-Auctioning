@@ -15,37 +15,37 @@ import edu.sru.thangiah.webrouting.mailsending.Emailing;
 
 @Controller
 public class VerifyEmailController {
-	
+
 	@Autowired
-    private Emailing emailImpl;
+	private Emailing emailImpl;
 
 
-/**
-* Gets the mapping sent from the email link
-* Requests the parameter from the URL 
-* uses the requested parameter to verify the account
-* @param verificationCode holds the verificationcode of the user sent in the URL
-* @return "verified" if the account is successfully verified or "verificationfail" if the account is already verified or the code is wrong
-*/
-	
-@GetMapping("/verify")
-public String verifyAccount(@RequestParam(required = true, value="code") String verificationCode) {
-	if(emailImpl.verifyAccount(verificationCode)) {
-		return "verified";
-		
-	} else
-	return "verificationfail";
-}
+	/**
+	 * Gets the mapping sent from the email link
+	 * Requests the parameter from the URL 
+	 * uses the requested parameter to verify the account
+	 * @param verificationCode holds the verificationcode of the user sent in the URL
+	 * @return "verified" if the account is successfully verified or "verificationfail" if the account is already verified or the code is wrong
+	 */
 
-@GetMapping("/verified")
-public void verifiedppage() {
-	
-}
+	@GetMapping("/verify")
+	public String verifyAccount(@RequestParam(required = true, value="code") String verificationCode) {
+		if(emailImpl.verifyAccount(verificationCode)) {
+			return "verified";
 
-@GetMapping("/verificationfail")
-public void verifiedFailed() {
-	
-}
+		} else
+			return "verificationfail";
+	}
+
+	@GetMapping("/verified")
+	public void verifiedppage() {
+
+	}
+
+	@GetMapping("/verificationfail")
+	public void verifiedFailed() {
+
+	}
 
 
 }

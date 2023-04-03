@@ -14,15 +14,15 @@ import edu.sru.thangiah.webrouting.repository.NotificationRepository;
 public class NotificationServiceImpl implements NotificationService {
 
 	@Autowired
-    private Emailing emailImpl;
-	
+	private Emailing emailImpl;
+
 	private NotificationRepository notificationRepository;
-	
+
 	public NotificationServiceImpl(NotificationRepository notificationRepository) {
 		this.notificationRepository = notificationRepository;
 	}
-	
-	
+
+
 	/**
 	 * Creates a new notification with the specified parameters
 	 */
@@ -30,15 +30,15 @@ public class NotificationServiceImpl implements NotificationService {
 	public void addNotification(User user, String message, Boolean toEmail) {
 		LocalDateTime now = LocalDateTime.now();
 		String time = now.toString();
-		
+
 		Notification notification = new Notification(user, time, message);
-		
+
 		if (toEmail) {
 			emailImpl.notificationEmailFunction(notification.getMessage(), user.getEmail());
 		}
-		
+
 		notificationRepository.save(notification);
-		
+
 	}
 
 }

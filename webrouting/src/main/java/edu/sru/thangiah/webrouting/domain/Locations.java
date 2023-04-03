@@ -24,51 +24,51 @@ import org.springframework.lang.NonNull;
 @Entity
 @Table(name="locations")
 public class Locations {
-	
+
 	@Id
 	@GenericGenerator(name="generate" , strategy="increment")
 	@GeneratedValue(generator="generate")
-    private long id;
-	
+	private long id;
+
 	@NonNull
 	@Column(name="name", nullable = false, columnDefinition="varchar(32)")
 	private String name;
-	
+
 	@NonNull
 	@Column(name="street_address1", nullable = false, columnDefinition="varchar(128)")
 	private String streetAddress1;
-	
+
 	@Column(name="street_address2", nullable= true, columnDefinition="varchar(64) default NULL")
 	private String streetAddress2;
-	
+
 	@NonNull
 	@Column(name="city", nullable = false, columnDefinition="varchar(64)")
 	private String city;
-	
+
 	@NonNull
 	@Column(name="state", nullable = false, columnDefinition="varchar(64)")
 	private String state;
-	
+
 	@NonNull
 	@Column(name="zip", nullable = false, columnDefinition="varchar(12)")
 	private String zip;
-	
+
 	@NonNull
 	@Column(name="latitude", nullable = false, columnDefinition="varchar(12)")
 	private String latitude;
-	
+
 	@NonNull
 	@Column(name="longitude", nullable = false, columnDefinition="varchar(12)")
 	private String longitude;
-	
+
 	@ManyToOne
 	@JoinColumn(name = "carrier_id")
 	private Carriers carrier;
-	
+
 	@NonNull
 	@Column(name="location_type", nullable = false, columnDefinition="varchar(64)")
 	private String locationType;
-	
+
 	@OneToMany(mappedBy = "location")
 	private List<Vehicles> vehicles = new ArrayList<>();
 
@@ -215,7 +215,7 @@ public class Locations {
 	public void setLongitude(String longitude) {
 		this.longitude = longitude.trim();
 	}
-	
+
 	/**
 	 * Gets the Location Carrier
 	 * @return carrier
@@ -239,7 +239,7 @@ public class Locations {
 	public String getLocationType() {
 		return locationType;
 	}
-	
+
 	/**
 	 * Sets the Location Type
 	 * @param locationType Location type of the location
@@ -247,7 +247,7 @@ public class Locations {
 	public void setLocationType(String locationType) {
 		this.locationType = locationType.trim();
 	}
-	
+
 	/**
 	 * Gets the Vehicles List
 	 * @return vehicles

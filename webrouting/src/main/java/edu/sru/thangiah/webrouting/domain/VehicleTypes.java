@@ -24,72 +24,72 @@ import org.springframework.lang.NonNull;
 @Entity
 @Table(name="vehicle_types")
 public class VehicleTypes {
-	
+
 	@Id
 	@GenericGenerator(name="generate" , strategy="increment")
 	@GeneratedValue(generator="generate")
-    private long id;
-	
+	private long id;
+
 	@NonNull
 	@Column(name="type", nullable = false,columnDefinition="varchar(32)")
 	private String type;
-	
+
 	@NonNull
 	@Column(name="sub_type", nullable = false,columnDefinition="varchar(32)")
 	private String subType;
-	
+
 	@Column(name="description", nullable= true, columnDefinition="varchar(64) default NULL")
 	private String description;
-	
+
 	@NonNull
 	@Column(name="make",nullable = false, columnDefinition="varchar(32)")
 	private String make;
-	
+
 	@NonNull
 	@Column(name="model",nullable = false, columnDefinition="varchar(32)")
 	private String model;
-	
+
 	@NonNull
 	@Column(name="minimum_weight",nullable = false, columnDefinition="varchar(16)")
 	private String minimumWeight;
-	
+
 	@NonNull
 	@Column(name="maximum_weight", nullable = false,columnDefinition="varchar(16)")
 	private String maximumWeight;
-	
+
 	@Column(name="capacity", nullable= true, columnDefinition="varchar(16) default NULL")
 	private String capacity;
-	
+
 	@NonNull
 	@Column(name="maximum_range", nullable = false, columnDefinition="varchar(16)")
 	private String maximumRange;
-	
+
 	@Column(name="restrictions", nullable= true, columnDefinition="varchar(128) default NULL")
 	private String restrictions;
-	
+
 	@NonNull
 	@Column(name="height", nullable = false, columnDefinition="varchar(16)")
 	private String height;
-	
+
 	@NonNull
 	@Column(name="empty_weight", nullable = false, columnDefinition="varchar(16)")
 	private String emptyWeight;
-	
+
 	@NonNull
 	@Column(name="length", columnDefinition="varchar(16)")
 	private String length;
-	
+
 	@NonNull
 	@Column(name="minimum_cubic_weight", nullable= false, columnDefinition="varchar(16)")
 	private String minimumCubicWeight;
-	
+
 	@NonNull
 	@Column(name="maximum_cubic_weight", nullable= false, columnDefinition="varchar(16)")
 	private String maximumCubicWeight;
-	
+
 	@OneToMany(mappedBy = "vehicleType")
 	private List<Vehicles> vehicles = new ArrayList<>();
-	
+
 	@ManyToOne
 	@JoinColumn(name = "carrier_id")
 	private Carriers carrier;
@@ -350,7 +350,7 @@ public class VehicleTypes {
 	public void setMaximumCubicWeight(String maximumCubicWeight) {
 		this.maximumCubicWeight = maximumCubicWeight;
 	}
-	
+
 	/**
 	 * Gets the Vehicle Type Vehicles
 	 * @return vehicles
@@ -388,5 +388,5 @@ public class VehicleTypes {
 	public String toString() {
 		return this.getMake() + " " + this.getModel() + " - " + this.getType();
 	}
-	
+
 }

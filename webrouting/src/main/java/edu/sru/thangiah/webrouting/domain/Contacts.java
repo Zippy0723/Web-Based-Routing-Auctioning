@@ -1,4 +1,4 @@
-	package edu.sru.thangiah.webrouting.domain;
+package edu.sru.thangiah.webrouting.domain;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,60 +25,60 @@ import org.springframework.lang.NonNull;
 @Entity
 @Table(name="contacts")
 public class Contacts {
-	
+
 	@Id
 	@GenericGenerator(name="generate" , strategy="increment")
 	@GeneratedValue(generator="generate")
-    private long id;
-	
+	private long id;
+
 	@NonNull
 	@Column(name="first_name", nullable= false, columnDefinition="varchar(32)")
 	private String firstName;
-	
+
 	@NonNull
 	@Column(name="last_name", nullable= false, columnDefinition="varchar(32)")
 	private String lastName;
-	
+
 	@Column(name="middle_initial", nullable= true, columnDefinition="varchar(1) default NULL")
 	private String middleInitial;
-	
+
 	@NonNull
 	@Column(name="email_address", nullable= false, columnDefinition="varchar(64)")
 	private String emailAddress;
-	
+
 	@NonNull
 	@Column(name="street_address1", nullable= false, columnDefinition="varchar(128)")
 	private String streetAddress1;
-	
+
 	@Column(name="street_address2", nullable= true, columnDefinition="varchar(64) default NULL")
 	private String streetAddress2;
-	
+
 	@NonNull
 	@Column(name="city", nullable= false, columnDefinition="varchar(64)")
 	private String city;
-	
+
 	@NonNull
 	@Column(name="state", nullable= false, columnDefinition="varchar(64)")
 	private String state;
-	
+
 	@NonNull
 	@Column(name="zip", nullable= false, columnDefinition="varchar(12)")
 	private String zip;
-	
+
 	@NonNull
 	@Column(name="primary_phone", nullable= false, columnDefinition="varchar(64)")
 	private String primaryPhone;
-	
+
 	@Column(name="work_phone", nullable= true, columnDefinition="varchar(64) default NULL")
 	private String workPhone;
-	
+
 	@ManyToOne
 	@JoinColumn(name = "carrier_id")
 	private Carriers carrier;
-	
+
 	@OneToMany(mappedBy = "contact")
 	private List<Driver> drivers = new ArrayList<>();
-	
+
 	@OneToMany(mappedBy = "contact")
 	private List<Technicians> technicians = new ArrayList<>();
 

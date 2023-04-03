@@ -8,9 +8,9 @@ package edu.sru.thangiah.webrouting.services;
  */
 
 public interface SecurityService {
-	
+
 	boolean isAuthenticated();
-	
+
 
 
 	/**

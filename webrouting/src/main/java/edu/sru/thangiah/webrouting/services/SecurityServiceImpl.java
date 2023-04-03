@@ -22,52 +22,52 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class SecurityServiceImpl implements SecurityService {
-	
+
 	@Autowired
-    private AuthenticationManager authenticationManager;
+	private AuthenticationManager authenticationManager;
 
-    @Autowired
-    private UserDetailsService userDetailsService;
+	@Autowired
+	private UserDetailsService userDetailsService;
 
-    private static final Logger Logger = LoggerFactory.getLogger(SecurityServiceImpl.class);
+	private static final Logger Logger = LoggerFactory.getLogger(SecurityServiceImpl.class);
 
-    /**
-     * Checks if user is authenticated using the Spring Authentication
-     * @return boolean - true if user is authenticated | false if user is not authenticated
-     */
-    public boolean isAuthenticated() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication == null || AnonymousAuthenticationToken.class.
-            isAssignableFrom(authentication.getClass())) {
-            return false;
-        }
-        return authentication.isAuthenticated();
-    }
+	/**
+	 * Checks if user is authenticated using the Spring Authentication
+	 * @return boolean - true if user is authenticated | false if user is not authenticated
+	 */
+	public boolean isAuthenticated() {
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		if (authentication == null || AnonymousAuthenticationToken.class.
+				isAssignableFrom(authentication.getClass())) {
+			return false;
+		}
+		return authentication.isAuthenticated();
+	}
 
-    /**
-     * Automatically logs the user in with the username and password string
-     * @param username Username of the user
-     * @param password Password of the user
-     */
-    
-    public void autoLogin(String username, String password) {
-        UserDetails userDetails = userDetailsService.loadUserByUsername(username);
-        UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(userDetails, password, userDetails.getAuthorities());
-        System.out.println("Token Created");
-        
-        authenticationManager.authenticate(usernamePasswordAuthenticationToken);
-        
-        System.out.println(isAuthenticated());
-        Logger.info("{} || attempted to login.", username);
+	/**
+	 * Automatically logs the user in with the username and password string
+	 * @param username Username of the user
+	 * @param password Password of the user
+	 */
 
-        if (usernamePasswordAuthenticationToken.isAuthenticated()) {
-            SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
-            System.out.println("Auto Login Successful");
-            Logger.info("{} || logged in successfully.", username);
-        }
-    }
-    
+	public void autoLogin(String username, String password) {
+		UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+		UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(userDetails, password, userDetails.getAuthorities());
+		System.out.println("Token Created");
 
-	
-	
+		authenticationManager.authenticate(usernamePasswordAuthenticationToken);
+
+		System.out.println(isAuthenticated());
+		Logger.info("{} || attempted to login.", username);
+
+		if (usernamePasswordAuthenticationToken.isAuthenticated()) {
+			SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
+			System.out.println("Auto Login Successful");
+			Logger.info("{} || logged in successfully.", username);
+		}
+	}
+
+
+
+
 }

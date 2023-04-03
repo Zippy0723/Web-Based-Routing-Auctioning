@@ -32,82 +32,82 @@ public class Shipments {
 	@GenericGenerator(name="generate" , strategy="increment")
 	@GeneratedValue(generator="generate")
 	private Long id;
-	
+
 	@Column(name="client", nullable= false, columnDefinition="varchar(64)")
 	private String client;
-	
+
 	@ManyToOne
 	@JoinColumn(name = "carrier_id")
 	private Carriers carrier;
-	
+
 	@Column(name="scac", nullable= false, columnDefinition="varchar(4)")
 	private String scac;
-	
+
 	@Column(name="client_mode", nullable= false, columnDefinition="varchar(3)")
 	private String clientMode;
-	
+
 	@Column(name="ship_date", nullable= false, columnDefinition="varchar(12)")
 	private String shipDate;
-	
+
 	@Column(name="freightbill_number", nullable= false, columnDefinition="varchar(32)")
 	private String freightbillNumber;
-	
+
 	@Column(name="paid_amount", nullable= false, columnDefinition="varchar(16)")
 	private String paidAmount;
-	
+
 	@Column(name="full_freight_terms", nullable= false, columnDefinition="varchar(24)")
 	private String fullFreightTerms;
-	
+
 	@Column(name="commodity_class", nullable= false, columnDefinition="varchar(12)")
 	private String commodityClass;
-	
+
 	@Column(name="commodity_pieces", nullable= false, columnDefinition="varchar(64)")
 	private String commodityPieces;
-	
+
 	@Column(name="commodity_paid_weight", nullable= false, columnDefinition="varchar(16)")
 	private String commodityPaidWeight;
-	
+
 	@Column(name="shipper_city", nullable= false, columnDefinition="varchar(64)")
 	private String shipperCity;
-	
+
 	@Column(name="shipper_state", nullable= false, columnDefinition="varchar(64)")
 	private String shipperState;
-	
+
 	@Column(name="shipper_zip", nullable=false, columnDefinition="varchar(12)")
 	private String shipperZip;
-	
+
 	@Column(name="shipper_latitude", nullable= true, columnDefinition="varchar(12) default NULL")
 	private String shipperLatitude;
-	
+
 	@Column(name="shipper_longitude", nullable= true, columnDefinition="varchar(12) default NULL")
 	private String shipperLongitude;
-	
+
 	@Column(name="consignee_city", nullable= false, columnDefinition="varchar(64)")
 	private String consigneeCity;
-	
+
 	@Column(name="consignee_state", nullable=false, columnDefinition= "varchar(64)")
 	private String consigneeState;
-	
+
 	@Column(name="consignee_zip", nullable=false, columnDefinition="varchar(12)")
 	private String consigneeZip;
-	
+
 	@Column(name="consignee_latitude", nullable= true, columnDefinition="varchar(12) default NULL")
 	private String consigneeLatitude;
-	
+
 	@Column(name="consignee_longitude", nullable= true, columnDefinition="varchar(12) default NULL")
 	private String consigneeLongitude;
-	
+
 	@ManyToOne
 	@JoinColumn(name = "vehicle_id")
 	private Vehicles vehicle;
-	
+
 	@ManyToOne
 	@JoinColumn(name = "user_id")
 	private User user;
-	
+
 	@OneToMany(mappedBy = "shipment")
 	private List<Bids> bids = new ArrayList<>();
-	
+
 	/**
 	 * Gets the Shipment ID
 	 * @return id
@@ -507,17 +507,17 @@ public class Shipments {
 	public void setBids(List<Bids> bids) {
 		this.bids = bids;
 	}
-	
+
 	public String toString() {
 		return shipperCity + ", " + shipperState + " to " + consigneeCity + ", " + consigneeState + " created by " + user.getUsername();
 	}
-	
+
 	public Bids getLowestBid(){
 		Bids winningBid = null;
 		Double lowestBidValue = Double.POSITIVE_INFINITY;
 		Double bidValue;
 		List<Bids> bids = this.getBids();
-		
+
 		for (Bids b : bids) {
 			bidValue = Double.parseDouble(b.getPrice());
 			if(bidValue < lowestBidValue) {
@@ -525,17 +525,17 @@ public class Shipments {
 				winningBid = b;
 			}
 		}
-		
+
 		return winningBid;
-		
+
 	}
-	
+
 	public Double getLowestBidValue(){
 		Bids winningBid = null;
 		Double lowestBidValue = Double.POSITIVE_INFINITY;
 		Double bidValue;
 		List<Bids> bids = this.getBids();
-		
+
 		for (Bids b : bids) {
 			bidValue = Double.parseDouble(b.getPrice());
 			if(bidValue < lowestBidValue) {
@@ -543,12 +543,12 @@ public class Shipments {
 				winningBid = b;
 			}
 		}
-		
+
 		if (lowestBidValue.equals(Double.POSITIVE_INFINITY)) {
 			lowestBidValue = (double) 0;
 		}
-		
+
 		return lowestBidValue;
-		
+
 	}
 }

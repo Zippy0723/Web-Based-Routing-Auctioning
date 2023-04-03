@@ -28,49 +28,49 @@ public class Carriers {
 	@GenericGenerator(name="generate" , strategy="increment")
 	@GeneratedValue(generator="generate")
 	private Long id;
-	
+
 	@Column(name="carrier_name", nullable= true, columnDefinition="varchar(128) default NULL")
 	private String carrierName;
-	
+
 	@Column(name="scac", nullable= true, columnDefinition="varchar(4) default NULL")
 	private String scac;
-	
+
 	@Column(name="ltl", nullable= true, columnDefinition="bit(1) default NULL")
 	private boolean ltl;
-	
+
 	@Column(name="ftl", nullable= true, columnDefinition="bit(1) default NULL")
 	private boolean ftl;
-	
+
 	@Column(name="pallets", nullable= true, columnDefinition="varchar(32) default NULL")
 	private String pallets;
-	
+
 	@Column(name="weight", nullable= true, columnDefinition="varchar(32) default NULL")
 	private String weight;
-	
+
 	@OneToMany(mappedBy = "carrier")
 	private List<Contacts> contacts = new ArrayList<>();
-	
+
 	@OneToMany(mappedBy = "carrier")
 	private List<Shipments> shipments = new ArrayList<>();
-	
+
 	@OneToMany(mappedBy = "carrier")
 	private List<Bids> bids = new ArrayList<>();
-	
+
 	@OneToMany(mappedBy = "carrier")
 	private List<Locations> locations = new ArrayList<>();
-	
+
 	@OneToMany(mappedBy = "carrier")
 	private List<Vehicles> vehicles = new ArrayList<>();
-	
+
 	@OneToMany(mappedBy = "carrier")
 	private List<Driver> drivers = new ArrayList<>();
-	
+
 	@OneToMany(mappedBy = "carrier")
 	private List<MaintenanceOrders> orders = new ArrayList<>();
-	
+
 	@OneToMany(mappedBy = "carrier")
 	private List<VehicleTypes> vehicleTypes = new ArrayList<>();
-	
+
 	@OneToMany(mappedBy = "carrier")
 	private List<Technicians> technicians = new ArrayList<>();
 

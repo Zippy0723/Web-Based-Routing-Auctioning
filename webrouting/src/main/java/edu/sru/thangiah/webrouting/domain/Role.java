@@ -21,20 +21,20 @@ import org.hibernate.annotations.GenericGenerator;
 @Entity
 @Table(name="role")
 public class Role {
-	
+
 	@Id
 	@GenericGenerator(name="generate" , strategy="increment")
 	@GeneratedValue(generator="generate")
-    private long id;
-	
+	private long id;
+
 	@Column(name = "name", unique=true, nullable=false, columnDefinition="varchar(24)")
 	private String name;
-	
+
 	@OneToMany(mappedBy = "role")
 	List<User> users = new ArrayList<>();
-	
+
 	public Role() {
-		
+
 	}
 	public Role(String name) {
 		this.name = name;
@@ -71,7 +71,7 @@ public class Role {
 	public void setName(String name) {
 		this.name = name.trim();
 	}
-	
+
 	/**
 	 * Gets the Users List
 	 * @return users
@@ -95,5 +95,5 @@ public class Role {
 	public String toString() {
 		return this.getName();
 	}
-	
+
 }
