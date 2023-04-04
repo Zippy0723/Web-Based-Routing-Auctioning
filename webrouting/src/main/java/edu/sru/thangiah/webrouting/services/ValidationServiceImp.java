@@ -799,10 +799,11 @@ public class ValidationServiceImp {
 		User user = userService.getLoggedInUser();
 		try {
 			for(int i=1; i<worksheet.getPhysicalNumberOfRows(); i++) {
+				
+				
 				List<String> allContacts = new ArrayList<>();
 				Contacts contact = new Contacts();
 				XSSFRow row = worksheet.getRow(i);
-
 
 				if ((row.getCell(0)== null || row.getCell(0).toString().equals("")) || (row.getCell(1)== null || row.getCell(1).toString().equals("")) || (row.getCell(3)== null || row.getCell(3).toString().equals("")) 
 						|| (row.getCell(4)== null || row.getCell(4).toString().equals("")) || (row.getCell(6)== null || row.getCell(6).toString().equals("")) || (row.getCell(7)== null || row.getCell(7).toString().equals(""))
@@ -861,7 +862,7 @@ public class ValidationServiceImp {
 			e.printStackTrace();
 			return null;
 		}
-
+		
 		return result;
 	}
 	public Contacts validateContact(Hashtable<String, String> hashtable, HttpSession session) {

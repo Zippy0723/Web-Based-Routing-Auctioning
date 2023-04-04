@@ -371,17 +371,36 @@ public class ExcelController {
 		model.addAttribute("redirectLocation",redirectLocation);
 
 		try {
+			
+			if (!excelData.getOriginalFilename().endsWith(".xls") && !excelData.getOriginalFilename().endsWith(".xlsx")) {
+				Logger.error("{} || attempted to upload Shipements but failed.",user.getUsername());
+				model.addAttribute("message", "Incorrect file type.");
+				return "/excel/upload-shipments"; 
+			}
+			
+			if(excelData.getSize() > 10000000) {
+				Logger.error("{} || attempted to upload Shipments but failed.",user.getUsername());
+				model.addAttribute("message", "File is too large, must be under 10 MB.");
+				return "/excel/upload-shipments";
+			}
+			
 			workbook = new XSSFWorkbook(excelData.getInputStream());
 			XSSFSheet worksheet = workbook.getSheetAt(0);
 
 			List<Shipments> shipments = validationServiceImp.validateShipmentSheet(worksheet, session);
 
 			if (shipments == null) {
-				session.setAttribute("message", "Something went wrong! Please check your excel file!");
-				Logger.error("{} || attempted to save shipments but failed.",user.getUsername());
+				Logger.error("{} || attempted to upload shipments but failed.",user.getUsername());
 				model.addAttribute("message", session.getAttribute("message"));
 				return "/excel/upload-shipments";
 			}
+			
+			if (shipments.size() == 0) {
+				Logger.error("{} || attempted to upload Shipments but failed.",user.getUsername());
+				model.addAttribute("message", "This excel file is incorrectly formatted.");
+				return "/excel/upload-shipments"; 
+			}
+			
 			for(Shipments s: shipments) {
 				shipmentsRepository.save(s);
 				Logger.info("{} || saved shipment with ID {}.",user.getUsername(),s.getId());
@@ -389,8 +408,9 @@ public class ExcelController {
 
 		}
 		catch(Exception e ) {
-			session.setAttribute("message", "Something went wrong! Please check your excel file!");
-			e.printStackTrace();
+			Logger.error("{} || attempted to upload shipments but failed.",user.getUsername());
+			model.addAttribute("message", "Incorrect file.");
+			return "/excel/upload-shipments";
 		}
 		return "redirect:" + redirectLocation;	
 	}
@@ -470,16 +490,36 @@ public class ExcelController {
 		model = NotificationController.loadNotificationsIntoModel(user, model);
 
 		try {
+			
+			if (!excelData.getOriginalFilename().endsWith(".xls") && !excelData.getOriginalFilename().endsWith(".xlsx")) {
+				Logger.error("{} || attempted to upload Vehicles Types but failed.",user.getUsername());
+				model.addAttribute("message", "Incorrect file type.");
+				return "/excel/upload-vehicletypes"; 
+			}
+			
+			if(excelData.getSize() > 10000000) {
+				Logger.error("{} || attempted to upload Vehicle Types but failed.",user.getUsername());
+				model.addAttribute("message", "File is too large, must be under 10 MB.");
+				return "/excel/upload-vehicletypes";
+			}
+			
 			workbook = new XSSFWorkbook(excelData.getInputStream());
 			XSSFSheet vehicleTypesSheet = workbook.getSheetAt(0);
 
 			List<VehicleTypes> vehicleTypes = validationServiceImp.validateVehicleTypesSheet(vehicleTypesSheet, session);
 
 			if (vehicleTypes == null) {
-				Logger.error("{} || attempted to save Vehicle Type but failed.",user.getUsername());
+				Logger.error("{} || attempted to upload Vehicle Types but failed.",user.getUsername());
 				model.addAttribute("message", session.getAttribute("message"));
 				return "/excel/upload-vehicletypes"; 
 			}
+			
+			if (vehicleTypes.size() == 0) {
+				Logger.error("{} || attempted to upload Vehicle Types but failed.",user.getUsername());
+				model.addAttribute("message", "This excel file is incorrectly formatted.");
+				return "/excel/upload-vehicletypes"; 
+			}
+			
 			for(VehicleTypes vehicleType: vehicleTypes) {
 				vehicleTypesRepository.save(vehicleType);
 				Logger.info("{} || saved Vehicle Type with ID {}.",user.getUsername(),vehicleType.getId());
@@ -487,8 +527,9 @@ public class ExcelController {
 
 		}
 		catch(Exception e ) {
-			e.printStackTrace();
-			return "redirect:" + redirectLocation;
+			Logger.error("{} || attempted to upload Vehicle Types but failed.",user.getUsername());
+			model.addAttribute("message", "Incorrect file.");
+			return "/excel/upload-vehicletypes"; 
 		}
 		return "redirect:" + redirectLocation;
 	}
@@ -509,16 +550,36 @@ public class ExcelController {
 		model = NotificationController.loadNotificationsIntoModel(user, model);
 
 		try {
+			
+			if (!excelData.getOriginalFilename().endsWith(".xls") && !excelData.getOriginalFilename().endsWith(".xlsx")) {
+				Logger.error("{} || attempted to upload Locations but failed.",user.getUsername());
+				model.addAttribute("message", "Incorrect file type.");
+				return "/excel/upload-locations"; 
+			}
+			
+			if(excelData.getSize() > 10000000) {
+				Logger.error("{} || attempted to upload Locations but failed.",user.getUsername());
+				model.addAttribute("message", "File is too large, must be under 10 MB.");
+				return "/excel/upload-locations"; 
+			}
+			
 			workbook = new XSSFWorkbook(excelData.getInputStream());
 			XSSFSheet locationsSheet = workbook.getSheetAt(0);
 
 			List<Locations> locations = validationServiceImp.validateLocationsSheet(locationsSheet, session);
 
 			if (locations == null) {
-				Logger.error("{} || attempted to save Locations but failed.",user.getUsername());
+				Logger.error("{} || attempted to upload Locations but failed.",user.getUsername());
 				model.addAttribute("message", session.getAttribute("message"));
 				return "/excel/upload-locations"; 
 			}
+			
+			if (locations.size() == 0) {
+				Logger.error("{} || attempted to upload Locations but failed.",user.getUsername());
+				model.addAttribute("message", "This excel file is incorrectly formatted.");
+				return "/excel/upload-locations"; 
+			}
+			
 			for(Locations location: locations) {
 				locationsRepository.save(location);
 				Logger.info("{} || saved Location with ID {}.",user.getUsername(),location.getId());
@@ -526,8 +587,9 @@ public class ExcelController {
 
 		}
 		catch(Exception e ) {
-			e.printStackTrace();
-			return "redirect:" + redirectLocation;
+			Logger.error("{} || attempted to upload Locations but failed.",user.getUsername());
+			model.addAttribute("message", "Incorrect file.");
+			return "/excel/upload-locations"; 
 		}
 		return "redirect:" + redirectLocation;
 	}
@@ -538,7 +600,7 @@ public class ExcelController {
 	 * @param model is used to add error message and notifications to the page
 	 * @return
 	 */
-
+	
 	@PostMapping("/excel-upload-contacts")
 	public String loadContactsFromExcel(@RequestParam("file") MultipartFile excelData, HttpSession session, Model model){
 		User user = userService.getLoggedInUser();
@@ -546,18 +608,37 @@ public class ExcelController {
 		model.addAttribute("redirectLocation",redirectLocation);
 		XSSFWorkbook workbook;
 		model = NotificationController.loadNotificationsIntoModel(user, model);
-
+		
 		try {
+			if (!excelData.getOriginalFilename().endsWith(".xls") && !excelData.getOriginalFilename().endsWith(".xlsx")) {
+				Logger.error("{} || attempted to upload Contacts but failed.",user.getUsername());
+				model.addAttribute("message", "Incorrect file type.");
+				return "/excel/upload-contacts"; 
+			}
+			
+			if(excelData.getSize() > 10000000) {
+				Logger.error("{} || attempted to upload Contacts but failed.",user.getUsername());
+				model.addAttribute("message", "File is too large, must be under 10 MB.");
+				return "/excel/upload-contacts"; 
+			}
+			
 			workbook = new XSSFWorkbook(excelData.getInputStream());
 			XSSFSheet contactsSheet = workbook.getSheetAt(0);
 
 			List<Contacts> contacts = validationServiceImp.validateContactsSheet(contactsSheet, session);
 
 			if (contacts == null) {
-				Logger.error("{} || attempted to save Contacts but failed.",user.getUsername());
+				Logger.error("{} || attempted to upload Contacts but failed.",user.getUsername());
 				model.addAttribute("message", session.getAttribute("message"));
-				return "/excel/upload-contacts"; 
+				return "/excel/upload-contacts";
 			}
+			
+			if (contacts.size() == 0) {
+				Logger.error("{} || attempted to upload Contacts but failed.",user.getUsername());
+				model.addAttribute("message", "This excel file is incorrectly formatted.");
+				return "/excel/upload-contacts";
+			}
+			
 			for(Contacts contact: contacts) {
 				contactsRepository.save(contact);
 				Logger.info("{} || saved Contact with ID {}.",user.getUsername(),contact.getId());
@@ -565,12 +646,13 @@ public class ExcelController {
 
 		}
 		catch(Exception e ) {
-			e.printStackTrace();
-			return "redirect:" + redirectLocation;
+			Logger.error("{} || attempted to upload Contacts but failed.",user.getUsername());
+			model.addAttribute("message", "Incorrect file.");
+			return "/excel/upload-contacts"; 
 		}
 		return "redirect:" + redirectLocation;
 	}
-
+	
 	/**
 	 * @param excelData is the excel data
 	 * @param session is the HTTP session used to set redirectLocation and error message
@@ -588,16 +670,36 @@ public class ExcelController {
 		model = NotificationController.loadNotificationsIntoModel(user, model);
 
 		try {
+			
+			if (!excelData.getOriginalFilename().endsWith(".xls") && !excelData.getOriginalFilename().endsWith(".xlsx")) {
+				Logger.error("{} || attempted to upload Technicians but failed.",user.getUsername());
+				model.addAttribute("message", "Incorrect file type.");
+				return "/excel/upload-technicians"; 
+			}
+			
+			if(excelData.getSize() > 10000000) {
+				Logger.error("{} || attempted to upload Technicians but failed.",user.getUsername());
+				model.addAttribute("message", "File is too large, must be under 10 MB.");
+				return "/excel/upload-technicians";
+			}
+			
 			workbook = new XSSFWorkbook(excelData.getInputStream());
 			XSSFSheet techniciansSheet = workbook.getSheetAt(0);
 
 			List<Technicians> technicians = validationServiceImp.validateTechniciansSheet(techniciansSheet,session);
 
 			if (technicians == null) {
-				Logger.error("{} || attempted to save Technician but failed.",user.getUsername());
+				Logger.error("{} || attempted to upload Technicians but failed.",user.getUsername());
 				model.addAttribute("message", session.getAttribute("message"));
 				return "/excel/upload-technicians"; 
 			}
+			
+			if (technicians.size() == 0) {
+				Logger.error("{} || attempted to upload Technicians but failed.",user.getUsername());
+				model.addAttribute("message", "This excel file is incorrectly formatted.");
+				return "/excel/upload-technicians"; 
+			}
+			
 			for(Technicians technician: technicians) {
 				techniciansRepository.save(technician);
 				Logger.info("{} || saved Technician with ID {}.",user.getUsername(),technician.getId());
@@ -605,8 +707,9 @@ public class ExcelController {
 
 		}
 		catch(Exception e ) {
-			e.printStackTrace();
-			return "redirect:" + redirectLocation;
+			Logger.error("{} || attempted to upload Technicians but failed.",user.getUsername());
+			model.addAttribute("message", "Incorrect file.");
+			return "/excel/upload-technicians"; 
 		}
 		return "redirect:" + redirectLocation;
 	}
@@ -627,16 +730,36 @@ public class ExcelController {
 		model = NotificationController.loadNotificationsIntoModel(user, model);
 
 		try {
+			
+			if (!excelData.getOriginalFilename().endsWith(".xls") && !excelData.getOriginalFilename().endsWith(".xlsx")) {
+				Logger.error("{} || attempted to upload Vehicles but failed.",user.getUsername());
+				model.addAttribute("message", "Incorrect file type.");
+				return "/excel/upload-vehicles"; 
+			}
+			
+			if(excelData.getSize() > 10000000) {
+				Logger.error("{} || attempted to upload Vehicles but failed.",user.getUsername());
+				model.addAttribute("message", "File is too large, must be under 10 MB.");
+				return "/excel/upload-vehicles"; 
+			}
+			
 			workbook = new XSSFWorkbook(excelData.getInputStream());
 			XSSFSheet vehicleSheet = workbook.getSheetAt(0);
 
 			List<Vehicles> vehicles = validationServiceImp.validateVehiclesSheet(vehicleSheet, session);
 
 			if (vehicles == null) {
-				Logger.error("{} || attempted to save Vehicle but failed.",user.getUsername());
+				Logger.error("{} || attempted to upload Vehicles but failed.",user.getUsername());
 				model.addAttribute("message", session.getAttribute("message"));
 				return "/excel/upload-vehicles"; 
 			}
+			
+			if (vehicles.size() == 0) {
+				Logger.error("{} || attempted to upload Vehicles but failed.",user.getUsername());
+				model.addAttribute("message", "This excel file is incorrectly formatted.");
+				return "/excel/upload-vehicles";  
+			}
+			
 			for(Vehicles vehicle: vehicles) {
 				vehiclesRepository.save(vehicle);
 				Logger.info("{} || saved Vehicle with ID {}.",user.getUsername(),vehicle.getId());
@@ -644,8 +767,9 @@ public class ExcelController {
 
 		}
 		catch(Exception e ) {
-			e.printStackTrace();
-			return "redirect:" + redirectLocation;
+			Logger.error("{} || attempted to upload Vehicles but failed.",user.getUsername());
+			model.addAttribute("message", "Incorect file.");
+			return "/excel/upload-vehicles"; 
 		}
 		return "redirect:" + redirectLocation;
 	}
@@ -666,16 +790,36 @@ public class ExcelController {
 		model = NotificationController.loadNotificationsIntoModel(user, model);
 
 		try {
+			
+			if (!excelData.getOriginalFilename().endsWith(".xls") && !excelData.getOriginalFilename().endsWith(".xlsx")) {
+				Logger.error("{} || attempted to upload Drivers but failed.",user.getUsername());
+				model.addAttribute("message", "Incorrect file type.");
+				return "/excel/upload-drivers";
+			}
+			
+			if(excelData.getSize() > 10000000) {
+				Logger.error("{} || attempted to upload Drivers but failed.",user.getUsername());
+				model.addAttribute("message", "File is too large, must be under 10 MB.");
+				return "/excel/upload-drivers"; 
+			}
+			
 			workbook = new XSSFWorkbook(excelData.getInputStream());
 			XSSFSheet driverSheet = workbook.getSheetAt(0);
 
 			List<Driver> drivers = validationServiceImp.validateDriverSheet(driverSheet, session);
 
 			if (drivers == null) {
-				Logger.error("{} || attempted to save Driver but failed.",user.getUsername());
+				Logger.error("{} || attempted to upload Drivers but failed.",user.getUsername());
 				model.addAttribute("message", session.getAttribute("message"));
 				return "/excel/upload-drivers"; 
 			}
+			
+			if (drivers.size() == 0) {
+				Logger.error("{} || attempted to upload Drivers but failed.",user.getUsername());
+				model.addAttribute("message", "This excel file is incorrectly formatted.");
+				return "/excel/upload-drivers";  
+			}
+			
 			for(Driver driver: drivers) {
 				driverRepository.save(driver);
 				Logger.info("{} || saved Driver with ID {}.",user.getUsername(),driver.getId());
@@ -683,8 +827,9 @@ public class ExcelController {
 
 		}
 		catch(Exception e ) {
-			e.printStackTrace();
-			return "redirect:" + redirectLocation;
+			Logger.error("{} || attempted to upload Drivers but failed.",user.getUsername());
+			model.addAttribute("message", "Incorrect file.");
+			return "/excel/upload-drivers";
 		}
 		return "redirect:" + redirectLocation;
 	}
@@ -705,16 +850,36 @@ public class ExcelController {
 		model = NotificationController.loadNotificationsIntoModel(user, model);
 
 		try {
+			
+			if (!excelData.getOriginalFilename().endsWith(".xls") && !excelData.getOriginalFilename().endsWith(".xlsx")) {
+				Logger.error("{} || attempted to upload Orders but failed.",user.getUsername());
+				model.addAttribute("message", "Incorrect file type.");
+				return "/excel/upload-maintenanceorders";
+			}
+			
+			if(excelData.getSize() > 10000000) {
+				Logger.error("{} || attempted to upload Orders but failed.",user.getUsername());
+				model.addAttribute("message", "File is too large, must be under 10 MB.");
+				return "/excel/upload-maintenanceorders"; 
+			}
+			
 			workbook = new XSSFWorkbook(excelData.getInputStream());
 			XSSFSheet orderSheet = workbook.getSheetAt(0);
 
 			List<MaintenanceOrders> orders = validationServiceImp.validateMaintenanceOrdersSheet(orderSheet, session);
 
 			if (orders == null) {
-				Logger.error("{} || attempted to save Maintenance Orders but failed.",user.getUsername());
+				Logger.error("{} || attempted to upload Maintenance Orders but failed.",user.getUsername());
 				model.addAttribute("message", session.getAttribute("message"));
 				return "/excel/upload-maintenanceorders"; 
 			}
+			
+			if (orders.size() == 0) {
+				Logger.error("{} || attempted to upload Orders but failed.",user.getUsername());
+				model.addAttribute("message", "This excel file is incorrectly formatted.");
+				return "/excel/upload-maintenanceorders";  
+			}
+			
 			for(MaintenanceOrders order: orders) {
 				maintenanceOrdersRepository.save(order);
 				Logger.info("{} || saved Maintenance Order with ID {}.",user.getUsername(),order.getId());
@@ -722,8 +887,9 @@ public class ExcelController {
 
 		}
 		catch(Exception e ) {
-			e.printStackTrace();
-			return "redirect:" + redirectLocation;
+			Logger.error("{} || attempted to upload Maintenance Orders but failed.",user.getUsername());
+			model.addAttribute("message", "Incorrect file.");
+			return "/excel/upload-maintenanceorders"; 
 		}
 		return "redirect:" + redirectLocation;
 	}
