@@ -34,6 +34,7 @@
 			</div>
 			<span type="hidden" th:text="${message}" class=errorMessage></span>
             <br>
+            <br>
         	<h2>Upload file</h2>
 	        <br><br>
 	            	*** Warning: Upload time varies with file size; larger files take more time.
@@ -47,7 +48,7 @@
 				<br>
 				<h2> Choose Excel File to Upload</h2>
 				<br>
-				<input required type="file" name="file" />
+				<input required type="file" name="file" accept=".xlsx, .xls"/>
 				<br><br><br><br>
 				<button type="submit" class="buttons6">Upload File</button>
 			<br>
