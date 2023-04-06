@@ -25,6 +25,7 @@ import edu.sru.thangiah.webrouting.repository.TechniciansRepository;
 import edu.sru.thangiah.webrouting.repository.UserRepository;
 import edu.sru.thangiah.webrouting.repository.VehicleTypesRepository;
 import edu.sru.thangiah.webrouting.repository.VehiclesRepository;
+import edu.sru.thangiah.webrouting.services.NotificationService;
 import edu.sru.thangiah.webrouting.services.UserService;
 import edu.sru.thangiah.webrouting.services.ValidationServiceImp;
 import edu.sru.thangiah.webrouting.web.UserValidator;
@@ -39,6 +40,9 @@ public class SimulationController {
 
 	@Autowired
 	private UserValidator userValidator;
+	
+	@Autowired
+	private NotificationService notificationService;
 
 	private CarriersRepository carriersRepository;
 
@@ -105,9 +109,9 @@ public class SimulationController {
 		return "redirect:" + (String) session.getAttribute("redirectLocation");
 	}
 
-	@PostMapping("/auctionsimulation")
+	@PostMapping("/directassignsimulation")
 	public String auctionSimulation(Model model, HttpSession session) {
-		doAuctionSimulation();
+		doDirectAssignSimulation();
 		return "redirect:" + (String) session.getAttribute("redirectLocation");
 	}
 
@@ -119,19 +123,19 @@ public class SimulationController {
 		try {
 			Shipments shipment = makeShipment();
 
-			Thread.sleep(10000); //10 seconds
+			Thread.sleep(5000); //10 seconds
 
 			pushToAuction(shipment);
 
-			Thread.sleep(10000); 
+			Thread.sleep(5000); 
 
 			Bids bid = addBids(shipment);
 
-			Thread.sleep(10000); 
+			Thread.sleep(5000); 
 
 			acceptBid(bid);
 
-			Thread.sleep(10000); 
+			Thread.sleep(5000); 
 
 			bidsRepository.delete(bid);
 			shipmentsRepository.delete(shipment);
@@ -141,22 +145,22 @@ public class SimulationController {
 		}
 	}
 
-	private void doAuctionSimulation() {
+	private void doDirectAssignSimulation() {
 
 		// add some session messages or somehow communicate what is happening to the user
 
 		try {
 			Shipments shipment = makeShipment();
 
-			Thread.sleep(10000); //10 seconds
+			Thread.sleep(5000); //10 seconds
 
 			directAssignShipment(shipment);
 
-			Thread.sleep(10000); 
+			Thread.sleep(5000); 
 
 			acceptAwaitingShipment(shipment);
 
-			Thread.sleep(10000); 
+			Thread.sleep(5000); 
 
 			shipmentsRepository.delete(shipment);
 
@@ -221,6 +225,9 @@ public class SimulationController {
 		bid.setShipment(shipment);
 		bid.setTime("17:56:29");
 		bidsRepository.save(bid);
+		
+		notificationService.addNotification(bid.getShipment().getUser(), 
+				"ALERT: A new bid as been added on your shipment with ID " + bid.getShipment().getId() + " and Client " + bid.getShipment().getClient(), false);
 
 		return bid;
 	}
@@ -235,6 +242,10 @@ public class SimulationController {
 		shipment.setScac(carrier.getScac());
 		shipment.setFullFreightTerms("BID ACCEPTED");
 		shipmentsRepository.save(shipment);
+		
+		User bidUser = CarriersController.getUserFromCarrier(carrier);
+		notificationService.addNotification(bidUser, 
+				"ALERT: You have won the auction on shipment with ID " + shipment.getId() + " with a final bid value of " + bid.getPrice(), false);
 	}
 
 	private void directAssignShipment(Shipments shipment) {
@@ -245,6 +256,11 @@ public class SimulationController {
 		shipment.setScac(carrier.getScac());
 		shipment.setFullFreightTerms("AWAITING ACCEPTANCE");
 		shipmentsRepository.save(shipment);
+		
+		User user = CarriersController.getUserFromCarrier(carrier);
+		notificationService.addNotification(user, "Shipper " + shipment.getUser().getUsername() + " has requested that you pick up a shipment with a value of " + 7000.00 +
+				". You may accept from the 'AWAITING ACCEPTANCE' menu under the shipments.", true);
+
 	}
 
 
@@ -252,6 +268,8 @@ public class SimulationController {
 
 		shipment.setFullFreightTerms("BID ACCEPTED");
 		shipmentsRepository.save(shipment);
+		
+		notificationService.addNotification(shipment.getUser(), "Your request to carrier " + shipment.getCarrier().getCarrierName() + " to take shipment with ID " + shipment.getId() + " was accpeted!", true);
 	}
 
 
