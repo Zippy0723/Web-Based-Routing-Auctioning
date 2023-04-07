@@ -258,8 +258,8 @@ public class BidsController {
 		User bidUser;
 
 		if (!user.getRole().toString().equals("MASTERLIST")) {
-			System.out.println("Error: Non master tried to reset shipment!");
-			Logger.error("{} || (Non-master) tried to reset shipment!", user.getUsername());
+			System.out.println("Error: Non Auctioneer tried to reset shipment!");
+			Logger.error("{} || (Non-Auctioneer) tried to reset shipment!", user.getUsername());
 			return "redirect:" + session.getAttribute("redirectLocation");
 		}
 

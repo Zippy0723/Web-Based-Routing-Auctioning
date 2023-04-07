@@ -35,9 +35,8 @@
 				<div th:switch="${drivers}">
                     <h2 th:case="null">No drivers yet!</h2>
                     <div th:case="*">
-                    <div class="alert alert-info" th:if="${successMessage}">
-    				<span th:text="${successMessage}" style="color: green;"></span>
-					</div>
+                    <span th:text="${successMessage}" class="successMessage"></span>
+    				<br><br>
                         <h2>Drivers</h2>
                         <br>
                         <hr>
