@@ -64,8 +64,8 @@
                                     <td th:text="${carrier.ftl}"></td>
                                     <td th:text="${carrier.pallets}"></td>
                                     <td th:text="${carrier.weight}"></td>                                    
-                                    <td sec:authorize="hasAnyAuthority('CARRIER','MASTERLIST')"><a th:href="@{/viewcarriershipments/{id}(id=${carrier.id})}"><button style='font-size:11px'><i class='fas fa-clipboard-list'></i></button></a></td>
-                                    <td sec:authorize="hasAnyAuthority('CARRIER','MASTERLIST')"><a th:href="@{/viewcarrierbids/{id}(id=${carrier.id})}"><button style='font-size:11px'><i class='fas fa-gavel'></i></button></a></td>
+                                    <td sec:authorize="hasAnyAuthority('CARRIER','MASTERLIST')"><a th:href="@{/viewcarriershipments/{id}(id=${carrier.id})}"><button style='font-size:11px'><i class='fas fa-truck'></i></button></a></td>
+                                    <td sec:authorize="hasAnyAuthority('CARRIER','MASTERLIST')"><a th:href="@{/viewcarrierbids/{id}(id=${carrier.id})}"><button style='font-size:11px'><i class='fas fa-money-bill-wave' style="color: #118C4F;"></i></button></a></td>
                                 	<td sec:authorize="hasAnyAuthority('CARRIER')"><a th:href="@{/editcarrier/{id}(id=${carrier.id})}"><button style='font-size:11px'><i class='far fa-edit'></i></button></a></td>
                                 </tr>
                             </tbody>
