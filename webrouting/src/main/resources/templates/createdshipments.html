@@ -8,7 +8,8 @@
         <link rel="stylesheet" type="text/css" href="/styles/login.css">
         <link rel="stylesheet" type="text/css" href="/styles/menubar.css">
         <link rel="stylesheet" type="text/css" href="/styles/table1.css">
-         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
         <link rel="stylesheet" type="text/css" href="/styles/smoothness/jquery-ui-1.10.2.css" />
         
 	</head>
@@ -84,15 +85,14 @@
                                     <td th:text="${shipment.consigneeState}"></td>
                                     <td><a th:href="@{/viewshipmentbids/{id}(id=${shipment.id})}"><button class="buttons11" role="button">([[${shipment.getBids().size()}]])</button></a></td>
                                     <td><p th:inline="text">[[${shipment.getLowestBidValue()}]]</p></td>
-                                    <td sec:authorize="hasAuthority('CARRIER')"><a th:classappend="${user.auctioningAllowed ? '' : 'disabled-btn'}" th:href="@{/add-bid/{id}(id=${shipment.id})}"><button style='font-size:11px'><i class='fas fa-plus'></i><i class='fas fa-gavel'></i></button></a></td>
+                                    <td sec:authorize="hasAuthority('CARRIER')"><a th:classappend="${user.auctioningAllowed ? '' : 'disabled-btn'}" th:href="@{/add-bid/{id}(id=${shipment.id})}"><button style='font-size:11px'><i class='fas fa-money-bill-wave' style="color: #118C4F;"></i></button></a></td>
                                     <td sec:authorize="hasAnyAuthority('SHIPPER','MASTERLIST')"><a th:href="@{/editshipment/{id}(id=${shipment.id})}"><button style='font-size:11px'><i class='far fa-edit'></i></button></a></td>
                                     <td sec:authorize="hasAnyAuthority('SHIPPER','MASTERLIST')"><a th:href="@{/deleteshipment/{id}(id=${shipment.id})}"><button class="fa fa-times" style="color: red;"></button></a></td>
-                                    <td sec:authorize="hasAuthority('MASTERLIST')"><a th:href="@{/freezeshipment/{id}(id=${shipment.id})}">Freeze</a></td>
-                                    <td sec:authorize="hasAuthority('MASTERLIST')"><a th:href="@{/resetshipmentbids/{id}(id=${shipment.id})}">Reset Bids</a></td>
+                                    <td sec:authorize="hasAuthority('MASTERLIST')"><a th:href="@{/freezeshipment/{id}(id=${shipment.id})}"><button style='font-size:11px'><i class='far fa-snowflake' style='font-size:11px;color:#33e6ff'></i></button></a></td>
+                                    <td sec:authorize="hasAuthority('MASTERLIST')"><a th:href="@{/resetshipmentbids/{id}(id=${shipment.id})}"><button style='font-size:11px'><i class="fa fa-refresh"></i></button></a></td>
                                     <td sec:authorize="hasAuthority('MASTERLIST')"><a th:href="@{/forceendauction/{id}(id=${shipment.id})}">Force End Auction</a></td>
-                           			<td sec:authorize="hasAnyAuthority('SHIPPER','MASTERLIST')"><a th:href="@{/removefromauction/{id}(id=${shipment.id})}">Remove From Auction</a></td>
-                           	
-                                    
+                           			<td sec:authorize="hasAnyAuthority('SHIPPER','MASTERLIST')"><a th:href="@{/removefromauction/{id}(id=${shipment.id})}"><span class='fa-stack fa-2x'style='font-size:11px'><i class='fas fa-gavel fa-stack-1x'></i><i class='fas fa-ban fa-stack-2x'style='color:tomato'></i></span></a></td>
+                          
                                 </tr>
                             </tbody>
                         </table>
