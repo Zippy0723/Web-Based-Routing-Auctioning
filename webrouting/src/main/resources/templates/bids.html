@@ -32,6 +32,7 @@
 				<p><button class="buttons7" th:attr="onclick=|window.location.href='${redirectLocation}'|">Back</button>
 				<br><br>
 				<div th:switch="${bids}">
+				<br>
                     <h2 th:case="null">No bids yet!</h2>
                     <div th:case="*">
                         <h2>Bids</h2>
