@@ -694,8 +694,8 @@ public class ShipmentsController {
 		String redirectLocation = (String) session.getAttribute("redirectLocation");
 
 		if (shipment.getFullFreightTerms().toString().equals("FROZEN") && !user.getRole().toString().equals("MASTERLIST")) {
-			System.out.println("Non-Master user attempted to delete a frozen shipment!");
-			Logger.error("{} ||, (Non-Master) attempted to delete a frozen shipment with ID {}.", user.getUsername(), shipment.getId());//TODO: Replace this with a proper error message(what user would see this error?)
+			System.out.println("Non-Auctioneer user attempted to delete a frozen shipment!");
+			Logger.error("{} ||, (Non-Auctioneer) attempted to delete a frozen shipment with ID {}.", user.getUsername(), shipment.getId());//TODO: Replace this with a proper error message(what user would see this error?)
 			return redirectLocation; 
 		}
 

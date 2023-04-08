@@ -36,9 +36,8 @@
 				<div th:switch="${vehicles}">
                     <h2 th:case="null">No vehicles yet!</h2>
                     <div th:case="*">
-                    <div class="alert alert-info" th:if="${successMessage}">
-    				<span th:text="${successMessage}" style="color: green;"></span>
-					</div>
+                    <span th:text="${successMessage}" class="successMessage"></span>
+    				<br><br>
                         <h2>Vehicles</h2>
                         <br>
                         <hr>

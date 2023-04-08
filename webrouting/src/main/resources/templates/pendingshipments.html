@@ -36,9 +36,8 @@
                 	<br><br>
                     <div th:case="*">
                     <br>
-       	                <div class="alert alert-info" th:if="${successMessage}">
-    					<span th:text="${successMessage}" style="color: green;"></span>
-						</div>
+       	                <span th:text="${successMessage}" class="successMessage"></span>
+    				    <br><br>
                         <h2>Pending Shipments</h2>
                         <br>
                         <hr>

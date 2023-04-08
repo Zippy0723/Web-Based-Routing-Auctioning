@@ -250,7 +250,7 @@ public class PopulateDatabase implements ApplicationRunner{
 		try {
 			statement.executeUpdate("INSERT INTO user " + "VALUES"
 					+ "(1,TRUE,'AdminTry@Gmail.com',1,NULL,NULL,'$2a$10$1czLv.unEEJZMLTIS2sTxe6DL7CuopPOcCCEGmKwak3H4KFfUBVOm','AdminTry',NULL,NULL,1),"
-					+ "(2,TRUE,'Master@gmail.com',1,NULL,NULL,'$2a$10$kijCY6WxZXMfsJ4NcW3SkOqeB6BDiXyR3Pmk7UExr1rJAjVmECF7i','Master',NULL,NULL,4),"
+					+ "(2,TRUE,'Auctioneer@gmail.com',1,NULL,NULL,'$2a$10$kijCY6WxZXMfsJ4NcW3SkOqeB6BDiXyR3Pmk7UExr1rJAjVmECF7i','Auctioneer',NULL,NULL,4),"
 					+ "(3,TRUE,'carrier@gmail.com',1,NULL,NULL,'$2a$10$EVBsfb2HGqaMlI9z443kR.zM.Tn66fT.7nbvsVhDeqAw.fc4HyXOG','Carrier',NULL,1,3),"
 					+ "(4,TRUE,'shipper@gmail.com',1,NULL,NULL,'$2a$10$j4JWTe7EP6vPiptRf1WP1ujvRRNVPzvuQXkO7KH9Ot.YBY0znyKam','Shipper',NULL,NULL,2),"
 					+ "(5,TRUE,'wonka@gmail.com',1,NULL,NULL,'$2a$10$xcIr8bwuPpCA5/dRvIOmMuVpmFZ.i18oFA5qnaQ8eiNgVKp/L.T9K','WillyWonka',NULL,2,3),"
