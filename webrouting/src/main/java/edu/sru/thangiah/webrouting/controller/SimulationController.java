@@ -33,56 +33,24 @@ import edu.sru.thangiah.webrouting.web.UserValidator;
 @Controller
 public class SimulationController {
 
-	private ValidationServiceImp validationServiceImp;
-
 	@Autowired
 	private UserService userService;
 
 	@Autowired
-	private UserValidator userValidator;
-	
-	@Autowired
 	private NotificationService notificationService;
-
-	private CarriersRepository carriersRepository;
 
 	private ShipmentsRepository shipmentsRepository;
 
-	private VehiclesRepository vehiclesRepository;
-
 	private BidsRepository bidsRepository;
-
-	private VehicleTypesRepository vehicleTypesRepository;
-
-	private LocationsRepository	locationsRepository;
-
-	private ContactsRepository contactsRepository;
-
-	private TechniciansRepository techniciansRepository;
-
-	private DriverRepository driverRepository;
-
-	private MaintenanceOrdersRepository maintenanceOrdersRepository;
 
 	private UserRepository userRepository;
 
 	private static final Logger Logger = LoggerFactory.getLogger(SimulationController.class);
 
 
-	public SimulationController (BidsRepository bidsRepository, ShipmentsRepository shipmentsRepository, CarriersRepository carriersRepository, VehiclesRepository vehiclesRepository, 
-			VehicleTypesRepository vehicleTypesRepository,ValidationServiceImp validationServiceImp,LocationsRepository	locationsRepository, ContactsRepository contactsRepository, TechniciansRepository techniciansRepository,
-			DriverRepository driverRepository, MaintenanceOrdersRepository maintenanceOrdersRepository, UserRepository userRepository) {
+	public SimulationController (BidsRepository bidsRepository, ShipmentsRepository shipmentsRepository, UserRepository userRepository) {
 		this.shipmentsRepository = shipmentsRepository;
-		this.carriersRepository = carriersRepository;
-		this.vehiclesRepository = vehiclesRepository;
 		this.bidsRepository = bidsRepository;
-		this.validationServiceImp = validationServiceImp;
-		this.vehicleTypesRepository = vehicleTypesRepository;
-		this.locationsRepository = locationsRepository;
-		this.contactsRepository = contactsRepository;
-		this.techniciansRepository = techniciansRepository;
-		this.driverRepository = driverRepository;
-		this.maintenanceOrdersRepository = maintenanceOrdersRepository;
 		this.userRepository = userRepository;
 
 	}
@@ -105,65 +73,71 @@ public class SimulationController {
 
 	@PostMapping("/bidsimulation")
 	public String bidsSimulation(Model model, HttpSession session) {
+		User user = userService.getLoggedInUser();
 		doBidsSimulation();
+		Logger.info("{} || ran the bidding simulation.",user.getUsername());
 		return "redirect:" + (String) session.getAttribute("redirectLocation");
 	}
 
 	@PostMapping("/directassignsimulation")
 	public String auctionSimulation(Model model, HttpSession session) {
+		User user = userService.getLoggedInUser();
 		doDirectAssignSimulation();
+		Logger.info("{} || ran the direct assignment simulation.",user.getUsername());
 		return "redirect:" + (String) session.getAttribute("redirectLocation");
 	}
 
 
 	private void doBidsSimulation() {
-
-		// add some session messages or somehow communicate what is happening to the user
-
 		try {
+			System.out.println("Shipper is creating a shipment.");
 			Shipments shipment = makeShipment();
 
-			Thread.sleep(5000); //10 seconds
+			Thread.sleep(5000); //5 seconds
 
+			System.out.println("Pushing shipment to auction.");
 			pushToAuction(shipment);
 
-			Thread.sleep(5000); 
+			Thread.sleep(5000);
 
+			System.out.println("Carrier is placing a bid on the shipment.");
 			Bids bid = addBids(shipment);
 
 			Thread.sleep(5000); 
 
+			System.out.println("Shipper is accepting the bid.");
 			acceptBid(bid);
 
 			Thread.sleep(5000); 
 
+			System.out.println("Ending simulation.");
 			bidsRepository.delete(bid);
 			shipmentsRepository.delete(shipment);
-
 		}
 		catch(Exception e) {
 		}
 	}
 
+
 	private void doDirectAssignSimulation() {
-
-		// add some session messages or somehow communicate what is happening to the user
-
 		try {
+			System.out.println("Shipper is creating a shipment.");
 			Shipments shipment = makeShipment();
 
-			Thread.sleep(5000); //10 seconds
+			Thread.sleep(5000); //5 seconds
 
+			System.out.println("Shipper is directly assigning the shipment to a carrier.");
 			directAssignShipment(shipment);
 
 			Thread.sleep(5000); 
 
+			System.out.println("Carrier is accepting the shipment.");
 			acceptAwaitingShipment(shipment);
 
 			Thread.sleep(5000); 
 
+			System.out.println("Ending simulation.");
 			shipmentsRepository.delete(shipment);
-
 		}
 		catch(Exception e) {
 		}
@@ -225,7 +199,7 @@ public class SimulationController {
 		bid.setShipment(shipment);
 		bid.setTime("17:56:29");
 		bidsRepository.save(bid);
-		
+
 		notificationService.addNotification(bid.getShipment().getUser(), 
 				"ALERT: A new bid as been added on your shipment with ID " + bid.getShipment().getId() + " and Client " + bid.getShipment().getClient(), false);
 
@@ -242,7 +216,7 @@ public class SimulationController {
 		shipment.setScac(carrier.getScac());
 		shipment.setFullFreightTerms("BID ACCEPTED");
 		shipmentsRepository.save(shipment);
-		
+
 		User bidUser = CarriersController.getUserFromCarrier(carrier);
 		notificationService.addNotification(bidUser, 
 				"ALERT: You have won the auction on shipment with ID " + shipment.getId() + " with a final bid value of " + bid.getPrice(), false);
@@ -256,7 +230,7 @@ public class SimulationController {
 		shipment.setScac(carrier.getScac());
 		shipment.setFullFreightTerms("AWAITING ACCEPTANCE");
 		shipmentsRepository.save(shipment);
-		
+
 		User user = CarriersController.getUserFromCarrier(carrier);
 		notificationService.addNotification(user, "Shipper " + shipment.getUser().getUsername() + " has requested that you pick up a shipment with a value of " + 7000.00 +
 				". You may accept from the 'AWAITING ACCEPTANCE' menu under the shipments.", true);
@@ -268,7 +242,7 @@ public class SimulationController {
 
 		shipment.setFullFreightTerms("BID ACCEPTED");
 		shipmentsRepository.save(shipment);
-		
+
 		notificationService.addNotification(shipment.getUser(), "Your request to carrier " + shipment.getCarrier().getCarrierName() + " to take shipment with ID " + shipment.getId() + " was accpeted!", true);
 	}
 
