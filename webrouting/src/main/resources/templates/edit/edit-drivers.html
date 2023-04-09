@@ -53,11 +53,11 @@
                   
                  	<br>
                     <label for="lisence_expiration">License Expiration: </label>
-                    <input type="text" th:field="*{lisence_expiration}" id="license_expiration" placeholder="License Expiration" required>
+                    <input type="text" th:field="*{lisence_expiration}" id="license_expiration" placeholder="License Expiration" size=19 required>
                    
                 	<br>
                     <label for="lisence_class">License Class: </label>
-                    <input type="text" th:field="*{lisence_class}" id="lisence_class" placeholder="A" size=19>
+                    <input type="text" th:field="*{lisence_class}" id="lisence_class" placeholder="A" size=19 required>
                    
                     <br><br>
                     <button class="buttons4" type="button" th:attr="onclick=|window.location.href='${redirectLocation}'|">Back</button>
