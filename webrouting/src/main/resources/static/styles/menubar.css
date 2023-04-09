@@ -212,6 +212,13 @@ a.navlink:hover{
 	cursor: pointer;
 }
 
+.profile-bar {
+	float: right;
+	border: 1px solid grey;
+	padding-top:5px;
+	padding-bottom:5px;
+}
+
 /*shrinks the sidebar a bit if the user shrinks the window/has a smaller screen */
 @media only screen and (max-width: 1920px) {
     .navSideBar {

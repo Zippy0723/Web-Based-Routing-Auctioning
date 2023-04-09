@@ -122,4 +122,11 @@
                 </ul>
             </div>
         </div>
+        <div th:fragment="profile-bar">
+        	<div sec:authorize="isAuthenticated()" id="profile-bar" class="profile-bar">
+			<a id= "nav_notifications" href="/unreadnotifications" th:inline="text"><i style="padding:5px" class="fa-solid fa-bell fa-xl"></i>([[${notifications.size()}]])</a>
+			<a id="nav_update_user_details" href="/update-user-details"><i style="padding:5px" class="fa-solid fa-user fa-xl"></i></a>
+			<a onclick="document.forms['logoutForm'].submit()"><i style="padding:5px" class="fa-solid fa-right-from-bracket fa-xl"></i></a>
+		</div>
+        </div>
      </body>
