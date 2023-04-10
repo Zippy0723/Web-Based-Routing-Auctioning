@@ -1,11 +1,13 @@
 package edu.sru.thangiah.webrouting.controller;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 import java.util.Scanner;
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -13,12 +15,25 @@ import java.time.format.DateTimeFormatter;
 import java.util.Random;
 import javax.servlet.http.HttpSession;
 
+import org.apache.poi.xssf.usermodel.XSSFRow;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ByteArrayResource;
+import org.springframework.core.io.Resource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+
+import edu.sru.thangiah.webrouting.domain.Contacts;
 import edu.sru.thangiah.webrouting.domain.Filter;
 import edu.sru.thangiah.webrouting.domain.Log;
 import edu.sru.thangiah.webrouting.domain.User;
@@ -56,6 +71,7 @@ public class LogController {
 		ArrayList<User> users = getAllUsers();
 		model.addAttribute("logs",logs);
 		model.addAttribute("users",users);
+		session.removeAttribute("filter");
 		return "loghome";
 	}
 
@@ -64,6 +80,7 @@ public class LogController {
 		session.removeAttribute("message");
 		model.addAttribute("redirectLocation", (String) session.getAttribute("redirectLocation"));
 		model.addAttribute("currentPage","/loghome");
+		session.removeAttribute("filter");
 		Boolean dateOrderCheck = false;
 		ArrayList<Log> logs = new ArrayList<Log>();
 		logs = getLogs();
@@ -97,8 +114,57 @@ public class LogController {
 		}
 
 		model.addAttribute("logs",logs);
+		session.setAttribute("filter", filter);
 
 		return "loghome";
+	}
+
+	@RequestMapping("/downloadLogs")
+	public ResponseEntity<Resource> downloadLogs(Model model, HttpSession session) {
+		Filter filter = new Filter();
+		try {
+			filter = (Filter) session.getAttribute("filter");
+			session.removeAttribute("message");
+			model.addAttribute("redirectLocation", (String) session.getAttribute("redirectLocation"));
+			model.addAttribute("currentPage","/loghome");
+			Boolean dateOrderCheck = false;
+			ArrayList<Log> logs = new ArrayList<Log>();
+			logs = getLogs();
+			ArrayList<User> users = getAllUsers();
+			model.addAttribute("users",users);
+
+			if(!(filter.getStartDate().equals("")) && (!(filter.getEndDate().equals("")))) {
+				dateOrderCheck = checkDateOrder(filter, session);
+			}
+
+			if(dateOrderCheck == true) {
+				model.addAttribute("message", session.getAttribute("message"));
+				model.addAttribute("logs",logs);
+			}
+
+			if(!(filter.getUser().equals("-1"))) {
+				logs = userFilter(filter, logs);
+			}
+
+			if(!(filter.getStartDate().equals(""))) {
+				logs = startDateFilter(filter, logs);
+			}
+
+			if(!(filter.getEndDate().equals(""))) {
+				logs = endDateFilter(filter, logs);
+			}
+
+			if(!(filter.getLevel().equals(""))) {
+				logs = levelFilter(filter, logs);
+			}
+
+			return getDownloadableLogs(logs);
+
+		}
+		catch(Exception e) {
+			ArrayList<Log> logs = getLogs();
+			return getDownloadableLogs(logs);
+		}
 	}
 
 	public ArrayList<Log> getLogs(){
@@ -114,12 +180,12 @@ public class LogController {
 				String where = scanner.next().strip();
 				String level = scanner.next().strip();
 				String who = scanner.next().strip();
-				String person = scanner.next().strip();
+				String user = scanner.next().strip();
 				String msg = scanner.next().strip();
 
 				if (who.endsWith("Controller") || who.endsWith("Handler")) {
 					LocalDate date = LocalDate.parse(dateStr,formatter);
-					Log log = new Log(date, time, where, level, who, person, msg);
+					Log log = new Log(date, time, where, level, who, user, msg);
 					logs.add(log);
 				}
 			}
@@ -200,6 +266,64 @@ public class LogController {
 			}
 		}
 		return logs;
+	}
+
+	public ResponseEntity<Resource> getDownloadableLogs(ArrayList<Log> logs){
+
+		XSSFWorkbook workbook = new XSSFWorkbook();
+		XSSFSheet logsWorksheet = workbook.createSheet("Logs");
+
+
+		XSSFRow logsHeaderRow = logsWorksheet.createRow(0);
+		logsHeaderRow.createCell(0).setCellValue("Date");
+		logsHeaderRow.createCell(1).setCellValue("Time");
+		logsHeaderRow.createCell(2).setCellValue("Level");
+		logsHeaderRow.createCell(3).setCellValue("User");
+		logsHeaderRow.createCell(4).setCellValue("Message");
+
+		int rowIndex = 1;
+
+		for(Log l : logs) {
+			XSSFRow curRow = logsWorksheet.createRow(rowIndex++);
+			curRow.createCell(0).setCellValue(l.getDate());
+			curRow.createCell(1).setCellValue(l.getTime());
+			curRow.createCell(2).setCellValue(l.getLevel());
+			curRow.createCell(3).setCellValue(l.getUser());
+			curRow.createCell(4).setCellValue(l.getMsg());
+		}
+
+		for (int i = 0; i < logsHeaderRow.getLastCellNum(); i++) {
+			logsWorksheet.autoSizeColumn(i);
+		}
+
+		byte[] workbookBytes;
+		try (ByteArrayOutputStream outputStream = new ByteArrayOutputStream()) {
+			workbook.write(outputStream);
+			workbookBytes = outputStream.toByteArray();
+		} catch (IOException e) {
+			e.printStackTrace();
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+		} finally {
+			try {
+				workbook.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+
+		// Create a Resource object from the byte array
+		ByteArrayResource resource = new ByteArrayResource(workbookBytes);
+
+		// Set the headers for the response
+		HttpHeaders headers = new HttpHeaders();
+		headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=filteredLogs.xlsx");
+		headers.add(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_OCTET_STREAM_VALUE);
+
+		// Return a ResponseEntity with the resource and headers
+		return ResponseEntity.ok()
+				.headers(headers)
+				.contentLength(workbookBytes.length)
+				.body(resource);
 	}
 
 

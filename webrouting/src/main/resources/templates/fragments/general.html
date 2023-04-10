@@ -69,6 +69,9 @@
     							<a href="/acceptedshipments">Accepted Shipments</a>
   							</div>
                         </li>
+                        <li sec:authorize="hasAnyAuthority('MASTERLIST')" class="navitem">
+                            <a th:class="${currentPage == '/simulations' ? 'selected' : 'navlink'}" id="nav_simulations" href="/simulations">Simulations</a>
+                        </li>
                         <li sec:authorize="hasAuthority('CARRIER')" class="navitem">
                             <a th:class="${currentPage == '/technicians' ? 'selected' : 'navlink'}" id="nav_technicians" href="/technicians">Technicians</a>
                         </li>
