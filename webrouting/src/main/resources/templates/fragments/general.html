@@ -14,37 +14,29 @@
                         <li class="navitem">
                             <a th:class="${currentPage == '/' ? 'selected' : 'navlink'}" id="nav_home" href="/">Home</a>
                         </li>
-                        <li sec:authorize="hasAuthority('ADMIN')" class="navitem">
-              				<button onclick="showDropdown()" th:class="${currentPage == '/users' ? 'dropbtn_selected' : 'dropbtn'}">Users</button>
-  							<div id="shipmentsDropdown" class="dropdown-content">
-    							<a href="/users">All Users</a>
-    							<a href="/CarrierAdministrationPage">Carriers</a>
-    							<a href="/ShipperAdministrationPage">Shippers</a>
-  							</div>
+                        <li sec:authorize="hasAnyAuthority('CARRIER','MASTERLIST')" class="navitem">
+                            <a th:class="${currentPage == '/carriers' ? 'selected' : 'navlink'}" id="nav_carriers" href="/carriers">Carriers</a>
                         </li>
                         <li sec:authorize="hasAuthority('CARRIER')" class="navitem">
                             <a th:class="${currentPage == '/contacts' ? 'selected' : 'navlink'}" id="nav_contacts" href="/contacts">Contacts</a>
                         </li>
-                        <li sec:authorize="hasAuthority('CARRIER')" class="navitem">
-                            <a th:class="${currentPage == '/locations' ? 'selected' : 'navlink'}" id="nav_locations" href="/locations">Locations</a>
-                        </li>
-                        <li sec:authorize="hasAuthority('CARRIER')" class="navitem">
-                            <a th:class="${currentPage == '/vehicles' ? 'selected' : 'navlink'}" id="nav_vehicles" href="/vehicles">Vehicles</a>
-                        </li>
-                        <li sec:authorize="hasAuthority('CARRIER')" class="navitem">
-                            <a th:class="${currentPage == '/vehicletypes' ? 'selected' : 'navlink'}" id="nav_vehicletypes" href="/vehicletypes">Vehicle Types</a>
+                        <li sec:authorize="hasAnyAuthority('ADMIN')" class="navitem">
+                            <a th:class="${currentPage == '/database' ? 'selected' : 'navlink'}" id="nav_database" href="/database">Database</a>
                         </li>
                         <li sec:authorize="hasAuthority('CARRIER')" class="navitem">
                             <a th:class="${currentPage == '/drivers' ? 'selected' : 'navlink'}" id="nav_drivers" href="/drivers">Drivers</a>
                         </li>
                         <li sec:authorize="hasAuthority('CARRIER')" class="navitem">
-                            <a th:class="${currentPage == '/technicians' ? 'selected' : 'navlink'}" id="nav_technicians" href="/technicians">Technicians</a>
+                            <a th:class="${currentPage == '/locations' ? 'selected' : 'navlink'}" id="nav_locations" href="/locations">Locations</a>
+                        </li>
+                        <li sec:authorize="hasAnyAuthority('SHADOWADMIN')" class="navitem">
+                            <a th:class="${currentPage == '/loghome' ? 'selected' : 'navlink'}" id="nav_log_home" href="/loghome">Logs</a>
                         </li>
                         <li sec:authorize="hasAuthority('CARRIER')" class="navitem">
                             <a th:class="${currentPage == '/maintenanceorders' ? 'selected' : 'navlink'}" id="nav_maintenanceorders" href="/maintenanceorders">Maintenance</a>
                         </li>
                         <li sec:authorize="hasAnyAuthority('CARRIER','MASTERLIST')" class="navitem">
-                            <a th:class="${currentPage == '/carriers' ? 'selected' : 'navlink'}" id="nav_carriers" href="/carriers">Carriers</a>
+                            <a th:class="${currentPage == '/routes' ? 'selected' : 'navlink'}" id="nav_routes" href="/routes">Routes</a>
                         </li>
                         <li sec:authorize="hasAuthority('MASTERLIST')" class="navitem">
               				<button onclick="showDropdown()" th:class="${currentPage == '/shipments' ? 'dropbtn_selected' : 'dropbtn'}">Shipments</button>
@@ -77,27 +69,22 @@
     							<a href="/acceptedshipments">Accepted Shipments</a>
   							</div>
                         </li>
-                        <li sec:authorize="hasAnyAuthority('CARRIER','MASTERLIST')" class="navitem">
-                            <a th:class="${currentPage == '/routes' ? 'selected' : 'navlink'}" id="nav_routes" href="/routes">Routes</a>
+                        <li sec:authorize="hasAuthority('CARRIER')" class="navitem">
+                            <a th:class="${currentPage == '/technicians' ? 'selected' : 'navlink'}" id="nav_technicians" href="/technicians">Technicians</a>
                         </li>
-                         <li sec:authorize="hasAnyAuthority('ADMIN')" class="navitem">
-                            <a th:class="${currentPage == '/database' ? 'selected' : 'navlink'}" id="nav_database" href="/database">Database</a>
+                        <li sec:authorize="hasAuthority('CARRIER')" class="navitem">
+                            <a th:class="${currentPage == '/vehicles' ? 'selected' : 'navlink'}" id="nav_vehicles" href="/vehicles">Vehicles</a>
                         </li>
-                         <li sec:authorize="hasAnyAuthority('SHADOWADMIN')" class="navitem">
-                            <a th:class="${currentPage == '/loghome' ? 'selected' : 'navlink'}" id="nav_log_home" href="/loghome">Logs</a>
+                        <li sec:authorize="hasAuthority('CARRIER')" class="navitem">
+                            <a th:class="${currentPage == '/vehicletypes' ? 'selected' : 'navlink'}" id="nav_vehicletypes" href="/vehicletypes">Vehicle Types</a>
                         </li>
-						<br><br><br><br><br>
-						<li sec:authorize="hasAnyAuthority('CARRIER', 'MASTERLIST', 'ADMIN','SHIPPER')">
-							<a th:class="${currentPage == '/unreadnotifications' ? 'selected' : 'navlink'}" id= "nav_notifications" href="/unreadnotifications" th:inline="text">Alerts ([[${notifications.size()}]])</a>
-						</li>
-						<li sec:authorize="hasAnyAuthority('CARRIER', 'MASTERLIST', 'ADMIN','SHIPPER')">
-							<a th:class="${currentPage == '/update-user-details' ? 'selected' : 'navlink'}" id= "nav_update_user_details" href="/update-user-details">Update User</a>
-						</li>
-                        <li sec:authorize="isAuthenticated()" class="navitem">
-                            <form id="logoutForm" method="POST" th:action="@{/logout}">
-                                <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
-                            </form>
-                            <a class="navlink" onclick="document.forms['logoutForm'].submit()">Logout</a>
+                        <li sec:authorize="hasAuthority('ADMIN')" class="navitem">
+              				<button onclick="showDropdown()" th:class="${currentPage == '/users' ? 'dropbtn_selected' : 'dropbtn'}">Users</button>
+  							<div id="shipmentsDropdown" class="dropdown-content">
+    							<a href="/users">All Users</a>
+    							<a href="/CarrierAdministrationPage">Carriers</a>
+    							<a href="/ShipperAdministrationPage">Shippers</a>
+  							</div>
                         </li>
                     </ul>
                 </div>
@@ -124,6 +111,9 @@
 			<a id= "nav_notifications" href="/unreadnotifications" th:inline="text"><i style="padding:5px" class="fa-solid fa-bell fa-xl"></i>([[${notifications.size()}]])</a>
 			<a id="nav_update_user_details" href="/update-user-details"><i style="padding:5px" class="fa-solid fa-user fa-xl"></i></a>
 			<a onclick="document.forms['logoutForm'].submit()"><i style="padding:5px" class="fa-solid fa-right-from-bracket fa-xl"></i></a>
+						<form id="logoutForm" method="POST" th:action="@{/logout}">
+           	<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+            </form>
 		</div>
         </div>
      </body>
