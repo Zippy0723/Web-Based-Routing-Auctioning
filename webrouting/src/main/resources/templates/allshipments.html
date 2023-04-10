@@ -22,28 +22,24 @@
             <div id="menu-wrapper">
             	<br><br>
             </div>
-            
             <div th:replace="fragments/general.html :: sidebar"></div>
-			
 			<div id="content">
 				<span class="nav-expand">
   					<button class="expander"  id="hamburger" style="display:none" onclick="nav_open()">☰</button>
 				</span>
-				<br><br>
-                <br>
-				<br><br>
                 <div class="alert alert-info" th:if="${message}">
        		    <span th:text="${message}"></span>
        	        </div>
        	        <span th:text="${successMessage}" class="successMessage"></span>
-    			<br><br>
+				<br>
+    			  <p sec:authorize="hasAuthority('SHIPPER')"><button class="buttons7" onclick="window.location.href='/uploadshipments';">Import Excel Sheet</button><button class="buttons7" onclick="window.location.href='/add-shipments';">Add New Shipment</button></p>
+    			  <br>
+    			  <br>
 				<div th:if="${status != 'CARRIER'}">
 				<div th:switch="${shipmentsPending.size()}">
-                    <h2 th:case="0">No Pending Shipments Yet!</h2>
                     <div th:case="*">
                         <h2>Pending Shipments</h2>
                         <br>
-                        <span type="hidden" th:text="${error}" class="loginError"></span>
                         <br>
                         <table class="dataTable">
                             <thead>
@@ -93,16 +89,13 @@
                         </table>
                     </div>
                     <br>
-                    <p sec:authorize="hasAuthority('SHIPPER')"><button class="buttons7" onclick="window.location.href='/uploadshipments';">Import Excel Sheet</button><button class="buttons7" onclick="window.location.href='/add-shipments';">Add New Shipment</button></p>
                 </div>
                 </div>
                 <br><br>
 				<div th:switch="${shipmentsAvailable.size()}">
-                    <h2 th:case="0">No Available Shipments Yet!</h2>
                     <div th:case="*">
                         <h2>Available Shipments</h2>
                         <br>
-                        <span type="hidden" th:text="${error}" class="loginError"></span>
                         <br>
                         <table class="dataTable">
                             <thead>
@@ -165,11 +158,9 @@
                  <br><br>
                 <div th:if="${status != 'CARRIER'}">
 				<div th:switch="${shipmentsFrozen.size()}">
-                    <h2 th:case="0">No Frozen Shipments Yet!</h2>
                     <div th:case="*">
                         <h2>Frozen Shipments</h2>
                         <br>
-                        <span type="hidden" th:text="${error}" class="loginError"></span>
                         <br>
                         <table class="dataTable">
                             <thead>
@@ -224,13 +215,13 @@
                         </table>
                     </div>
                     </div>
+                    <br>
                     </div>
                     <br><br>
-                    <br><br>
 				<div th:switch="${shipmentsAwaiting.size()}">
-                    <h2 th:case="0">No Awaiting Shipments Yet!</h2>
                     <div th:case="*">
                         <h2>Shipments Awaiting Acceptance</h2>
+                        <br>
                         <br>
                         <span type="hidden" th:text="${error}" class="loginError"></span>
                         <div class="longDTableWrapper">
@@ -286,13 +277,13 @@
 	                        </table>
                         </div>
                     </div>
+                    <br>
                 </div>
                     <br><br>
-                    <br><br>
                 <div th:switch="${shipmentsAccepted.size()}">
-                    <h2 th:case="0">No Accepted Shipments Yet!</h2>
                     <div th:case="*">
                         <h2>Accepted Shipments</h2>
+                        <br>
                         <br>
                         <span type="hidden" th:text="${error}" class="loginError"></span>
                         <div class="longDTableWrapper">
