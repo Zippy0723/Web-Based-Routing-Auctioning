@@ -50,7 +50,9 @@ public class LogController {
 	 * @return "loghome"
 	 */
 
-
+	@Autowired
+	private UserService userService;
+	
 	private UserRepository userRepository;
 
 
@@ -72,6 +74,8 @@ public class LogController {
 		model.addAttribute("logs",logs);
 		model.addAttribute("users",users);
 		session.removeAttribute("filter");
+		User user = userService.getLoggedInUser();
+		model = NotificationController.loadNotificationsIntoModel(user, model);
 		return "loghome";
 	}
 
@@ -86,6 +90,8 @@ public class LogController {
 		logs = getLogs();
 		ArrayList<User> users = getAllUsers();
 		model.addAttribute("users",users);
+		User user = userService.getLoggedInUser();
+		model = NotificationController.loadNotificationsIntoModel(user, model);
 
 		if(!(filter.getStartDate().equals("")) && (!(filter.getEndDate().equals("")))) {
 			dateOrderCheck = checkDateOrder(filter, session);
@@ -122,6 +128,8 @@ public class LogController {
 	@RequestMapping("/downloadLogs")
 	public ResponseEntity<Resource> downloadLogs(Model model, HttpSession session) {
 		Filter filter = new Filter();
+		User user = userService.getLoggedInUser();
+		model = NotificationController.loadNotificationsIntoModel(user, model);
 		try {
 			filter = (Filter) session.getAttribute("filter");
 			session.removeAttribute("message");
