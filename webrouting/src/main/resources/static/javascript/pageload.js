@@ -1,6 +1,5 @@
 //This script runs on every pageload, and sets up the navbar.
 
-
 	function nav_open() {
 		var mediaQuery = window.matchMedia('(max-width: 1920px)');
 		
