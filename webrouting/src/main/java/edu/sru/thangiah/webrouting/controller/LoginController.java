@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springframework.web.servlet.view.RedirectView;
 
 import edu.sru.thangiah.webrouting.captcha.Recaptcha;
 import edu.sru.thangiah.webrouting.domain.Carriers;
@@ -319,8 +320,36 @@ public class LoginController {
 		}
 
 		model.addAttribute("notifications",notifications);
-
-		return "index";
+		
+		String role = "null";
+		String targetUrl = "index";
+		if(user != null) {
+			role = user.getRole().toString();
+		}
+		
+		switch (role) {
+			case "SHIPPER":
+				targetUrl = "redirect:/allshipments";
+				break;
+			case "CARRIER":
+				targetUrl = "redirect:/allshipments";
+				break;
+			case "MASTERLIST":
+				targetUrl = "redirect:/allshipments";
+				break;
+			case "SHADOWADMIN":
+				targetUrl = "redirect:/loghome";
+				break;
+			case "ADMIN":
+				targetUrl = "redirect:/users";
+				break;
+			default:
+				targetUrl = "index";
+				break;
+		}
+		
+		System.out.println(targetUrl);
+		return targetUrl;
 	}
 
 	/**

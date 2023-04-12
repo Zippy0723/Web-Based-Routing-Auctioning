@@ -11,9 +11,6 @@
               <button onclick="nav_close()" class="bar-item">...</button>
               <div id="menu">
                     <ul class="navbar">
-                        <li class="navitem">
-                            <a th:class="${currentPage == '/' ? 'selected' : 'navlink'}" id="nav_home" href="/">Home</a>
-                        </li>
                         <li sec:authorize="hasAnyAuthority('CARRIER','MASTERLIST')" class="navitem">
                             <a th:class="${currentPage == '/carriers' ? 'selected' : 'navlink'}" id="nav_carriers" href="/carriers">Carriers</a>
                         </li>
