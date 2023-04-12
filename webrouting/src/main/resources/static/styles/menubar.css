@@ -219,6 +219,13 @@ a.navlink:hover{
 	padding-bottom:5px;
 }
 
+.usernameBox{
+	font-size:14px;
+	float: left;
+	font-weight: bold;
+	padding-left:3px;
+}
+
 /*shrinks the sidebar a bit if the user shrinks the window/has a smaller screen */
 @media only screen and (max-width: 1920px) {
     .navSideBar {

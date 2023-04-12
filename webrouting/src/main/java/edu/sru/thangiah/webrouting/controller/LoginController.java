@@ -348,7 +348,6 @@ public class LoginController {
 				break;
 		}
 		
-		System.out.println(targetUrl);
 		return targetUrl;
 	}
 
