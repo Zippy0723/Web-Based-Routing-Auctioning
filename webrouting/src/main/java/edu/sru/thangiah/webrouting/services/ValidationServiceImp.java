@@ -1173,10 +1173,11 @@ public class ValidationServiceImp {
 		}
 
 		for(Vehicles v: repoVehicles) {
-			if ((v.getPlateNumber()+ " " + v.getVinNumber()).equals(plate + " " + vin))
+			if ((v.getPlateNumber()+ " " + v.getVinNumber()).equals(plate + " " + vin)) {
 				Logger.error("{} || attempted to upload a Vehicle but the Vehicle already exists.",user.getUsername());
 			session.setAttribute("message", "Vehicle already exists.");
 			return null;
+		}
 		}
 
 		if(vehicleTypeId == null) {

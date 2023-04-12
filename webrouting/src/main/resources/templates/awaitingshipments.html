@@ -62,10 +62,10 @@
 	                                    <th>Consignee City</th>
 	                                    <th>Consignee State</th>
 	                                    <th>Consignee Zip</th>
-	                                    <th sec:authorize="hasAuthority('MASTERLIST')">Edit</th>
-                                    	<th sec:authorize="hasAuthority('MASTERLIST')">Delete</th>
                                     	<th sec:authorize="hasAuthority('CARRIER')">Accept</th>
                                     	<th sec:authorize="hasAuthority('CARRIER')">Deny</th>
+                                 	    <th sec:authorize="hasAuthority('MASTERLIST')">Edit</th>
+                                    	<th sec:authorize="hasAuthority('MASTERLIST')">Delete</th>
 	                                </tr>
 	                            </thead>
 	                            <tbody>
@@ -87,10 +87,10 @@
 	                                    <td th:text="${shipment.consigneeCity}"></td>
 	                                    <td th:text="${shipment.consigneeState}"></td>
 	                                    <td th:text="${shipment.consigneeZip}"></td>
-                                        <td sec:authorize="hasAuthority('MASTERLIST')"><a th:href="@{/editshipment/{id}(id=${shipment.id})}"><button style='font-size:11px'><i class='far fa-edit'></i></button></a></td>
-                                        <td sec:authorize="hasAuthority('MASTERLIST')"><a th:href="@{/deleteshipment/{id}(id=${shipment.id})}"><button class="fa fa-times" style="color: red;"></button></a></td> 
                                         <td sec:authorize="hasAuthority('CARRIER')"><a th:href="@{/acceptawaitingshipment/{id}(id=${shipment.id})}"><button style='font-size:11px'><i class="far fa-check-circle" style="color: green;"></i></button></a></td>   
-                                        <td sec:authorize="hasAuthority('CARRIER')"><a th:href="@{/denyawaitingshipment/{id}(id=${shipment.id})}"><button style='font-size:11px'><i class="far fa-times-circle" style="color: red;"></i></button></a></td>                             
+                                        <td sec:authorize="hasAuthority('CARRIER')"><a th:href="@{/denyawaitingshipment/{id}(id=${shipment.id})}"><button style='font-size:11px'><i class="far fa-times-circle" style="color: red;"></i></button></a></td>
+                                        <td sec:authorize="hasAuthority('MASTERLIST')"><a th:href="@{/editshipment/{id}(id=${shipment.id})}"><button style='font-size:11px'><i class='far fa-edit'></i></button></a></td>
+                                        <td sec:authorize="hasAuthority('MASTERLIST')"><a href="#" th:data-object-type="${shipment.client}" th:data-object-id="${shipment.id}"  th:attr="onclick=${'deleteObjectConfirm(this,''/deleteshipmentconfirmation/'')'}"><button class="fa fa-times" style="color: red;"></button></a></td>                              
 	                                </tr>
 	                            </tbody>
 	                        </table>
@@ -105,5 +105,7 @@
         </div>
 		<script src="javascript/pageload.js">
 		</script>
+		<script src="javascript/deleteObject.js"></script>
+		<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 	</body>
 </html>   
