@@ -65,7 +65,7 @@
                                     <td th:text= "${user.enabled}"></td>
                                     <td th:text="${user.auctioningAllowed}"></td>
                                     <td><a th:href="@{/editshippers/{id}(id=${user.id})}"><button style='font-size:11px'><i class='far fa-edit'></i></button></a></td>
-                                    <td><a th:href="@{/deleteuser/{id}(id=${user.id})}"><button class="fa fa-times" style="color: red;" ></button></a></td>                    
+                                    <td><a href="#" th:data-object-type="${user}" th:data-object-id="${user.id}"  th:attr="onclick=${'deleteObjectConfirm(this,''/deleteuserfirmation/'')'}"><button class="fa fa-times" style="color: red;"></button></a></td>                 
                                 </tr>
                             </tbody>
                         </table>
@@ -141,7 +141,7 @@
                                     <td th:text= "${user.enabled}"></td>
                                     <td th:text="${user.auctioningAllowed}"></td>
                                     <td><a th:href="@{/editcarriers/{id}(id=${user.id})}"><button style='font-size:11px'><i class='far fa-edit'></i></button></a></td>
-                                    <td><a th:href="@{/deleteuser/{id}(id=${user.id})}"><button class="fa fa-times" style="color: red;" onclick="deleteFunction()"></button></a></td>                     
+                                    <td><a href="#" th:data-object-type="${user}" th:data-object-id="${user.id}"  th:attr="onclick=${'deleteObjectConfirm(this,''/deleteuserfirmation/'')'}"><button class="fa fa-times" style="color: red;"></button></a></td>
                                 </tr>
                             </tbody>
                         </table>
@@ -180,7 +180,7 @@
                                     <td th:text= "${user.enabled}"></td>
                                     <td th:text="${user.auctioningAllowed}"></td>
                                     <td><a class="disabled-btn" th:href="@{/editcarriers/{id}(id=${user.id})}"><button style='font-size:11px'><i class='far fa-edit'></i></button></a></td>
-                                    <td><a class="disabled-btn" th:href="@{/deleteuser/{id}(id=${user.id})}"><button class="fa fa-times" style="color: red;" onclick="deleteFunction()"></button></a></td>                       
+                                    <td><a href="#" th:data-object-type="${user}" th:data-object-id="${user.id}"  th:attr="onclick=${'deleteObjectConfirm(this,''/deleteuserfirmation/'')'}"><button class="fa fa-times" style="color: red;"></button></a></td>
                                 </tr>
                             </tbody>
                         </table>
@@ -199,5 +199,7 @@
 		</script>
 		<script src="../javascript/pageload.js">
 		</script>
+		<script src="javascript/deleteObject.js"></script>
+		<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 	</body>
 </html>
