@@ -77,7 +77,8 @@
                                     <td th:text="${contact.primaryPhone}"></td>
                                     <td th:text="${contact.workPhone}"></td>
                                     <td><a th:href="@{/editcontact/{id}(id=${contact.id})}"><button style='font-size:11px'><i class='far fa-edit'></i></button></a></td>
-                                    <td><a th:href="@{/deletecontact/{id}(id=${contact.id})}"><button class="fa fa-times" style="color: red;" onclick="deleteFunction()"></button></a></td>  
+                                    <td><a href="#" th:data-object-type="${contact}" th:data-object-id="${contact.id}"  th:attr="onclick=${'deleteObjectConfirm(this,''/deletecontactconfirmation/'')'}"><button class="fa fa-times" style="color: red;"></button></a></td> 
+            
                                 </tr>
                             </tbody>
                         </table>
@@ -96,5 +97,7 @@
 		</script>
 		<script src="../javascript/pageload.js">
 		</script>
+		 <script src="javascript/deleteObject.js"></script>
+		 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 	</body>
 </html>

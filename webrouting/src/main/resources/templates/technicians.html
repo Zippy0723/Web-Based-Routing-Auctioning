@@ -61,7 +61,7 @@
                                   	<td th:text="${technician.skill_grade}"></td>
                                   	<td><a th:href="@{/viewmaintenanceorders/{id}(id=${technician.id})}">View Requests</a></td>
                                     <td><a th:href="@{/edittechnician/{id}(id=${technician.id})}"><button style='font-size:11px'><i class='far fa-edit'></i></button></a></td>
-                                    <td><a th:href="@{/deletetechnician/{id}(id=${technician.id})}"><button class="fa fa-times" style="color: red;" onclick="deleteFunction()"></button></a></td>
+                                    <td><a href="#" th:data-object-type="${technician}" th:data-object-id="${technician.id}"  th:attr="onclick=${'deleteObjectConfirm(this,''/deletetechnicianconfirmation/'')'}"><button class="fa fa-times" style="color: red;"></button></a></td> 
                                 </tr>
                             </tbody>
                         </table>
@@ -80,5 +80,7 @@
 		</script>
 		<script src="../javascript/pageload.js">
 		</script>
+		<script src="javascript/deleteObject.js"></script>
+		<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 	</body>
 </html>

@@ -85,7 +85,7 @@
                                     <td th:text="${vehicletype.minimumCubicWeight}"></td>
                                     <td th:text="${vehicletype.maximumCubicWeight}"></td>
                                     <td><a th:href="@{/editvehicletypes/{id}(id=${vehicletype.id})}"><button style='font-size:11px'><i class='far fa-edit'></i></button></a></td>
-                                    <td><a th:href="@{/deletevehicletype/{id}(id=${vehicletype.id})}"><button class="fa fa-times" style="color: red;" onclick="deleteFunction()"></button></a></td>    
+                                  	<td><a href="#" th:data-object-type="${vehicletype}" th:data-object-id="${vehicletype.id}"  th:attr="onclick=${'deleteObjectConfirm(this,''/deletevehicletypeconfirmation/'')'}"><button class="fa fa-times" style="color: red;"></button></a></td> 
                                 </tr>
                             </tbody>
                         </table>
@@ -104,5 +104,7 @@
 		</script>
 		<script src="../javascript/pageload.js">
 		</script>
+		<script src="javascript/deleteObject.js"></script>
+		<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 	</body>
 </html>

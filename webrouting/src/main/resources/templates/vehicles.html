@@ -74,7 +74,7 @@
                                     <td><a th:href="@{/viewvehicledrivers/{id}(id=${vehicle.id})}"><button style='font-size:11px'><i class='far fa-id-badge'></i></button></a></td> 
                                     <td><a th:href="@{/viewvehicleshipments/{id}(id=${vehicle.id})}"><button style='font-size:11px'><i class='fas fa-truck'></i></button></a></td>
                                     <td><a th:href="@{/editvehicles/{id}(id=${vehicle.id})}"><button style='font-size:11px'><i class='far fa-edit'></i></button></a></td>
-                                    <td><a th:href="@{/deletevehicles/{id}(id=${vehicle.id})}"><button class="fa fa-times" style="color: red;" onclick="deleteFunction()"></button></a></td>    
+                                   	<td><a href="#" th:data-object-type="${vehicle}" th:data-object-id="${vehicle.id}"  th:attr="onclick=${'deleteObjectConfirm(this,''/deletevehicleconfirmation/'')'}"><button class="fa fa-times" style="color: red;"></button></a></td> 
                                 </tr>
                             </tbody>
                         </table>
@@ -93,5 +93,7 @@
 		</script>
 		<script src="../javascript/pageload.js">
 		</script>
+		<script src="javascript/deleteObject.js"></script>
+		<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 	</body>
 </html>

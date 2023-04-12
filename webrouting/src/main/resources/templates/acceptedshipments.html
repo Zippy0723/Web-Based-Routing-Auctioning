@@ -86,7 +86,7 @@
 	                                    <td><a th:href="@{/viewshipmentbids/{id}(id=${shipment.id})}"><button class="buttons11" role="button">([[${shipment.getBids().size()}]])</button></a></td>
 	                                    <td><p th:inline="text">[[${shipment.getLowestBidValue()}]]</p></td>
                                         <td sec:authorize="hasAuthority('MASTERLIST')"><a th:href="@{/editshipment/{id}(id=${shipment.id})}"><button style='font-size:11px'><i class='far fa-edit'></i></button></a></td>
-                                        <td sec:authorize="hasAuthority('MASTERLIST')"><a th:href="@{/deleteshipment/{id}(id=${shipment.id})}"><button class="fa fa-times" style="color: red;" onclick="deleteFunction()"></button></a></td>                                  		
+                                        <td sec:authorize="hasAuthority('MASTERLIST')"><a href="#" th:data-object-type="${shipment.client}" th:data-object-id="${shipment.id}"  th:attr="onclick=${'deleteObjectConfirm(this,''/deleteshipmentconfirmation/'')'}"><button class="fa fa-times" style="color: red;"></button></a></td>                                		
 	                                </tr>
 	                            </tbody>
 	                        </table>
@@ -101,5 +101,7 @@
         </div>
 		<script src="javascript/pageload.js">
 		</script>
+		<script src="javascript/deleteObject.js"></script>
+		<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 	</body>
 </html>   
