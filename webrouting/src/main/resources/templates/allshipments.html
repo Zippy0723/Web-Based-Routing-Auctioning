@@ -23,6 +23,9 @@
             	<br><br>
             </div>
             <div th:replace="fragments/general.html :: sidebar"></div>
+            <div th:replace="fragments/general.html :: profile-bar"></div>
+			<script src="https://kit.fontawesome.com/fe29baf689.js" crossorigin="anonymous"></script>
+
 			<div id="content">
 				<span class="nav-expand">
   					<button class="expander"  id="hamburger" style="display:none" onclick="nav_open()">☰</button>
@@ -32,7 +35,7 @@
        	        </div>
        	        <span th:text="${successMessage}" class="successMessage"></span>
 				<br>
-    			  <p sec:authorize="hasAuthority('SHIPPER')"><button class="buttons7" onclick="window.location.href='/uploadshipments';">Upload From Excel</button><button class="buttons7" onclick="window.location.href='/add-shipments';">Add New Shipment</button></p>
+    			  <p sec:authorize="hasAuthority('SHIPPER')"><button class="buttons7" onclick="window.location.href='/uploadshipments';">Import Excel Sheet</button><button class="buttons7" onclick="window.location.href='/add-shipments';">Add New Shipment</button></p>
     			  <br>
     			  <br>
 				<div th:if="${status != 'CARRIER'}">
@@ -120,9 +123,9 @@
                                     <th sec:authorize="hasAuthority('MASTERLIST')">Freeze</th>
                                     <th sec:authorize="hasAuthority('MASTERLIST')">Reset Bids</th>
                                     <th sec:authorize="hasAuthority('MASTERLIST')">Force End Auction</th>
+                                    <th sec:authorize="hasAnyAuthority('SHIPPER','MASTERLIST')">Remove From Auction</th>
                                     <th sec:authorize="hasAnyAuthority('SHIPPER','MASTERLIST')">Edit</th>
                                     <th sec:authorize="hasAnyAuthority('SHIPPER','MASTERLIST')">Delete</th>
-                                   <!--  <th sec:authorize="hasAnyAuthority('SHIPPER','MASTERLIST')">Remove From Auction</th> -->
 								</tr>
                             </thead>
                             <tbody>
@@ -146,9 +149,9 @@
                                     <td sec:authorize="hasAuthority('MASTERLIST')"><a th:href="@{/freezeshipment/{id}(id=${shipment.id})}"><button style='font-size:11px'><i class='far fa-snowflake' style='font-size:11px;color:#33e6ff'></i></button></a></td>
                                     <td sec:authorize="hasAuthority('MASTERLIST')"><a th:href="@{/resetshipmentbids/{id}(id=${shipment.id})}"><button style='font-size:11px'><i class="fa fa-refresh"></i></button></a></td>
                                     <td sec:authorize="hasAuthority('MASTERLIST')"><a th:href="@{/forceendauction/{id}(id=${shipment.id})}">Force End Auction</a></td>
+                           			    <td sec:authorize="hasAnyAuthority('SHIPPER','MASTERLIST')"><a th:href="@{/removefromauction/{id}(id=${shipment.id})}"><span class='fa-stack fa-2x'style='font-size:11px'><i class='fas fa-gavel fa-stack-1x'></i><i class='fas fa-ban fa-stack-2x'style='color:tomato'></i></span></a></td>
                                     <td sec:authorize="hasAnyAuthority('SHIPPER','MASTERLIST')"><a th:href="@{/editshipment/{id}(id=${shipment.id})}"><button style='font-size:11px'><i class='far fa-edit'></i></button></a></td>
                                     <td sec:authorize="hasAnyAuthority('SHIPPER','MASTERLIST')"><a href="#" th:data-object-type="${shipment.client}" th:data-object-id="${shipment.id}"  th:attr="onclick=${'deleteObjectConfirm(this,''/deleteshipmentconfirmation/'')'}"><button class="fa fa-times" style="color: red;"></button></a></td> 
-                           			<!-- <td sec:authorize="hasAnyAuthority('SHIPPER','MASTERLIST')"><a th:href="@{/removefromauction/{id}(id=${shipment.id})}"><button th:onclick="confirmAction(${shipment.id})">Remove from Auction</button> </a></td> -->
                                 </tr>
                             </tbody>
                         </table>

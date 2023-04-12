@@ -23,6 +23,8 @@
             </div>
             
         	<div th:replace="fragments/general.html :: sidebar"></div>
+        	<div th:replace="fragments/general.html :: profile-bar"></div>
+			<script src="https://kit.fontawesome.com/fe29baf689.js" crossorigin="anonymous"></script>
 			
 				<div id="content">
 			<span class="nav-expand">
@@ -30,7 +32,8 @@
 					onclick="nav_open()">☰</button>
 			</span> <br>
 			<br> <span type="hidden" th:text="${message}" class=errorMessage></span>
-			<br> <br>
+			
+			<br><br>
 
 			<div class="filterContainer">
 				<form action="#" th:action="@{/applyFilter}" th:object="${filter}"
@@ -62,7 +65,7 @@
 
 					<button class="filterButton" type="submit">Apply</button>
 					<button class="filterButton" type="button" th:attr="onclick=|window.location.href='${redirectLocation}'|">Reset</button>
-
+					<a style="text-decoration:none" class="filterButton" type="button" th:href="@{/downloadLogs}">Export</a>
 				</form>
 			</div>
 			<br>

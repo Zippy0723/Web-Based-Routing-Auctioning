@@ -22,7 +22,10 @@
             	<br><br>
             </div>
             
+            
            <div th:replace="fragments/general.html :: sidebar"></div>
+           <div th:replace="fragments/general.html :: profile-bar"></div>
+			<script src="https://kit.fontawesome.com/fe29baf689.js" crossorigin="anonymous"></script>
 			
 			<div id="content">
 				<span class="nav-expand">
@@ -84,8 +87,8 @@
                     </div>     
                     <br>                     
                     <p><button class="buttons7" onclick="window.location.href='/signupcontact';">Add Contact</button>
-                    <button class="buttons7" onclick="window.location.href='/excel/upload-contacts';">Upload From Excel</button>
-                    <button class="buttons7" onclick="window.location.href='/excel-download-contacts';">Download From Excel</button></p>
+                    <button class="buttons7" onclick="window.location.href='/excel/upload-contacts';">Import Excel Sheet</button>
+                    <button class="buttons7" onclick="window.location.href='/excel-download-contacts';">Export Excel Sheet</button></p>
                 </div>
             </div>
         </div>
