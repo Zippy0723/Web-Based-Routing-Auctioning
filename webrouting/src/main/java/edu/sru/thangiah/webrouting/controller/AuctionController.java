@@ -71,8 +71,8 @@ public class AuctionController {
 		List<Bids> bids = shipment.getBids(); 
 
 		if (!user.getRole().toString().equals("MASTERLIST")) {
-			System.out.println("Non-Master user attempeted to force end an auction!");
-			Logger.error("{} || (Non-master) attempeted to force end an auction with shipment ID {}!", user.getUsername(), shipment.getId());///TODO: Replace this with a proper error message
+			System.out.println("Non-Auctioneer user attempeted to force end an auction!");
+			Logger.error("{} || (Non-Auctioneer) attempeted to force end an auction with shipment ID {}!", user.getUsername(), shipment.getId());///TODO: Replace this with a proper error message
 			return "redirect:" + redirectLocation;
 		}
 
@@ -278,7 +278,7 @@ public class AuctionController {
 			user.setAuctioningAllowed(false);
 			Logger.info("{} || Auctioning is not allowed.", user.getUsername());
 			notificationService.addNotification(user, 
-					"ALERT: Your auctioning abilites have been disabled. Please contact your system Master to regain access.", true);
+					"ALERT: Your auctioning abilites have been disabled. Please contact your system Auctioneer to regain access.", true);
 		}
 		else {
 			user.setAuctioningAllowed(true);

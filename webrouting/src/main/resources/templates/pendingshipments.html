@@ -29,22 +29,17 @@
 				<span class="nav-expand">
   					<button class="expander"  id="hamburger" style="display:none" onclick="nav_open()">☰</button>
 				</span>
-				<br><br>
-			
+				 <div class="alert alert-info" th:if="${message}">
+       		     <span th:text="${message}"></span>
+       	         </div>
 				<div th:switch="${shipments}">
-                    <h2 th:case="null"style="text-align: center;">No shipments yet!</h2>
-                	<br><br>
                     <div th:case="*">
                     <br>
-       	                <div class="alert alert-info" th:if="${successMessage}">
-    					<span th:text="${successMessage}" style="color: green;"></span>
-						</div>
+       	                <span th:text="${successMessage}" class="successMessage"></span>
+    				    <br><br>
                         <h2>Pending Shipments</h2>
                         <br>
                         <hr>
-                        <div class="alert alert-info" th:if="${message}">
-       		            <span th:text="${message}"></span>
-       	                </div>
                         <span type="hidden" th:text="${error}" class="loginError"></span>
                         <br>
                         <table class="dataTable">

@@ -404,6 +404,7 @@ public class ExcelController {
 			for(Shipments s: shipments) {
 				shipmentsRepository.save(s);
 				Logger.info("{} || saved shipment with ID {}.",user.getUsername(),s.getId());
+				session.setAttribute("successMessage", "Successfully Added Shipments from Excel Sheet!");
 			}
 
 		}
@@ -523,6 +524,7 @@ public class ExcelController {
 			for(VehicleTypes vehicleType: vehicleTypes) {
 				vehicleTypesRepository.save(vehicleType);
 				Logger.info("{} || saved Vehicle Type with ID {}.",user.getUsername(),vehicleType.getId());
+				session.setAttribute("successMessage", "Successfully Added Vehicle Types from Excel Sheet!");
 			}
 
 		}
@@ -583,6 +585,7 @@ public class ExcelController {
 			for(Locations location: locations) {
 				locationsRepository.save(location);
 				Logger.info("{} || saved Location with ID {}.",user.getUsername(),location.getId());
+				session.setAttribute("successMessage", "Successfully Added Locations from Excel Sheet!");
 			}
 
 		}
@@ -642,6 +645,7 @@ public class ExcelController {
 			for(Contacts contact: contacts) {
 				contactsRepository.save(contact);
 				Logger.info("{} || saved Contact with ID {}.",user.getUsername(),contact.getId());
+				session.setAttribute("successMessage", "Successfully Added Contacts from Excel Sheet!");
 			}
 
 		}
@@ -703,6 +707,7 @@ public class ExcelController {
 			for(Technicians technician: technicians) {
 				techniciansRepository.save(technician);
 				Logger.info("{} || saved Technician with ID {}.",user.getUsername(),technician.getId());
+				session.setAttribute("successMessage", "Successfully Added Technicians from Excel Sheet!");
 			}
 
 		}
@@ -763,6 +768,7 @@ public class ExcelController {
 			for(Vehicles vehicle: vehicles) {
 				vehiclesRepository.save(vehicle);
 				Logger.info("{} || saved Vehicle with ID {}.",user.getUsername(),vehicle.getId());
+				session.setAttribute("successMessage", "Successfully Added Vehicles from Excel Sheet!");
 			}
 
 		}
@@ -823,6 +829,7 @@ public class ExcelController {
 			for(Driver driver: drivers) {
 				driverRepository.save(driver);
 				Logger.info("{} || saved Driver with ID {}.",user.getUsername(),driver.getId());
+				session.setAttribute("successMessage", "Successfully Added Drivers from Excel Sheet!");
 			}
 
 		}
@@ -883,6 +890,7 @@ public class ExcelController {
 			for(MaintenanceOrders order: orders) {
 				maintenanceOrdersRepository.save(order);
 				Logger.info("{} || saved Maintenance Order with ID {}.",user.getUsername(),order.getId());
+				session.setAttribute("successMessage", "Successfully Added Maintenance Orders from Excel Sheet!");
 			}
 
 		}

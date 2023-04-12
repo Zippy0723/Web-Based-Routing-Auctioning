@@ -184,7 +184,6 @@ public class ValidationServiceImp {
 				shipment.setUser(user);						//THIS USER
 
 				result.add(shipment);
-				session.setAttribute("successMessage", "Successfully Added Shippers from Excel Sheet!");
 			}
 		}
 		catch (Exception e) {
@@ -455,7 +454,6 @@ public class ValidationServiceImp {
 					return null;
 				}
 				result.add(VehicleType);
-				session.setAttribute("successMessage", "Successfully Added Vehicle Types from Excel Sheet!");
 			}
 		}
 		catch (Exception e) {
@@ -681,7 +679,6 @@ public class ValidationServiceImp {
 				}
 
 				result.add(location);	
-				session.setAttribute("successMessage", "Successfully Added Locations from Excel Sheet!");
 			}
 		}
 		catch (Exception e) {
@@ -854,7 +851,6 @@ public class ValidationServiceImp {
 					return null;
 				}
 				result.add(contact);
-				session.setAttribute("successMessage", "Successfully Added Contacts from Excel Sheet!");
 			}
 		}
 		catch (Exception e) {
@@ -1028,8 +1024,6 @@ public class ValidationServiceImp {
 					}
 
 					result.add(technician);
-					session.setAttribute("successMessage", "Successfully Added Technicians from Excel Sheet!");
-
 				}
 			}
 			catch (Exception e) {
@@ -1074,7 +1068,7 @@ public class ValidationServiceImp {
 
 		if (contactId == null) {
 			Logger.error("{} || attempted to upload a Technician but the Contact did not exist.",user.getUsername());
-			session.setAttribute("message", "Contact did not exist.");
+			session.setAttribute("message", "Contact did not exist. (Contacts must be uploaded first, did you upload them yet?)");
 			return null;	
 		}
 
@@ -1142,7 +1136,6 @@ public class ValidationServiceImp {
 				}
 
 				result.add(vehicle);
-				session.setAttribute("successMessage", "Successfully Added Vehicles from Excel Sheet!");
 			}
 		}
 		catch (Exception e) {
@@ -1189,13 +1182,13 @@ public class ValidationServiceImp {
 
 		if(vehicleTypeId == null) {
 			Logger.error("{} || attempted to upload a Vehicle but the Vehicle Type did not exist.",user.getUsername());
-			session.setAttribute("message", "Vehicle Type did not exist.");
+			session.setAttribute("message", "Vehicle Type did not exist. (Vehicle Types must be uploaded first, did you upload them yet?)");
 			return null;	
 		}
 
 		if(locationId == null) {
 			Logger.error("{} || attempted to upload a Vehicle but the Location did not exist.",user.getUsername());
-			session.setAttribute("message", "Location did not exist.");
+			session.setAttribute("message", "Location did not exist. (Locations must be uploaded first, did you upload them yet?)");
 			return null;	
 		}
 
@@ -1284,7 +1277,6 @@ public class ValidationServiceImp {
 					}
 
 					result.add(driver);	
-					session.setAttribute("successMessage", "Successfully Added Drivers from Excel Sheet!");
 				}
 			}
 			catch (Exception e) {
@@ -1334,13 +1326,13 @@ public class ValidationServiceImp {
 
 		if(vehicleId == null) {
 			Logger.error("{} || attempted to upload a Driver but the Vehicle did not exist.",user.getUsername());
-			session.setAttribute("message", "Vehicle did not exist.");
+			session.setAttribute("message", "Vehicle did not exist. (Vehicles must be uploaded first, did you upload them yet?)");
 			return null;
 		}
 
 		if(contactId == null) {
 			Logger.error("{} || attempted to upload a Driver but the Contact did not exist.",user.getUsername());
-			session.setAttribute("message", "Contact did not exist.");
+			session.setAttribute("message", "Contact did not exist. (Contacts must be uploaded first, did you upload them yet?)");
 			return null;
 		}
 
@@ -1425,7 +1417,6 @@ public class ValidationServiceImp {
 				}
 
 				result.add(maintenanceOrder);
-				session.setAttribute("successMessage", "Successfully Added Maintenance Orders from Excel Sheet!");
 			}
 		}
 		catch (Exception e) {
@@ -1468,13 +1459,13 @@ public class ValidationServiceImp {
 
 		if(vehicleId == null) {
 			Logger.error("{} || attempted to upload a Maintenance Order but the vehicle did not exist.",user.getUsername());
-			session.setAttribute("message", "Vehicle did not exist.");
+			session.setAttribute("message", "Vehicle did not exist. (Vehicles must be uploaded first, did you upload them yet?)");
 			return null;
 		}
 
 		if(technicianId == null) {
 			Logger.error("{} || attempted to upload a Maintenance Order but the Technician did not exist.",user.getUsername());
-			session.setAttribute("message", " Technician did not exist.");
+			session.setAttribute("message", " Technician did not exist. (Technicians must be uploaded first, did you upload them yet?)");
 			return null;
 		}
 
