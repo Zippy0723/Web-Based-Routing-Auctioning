@@ -60,6 +60,7 @@
                                     <th>Consignee City</th>
                                     <th>Consignee State</th>
                                     <th>Consignee Zip</th>
+                                    <th>View Details</th>
                                     <th sec:authorize="hasAuthority('MASTERLIST')">Freeze</th>
                                     <th sec:authorize="hasAnyAuthority('SHIPPER','MASTERLIST')">Push to Auction</th>
                                     <th sec:authorize="hasAnyAuthority('SHIPPER','MASTERLIST')">Direct Assign</th>
@@ -82,7 +83,7 @@
                                     <td th:text="${shipment.consigneeCity}"></td>
                                     <td th:text="${shipment.consigneeState}"></td>
                                     <td th:text="${shipment.consigneeZip}"></td>
-                                   
+                                   <td><a th:href="@{/viewshipment/{id}(id=${shipment.id})}"><button style='font-size:11px'><i class='fas fa-clipboard-list'></i></button></a></td>
                                     <td sec:authorize="hasAuthority('MASTERLIST')"><a th:href="@{/freezeshipment/{id}(id=${shipment.id})}"><button style='font-size:11px'><i class='far fa-snowflake' style='font-size:11px;color:#33e6ff'></i></button></a></td>
                                     <td sec:authorize="hasAnyAuthority('SHIPPER','MASTERLIST')"><a th:classappend="${user.auctioningAllowed ? '' : 'disabled-btn'}" th:href="@{/pushshipment/{id}(id=${shipment.id})}"><button class='fas fa-gavel' style='font-size:11px'></button></a></td>
                                     <td sec:authorize="hasAnyAuthority('SHIPPER','MASTERLIST')"><a th:href="@{/directassignshipment/{id}(id=${shipment.id})}"><button style='font-size:11px'><i class='fas fa-truck'></i></button></a></td>

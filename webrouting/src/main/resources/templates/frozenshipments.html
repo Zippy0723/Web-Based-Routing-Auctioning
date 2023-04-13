@@ -60,6 +60,7 @@
                                     <th>Consignee City</th>
                                     <th>Consignee State</th>
                                     <th>Consignee Zip</th>
+                                    <th>View Details</th>
                                     <th>View Bids</th>
                                     <th>Winning Bid</th>
                                    
@@ -87,6 +88,7 @@
                                     <td th:text="${shipment.consigneeCity}"></td>
                                     <td th:text="${shipment.consigneeState}"></td>
                                     <td th:text="${shipment.consigneeZip}"></td>
+                                    <td><a th:href="@{/viewshipment/{id}(id=${shipment.id})}"><button style='font-size:11px'><i class='fas fa-clipboard-list'></i></button></a></td>
                                     <td><a th:href="@{/viewshipmentbids/{id}(id=${shipment.id})}" th:inline="text"><button class="buttons11" role="button">([[${shipment.getBids().size()}]])</button></a></td>
                                     <td><p th:inline="text">[[${shipment.getLowestBidValue()}]]</p></td>
                                     <td sec:authorize="hasAuthority('MASTERLIST')"><a th:href="@{/unfreezeshipment/{id}(id=${shipment.id})}"><button style='font-size:11px'><i class="fas fa-fire" style="color: #e25822;"></i></button></a></td>
