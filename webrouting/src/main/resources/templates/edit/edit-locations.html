@@ -114,13 +114,9 @@
                      	<label for="zip">Zip Code: </label>
                      	<input type="text" th:field="*{zip}" id="zip" placeholder="16057" size=19 >
 				
-                 		<br>
-                    	<label for="latitude">Latitude: </label>
-                        <input type="text" th:field="*{latitude}" id="latitude" placeholder="-79.4532612 or without '-'" size=19>
-                        
-						<br>
-                        <label for="longitude">Longitude: </label>
-                        <input type="text" th:field="*{longitude}" id="longitude" placeholder="-179.5742489 or without '-'" size=19>
+
+                        <input hidden=true type="text" th:field="*{latitude}" id="latitude" placeholder="-79.4532612 or without '-'" size=19>
+                        <input hidden=true type="text" th:field="*{longitude}" id="longitude" placeholder="-179.5742489 or without '-'" size=19>
                         
                     	<br> 
                         <label for="locationType">Location Type: </label>

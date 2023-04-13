@@ -1165,13 +1165,13 @@ public class ShipmentsController {
 		hashtable.put("shipperCity", shipment.getShipperCity().strip());
 		hashtable.put("shipperState", shipment.getShipperState().strip());
 		hashtable.put("shipperZip", shipment.getShipperZip().strip());
-		hashtable.put("shipperLatitude", shipment.getShipperLatitude().strip());
-		hashtable.put("shipperLongitude", shipment.getShipperLongitude().strip());
+		hashtable.put("shipperLatitude", "");
+		hashtable.put("shipperLongitude", "");
 		hashtable.put("consigneeCity", shipment.getConsigneeCity().strip());
 		hashtable.put("consigneeState", shipment.getConsigneeState().strip());
 		hashtable.put("consigneeZip", shipment.getConsigneeZip().strip());
-		hashtable.put("consigneeLatitude", shipment.getConsigneeLatitude().strip());
-		hashtable.put("consigneeLongitude", shipment.getConsigneeLongitude().strip());
+		hashtable.put("consigneeLatitude", "");
+		hashtable.put("consigneeLongitude", "");
 
 		Shipments result;
 

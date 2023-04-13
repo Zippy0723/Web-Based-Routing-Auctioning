@@ -287,8 +287,8 @@ public class LocationsController {
 		hashtable.put("locationCity", locations.getCity().strip()); 
 		hashtable.put("locationState", locations.getState().strip());
 		hashtable.put("locationZip", locations.getZip().strip());
-		hashtable.put("locationLatitude", locations.getLatitude().strip());
-		hashtable.put("locationLongitude", locations.getLongitude().strip());
+		hashtable.put("locationLatitude", "");
+		hashtable.put("locationLongitude", "");
 		hashtable.put("locationType", locations.getLocationType().strip());
 
 		Locations result;
