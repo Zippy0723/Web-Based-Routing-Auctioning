@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLEncoder;
 
@@ -94,4 +95,62 @@ public class ApiServiceImpl {
 	            return str;
 	        }
 	    }
+	 
+	 public String fetchDistanceBetweenCoordinates(String originLatitude, String originLongitude, String destinationLatitude, String destinationLongitude) {
+		 
+		 String apiKey = "AIzaSyC9WwWWVbzUHeUBgj9AAh1aSMjSsrPpELM"; 
+	     String result = "";
+	     
+	     String urlString = "https://maps.googleapis.com/maps/api/directions/json?" +
+	                "origin=" + originLatitude + "," + originLongitude +
+	                "&destination=" + destinationLatitude + "," + destinationLongitude +
+	                "&key=" + apiKey;
+
+	        // Open a connection to the URL
+	     
+	     try {
+	        URL url;
+			url = new URL(urlString);
+
+	        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+	        connection.setRequestMethod("GET");
+
+	        // Get the response from the API
+	        int responseCode = connection.getResponseCode();
+	        BufferedReader reader;
+	        if (responseCode == HttpURLConnection.HTTP_OK) {
+	        	reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+	        } else {
+	        	reader = new BufferedReader(new InputStreamReader(connection.getErrorStream()));
+	        }
+
+	        // Read the response into a StringBuilder
+	        StringBuilder response = new StringBuilder();
+	        String line;
+	        while ((line = reader.readLine()) != null) {
+	        	response.append(line);
+	        }
+	        reader.close();
+
+	        // Parse the JSON response using Jackson
+	        ObjectMapper objectMapper = new ObjectMapper();
+	        JsonNode root = objectMapper.readTree(response.toString());
+
+	        // Extract the distance value from the JSON data
+	        JsonNode routes = root.get("routes");
+	        JsonNode firstRoute = routes.get(0);
+	        JsonNode legs = firstRoute.get("legs");
+	        JsonNode firstLeg = legs.get(0);
+	        JsonNode distanceNode = firstLeg.get("distance");
+	        result = distanceNode.get("text").asText();
+	        
+	        String [] parts = result.split(" ");
+	        result = parts[0];
+
+	     } catch (Exception e) {
+	    	 return result;
+	     }
+	     return result;
+	 } 
+
 }
