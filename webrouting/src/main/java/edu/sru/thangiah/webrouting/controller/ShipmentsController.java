@@ -10,6 +10,7 @@ import java.util.Date;
 import java.util.EmptyStackException;
 import java.util.Hashtable;
 import java.util.List;
+import java.util.Optional;
 
 import javax.servlet.http.HttpSession;
 
@@ -45,6 +46,7 @@ import edu.sru.thangiah.webrouting.domain.Carriers;
 import edu.sru.thangiah.webrouting.domain.Notification;
 import edu.sru.thangiah.webrouting.domain.Shipments;
 import edu.sru.thangiah.webrouting.domain.User;
+import edu.sru.thangiah.webrouting.domain.Vehicles;
 import edu.sru.thangiah.webrouting.repository.BidsRepository;
 import edu.sru.thangiah.webrouting.repository.CarriersRepository;
 import edu.sru.thangiah.webrouting.repository.ShipmentsRepository;
@@ -1015,6 +1017,59 @@ public class ShipmentsController {
 		shipmentsRepository.save(shipment);
 
 		return "redirect:" + (String) session.getAttribute("redirectLocation");
+	}
+	
+	@GetMapping({"/assignvehicles/{id}"})
+	public String assignVehicles(@PathVariable("id") long id,Model model, HttpSession session) {
+		
+		Shipments shipment = shipmentsRepository.findById(id)
+				.orElseThrow(() -> new IllegalArgumentException("Invalid Shipment Id:" + id));
+		ArrayList<Vehicles> carrierVehicles = (ArrayList<Vehicles>) vehiclesRepository.findAll();
+		
+		User user = userService.getLoggedInUser();
+		model.addAttribute("user",user);
+		model = NotificationController.loadNotificationsIntoModel(user, model);
+		System.out.println("This is a test message");
+		model.addAttribute("currentPage","/shipments");
+
+		try {
+			model.addAttribute("message",session.getAttribute("message"));
+		} catch (Exception e){
+			//do nothing if there is no error mssage
+		}
+		session.removeAttribute("message");
+		
+		model.addAttribute("shipment",shipment);
+		model.addAttribute("shipmentId",shipment.getId());
+		model.addAttribute("vehicles",carrierVehicles);
+		model.addAttribute("selectedVehicleId", 1); //TODO: this will probably break if there is no carrier with ID 1 in the database
+		model.addAttribute("redirectLocation",(String)session.getAttribute("redirectLocation"));
+		
+		return "assign-vehicles";
+	}
+	
+	@PostMapping("/selectcarriervehicle")
+	public String selectCarrierVehicle(@RequestParam("selectedVehicleId") Long selectedVehicleId,
+			@RequestParam("shipmentId") Long shipmentId ,Model model, HttpSession session) {
+		
+		Vehicles carrierVehicle = vehiclesRepository.findById(selectedVehicleId)
+				.orElseThrow(() -> new IllegalArgumentException("Invalid Carrier Id:" + selectedVehicleId));
+		Shipments shipment = shipmentsRepository.findById(shipmentId)
+				.orElseThrow(() -> new IllegalArgumentException("Invalid Shipment Id:" + shipmentId));
+		
+		model.addAttribute("selectedCarrierId",selectedVehicleId);
+		
+		assignVehicle(shipment, carrierVehicle);
+
+		return "redirect:" + session.getAttribute("redirectLocation");
+	}
+	private void assignVehicle(Shipments shipment, Vehicles carrierVehicle) {
+		// TODO Auto-generated method stub
+		//User user = VehiclesController.getUserFromVehicles(carrierVehicle);
+		//notificationService.addNotification(user, "Vehicle " + carrierVehicle.getId() + " has been assigned to shipper: " + shipment.getUser().getUsername() + ".", true);
+
+		shipment.setVehicle(carrierVehicle);
+		shipmentsRepository.save(shipment);
 	}
 
 	/*
