@@ -23,6 +23,9 @@
                         <li sec:authorize="hasAuthority('CARRIER')" class="navitem">
                             <a th:class="${currentPage == '/drivers' ? 'selected' : 'navlink'}" id="nav_drivers" href="/drivers">Drivers</a>
                         </li>
+                        <li sec:authorize="hasAuthority('SHIPPER')" class="navitem">
+                            <a th:class="${currentPage == '/freightratetable' ? 'selected' : 'navlink'}" id="nav_drivers" href="/freightratetable">Freight Rate</a>
+                        </li>
                         <li sec:authorize="hasAuthority('CARRIER')" class="navitem">
                             <a th:class="${currentPage == '/locations' ? 'selected' : 'navlink'}" id="nav_locations" href="/locations">Locations</a>
                         </li>
