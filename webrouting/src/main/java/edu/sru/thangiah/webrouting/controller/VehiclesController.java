@@ -36,6 +36,7 @@ import edu.sru.thangiah.webrouting.domain.VehicleTypes;
 import edu.sru.thangiah.webrouting.domain.Vehicles;
 import edu.sru.thangiah.webrouting.repository.CarriersRepository;
 import edu.sru.thangiah.webrouting.repository.LocationsRepository;
+import edu.sru.thangiah.webrouting.repository.ShipmentsRepository;
 import edu.sru.thangiah.webrouting.repository.VehicleTypesRepository;
 import edu.sru.thangiah.webrouting.repository.VehiclesRepository;
 import edu.sru.thangiah.webrouting.services.NotificationService;
@@ -61,6 +62,8 @@ public class VehiclesController {
 	private CarriersRepository carriersRepository;
 
 	private LocationsRepository locationsRepository;
+	
+	private ShipmentsRepository shipmentsRepository;
 
 	@Autowired
 	private UserService userService;
@@ -83,9 +86,10 @@ public class VehiclesController {
 	 * @param vehiclesRepository Used to interact with the vehicles in the database
 	 * @param vehicleTypesRepository Used to interact with the vehicle types in the database
 	 */
-	public VehiclesController(VehiclesRepository vehiclesRepository, VehicleTypesRepository vehicleTypesRepository) {
+	public VehiclesController(VehiclesRepository vehiclesRepository, VehicleTypesRepository vehicleTypesRepository, ShipmentsRepository shipmentsRepository) {
 		this.vehiclesRepository = vehiclesRepository;
-		this.vehicleTypesRepository = vehicleTypesRepository;;
+		this.vehicleTypesRepository = vehicleTypesRepository;
+		this.shipmentsRepository = shipmentsRepository;
 	}
 
 	/**
@@ -551,5 +555,33 @@ public class VehiclesController {
 
 		return "redirect:" + redirectLocation;
 	}
-
+	
+	@RequestMapping("assignvehicle/{id}")
+	public String assignVehicle(@PathVariable("id") long shipmentId, Model model) {
+		User user = userService.getLoggedInUser();
+		model.addAttribute("currentPage","/shipments");
+		List<Vehicles> vehicles = (List<Vehicles>) user.getCarrier().getVehicles();
+		Shipments shipment = shipmentsRepository.findById(shipmentId)
+				.orElseThrow(() -> new IllegalArgumentException("Invalid shipment Id:" + shipmentId));
+		
+		model.addAttribute("shipment",shipment);
+		model.addAttribute("vehicles",vehicles);
+		model.addAttribute("selectedVehicle",vehicles.get(0));
+		
+		
+		model = NotificationController.loadNotificationsIntoModel(user, model);
+		return "assignvehicle";
+	}
+	
+	@PostMapping("/assignvehicletransaction/{id}")
+	public String assignVehicle(@PathVariable("id") long shipmentId, @RequestParam("vehicle") Vehicles vehicle, Model model, HttpSession session) {
+		String redirectLocation = (String) session.getAttribute("redirectLocation");
+		Shipments shipment = shipmentsRepository.findById(shipmentId)
+				.orElseThrow(() -> new IllegalArgumentException("Invalid shipment Id:" + shipmentId));
+		
+		shipment.setVehicle(vehicle);
+		shipmentsRepository.save(shipment);
+		
+		return "redirect:" + redirectLocation;
+	}
 }

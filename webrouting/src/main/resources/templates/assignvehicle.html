@@ -1,0 +1,55 @@
+<!doctype html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+	<head>
+		<title>Add Maintenance Order</title>
+
+		<link rel="stylesheet" type="text/css" href="/styles/reset.css" />
+        <link rel="stylesheet" type="text/css" href="/styles/main.css" />
+        <link rel="stylesheet" type="text/css" href="/styles/login.css">
+        <link rel="stylesheet" type="text/css" href="/styles/menubar.css">
+        <link rel="stylesheet" type="text/css" href="/styles/tables.css">
+
+        <link rel="stylesheet" type="text/css" href="/styles/smoothness/jquery-ui-1.10.2.css" />
+
+	</head>
+	<body>
+		<div id="wrapper">
+
+            <div id="heading">
+                <h1 class="heading_content">Enterprise Routing System&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;Customer Service: 1 (800) 778-9111</h1>
+            </div>
+            <div id="menu-wrapper">
+            	<br><br>
+            </div>
+            
+           <div th:replace="fragments/general.html :: sidebar"></div>
+           <div th:replace="fragments/general.html :: profile-bar"></div>
+			<script src="https://kit.fontawesome.com/fe29baf689.js" crossorigin="anonymous"></script>
+			
+			<div id="content">
+				<span class="nav-expand">
+  					<button class=""  id="hamburger" style="display:none" onclick="nav_open()">☰</button>
+				</span>
+				<br><br>
+                <h2>Assign Vehicle to Shipment</h2>
+                <form action="#" th:action="@{/assignvehicletransaction/{shipmentId}(shipmentId=${shipment.id})}" method="post">
+        <hr>
+        <div class="form-group">
+            <select name="vehicle" class="form-control" required>
+                <option value="" disabled selected>Select a vehicle</option>
+                <th:block th:each="vehicle : ${vehicles}">
+                    <option th:text="${vehicle}" th:value="${vehicle.id}"></option>
+                </th:block>
+            </select>
+            <button type="submit" class="btn btn-primary">Assign Vehicle</button>
+        </div>
+    </form>
+            </div>
+		</div>
+
+		<div class="footer">
+        </div>
+		<script src="../javascript/pageload.js">
+		</script>
+	</body>
+</html>
