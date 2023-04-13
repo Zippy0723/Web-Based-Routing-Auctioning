@@ -49,6 +49,9 @@ public class ValidationServiceImp {
 
 	@Autowired
 	private UserService userService;
+	
+	@Autowired
+	private ApiServiceImpl apiServiceImp;
 
 	private CarriersRepository carriersRepository;
 
@@ -103,7 +106,7 @@ public class ValidationServiceImp {
 				Shipments shipment = new Shipments();
 				XSSFRow row = worksheet.getRow(i);
 
-				for (int j = 0; j<16; j++) {
+				for (int j = 0; j<11; j++) {
 					if (row.getCell(j)== null || row.getCell(j).toString().equals("")) {
 						isNull = true;
 					}
@@ -117,6 +120,10 @@ public class ValidationServiceImp {
 				String freightBillNumber = "0.00";							//Not Set By Upload
 				String paidAmount = "0.00";									//Not Set By Upload
 				String fullFreightTerms = "PENDING"; 						//Not Set By Upload (ALWAYS PENDING)
+				String shipperLatitude = "";
+				String shipperLongitude = "";
+				String consigneeLatitude = "";
+				String consigneeLongitude = "";
 
 
 				String clientName = row.getCell(0).toString().strip();
@@ -128,24 +135,18 @@ public class ValidationServiceImp {
 				String shipperCity = row.getCell(6).toString().strip();
 				String shipperState = row.getCell(7).toString().strip();
 				String shipperZip = row.getCell(8).toString().strip();
-				String shipperLatitude = row.getCell(9).toString().strip();
-				String shipperLongitude = row.getCell(10).toString().strip();
-				String consigneeCity = row.getCell(11).toString().strip();
-				String consigneeState = row.getCell(12).toString().strip();
-				String consigneeZip = row.getCell(13).toString().strip();
-				String consigneeLatitude = row.getCell(14).toString().strip();
-				String consigneeLongitude = row.getCell(15).toString().strip();
+				String consigneeCity = row.getCell(9).toString().strip();
+				String consigneeState = row.getCell(10).toString().strip();
+				String consigneeZip = row.getCell(11).toString().strip();
+
 
 
 				commodityClass = commodityClass.substring(0, commodityClass.length() - 2);
 				commodityPieces = commodityPieces.substring(0, commodityPieces.length() - 2);
 				commodityPaidWeight = commodityPaidWeight.substring(0, commodityPaidWeight.length() - 2);
 				shipperZip = shipperZip.substring(0, shipperZip.length() - 2);
-				shipperLatitude = shipperLatitude.substring(0, shipperLatitude.length() - 2);
-				shipperLongitude = shipperLongitude.substring(0, shipperLongitude.length() - 2);
 				consigneeZip = consigneeZip.substring(0, consigneeZip.length() - 2);
-				consigneeLatitude = consigneeLatitude.substring(0, consigneeLatitude.length() - 2);
-				consigneeLongitude = consigneeLongitude.substring(0, consigneeLongitude.length() - 2);
+
 
 
 				Hashtable<String, String> hashtable = new Hashtable<>();
@@ -250,9 +251,9 @@ public class ValidationServiceImp {
 			return null;
 		}
 
-		if (!(clientName.length() <= 64 && clientName.length() > 0) || !(clientName.matches("^[a-zA-Z0-9.]+$"))) {
-			Logger.error("{} || attempted to upload a shipment but the Client Name must be between 1 and 64 characters and alphanumeric.",user.getUsername());
-			session.setAttribute("message", "Client Name must be between 1 and 64 characters and alphanumeric.");
+		if (!(clientName.length() <= 64 && clientName.length() > 0)) {
+			Logger.error("{} || attempted to upload a shipment but the Client Name must be between 1 and 64 characters.",user.getUsername());
+			session.setAttribute("message", "Client Name must be between 1 and 64 characters.");
 			return null;
 		}
 
@@ -262,13 +263,11 @@ public class ValidationServiceImp {
 			return null;
 		}
 
-
 		if(!(date.length() <= 12 && date.length() > 0 && date.matches("^\\d{2}-(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)-\\d{4}$"))) { 
 			Logger.error("{} || attempted to upload a shipment but the Date must be between 1 and 12 characters and formated MM/DD/YYYY.",user.getUsername());
 			session.setAttribute("message", "Date must be between 1 and 12 characters and formated MM/DD/YYYY.");
 			return null;
 		}
-
 
 		if(!(commodityClass.length() <= 12 && commodityClass.length() > 0) || !(commodityClass.matches("^[a-zA-Z0-9.]+$"))) {
 			Logger.error("{} || attempted to upload a shipment but the Commodity Class must be between 1 and 12 characters and alphanumeric.",user.getUsername());
@@ -289,8 +288,8 @@ public class ValidationServiceImp {
 		}
 
 		if(!(shipperCity.length() <= 64 && shipperCity.length() > 0) || !(shipperCity.matches("^[A-Za-z]+(?:[\\s-][A-Za-z]+)*$"))) {
-			Logger.error("{} || attempted to upload a shipment but the Shipper City must be between 1 and 64 characters and is alphabetic.",user.getUsername());
-			session.setAttribute("message", "Shipper City must be between 1 and 64 characters and is alphabetic.");
+			Logger.error("{} || attempted to upload a shipment but the Shipper City must be between 1 and 64 characters and alphabetic.",user.getUsername());
+			session.setAttribute("message", "Shipper City must be between 1 and 64 characters and alphabetic.");
 			return null;
 		}
 
@@ -301,26 +300,14 @@ public class ValidationServiceImp {
 		}
 
 		if(!(shipperZip.length() <= 12 && shipperZip.length() > 0) || !(shipperZip.matches("^[0-9.]+$"))){
-			Logger.error("{} || attempted to upload a shipment but the Shipper Zip must be between 1 and 12 characters and is numeric.",user.getUsername());
-			session.setAttribute("message", "Shipper Zip must be between 1 and 12 characters and is numeric.");
-			return null;
-		}
-
-		if(!(shipperLatitude.matches("^(-?[0-8]?\\d(\\.\\d{1,7})?|90(\\.0{1,7})?)$"))) {
-			Logger.error("{} || attempted to upload a shipment but the Shipper Latitude must be between 90 and -90 up to 7 decimal places.",user.getUsername());
-			session.setAttribute("message", "Shipper Latitude must be between 90 and -90 up to 7 decimal places.");
-			return null;
-		}
-
-		if(!(shipperLongitude.matches("^-?(180(\\.0{1,7})?|\\d{1,2}(\\.\\d{1,7})?|1[0-7]\\d(\\.\\d{1,7})?|-180(\\.0{1,7})?|-?\\d{1,2}(\\.\\d{1,7})?)$"))) {
-			Logger.error("{} || attempted to upload a shipment but the Shipper Longitude must be between -180 and 180 up to 7 decimal places.",user.getUsername());
-			session.setAttribute("message", "Shipper Longitude must be between -180 and 180 up to 7 decimal places.");
+			Logger.error("{} || attempted to upload a shipment but the Shipper Zip must be between 1 and 12 characters and numeric.",user.getUsername());
+			session.setAttribute("message", "Shipper Zip must be between 1 and 12 characters and numeric.");
 			return null;
 		}
 
 		if(!(consigneeCity.length() <= 64 && consigneeCity.length() > 0) || !( consigneeCity.matches("^[A-Za-z]+(?:[\\s-][A-Za-z]+)*$"))) {
-			Logger.error("{} || attempted to upload a shipment but the Consignee City must be between 1 and 64 characters and is alphabetic.",user.getUsername());
-			session.setAttribute("message", "Consignee City must be between 1 and 64 characters and is alphabetic.");
+			Logger.error("{} || attempted to upload a shipment but the Consignee City must be between 1 and 64 characters and alphabetic.",user.getUsername());
+			session.setAttribute("message", "Consignee City must be between 1 and 64 characters and alphabetic.");
 			return null;
 		}
 
@@ -331,24 +318,29 @@ public class ValidationServiceImp {
 		}
 
 		if(!(consigneeZip.length() <= 12 && consigneeZip.length() > 0) || !(consigneeZip.matches("^[0-9.]+$"))){
-			Logger.error("{} || attempted to upload a shipment but the Consignee Zip must be between 1 and 12 characters and is alphabetic.",user.getUsername());
+			Logger.error("{} || attempted to upload a shipment but the Consignee Zip must be between 1 and 12 characters and numeric.",user.getUsername());
 			session.setAttribute("message", "Consignee Zip must be between 1 and 12 characters and is alphabetic.");
 			return null;
 		}
 
-		if(!(consigneeLatitude.matches("^(-?[0-8]?\\d(\\.\\d{1,7})?|90(\\.0{1,7})?)$"))) {
-			Logger.error("{} || attempted to upload a shipment but the Consignee Latitude must be between 90 and -90 up to 7 decimal places.",user.getUsername());
-			session.setAttribute("message", "Consignee Latitude must be between 90 and -90 up to 7 decimal places.");
-			return null;
-		}
+		String shipperLatAndLong = apiServiceImp.fetchLatitudeAndLongitude(shipperCity, shipperState);
+		String consigneeLatAndLong = apiServiceImp.fetchLatitudeAndLongitude(consigneeCity, consigneeState);
 
-		if(!(consigneeLongitude.matches("^-?(180(\\.0{1,7})?|\\d{1,2}(\\.\\d{1,7})?|1[0-7]\\d(\\.\\d{1,7})?|-180(\\.0{1,7})?|-?\\d{1,2}(\\.\\d{1,7})?)$"))) {
-			Logger.error("{} || attempted to upload a shipment but the Consignee Longitude must be between 180 and -180 up to 7 decimal places.",user.getUsername());
-			session.setAttribute("message", "Consignee Longitude must be between 180 and -180 up to 7 decimal places.");
-			return null;
+		if (!shipperLatAndLong.equals("")){
+			String[] parts = shipperLatAndLong.split("\\|");
+			shipperLatitude = parts[0];
+			shipperLongitude = parts[1];
 		}
+		
+		if (!consigneeLatAndLong.equals("")){
+			String[] parts = consigneeLatAndLong.split("\\|");
+			consigneeLatitude = parts[0];
+			consigneeLongitude = parts[1];
+		}
+		
 		Shipments shipment = new Shipments();
-
+		
+		
 		shipment.setClient(clientName);
 		shipment.setClientMode(clientMode);
 		shipment.setShipDate(date);
@@ -473,7 +465,6 @@ public class ValidationServiceImp {
 		for(VehicleTypes v : repoVehicleTypes) {
 			allVehicleTypes.add(v.getMake() + " " + v.getModel());	
 		}
-
 
 		String type = (String) hashtable.get("type");
 		String subType = (String) hashtable.get("subType");
@@ -633,8 +624,7 @@ public class ValidationServiceImp {
 				XSSFRow row = worksheet.getRow(i);
 
 				if ((row.getCell(0)== null || row.getCell(0).toString().equals("")) || (row.getCell(1)== null || row.getCell(1).toString().equals("")) || (row.getCell(3)== null || row.getCell(3).toString().equals("")) 
-						|| (row.getCell(4)== null || row.getCell(4).toString().equals("")) || (row.getCell(5)== null || row.getCell(5).toString().equals("")) || (row.getCell(6)== null || row.getCell(6).toString().equals(""))
-						|| (row.getCell(7)== null || row.getCell(7).toString().equals("")) || (row.getCell(8)== null || row.getCell(8).toString().equals(""))) {
+						|| (row.getCell(4)== null || row.getCell(4).toString().equals("")) || (row.getCell(5)== null || row.getCell(5).toString().equals("")) || (row.getCell(6)== null || row.getCell(6).toString().equals(""))) {
 					break;
 				}
 
@@ -644,9 +634,9 @@ public class ValidationServiceImp {
 				String locationCity = row.getCell(3).toString().strip();
 				String locationState = row.getCell(4).toString().strip();
 				String locationZip = row.getCell(5).toString().strip();
-				String locationLatitude = row.getCell(6).toString().strip();
-				String locationLongitude = row.getCell(7).toString().strip();
-				String locationType = row.getCell(8).toString().strip();
+				String locationType = row.getCell(6).toString().strip();
+				String locationLatitude = "";
+				String locationLongitude = "";
 
 				locationZip = locationZip.substring(0, locationZip.length() - 2);
 
@@ -755,24 +745,20 @@ public class ValidationServiceImp {
 			return null;
 		}
 
-		if(!(locationLatitude.length() <= 13 && locationLatitude.length() > 0) || !(locationLatitude.matches("^(-?[0-8]?\\d(\\.\\d{1,7})?|90(\\.0{1,7})?)$"))){ 
-			Logger.error("{} || attempted to upload a location latitude must be between 90 and -90 up to 7 decimal places." ,user.getUsername());
-			session.setAttribute("message", "Latitude must be between 90 and -90 up to 7 decimal places.");
-			return null;
-		}
-
-		if(!(locationLongitude.length() <= 13 && locationLongitude.length() > 0) || !(locationLongitude.matches("^-?(180(\\.0{1,7})?|\\d{1,2}(\\.\\d{1,7})?|1[0-7]\\d(\\.\\d{1,7})?|-180(\\.0{1,7})?|-?\\d{1,2}(\\.\\d{1,7})?)$"))){ 
-			Logger.error("{} || attempted to upload a location longitude must be between -180 and 180 up to 7 decimal places.",user.getUsername());
-			session.setAttribute("message", "Longitude must be between -180 and 180 up to 7 decimal places.");
-			return null;
-		}
-
 		if(!(locationType.length() <= 64 && locationType.length() > 0) || !(locationType.matches("^[a-zA-Z ]+$"))){ 
 			Logger.error("{} || attempted to upload a location type must be 1 to 32 alphabetic characters.",user.getUsername());
 			session.setAttribute("message", "Type must be 1 to 32 alphabetic characters.");
 			return null;
 		}
 
+		String latAndLong = apiServiceImp.fetchLatitudeAndLongitude(locationCity, locationState);
+
+		if (!latAndLong.equals("")){
+			String[] parts = latAndLong.split("\\|");
+			locationLatitude = parts[0];
+			locationLongitude = parts[1];
+		}
+		
 		Locations location = new Locations();
 
 
@@ -873,8 +859,6 @@ public class ValidationServiceImp {
 
 		List<String> states = Arrays.asList("Alabama", "Alaska", "Arizona", "Arkansas", "California", "Colorado", "Connecticut", "Delaware", "Florida", "Georgia", "Hawaii", "Idaho", "Illinois", "Indiana", "Iowa", "Kansas", "Kentucky", "Louisiana", "Maine", "Maryland", "Massachusetts", "Michigan", "Minnesota", "Mississippi", "Missouri", "Montana", "Nebraska", "Nevada", "New Hampshire", "New Jersey", "New Mexico", "New York", "North Carolina", "North Dakota", "Ohio", "Oklahoma", "Oregon", "Pennsylvania", "Rhode Island", "South Carolina", "South Dakota", "Tennessee", "Texas", "Utah", "Vermont", "Virginia", "Washington", "West Virginia", "Wisconsin", "Wyoming");
 		List<String> stateAbbreviations = Arrays.asList("AL", "AK", "AZ", "AR", "CA", "CO", "CT", "DE", "FL", "GA", "HI", "ID", "IL", "IN", "IA", "KS", "KY", "LA", "ME", "MD", "MA", "MI", "MN", "MS", "MO", "MT", "NE", "NV", "NH", "NJ", "NM", "NY", "NC", "ND", "OH", "OK", "OR", "PA", "RI", "SC", "SD", "TN", "TX", "UT", "VT", "VA", "WA", "WV", "WI", "WY");
-
-
 
 		String firstName = (String) hashtable.get("firstName");
 		String lastName = (String)hashtable.get("lastName");
@@ -1843,18 +1827,6 @@ public class ValidationServiceImp {
 			return null;
 		}
 
-		if(!(locationLatitude.length() <= 13 && locationLatitude.length() > 0) || !(locationLatitude.matches("^(-?[0-8]?\\d(\\.\\d{1,7})?|90(\\.0{1,7})?)$"))){ 
-			Logger.error("{} || attempted to upload a location latitude must be between 90 and -90 up to 7 decimal places." ,user.getUsername());
-			session.setAttribute("message", "Latitude must be between 90 and -90 up to 7 decimal places.");
-			return null;
-		}
-
-		if(!(locationLongitude.length() <= 13 && locationLongitude.length() > 0) || !(locationLongitude.matches("^-?(180(\\.0{1,7})?|\\d{1,2}(\\.\\d{1,7})?|1[0-7]\\d(\\.\\d{1,7})?|-180(\\.0{1,7})?|-?\\d{1,2}(\\.\\d{1,7})?)$"))){ 
-			Logger.error("{} || attempted to upload a location longitude must be between -180 and 180 up to 7 decimal places.",user.getUsername());
-			session.setAttribute("message", "Longitude must be between -180 and 180 up to 7 decimal places.");
-			return null;
-		}
-
 		if(!(locationType.length() <= 64 && locationType.length() > 0) || !(locationType.matches("^[a-zA-Z ]+$"))){ 
 			Logger.error("{} || attempted to upload a location type must be 1 to 32 alphabetic characters.",user.getUsername());
 			session.setAttribute("message", "Type must be 1 to 32 alphabetic characters.");
@@ -1863,6 +1835,13 @@ public class ValidationServiceImp {
 
 		Locations location = new Locations();
 
+		String latAndLong = apiServiceImp.fetchLatitudeAndLongitude(locationCity, locationState);
+
+		if (!latAndLong.equals("")){
+			String[] parts = latAndLong.split("\\|");
+			locationLatitude = parts[0];
+			locationLongitude = parts[1];
+		}
 
 		location.setName(locationName);
 		location.setStreetAddress1(streetAddress1);
@@ -2060,9 +2039,9 @@ public class ValidationServiceImp {
 
 
 
-		if (!(clientName.length() <= 64 && clientName.length() > 0) || !(clientName.matches("^[a-zA-Z0-9.]+$"))) {
-			Logger.error("{} || attempted to edit a shipment but the Client Name must be between 1 and 64 characters and alphanumeric.",user.getUsername());
-			session.setAttribute("message", "Client Name must be between 1 and 64 characters and alphanumeric.");
+		if (!(clientName.length() <= 64 && clientName.length() > 0)) {
+			Logger.error("{} || attempted to edit a shipment but the Client Name must be between 1 and 64 characters.",user.getUsername());
+			session.setAttribute("message", "Client Name must be between 1 and 64 characters.");
 			return null;
 		}
 
@@ -2116,18 +2095,6 @@ public class ValidationServiceImp {
 			return null;
 		}
 
-		if(!(shipperLatitude.matches("^(-?[0-8]?\\d(\\.\\d{1,7})?|90(\\.0{1,7})?)$"))) {
-			Logger.error("{} || attempted to edit a shipment but the Shipper Latitude must be between 90 and -90 up to 7 decimal places.",user.getUsername());
-			session.setAttribute("message", "Shipper Latitude must be between 90 and -90 up to 7 decimal places.");
-			return null;
-		}
-
-		if(!(shipperLongitude.matches("^-?(180(\\.0{1,7})?|\\d{1,2}(\\.\\d{1,7})?|1[0-7]\\d(\\.\\d{1,7})?|-180(\\.0{1,7})?|-?\\d{1,2}(\\.\\d{1,7})?)$"))) {
-			Logger.error("{} || attempted to edit a shipment but the Shipper Longitude must be between -180 and 180 up to 7 decimal places.",user.getUsername());
-			session.setAttribute("message", "Shipper Longitude must be between -180 and 180 up to 7 decimal places.");
-			return null;
-		}
-
 		if(!(consigneeCity.length() <= 64 && consigneeCity.length() > 0) || !( consigneeCity.matches("^[A-Za-z]+(?:[\\s-][A-Za-z]+)*$"))) {
 			Logger.error("{} || attempted to edit a shipment but the Consignee City must be between 1 and 64 characters and is alphabetic.",user.getUsername());
 			session.setAttribute("message", "Consignee City must be between 1 and 64 characters and is alphabetic.");
@@ -2145,20 +2112,24 @@ public class ValidationServiceImp {
 			session.setAttribute("message", "Consignee Zip must be between 1 and 12 characters and is alphabetic.");
 			return null;
 		}
-
-		if(!(consigneeLatitude.matches("^(-?[0-8]?\\d(\\.\\d{1,7})?|90(\\.0{1,7})?)$"))) {
-			Logger.error("{} || attempted to edit a shipment but the Consignee Latitude must be between 90 and -90 up to 7 decimal places.",user.getUsername());
-			session.setAttribute("message", "Consignee Latitude must be between 90 and -90 up to 7 decimal places.");
-			return null;
-		}
-
-		if(!(consigneeLongitude.matches("^-?(180(\\.0{1,7})?|\\d{1,2}(\\.\\d{1,7})?|1[0-7]\\d(\\.\\d{1,7})?|-180(\\.0{1,7})?|-?\\d{1,2}(\\.\\d{1,7})?)$"))) {
-			Logger.error("{} || attempted to edit a shipment but the Consignee Longitude must be between 180 and -180 up to 7 decimal places.",user.getUsername());
-			session.setAttribute("message", "Consignee Longitude must be between 180 and -180 up to 7 decimal places.");
-			return null;
-		}
+		
 		Shipments shipment = new Shipments();
 
+		String shipperLatAndLong = apiServiceImp.fetchLatitudeAndLongitude(shipperCity, shipperState);
+		String consigneeLatAndLong = apiServiceImp.fetchLatitudeAndLongitude(consigneeCity, consigneeState);
+
+		if (!shipperLatAndLong.equals("")){
+			String[] parts = shipperLatAndLong.split("\\|");
+			shipperLatitude = parts[0];
+			shipperLongitude = parts[1];
+		}
+		
+		if (!consigneeLatAndLong.equals("")){
+			String[] parts = consigneeLatAndLong.split("\\|");
+			consigneeLatitude = parts[0];
+			consigneeLongitude = parts[1];
+		}
+		
 		shipment.setClient(clientName);
 		shipment.setClientMode(clientMode);
 		shipment.setShipDate(date);

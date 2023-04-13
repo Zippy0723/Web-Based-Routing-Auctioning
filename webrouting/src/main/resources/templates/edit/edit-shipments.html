@@ -131,13 +131,9 @@
 	                <label for="shipperZip">Shipper Zip: </label> 
 	                <input type="text" th:field="*{shipperZip}" id="shipperZip" placeholder="16057" size=19 required >
 
-	             	<br>
-	                <label for="shipperLatitude">Shipper Latitude: </label>  
-	                <input type="text" th:field="*{shipperLatitude}" id="shipperLatitude" placeholder="-89.4532612 or without '-'"size=19 required>
-
-	             	<br>
-	                <label for="shipperLongitude">Shipper Longitude: </label> 
-	                <input type="text" th:field="*{shipperLongitude}" id="shipperLongitude" placeholder="-179.5742489 or without '-'"size=19 required>
+	                
+	                <input  hidden=true type="text" th:field="*{shipperLatitude}" id="shipperLatitude" placeholder="-89.4532612 or without '-'"size=19 required>
+	                <input hidden=true type="text" th:field="*{shipperLongitude}" id="shipperLongitude" placeholder="-179.5742489 or without '-'"size=19 required>
 	
 	             	<br>
 	                <label for="consigneeCity">Consignee City: </label>  
@@ -202,13 +198,8 @@
 	                <label for="consigneeZip">Consignee Zip: </label>   
 	                <input type="text" th:field="*{consigneeZip}" id="consigneeZip" placeholder="17482" size=19 required>
 	              
-	             	<br>
-	                <label for="consigneeLatitude">Consignee Latitude: </label> 
-	                <input type="text" th:field="*{consigneeLatitude}" id="consigneeLatitude" placeholder="-89.628502 or without '-'"size=19 required>
-	                
-	             	<br>
-	                <label for="consigneeLongitude">Consignee Longitude: </label>
-	                <input type="text" th:field="*{consigneeLongitude}" id="consigneeLongitude" placeholder="-179.7265037 or without '-'" size=19 required>
+	                <input hidden=true type="text" th:field="*{consigneeLatitude}" id="consigneeLatitude" placeholder="-89.628502 or without '-'"size=19 required>
+	                <input hidden=true type="text" th:field="*{consigneeLongitude}" id="consigneeLongitude" placeholder="-179.7265037 or without '-'" size=19 required>
 	             
 	                <br><br>
 	                	<button class="buttons4" type="button" th:attr="onclick=|window.location.href='${redirectLocation}'|">Back</button>

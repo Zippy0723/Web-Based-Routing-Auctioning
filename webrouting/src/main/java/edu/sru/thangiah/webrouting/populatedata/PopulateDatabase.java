@@ -53,7 +53,7 @@ public class PopulateDatabase implements ApplicationRunner{
 					+ "(3,'2022-04-20','700.00','12:23:58',1,1)");
 		}
 		catch(SQLException bids) {
-			System.out.println(bids + " Bids have already been added");
+			//System.out.println(bids + " Bids have already been added");
 		}
 	}
 	/**
@@ -70,7 +70,7 @@ public class PopulateDatabase implements ApplicationRunner{
 					+ ",(3,'WE SHIP 4 U', 1,1,'24','SH1P','40000')");
 		}
 		catch(SQLException carriers) {
-			System.out.println(carriers + " Carriers have already been added");
+			//System.out.println(carriers + " Carriers have already been added");
 		}
 	}
 	
@@ -165,7 +165,7 @@ public class PopulateDatabase implements ApplicationRunner{
 					+ "(3,'STBLLC','FTL','15','1000','52','LANDER','42.8330140','-108.7306725','WY','82520','3587239','BID ACCEPTED','$50.00','','2022-07-26','OKLAHOMA CITY','35.5638694','-97.4705935','OK','73131',1,4,1)");
 		}
 		catch(SQLException shipments) {
-			System.out.println(shipments + " Shipments already inserted");
+			//System.out.println(shipments + " Shipments already inserted");
 		}
 	}
 	/**
@@ -236,7 +236,7 @@ public class PopulateDatabase implements ApplicationRunner{
 					+ "(2,'SHIPPER'),(3,'CARRIER'),(4,'MASTERLIST'),(5,'SHADOWADMIN')");
 			}
 		catch(SQLException Roles){
-			System.out.println(Roles + " Roles have been already added");
+			//System.out.println(Roles + " Roles have been already added");
 		}
 	}
 	
@@ -258,7 +258,7 @@ public class PopulateDatabase implements ApplicationRunner{
 					+ "(7,TRUE,'ShadowAdmin@gmail.com',1,NULL,NULL,'$2a$10$0mjUJWe24cNS.XoMLb/Ybur3EK0ps.787omMxs4y3DbGB2y6StgNC','ShadowAdmin',NULL,NULL,5)");
 		}
 		catch(SQLException Users) {
-			System.out.println(Users + " Users have already been created");
+			//System.out.println(Users + " Users have already been created");
 		} 
 	}
 	
@@ -286,45 +286,45 @@ public class PopulateDatabase implements ApplicationRunner{
 	 * @author Josh Gearhart	jjg1018@sru.edu
 	 */
 	public void populateDb() throws SQLException {
-		System.out.println("**** Starting Database Population ****");
+		//System.out.println("**** Starting Database Population ****");
 		sqlStatement = setStatement(connectToDatabase());
-		System.out.println("Populating Carriers Table May Throw error if already added");
+		//System.out.println("Populating Carriers Table May Throw error if already added");
 		populateCarriers(sqlStatement);
 		
-		System.out.println("Populating Contacts Table May Throw error if already added");
+		//System.out.println("Populating Contacts Table May Throw error if already added");
 		//populateContacts(sqlStatement);
 		
-		System.out.println("Populating Locations Table May Throw error if already added");
+		//System.out.println("Populating Locations Table May Throw error if already added");
 		//populateLocations(sqlStatement);
 		
-		System.out.println("Populating Roles table May Throw error if already added");
+		//System.out.println("Populating Roles table May Throw error if already added");
 		populateRolesTable(sqlStatement);
 		
-		System.out.println("Populating Technicians Table May Throw error if already added");
+		//System.out.println("Populating Technicians Table May Throw error if already added");
 		//populateTechnicians(sqlStatement);
 		
-		System.out.println("Populating User Table May Throw error if already added");
+		//System.out.println("Populating User Table May Throw error if already added");
 		populateUser(sqlStatement);
 		
-		System.out.println("Populating VehicleTypes Table May Throw error if already added");
+		//System.out.println("Populating VehicleTypes Table May Throw error if already added");
 		//populateVehicleTypes(sqlStatement);
 		
-		System.out.println("Populating Vehicle Table May Throw error if already added");
+		//System.out.println("Populating Vehicle Table May Throw error if already added");
 		//populateVehicle(sqlStatement);
 		
-		System.out.println("Populating Drivers Table May Throw error if already added");
+		//System.out.println("Populating Drivers Table May Throw error if already added");
 		//populateDriver(sqlStatement);
 		
-		System.out.println("Populating Shipments Table May Throw error if already added");
-		populateShipments(sqlStatement);
+		//System.out.println("Populating Shipments Table May Throw error if already added");
+		//populateShipments(sqlStatement);
 		
-		System.out.println("Populating Maintence Orders Table  May Throw error if already added");
+		//System.out.println("Populating Maintence Orders Table  May Throw error if already added");
 		//populateMaintenceOrders(sqlStatement);
 		
-		System.out.println("Populating Bids Table May Throw error if already added");
-		populateBids(sqlStatement);
+		//System.out.println("Populating Bids Table May Throw error if already added");
+		//populateBids(sqlStatement);
 		
-		System.out.println("**** Finished Populating Database, Program Ready! ***** ");
+		//System.out.println("**** Finished Populating Database, Program Ready! ***** ");
 		
 	}
 	/**
