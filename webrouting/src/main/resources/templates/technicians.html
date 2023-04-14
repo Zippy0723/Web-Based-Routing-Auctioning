@@ -33,11 +33,11 @@
 				<div th:if="${redirectLocation != '/technicians'}">
 				<p><button class="buttons6" th:attr="onclick=|window.location.href='${redirectLocation}'|">Back</button></p>
 				</div>
-				<br><br>
+				<br>
 				<div th:switch="${technicians}">
                     <h2 th:case="null">No technicians yet!</h2>
                     <div th:case="*">
-                    <span th:text="${successMessage}" class="successMessage"></span>
+                    <span type="hidden" th:text="${successMessage}" class="successMessage"></span>
     				<br><br>
                         <h2>Technicians</h2>
                         <br>
@@ -62,7 +62,7 @@
                                   	<td th:text="${technician.skill_grade}"></td>
                                   	<td><a th:href="@{/viewmaintenanceorders/{id}(id=${technician.id})}">View Requests</a></td>
                                     <td><a th:href="@{/edittechnician/{id}(id=${technician.id})}"><button style='font-size:11px'><i class='far fa-edit'></i></button></a></td>
-                                    <td><a href="#" th:data-object-type="${technician}" th:data-object-id="${technician.id}"  th:attr="onclick=${'deleteObjectConfirm(this,''/deletetechnicianconfirmation/'')'}"><button class="fa fa-times" style="color: red;"></button></a></td> 
+                                    <td><a href="#" th:data-object-type="${technician}" th:data-object-id="${technician.id}" th:data-object-name="delete" th:attr="onclick=${'deleteObjectConfirm(this,''/deletetechnicianconfirmation/'')'}"><button class="fa fa-times" style="color: red;"></button></a></td> 
                                 </tr>
                             </tbody>
                         </table>

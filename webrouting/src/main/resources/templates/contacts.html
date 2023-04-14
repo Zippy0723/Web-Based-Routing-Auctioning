@@ -38,8 +38,8 @@
 				<div th:switch="${contacts}">
                     <h2 th:case="null">No contacts yet!</h2>
                     <div th:case="*">
-                    <span th:text="${successMessage}" class="successMessage"></span>
-    				<br><br>
+                    <span type="hidden" th:text="${successMessage}" class="successMessage"></span>
+    				<br>
                         <h2>Contacts</h2>
                         <br>
                          <hr>
@@ -79,8 +79,7 @@
                                     <td th:text="${contact.primaryPhone}"></td>
                                     <td th:text="${contact.workPhone}"></td>
                                     <td><a th:href="@{/editcontact/{id}(id=${contact.id})}"><button style='font-size:11px'><i class='far fa-edit'></i></button></a></td>
-                                    <td><a href="#" th:data-object-type="${contact}" th:data-object-id="${contact.id}"  th:attr="onclick=${'deleteObjectConfirm(this,''/deletecontactconfirmation/'')'}"><button class="fa fa-times" style="color: red;"></button></a></td> 
-            
+                                    <td><a href="#" th:data-object-type="${contact}" th:data-object-id="${contact.id}" th:data-object-name="delete" th:attr="onclick=${'deleteObjectConfirm(this,''/deletecontactconfirmation/'')'}"><button class="fa fa-times" style="color: red;"></button></a></td> 
                                 </tr>
                             </tbody>
                         </table>

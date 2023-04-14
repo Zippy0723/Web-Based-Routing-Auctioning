@@ -90,7 +90,7 @@
                                         <td sec:authorize="hasAuthority('CARRIER')"><a th:href="@{/acceptawaitingshipment/{id}(id=${shipment.id})}"><button style='font-size:11px'><i class="far fa-check-circle" style="color: green;"></i></button></a></td>   
                                         <td sec:authorize="hasAuthority('CARRIER')"><a th:href="@{/denyawaitingshipment/{id}(id=${shipment.id})}"><button style='font-size:11px'><i class="far fa-times-circle" style="color: red;"></i></button></a></td>
                                         <td sec:authorize="hasAuthority('MASTERLIST')"><a th:href="@{/editshipment/{id}(id=${shipment.id})}"><button style='font-size:11px'><i class='far fa-edit'></i></button></a></td>
-                                        <td sec:authorize="hasAuthority('MASTERLIST')"><a href="#" th:data-object-type="${shipment.client}" th:data-object-id="${shipment.id}"  th:attr="onclick=${'deleteObjectConfirm(this,''/deleteshipmentconfirmation/'')'}"><button class="fa fa-times" style="color: red;"></button></a></td>                              
+                                        <td sec:authorize="hasAuthority('MASTERLIST')"><a href="#" th:data-object-type="${shipment.client}" th:data-object-id="${shipment.id}" th:data-object-name="delete" th:attr="onclick=${'deleteObjectConfirm(this,''/deleteshipmentconfirmation/'')'}"><button class="fa fa-times" style="color: red;"></button></a></td>                              
 	                                </tr>
 	                            </tbody>
 	                        </table>

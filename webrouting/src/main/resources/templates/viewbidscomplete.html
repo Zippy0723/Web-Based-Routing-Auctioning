@@ -60,7 +60,7 @@
                                     <td th:text="${bid.time}"></td>
                                     <td><a th:text= "${bid.carrier.carrierName}" th:href="@{/viewcarrier/{id}(id=${bid.carrier.id})}">View Bidder</a></td>
                                     <td sec:authorize="hasAuthority('MASTERLIST')"><a th:href="@{/editbids/{id}(id=${bid.id})}"><button style='font-size:11px'><i class='far fa-edit'></i></button></a></td>
-                                    <td sec:authorize="hasAuthority('MASTERLIST')"><a th:href="@{/deletebid/{id}(id=${bid.id})}"><button class="fa fa-times" style="color: red;" onclick="deleteFunction()"></button></a></td>
+                                    <td sec:authorize="hasAuthority('MASTERLIST')"><a href="#" th:data-object-type="${shipment}" th:data-object-id="${shipment.id}" th:data-object-name="delete"  th:attr="onclick=${'deleteObjectConfirm(this,''/deletebidconfirmation/'')'}"><button class="fa fa-times" style="color: red;"></button></a></td>
                                 </tr>
                             </tbody>
                         </table>
@@ -75,5 +75,7 @@
 		</script>
 		<script src="../javascript/pageload.js">
 		</script>
+		<script src="javascript/deleteObject.js"></script>
+		<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 	</body>
 </html>   
