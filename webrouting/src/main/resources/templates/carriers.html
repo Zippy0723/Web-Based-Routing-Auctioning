@@ -33,7 +33,7 @@
 				<br><br>
 				<div th:if="${redirectLocation != '/carriers'}">
 				<p><button class="buttons7" th:attr="onclick=|window.location.href='${redirectLocation}'|">Back</button></p>
-				</div>
+				</div><br>
 				<div th:switch="${carriers}">
                     <h2 th:case="null">No carriers yet!</h2>
                     <div th:case="*">
