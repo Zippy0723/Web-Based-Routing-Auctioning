@@ -53,7 +53,6 @@
                                     <th sec:authorize="hasAuthority('SHIPPER')">Accept Bid</th>
                                     <th sec:authorize="hasAnyAuthority('CARRIER','MASTERLIST')">Edit</th>
                                     <th sec:authorize="hasAnyAuthority('CARRIER','MASTERLIST')">Delete</th>
-                                    
                                 </tr>
                             </thead>
                             <tbody>
@@ -66,7 +65,7 @@
                                     <td><a th:text= "${bid.carrier.carrierName}" th:href="@{/viewcarrier/{id}(id=${bid.carrier.id})}">View Bidder</a></td>
                                     <td sec:authorize="hasAuthority('SHIPPER')"><a th:href="@{/acceptbid/{id}(id=${bid.id})}">Accept Bid</a></td>
                                     <td sec:authorize="hasAnyAuthority('CARRIER','MASTERLIST')"><a th:href="@{/editbids/{id}(id=${bid.id})}"><button style='font-size:11px'><i class='far fa-edit'></i></button></a></td>
-                                    <td sec:authorize="hasAnyAuthority('CARRIER','MASTERLIST')"><a href="#" th:data-object-type="${bid}" th:data-object-id="${bid.id}" th:data-object-name="delete"  th:attr="onclick=${'deleteObjectConfirm(this,''/deletebidconfirmation/'')'}"><button class="fa fa-times" style="color: red;"></button></a></td>
+                                    <td sec:authorize="hasAnyAuthority('CARRIER','MASTERLIST')"><a href="#" th:data-object-type="${bid.id}" th:data-object-id="${bid.id}" th:data-object-name="delete"  th:attr="onclick=${'deleteObjectConfirm(this,''/deletebidconfirmation/'')'}"><button class="fa fa-times" style="color: red;"></button></a></td>
                                 </tr>
                             </tbody>
                         </table>
