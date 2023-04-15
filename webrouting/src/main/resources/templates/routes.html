@@ -137,10 +137,12 @@
         calculateRouteBtn.addEventListener('click', function() {
             var start = new google.maps.LatLng(37.7749, -122.4194); // San Francisco
             var end = new google.maps.LatLng(40.7128, -74.0060); // New York City
+            var stop1 = new google.maps.LatLng(39.7392, -104.9903); // Denver
 
             var request = {
                 origin: start,
                 destination: end,
+                waypoints: [{location: stop1}],
                 travelMode: 'DRIVING'
             };
 
