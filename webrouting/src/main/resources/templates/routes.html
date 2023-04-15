@@ -30,10 +30,6 @@
 				<span class="nav-expand">
   					<button class=""  id="hamburger" style="display:none" onclick="nav_open()">☰</button>
 				</span>
-				<div th:if="${redirectLocation != '/routes'}">
-				<button class="buttons7" th:attr="onclick=|window.location.href='${redirectLocation}'|">Back</button>
-				<br>
-				</div>
                 <br><br>
                 <h2>Routes</h2>
 				<br>
@@ -72,10 +68,6 @@
                             <th>SCAC</th>
                             <th>Client Mode</th>
                             <th>Ship Date</th>
-                            <th>Freightbill Number</th>
-                            <th>Full Freight Terms</th>
-                            <th>Commodity Class</th>
-                            <th>Commodity Pieces</th>
                             <th>Shipper City</th>
                             <th>Shipper State</th>
                             <th>Shipper Zip</th>
@@ -95,10 +87,6 @@
                             <td th:text="${shipment.carrier.scac}"></td>
                             <td th:text="${shipment.clientMode}"></td>
                             <td th:text="${shipment.shipDate}"></td>
-                            <td th:text="${shipment.freightbillNumber}"></td>
-                            <td th:text="${shipment.fullFreightTerms}"></td>
-                            <td th:text="${shipment.commodityClass}"></td>
-                            <td th:text="${shipment.commodityPieces}"></td>
                             <td th:text="${shipment.shipperCity}"></td>
                             <td th:text="${shipment.shipperState}"></td>
                             <td th:text="${shipment.shipperZip}"></td>
@@ -112,6 +100,59 @@
                         </tr>
                     </tbody>
                 </table>
+                <div class="container">
+   					<div class="jumbotron">
+        				<h1>Google Maps Directions API Demo</h1>
+    				</div>
+    				<div class="row">
+        				<div class="col-md-4">
+            				<h2>Start Address</h2>
+           					 <input id="start" type="text" placeholder="Start Address">
+            				<br><br>
+            				<h2>End Address</h2>
+            				<input id="end" type="text" placeholder="End Address">
+            				<br><br>
+            				<button id="calculate-route-btn">Calculate Route</button>
+        			</div>
+        			<div class="col-md-8">
+            			<div id="map" style="height: 400px;"></div>
+        			</div>
+        			<br>
+    			</div>
+			</div>
+
+<script>
+    function initMap() {
+        var map = new google.maps.Map(document.getElementById('map'), {
+            zoom: 7,
+            center: {lat: 37.7749, lng: -122.4194} // Default map center
+        });
+
+        var directionsService = new google.maps.DirectionsService();
+        var directionsRenderer = new google.maps.DirectionsRenderer({
+            map: map
+        });
+
+        var calculateRouteBtn = document.getElementById('calculate-route-btn');
+        calculateRouteBtn.addEventListener('click', function() {
+            var start = new google.maps.LatLng(37.7749, -122.4194); // San Francisco
+            var end = new google.maps.LatLng(40.7128, -74.0060); // New York City
+
+            var request = {
+                origin: start,
+                destination: end,
+                travelMode: 'DRIVING'
+            };
+
+            directionsService.route(request, function(result, status) {
+                if (status == 'OK') {
+                    directionsRenderer.setDirections(result);
+                }
+            });
+        });
+    }
+</script>
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC9WwWWVbzUHeUBgj9AAh1aSMjSsrPpELM&callback=initMap&libraries=places"></script>
             </div>
             <br>
         </div>
