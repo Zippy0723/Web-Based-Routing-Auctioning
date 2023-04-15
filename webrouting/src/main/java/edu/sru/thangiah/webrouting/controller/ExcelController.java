@@ -510,7 +510,7 @@ public class ExcelController {
 			List<VehicleTypes> vehicleTypes = validationServiceImp.validateVehicleTypesSheet(vehicleTypesSheet, session);
 
 			if (vehicleTypes == null) {
-				Logger.error("{} || attempted to upload Vehicle Types but failed.",user.getUsername());
+				Logger.error("{} || attempted to upload Vehicle Types but "+ session.getAttribute("message") ,user.getUsername());
 				model.addAttribute("message", session.getAttribute("message"));
 				return "/excel/upload-vehicletypes"; 
 			}
@@ -571,7 +571,7 @@ public class ExcelController {
 			List<Locations> locations = validationServiceImp.validateLocationsSheet(locationsSheet, session);
 
 			if (locations == null) {
-				Logger.error("{} || attempted to upload Locations but failed.",user.getUsername());
+				Logger.error("{} || attempted to upload Lcoations but "+ session.getAttribute("message") ,user.getUsername());
 				model.addAttribute("message", session.getAttribute("message"));
 				return "/excel/upload-locations"; 
 			}
@@ -631,13 +631,13 @@ public class ExcelController {
 			List<Contacts> contacts = validationServiceImp.validateContactsSheet(contactsSheet, session);
 
 			if (contacts == null) {
-				Logger.error("{} || attempted to upload Contacts but failed.",user.getUsername());
+				Logger.error("{} || attempted to upload Contacts but "+ session.getAttribute("message") ,user.getUsername());
 				model.addAttribute("message", session.getAttribute("message"));
 				return "/excel/upload-contacts";
 			}
 			
 			if (contacts.size() == 0) {
-				Logger.error("{} || attempted to upload Contacts but failed.",user.getUsername());
+				Logger.error("{} || attempted to upload Contacts but failed due to the file being incorrectly formatted.",user.getUsername());
 				model.addAttribute("message", "This excel file is incorrectly formatted.");
 				return "/excel/upload-contacts";
 			}

@@ -97,72 +97,6 @@ public class VehicleTypesController {
 		return "vehicletypes";
 	}
 
-	/**
-	 * Redirects user to the /add/add-location page
-	 * @param model Used to add data to the model
-	 * @param vehicleTypes Used to store the information on the vehicle type being added
-	 * @param result Ensures the information provided by the user is valid
-	 * @return "/add/add-vehicletype"
-	 */
-	@RequestMapping({"/signupvehicletype"})
-	public String showVehicleTypeSignUpForm(Model model, VehicleTypes vehicleTypes, BindingResult result, HttpSession session) {
-
-		User user = userService.getLoggedInUser();
-		model = NotificationController.loadNotificationsIntoModel(user, model);
-		model.addAttribute("redirectLocation", (String) session.getAttribute("redirectLocation"));
-		model.addAttribute("currentPage","/vehicletypes");
-		return "/add/add-vehicletype";
-	}
-
-	/**
-	 * Adds a vehicle type to the database. Checks if there are errors in the form. <br>
-	 * If there are no errors, the vehicle type is saved in the vehicleTypesRepository. and the user is redirect to /vehicletypes <br>
-	 * If there are errors, the user is redirected to the /add/add-vehicletype page.
-	 * @param vehicleTypes Information on the vehicle type being added
-	 * @param result Ensure the information provided by the user is valid
-	 * @param model Used to add data to the model
-	 * @return "redirect:/vehicletypes" or "/add/add-vehicletype"
-	 */
-	@RequestMapping({"/addvehicletypes"})
-	public String addVehicleType(@Validated VehicleTypes vehicleTypes, BindingResult result, Model model, HttpSession session) {
-		userValidator.addition(vehicleTypes, result);
-		User loggedInUser = userService.getLoggedInUser();
-		Carriers carrier = loggedInUser.getCarrier();
-		model = NotificationController.loadNotificationsIntoModel(loggedInUser, model);
-		String redirectLocation = (String) session.getAttribute("redirectLocation");
-		model.addAttribute("redirectLocation", session.getAttribute("redirectLocation")); 
-		model.addAttribute("currentPage","/vehicletypes");
-
-		if (result.hasErrors()) {	
-			return "/add/add-vehicletype";
-		}
-
-		boolean deny = false;
-
-		List<VehicleTypes> types = (List<VehicleTypes>) vehicleTypesRepository.findAll();
-
-		for (VehicleTypes vt : types) {
-			if (vt.getType().equals(vehicleTypes.getType()) && vt.getSubType().equals(vehicleTypes.getSubType())) {
-				deny = true;
-				break;
-			}
-		}
-
-		if (deny == true) {
-			model.addAttribute("error", "Error: Vehicle Type already exists.");
-			Logger.error("{} || failed to update vehicle type because it already exists.", loggedInUser.getUsername());
-			model.addAttribute("vehicletypes", vehicleTypesRepository.findAll());
-
-			return "vehicletypes";
-		}
-
-		vehicleTypes.setCarrier(carrier);
-		vehicleTypesRepository.save(vehicleTypes);
-		Logger.info("{} || successfully saved the Vehicle type with ID {}.",loggedInUser.getUsername(), vehicleTypes.getId());
-
-		return "redirect:" + redirectLocation;
-	}
-
 
 	/**
 	 * Redirects user to the /uploadvehicletypes page when clicking "Upload an excel file" button in the Vehicle Types section of Carrier login
@@ -245,6 +179,7 @@ public class VehicleTypesController {
 
 		return "vehicletypes";
 	}
+	
 
 	@GetMapping("/editvehicletypes/{id}")
 	public String showVehicleTypesEditForm(@PathVariable("id") long id, Model model, HttpSession session) {
