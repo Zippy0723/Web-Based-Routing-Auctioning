@@ -78,6 +78,7 @@
                             <th>Consignee Zip</th>
                             <th>Latitude</th>
                             <th>Longitude</th>
+                            <th>Show Route on Map</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -97,23 +98,11 @@
                             <td th:text="${shipment.consigneeZip}"></td>
                             <td th:text="${shipment.consigneeLatitude}"></td>
                             <td th:text="${shipment.consigneeLongitude}"></td>
+                            <td><button th:attr="onclick='showShipmentOnMap(\'' + ${shipment.vehicle.location.latitude} + '\', \'' + ${shipment.vehicle.location.longitude} + '\', \'' + ${shipment.shipperLatitude} + '\', \'' + ${shipment.shipperLongitude} + '\', \'' + ${shipment.consigneeLatitude} + '\', \'' + ${shipment.consigneeLongitude} + '\')'">Show route on Map</button></td>
                         </tr>
                     </tbody>
                 </table>
                 <div class="container">
-   					<div class="jumbotron">
-        				<h1>Google Maps Directions API Demo</h1>
-    				</div>
-    				<div class="row">
-        				<div class="col-md-4">
-            				<h2>Start Address</h2>
-           					 <input id="start" type="text" placeholder="Start Address">
-            				<br><br>
-            				<h2>End Address</h2>
-            				<input id="end" type="text" placeholder="End Address">
-            				<br><br>
-            				<button id="calculate-route-btn">Calculate Route</button>
-        			</div>
         			<div class="col-md-8">
             			<div id="map" style="height: 400px;"></div>
         			</div>
@@ -123,34 +112,33 @@
 
 <script>
     function initMap() {
-        var map = new google.maps.Map(document.getElementById('map'), {
+        map = new google.maps.Map(document.getElementById('map'), {
             zoom: 7,
             center: {lat: 37.7749, lng: -122.4194} // Default map center
         });
 
-        var directionsService = new google.maps.DirectionsService();
-        var directionsRenderer = new google.maps.DirectionsRenderer({
+        directionsService = new google.maps.DirectionsService();
+        directionsRenderer = new google.maps.DirectionsRenderer({
             map: map
         });
 
-        var calculateRouteBtn = document.getElementById('calculate-route-btn');
-        calculateRouteBtn.addEventListener('click', function() {
-            var start = new google.maps.LatLng(37.7749, -122.4194); // San Francisco
-            var end = new google.maps.LatLng(40.7128, -74.0060); // New York City
-            var stop1 = new google.maps.LatLng(39.7392, -104.9903); // Denver
+    }
+    function showShipmentOnMap(vehicleLat, vehicleLng, startLat, startLng, endLat, endLng) {
+    	var start = new google.maps.LatLng(parseFloat(vehicleLat), parseFloat(vehicleLng));
+        var stop1 = new google.maps.LatLng(parseFloat(startLat), parseFloat(startLng));
+        var end = new google.maps.LatLng(parseFloat(endLat), parseFloat(endLng));
+        
+        var request = {
+            origin: start,
+            destination: end,
+            waypoints: [{location: stop1}],
+            travelMode: 'DRIVING'
+        };
 
-            var request = {
-                origin: start,
-                destination: end,
-                waypoints: [{location: stop1}],
-                travelMode: 'DRIVING'
-            };
-
-            directionsService.route(request, function(result, status) {
-                if (status == 'OK') {
-                    directionsRenderer.setDirections(result);
-                }
-            });
+        directionsService.route(request, function(result, status) {
+            if (status == 'OK') {
+                directionsRenderer.setDirections(result);
+            }
         });
     }
 </script>
