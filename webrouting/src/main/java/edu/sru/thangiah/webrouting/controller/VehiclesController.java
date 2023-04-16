@@ -1,10 +1,13 @@
 package edu.sru.thangiah.webrouting.controller;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import javax.servlet.http.HttpSession;
@@ -25,6 +28,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
 import edu.sru.thangiah.webrouting.domain.Carriers;
@@ -39,6 +43,7 @@ import edu.sru.thangiah.webrouting.repository.LocationsRepository;
 import edu.sru.thangiah.webrouting.repository.ShipmentsRepository;
 import edu.sru.thangiah.webrouting.repository.VehicleTypesRepository;
 import edu.sru.thangiah.webrouting.repository.VehiclesRepository;
+import edu.sru.thangiah.webrouting.services.ApiServiceImpl;
 import edu.sru.thangiah.webrouting.services.NotificationService;
 import edu.sru.thangiah.webrouting.services.SecurityService;
 import edu.sru.thangiah.webrouting.services.UserService;
@@ -76,6 +81,9 @@ public class VehiclesController {
 
 	@Autowired
 	private NotificationService notificationService;
+	
+	@Autowired
+	private ApiServiceImpl apiService;
 
 	private static final Logger Logger = LoggerFactory.getLogger(VehiclesController.class);
 
@@ -372,5 +380,35 @@ public class VehiclesController {
 		shipmentsRepository.save(shipment);
 		
 		return "redirect:" + redirectLocation;
+	}
+	
+	@GetMapping("getbestvehicle/{shipmentId}")
+	@ResponseBody
+	public Long getBestVehicleId(@PathVariable("shipmentId") long shipmentId) throws NumberFormatException, UnsupportedEncodingException { //gets the vehicles that's location is closests to the shipments start location.
+		Shipments shipment = shipmentsRepository.findById(shipmentId)
+				.orElseThrow(() -> new IllegalArgumentException("Invalid shipment Id:" + shipmentId));
+		String startingLat = shipment.getShipperLatitude();
+		String startingLng = shipment.getShipperLongitude();
+		User user = userService.getLoggedInUser();
+		List<Vehicles> vehicles = (List<Vehicles>) user.getCarrier().getVehicles();
+		HashMap<Long,Double> distances = new HashMap<Long,Double>();
+		
+		for(Vehicles v : vehicles) {
+			distances.put(v.getId(),Double.parseDouble(apiService.fetchDistanceBetweenCoordinates(startingLat, startingLng, v.getLocation().getLatitude(), v.getLocation().getLongitude()).replaceAll(",", "")));
+		}
+		
+		long minKey = 0;
+		Double minValue = Double.MAX_VALUE;
+
+		for (Map.Entry<Long, Double> entry : distances.entrySet()) {
+		    long key = entry.getKey();
+		    Double value = entry.getValue();
+		    if (value < minValue) {
+		        minKey = key;
+		        minValue = value;
+		    }
+		}
+		
+		return (Long)minKey;
 	}
 }
