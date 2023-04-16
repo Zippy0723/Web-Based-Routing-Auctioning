@@ -1148,9 +1148,17 @@ public class ValidationServiceImp {
 		}
 
 		if (!(manufacturedYear.length() <= 4 && manufacturedYear.length() > 0) || !(manufacturedYear.matches("^[0-9]+$"))) {
-			session.setAttribute("message", "Year was not between 1 and 4 numeric characters.");
+			session.setAttribute("message", "Year was not between 1950 and 2023.");
 			return null;	
-		}	
+		}
+	
+		if (manufacturedYear.matches("^[0-9]+$")) {
+			int year = Integer.parseInt(manufacturedYear);
+			if (!(year >= 1950 && year <= 2023)) {
+				session.setAttribute("message", "Year was not between 1950 and 2023.");
+				return null;
+	        } 
+		}
 
 		Vehicles vehicle = new Vehicles();
 

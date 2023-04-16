@@ -1,7 +1,7 @@
 <!doctype html>
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
 	<head>
-		<title>Update Vehicle</title>
+		<title>Add Vehicle</title>
 
 		<link rel="stylesheet" type="text/css" href="/styles/reset.css" />
         <link rel="stylesheet" type="text/css" href="/styles/main.css" />
@@ -48,10 +48,11 @@
                     <input type="text" th:field="*{vinNumber}" id="vinNumber" placeholder="1J4FA241X7L251987" size=19 required>
                     
                  	<br>
-                    <label for="manufacturedYear">Manufactured Year: </label>
-                    <input type="text" th:field="*{manufacturedYear}" id="manufacturedYear" placeholder="1995" size=19 required>
-
-                	<br>
+                    <label for="yearSelect">Manufactured Year: </label>
+					<select id= "yearSelect" name="manufacturedYear" th:field="*{manufacturedYear}" required>
+					</select>
+					<br>
+					
                     <label for="vehicleType">Vehicle Type: </label>
                     <select th:field="*{vehicleType}" required>
                         <th:block th:each="vehicleType : ${vehicleTypes}">
@@ -80,6 +81,21 @@
         </div>
 
 		<script src="../javascript/pageload.js">
+		</script>
+		<script>
+			  // Get the select element by its ID
+			  var yearSelect = document.getElementById("yearSelect");
+			
+			  // Generate options for years 1950 to 2023
+			  for (var year = 2023; year >= 1950; year--) {
+			    // Create an option element
+			    var option = document.createElement("option");
+			    option.value = year;
+			    option.text = year;
+			
+			    // Add the option to the select element
+			    yearSelect.add(option);
+			  }
 		</script>
 	</body>
 </html>
