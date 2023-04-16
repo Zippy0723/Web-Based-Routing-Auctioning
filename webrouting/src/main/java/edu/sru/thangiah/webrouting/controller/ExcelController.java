@@ -754,15 +754,22 @@ public class ExcelController {
 			List<Vehicles> vehicles = validationServiceImp.validateVehiclesSheet(vehicleSheet, session);
 
 			if (vehicles == null) {
-				Logger.error("{} || attempted to upload Vehicles but "+ session.getAttribute("message") ,user.getUsername());
 				String message = (String) session.getAttribute("message");
-				try { message = message + " " + (String) session.getAttribute("excelMessage"); } catch(Exception e){}
+				
+				try { 
+					Logger.error("{} || attempted to upload Vehicles but " + message ,user.getUsername());
+					String excelMessage = (String) session.getAttribute("excelMessage");
+					if (!excelMessage.equals("null")){
+						message = message + " " + excelMessage; 
+					}
+				} catch(Exception e){}
+				
 				session.removeAttribute("excelMessage");
-	
+
 				model.addAttribute("message", message);
 				return "/excel/upload-vehicles"; 
 			}
-			
+
 			if (vehicles.size() == 0) {
 				Logger.error("{} || attempted to upload Vehicles but failed.",user.getUsername());
 				model.addAttribute("message", "This excel file is incorrectly formatted.");
