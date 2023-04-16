@@ -67,6 +67,7 @@ body {
 		background: #006438;
 		top:0px;
 		position: sticky;
+		z-index:9999;
 	}
 
 
@@ -840,5 +841,6 @@ Simple Class Style For Displaying the Email Message
 		margin-top:-15px;
 		font-size:20px;
 		overflow: hidden;
+		z-index: 2;
 	}
 }
