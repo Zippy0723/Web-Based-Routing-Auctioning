@@ -1077,8 +1077,7 @@ public class ValidationServiceImp {
 				}
 
 				if(allVehicles.contains(plate + " " + vin)) {
-					Logger.error("{} || attempted to upload multiple Vehicles with the same Plate and Vin.",user.getUsername());
-					session.setAttribute("message", "Can not upload multiple Vehicles with the same Plate and Vin.");
+					session.setAttribute("message", "There was mulitple vehicles with the same plate and vin within the sheet.");
 					return null;
 				}
 
@@ -1121,39 +1120,33 @@ public class ValidationServiceImp {
 
 		for(Vehicles v: repoVehicles) {
 			if ((v.getPlateNumber()+ " " + v.getVinNumber()).equals(plate + " " + vin)) {
-				Logger.error("{} || attempted to upload a Vehicle but the Vehicle already exists.",user.getUsername());
-			session.setAttribute("message", "Vehicle already exists.");
-			return null;
-		}
+				session.setAttribute("message", "Vehicle already exists.");
+				return null;
+			}
 		}
 
 		if(vehicleTypeId == null) {
-			Logger.error("{} || attempted to upload a Vehicle but the Vehicle Type did not exist.",user.getUsername());
 			session.setAttribute("message", "Vehicle Type did not exist. (Vehicle Types must be uploaded first, did you upload them yet?)");
 			return null;	
 		}
 
 		if(locationId == null) {
-			Logger.error("{} || attempted to upload a Vehicle but the Location did not exist.",user.getUsername());
 			session.setAttribute("message", "Location did not exist. (Locations must be uploaded first, did you upload them yet?)");
 			return null;	
 		}
 
 		if (!(plate.length() <= 12 && plate.length() > 0) || !(plate.matches("^[a-zA-Z0-9. -]+$"))) {
-			Logger.error("{} || attempted to upload a Vehicle but the Plate was not between 1 and 12 alphanumeric characters long.",user.getUsername());
-			session.setAttribute("message", "Plate was not between 1 and 12 alphanumeric characters long.");
+			session.setAttribute("message", "Plate was not between 1 and 12 alphanumeric characters.");
 			return null;	
 		}
 
 		if (!(vin.length() <= 17 && vin.length() > 0) || !(vin.matches("^[a-zA-Z0-9.]+$"))) {
-			Logger.error("{} || attempted to upload a Vehicle but the Vin was not between 1 and 17 alphanumeric characters long.",user.getUsername());
-			session.setAttribute("message", "Vin was not between 1 and 17 alphanumeric characters long.");
+			session.setAttribute("message", "Vin was not between 1 and 17 alphanumeric characters.");
 			return null;	
 		}
 
 		if (!(manufacturedYear.length() <= 4 && manufacturedYear.length() > 0) || !(manufacturedYear.matches("^[0-9]+$"))) {
-			Logger.error("{} || attempted to upload a Vehicle but the Year was not between 1 and 4 numeric characters long.",user.getUsername());
-			session.setAttribute("message", "Year was not between 1 and 4 numeric characters long.");
+			session.setAttribute("message", "Year was not between 1 and 4 numeric characters.");
 			return null;	
 		}	
 

@@ -279,7 +279,54 @@ public class EditAndAddController {
 		return "redirect:" + (String) session.getAttribute("redirectLocation");
 	}
 	
-	
+	@GetMapping("/add-vehicle")
+	public String showVehicleAddForm(Vehicles vehicle, Model model, HttpSession session) {
+		model.addAttribute("redirectLocation", (String) session.getAttribute("redirectLocation"));
+		model.addAttribute("currentPage","/vehicles");
+		User user = userService.getLoggedInUser();
+		model = NotificationController.loadNotificationsIntoModel(user, model);
+		model.addAttribute("vehicleTypes", user.getCarrier().getVehicleTypes()); 
+		model.addAttribute("locations", user.getCarrier().getLocations());
+
+		session.removeAttribute("message");
+		model.addAttribute("vehicleForm", new Vehicles());
+
+		return "/add/add-vehicle";
+	}
+
+
+	@PostMapping("submit-add-vehicle")
+	public String vehicleAddForm(@ModelAttribute("vehicleForm") Vehicles vehicle, Model model, HttpSession session) {
+		model.addAttribute("redirectLocation", (String) session.getAttribute("redirectLocation"));
+		model.addAttribute("currentPage","/vehicles");
+		User user = userService.getLoggedInUser();
+		model = NotificationController.loadNotificationsIntoModel(user, model);
+		model.addAttribute("vehicleTypes", user.getCarrier().getVehicleTypes()); 
+		model.addAttribute("locations", user.getCarrier().getLocations());
+
+		Hashtable<String, String> hashtable = new Hashtable<>();
+
+		hashtable.put("plate", vehicle.getPlateNumber().strip());
+		hashtable.put("vin", vehicle.getVinNumber().strip());
+		hashtable.put("manufacturedYear", vehicle.getManufacturedYear().strip());
+		hashtable.put("vehicleTypeMakeModel", vehicle.getVehicleType().getMake() + " " + vehicle.getVehicleType().getModel());
+		hashtable.put("locationName", vehicle.getLocation().getName());
+		
+		Vehicles result;
+
+		result = validationServiceImp.validateVehicles(hashtable, session);
+
+		if (result == null) {
+			Logger.error("{} || attempted to add a new Vehicle but "+ session.getAttribute("message") ,user.getUsername());
+			model.addAttribute("message", session.getAttribute("message"));
+			return "/add/add-vehicle";
+		}
+		
+		vehiclesRepository.save(result);
+		Logger.info("{} || successfully added a new Vehicle with ID {}.", user.getUsername(), result.getId());
+
+		return "redirect:" + (String) session.getAttribute("redirectLocation");
+	}
 	
 	
 

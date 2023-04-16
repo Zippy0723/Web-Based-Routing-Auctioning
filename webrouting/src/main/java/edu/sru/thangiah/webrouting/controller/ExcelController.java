@@ -754,7 +754,7 @@ public class ExcelController {
 			List<Vehicles> vehicles = validationServiceImp.validateVehiclesSheet(vehicleSheet, session);
 
 			if (vehicles == null) {
-				Logger.error("{} || attempted to upload Vehicles but failed.",user.getUsername());
+				Logger.error("{} || attempted to upload Vehicles but "+ session.getAttribute("message") ,user.getUsername());
 				model.addAttribute("message", session.getAttribute("message"));
 				return "/excel/upload-vehicles"; 
 			}
