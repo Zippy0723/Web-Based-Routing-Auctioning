@@ -3,6 +3,7 @@ package edu.sru.thangiah.webrouting.services;
 import java.io.BufferedReader;
 
 import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -96,7 +97,7 @@ public class ApiServiceImpl {
 	        }
 	    }
 	 
-	 public String fetchDistanceBetweenCoordinates(String originLatitude, String originLongitude, String destinationLatitude, String destinationLongitude) {
+	 public String fetchDistanceBetweenCoordinates(String originLatitude, String originLongitude, String destinationLatitude, String destinationLongitude) throws UnsupportedEncodingException {
 		 
 		 String apiKey = "AIzaSyC9WwWWVbzUHeUBgj9AAh1aSMjSsrPpELM"; 
 	     String result = "";

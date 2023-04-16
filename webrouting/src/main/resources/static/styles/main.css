@@ -816,6 +816,13 @@ Simple Class Style For Displaying the Email Message
     text-shadow: 0 0 15px black;
 }
 
+.mapframe{
+	height: 400px;
+	padding-top:5px;
+	border:solid 3px #00FF33; 
+    border-radius:15px;
+}
+
 @media only screen and (max-width: 1920px) {
 	#heading {
 		color: white;

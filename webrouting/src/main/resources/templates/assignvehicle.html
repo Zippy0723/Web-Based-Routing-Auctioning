@@ -10,6 +10,7 @@
         <link rel="stylesheet" type="text/css" href="/styles/tables.css">
 
         <link rel="stylesheet" type="text/css" href="/styles/smoothness/jquery-ui-1.10.2.css" />
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
 	</head>
 	<body>
@@ -41,7 +42,9 @@
                     <option th:text="${vehicle}" th:value="${vehicle.id}"></option>
                 </th:block>
             </select>
+            <input type="hidden" th:name="shipmentId" th:value="${shipment.id}"/>
             <button type="submit" class="btn btn-primary">Assign Vehicle</button>
+            <button type="button" class="btn btn-primary" th:onclick="getBestVehicle()">Select Best Vehicle (Based on Distance)</button>
         </div>
     </form>
             </div>
@@ -50,6 +53,36 @@
 		<div class="footer">
         </div>
 		<script src="../javascript/pageload.js">
+		</script>
+		<script>
+		function getBestVehicle(){
+			let bestId;
+			var shipmentId = document.querySelector('[name="shipmentId"]').getAttribute('value');
+
+			// Make an AJAX request to the API
+			$.ajax({
+			    type: "GET",
+			    url: "http://localhost:8080/getbestvehicle/" + shipmentId, 
+			    success: function(response) {
+		            // Get the select element and options
+		            var select = document.getElementsByName("vehicle")[0];
+		            var options = select.options;
+
+		            // Loop through the options and select the one with the matching ID
+		            for (var i = 0; i < options.length; i++) {
+		                if (options[i].value == response) {
+		                    select.selectedIndex = i;
+		                    break;
+		                }
+		            }
+		        },
+			    error: function(xhr, status, error) {
+			        console.error(error);
+			    }
+			});
+			
+			return bestId;
+		}
 		</script>
 	</body>
 </html>
