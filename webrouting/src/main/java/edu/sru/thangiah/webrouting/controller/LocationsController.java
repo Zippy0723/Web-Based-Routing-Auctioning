@@ -108,70 +108,6 @@ public class LocationsController {
 		return "locations";
 	}
 
-	/**
-	 * Redirects user to the /add/add-location page
-	 * @param model Used to add data to the model
-	 * @param location Stores the information on the location
-	 * @param result Ensures the user inputs are valid
-	 * @return "/add/add-location"
-	 */
-	@GetMapping({"/add-location"})
-	public String showCarriersList(Model model, Locations location, BindingResult result, HttpSession session) {
-
-		User user = userService.getLoggedInUser();
-		model.addAttribute("carriers", user.getCarrier());  
-		model = NotificationController.loadNotificationsIntoModel(user, model);
-		model.addAttribute("redirectLocation", (String) session.getAttribute("redirectLocation"));
-		model.addAttribute("currentPage","/locations");
-		return "/add/add-location";
-
-	}
-
-	/**
-	 * Adds a location to the database. Checks if there are errors in the form. <br>
-	 * If there are no errors, the location is saved in the locationsRepository. and the user is redirect to /locations <br>
-	 * If there are errors, the user is redirected to the /add/add-location page.
-	 * @param location Stores the information on the location
-	 * @param result Ensures the user inputs are valid
-	 * @param model Used to add data to the model
-	 * @return "redirect:/locations" or "/add/add-location"
-	 */
-	@RequestMapping({"/addlocations"})
-	public String addLocation(@Validated Locations location, BindingResult result, Model model, HttpSession session) {
-		userValidator.addition(location, result);
-		User user = userService.getLoggedInUser();
-		model = NotificationController.loadNotificationsIntoModel(user, model);
-		String redirectLocation = (String) session.getAttribute("redirectLocation");
-		model.addAttribute("redirectLocation", session.getAttribute("redirectLocation"));
-		model.addAttribute("currentPage","/locations");
-
-		if (result.hasErrors()) {
-			return "/add/add-location";
-		}
-		Boolean deny = false;
-
-		List<Locations> checkLocation = new ArrayList<>();
-		checkLocation = (List<Locations>) locationsRepository.findAll();
-
-		for(Locations check: checkLocation) {
-			if(location.getStreetAddress1().toString().equals(check.getStreetAddress1().toString())  ||
-					location.getName().equals(check.getName())) {
-				deny = true;
-				break;
-			}
-		}
-
-		if(deny == true) {
-			model.addAttribute("error", "Unable to add Location. Location address or name already exists");
-			Logger.error("{} || was unable to add location '{}' because the address or name already exists.", user.getUsername(), location.getName());
-			model.addAttribute("locations", user.getCarrier().getLocations());
-			return "locations";
-
-		}
-		locationsRepository.save(location);
-		Logger.info("{} || successfully saved location with ID {}.", user.getUsername(), location.getId());
-		return "redirect:" + redirectLocation;
-	}
 
 	/**
 	 * Redirects user to the /uploadlocations page when clicking "Upload an excel file" button in the locations section of Carrier login
@@ -308,7 +244,7 @@ public class LocationsController {
 		for(Locations check: carrierLocations) {
 			String repoLocationName = check.getName().toString().strip();
 			if(locationName.equals(repoLocationName) && (result.getId() != check.getId())) {
-				Logger.info("{} || attempted to save a location with the same name as another location.",user.getUsername());
+				Logger.error("{} || attempted to save a location with the same name as another location.",user.getUsername());
 				model.addAttribute("message", "Another location already exists with that name.");
 				return "/edit/edit-locations";
 			}
