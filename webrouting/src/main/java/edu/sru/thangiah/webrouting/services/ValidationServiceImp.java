@@ -1126,12 +1126,14 @@ public class ValidationServiceImp {
 		}
 
 		if(vehicleTypeId == null) {
-			session.setAttribute("message", "Vehicle Type did not exist. (Vehicle Types must be uploaded first, did you upload them yet?)");
+			session.setAttribute("message", "Vehicle Type did not exist.");
+			session.setAttribute("excelMessage", "Vehicle Types must be uploaded first, did you upload them yet?");
 			return null;	
 		}
 
 		if(locationId == null) {
-			session.setAttribute("message", "Location did not exist. (Locations must be uploaded first, did you upload them yet?)");
+			session.setAttribute("message", "Location did not exist.");
+			session.setAttribute("excelMessage", "Locations must be uploaded first, did you upload them yet?");
 			return null;	
 		}
 

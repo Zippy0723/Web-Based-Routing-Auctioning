@@ -755,7 +755,11 @@ public class ExcelController {
 
 			if (vehicles == null) {
 				Logger.error("{} || attempted to upload Vehicles but "+ session.getAttribute("message") ,user.getUsername());
-				model.addAttribute("message", session.getAttribute("message"));
+				String message = (String) session.getAttribute("message");
+				try { message = message + " " + (String) session.getAttribute("excelMessage"); } catch(Exception e){}
+				session.removeAttribute("excelMessage");
+	
+				model.addAttribute("message", message);
 				return "/excel/upload-vehicles"; 
 			}
 			
