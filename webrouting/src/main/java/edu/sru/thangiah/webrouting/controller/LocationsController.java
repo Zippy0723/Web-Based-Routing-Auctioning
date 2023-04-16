@@ -244,7 +244,7 @@ public class LocationsController {
 		for(Locations check: carrierLocations) {
 			String repoLocationName = check.getName().toString().strip();
 			if(locationName.equals(repoLocationName) && (result.getId() != check.getId())) {
-				Logger.info("{} || attempted to save a location with the same name as another location.",user.getUsername());
+				Logger.error("{} || attempted to save a location with the same name as another location.",user.getUsername());
 				model.addAttribute("message", "Another location already exists with that name.");
 				return "/edit/edit-locations";
 			}

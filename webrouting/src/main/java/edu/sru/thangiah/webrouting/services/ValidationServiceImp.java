@@ -1753,45 +1753,45 @@ public class ValidationServiceImp {
 		String locationType = (String)hashtable.get("locationType");
 
 		if (!(locationName.length() <= 32 && locationName.length() > 0) || !(locationName.matches("^[a-zA-Z ']+$"))) { 
-			Logger.error("{} || attempted to upload a location but the name field must be between 1 and 32 characters and alphabetic.",user.getUsername());
+			Logger.error("{} || attempted to update a location but the name field must be between 1 and 32 characters and alphabetic.",user.getUsername());
 			session.setAttribute("message", "Name must be between 1 and 32 characters and alphabetic.");
 			return null;
 		}
 
 		if(!(streetAddress1.length() <= 64 && streetAddress1.length() > 0) || !(streetAddress1.matches("\\d+\\s+([a-zA-Z.]+\\s?)+"))) { 
-			Logger.error("{} || attempted to upload a location but location address must be between 1 and 64 characters that are alphanumeric.",user.getUsername());
+			Logger.error("{} || attempted to update a location but location address must be between 1 and 64 characters that are alphanumeric.",user.getUsername());
 			session.setAttribute("message", "Address must be between 1 and 64 characters that are alphanumeric.");
 			return null;
 		}
 
 		if (!(streetAddress2 == null || streetAddress2.equals(""))) {
 			if(!(streetAddress2.length() <= 64 && streetAddress2.length() > 0) || !(streetAddress2.matches("^[A-Za-z0-9./-]+(?:[\\s-][A-Za-z0-9.-]+)*$"))) {
-				Logger.error("{} || attempted to upload a location street address 2 must be between 1 and 64 characters that are alphanumeric.",user.getUsername());
+				Logger.error("{} || attempted to update a location street address 2 must be between 1 and 64 characters that are alphanumeric.",user.getUsername());
 				session.setAttribute("message", "Street Address 2 must be between 1 and 64 characters that are alphanumeric.");
 				return null;
 			}
 		}
 
 		if(!(locationCity.length() <= 64 && locationCity.length() > 0) || !(locationCity.matches("^[A-Za-z]+(?:[\\s-][A-Za-z]+)*$"))) { 
-			Logger.error("{} || attempted to upload a location city but location city must be between 1 and 64 characters and is alphabetic.",user.getUsername());
+			Logger.error("{} || attempted to update a location city but location city must be between 1 and 64 characters and is alphabetic.",user.getUsername());
 			session.setAttribute("message", "City must be between 1 and 64 characters and is alphabetic.");
 			return null;
 		}
 
 		if(!(states.contains(locationState) || stateAbbreviations.contains(locationState))) {  
-			Logger.error("{} || attempted to upload a location state but location state must be a state or state abbreviation.",user.getUsername());
+			Logger.error("{} || attempted to update a location state but location state must be a state or state abbreviation.",user.getUsername());
 			session.setAttribute("message", "State must be a state or state abbreviation.");
 			return null;
 		}
 
-		if(!(locationZip.length() == 5) || !(locationZip.matches("^[0-9.]+$"))){ 
-			Logger.error("{} || attempted to upload a location zip but location zip must be 5 numeric characters.",user.getUsername());
-			session.setAttribute("message", "Zip must 5 numeric characters.");
+		if(!(locationZip.length() <= 12 && locationZip.length() > 0) || !(locationZip.matches("^[0-9.]+$"))){
+			Logger.error("{} || attempted to update a location state but zip must be between 1 and 12 numeric charcaters.",user.getUsername());
+			session.setAttribute("message", "Zip must be between 1 and 12 characters and is numeric.");
 			return null;
 		}
 
 		if(!(locationType.length() <= 64 && locationType.length() > 0) || !(locationType.matches("^[a-zA-Z ]+$"))){ 
-			Logger.error("{} || attempted to upload a location type must be 1 to 32 alphabetic characters.",user.getUsername());
+			Logger.error("{} || attempted to update a location type must be 1 to 32 alphabetic characters.",user.getUsername());
 			session.setAttribute("message", "Type must be 1 to 32 alphabetic characters.");
 			return null;
 		}
