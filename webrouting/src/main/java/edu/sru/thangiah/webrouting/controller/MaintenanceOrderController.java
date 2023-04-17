@@ -107,75 +107,6 @@ public class MaintenanceOrderController {
 	}
 
 	/**
-	 * Redirects user to the /add/add-maintenance page
-	 * @param model Used to add data to the model
-	 * @param maintenanceOrder Used to store information on the maintenance order
-	 * @param result Ensures the user inputs are valid
-	 * @return "/add/add-maintenance"
-	 */
-	@GetMapping({"/add-maintenance"})
-	public String showOrderList(Model model, MaintenanceOrders maintenanceOrder, BindingResult result, HttpSession session) {
-		User user = userService.getLoggedInUser();
-		model.addAttribute("redirectLocation", (String) session.getAttribute("redirectLocation"));
-		model.addAttribute("technicians", user.getCarrier().getTechnicians());
-		model.addAttribute("drivers", user.getCarrier().getDrivers());
-		model.addAttribute("vehicles", user.getCarrier().getVehicles());
-		model.addAttribute("currentPage","/maintenanceorders");
-
-		model = NotificationController.loadNotificationsIntoModel(user, model);
-
-		return "/add/add-maintenance";
-	}
-
-	/**
-	 * Adds a maintenance order to the database. Checks if there are errors in the form. <br>
-	 * If there are no errors, the order is saved in the maintenanceOrderRepository. and the user is redirect to /maintenanceorders <br>
-	 * If there are errors, the user is redirected to the /add/add-maintenance page.
-	 * @param maintenanceOrder Stores information on the maintenance order that is added
-	 * @param result Ensures the user 
-	 * @param model Used to add data to the model
-	 * @return "redirect:/maintenanceorders" or "/add/add-maintenance"
-	 */
-	@RequestMapping({"/addmaintenance"})
-	public String addMaintenanceOrder(@Validated MaintenanceOrders maintenanceOrder, BindingResult result, Model model, HttpSession session) {
-		maintenanceOrder.setCarrier(userService.getLoggedInUser().getCarrier());
-
-		User loggedInUser = userService.getLoggedInUser();
-		model = NotificationController.loadNotificationsIntoModel(loggedInUser, model);
-		String redirectLocation = (String) session.getAttribute("redirectLocation");
-		model.addAttribute("redirectLocation", session.getAttribute("redirectLocation")); 
-		model.addAttribute("currentPage","/maintenanceorders");
-
-		if (result.hasErrors()) {
-			return "/add/add-maintenance";
-		}
-
-		Boolean deny = false;
-		List<MaintenanceOrders> orders = new ArrayList<>();
-		orders = (List<MaintenanceOrders>) maintenanceOrderRepository.findAll();
-
-		for(MaintenanceOrders check: orders) {
-			if(maintenanceOrder.getVehicle().getId() == check.getVehicle().getId() && maintenanceOrder.getMaintenance_type().toString().equalsIgnoreCase(check.getMaintenance_type().toString()) ) {
-				if(maintenanceOrder.getStatus_key().toString().equals("Pending")) {
-					deny = true;
-					break;
-				}
-			}
-		}
-
-		if(deny == true) {
-			model.addAttribute("error", "Unable to add Maintenance Request. Same Request is currently pending.");
-			Logger.error("{} || was unable to add Maintenance Request. Same Request is currently pending.", loggedInUser.getUsername());
-			model.addAttribute("maintenanceOrder", userService.getLoggedInUser().getCarrier().getOrders());
-			return "maintenanceorders";
-
-		}
-		maintenanceOrderRepository.save(maintenanceOrder);
-		Logger.info("{} || successfully saved the maintenance order with ID {}", loggedInUser.getUsername(), maintenanceOrder.getId());
-		return "redirect:" + redirectLocation;
-	}
-
-	/**
 	 * Redirects user to the /uploadmaintenance page when clicking "Upload an excel file" button in the Maintenance section of Carrier login
 	 * @param model used to add data to the model
 	 * @return "/uploadmaintenance"
@@ -235,7 +166,7 @@ public class MaintenanceOrderController {
 		User user = userService.getLoggedInUser();
 
 		model.addAttribute("currentPage","/maintenanceorders");
-		model.addAttribute("technicians", techniciansRepository.findAll());
+		model.addAttribute("technicians", user.getCarrier().getTechnicians());
 		model.addAttribute("vehicles", user.getCarrier().getVehicles());
 		model.addAttribute("maintenanceOrders", maintenanceOrder);
 		model.addAttribute("redirectLocation", (String) session.getAttribute("redirectLocation"));
@@ -256,7 +187,7 @@ public class MaintenanceOrderController {
 		String redirectLocation = (String) session.getAttribute("redirectLocation");
 		model.addAttribute("redirectLocation", session.getAttribute("redirectLocation"));
 
-		model.addAttribute("technicians", techniciansRepository.findAll());
+		model.addAttribute("technicians", loggedInUser.getCarrier().getTechnicians());
 		model.addAttribute("vehicles", loggedInUser.getCarrier().getVehicles());
 		model.addAttribute("maintenanceOrders", maintenanceOrder);
 

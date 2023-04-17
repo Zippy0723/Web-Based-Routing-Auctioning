@@ -21,9 +21,9 @@
             <div id="menu-wrapper">
             	<br><br>
             </div>
-            
-           <div th:replace="fragments/general.html :: sidebar"></div>
-           <div th:replace="fragments/general.html :: profile-bar"></div>
+        			
+        	<div th:replace="fragments/general.html :: sidebar"></div>
+        	<div th:replace="fragments/general.html :: profile-bar"></div>
 			<script src="https://kit.fontawesome.com/fe29baf689.js" crossorigin="anonymous"></script>
 			
 			<div id="content">
@@ -31,12 +31,15 @@
   					<button class=""  id="hamburger" style="display:none" onclick="nav_open()">☰</button>
 				</span>
 				<br><br>
-                <h2>Add Maintenance Order</h2>
-                <form action="#" th:action="@{/addmaintenance}" th:object="${maintenanceOrders}" method="post">
+                <h2>Add Maintenance Order</h2> 
+                <br>
+               <span type="hidden" th:text="${message}" class=errorMessage></span>
+               <br>
+                <form action="#" th:action="@{submit-add-order}"  th:object="${orderForm}" method="post">
                 <hr>
                 <div class="form-group">    
 					<br>
-					<h2> Enter Order Information</h2>
+					<h2> Order Information</h2>
 					<br>
                     <label for="technician">Technician: </label>
                     <select th:field="*{technician}" required>
@@ -46,30 +49,28 @@
                     </select>   
                  	<br>
                     <label for="scheduled_date">Scheduled Date: </label>   
-                    <input type="date" th:field="*{scheduled_date}" id="date" placeholder="Scheduled Date" required>
-                    <span th:if="${#fields.hasErrors('scheduled_date')}" th:errors="*{scheduled_date}"></span>
-                	 <br>
+                    <input type="text" th:field="*{scheduled_date}" id="date" placeholder="12-Dec-2023" size=19 >
+                 
+                	<br>
                     <label for="details">Details: </label>
-                    <input type="text" th:field="*{details}" id="details" placeholder="Brake Replacement" size=23 required>
-                    <span th:if="${#fields.hasErrors('details')}" th:errors="*{details}"></span>
-                 	<br><br>
-				</div>
-				<div class="form-group2">
+                    <input type="text" th:field="*{details}" id="details" placeholder="Brake Replacement" size=19 >
+			
 					<br>
                     <label for="service_type_key">Service Type: </label>
-                    <input type="text" th:field="*{service_type_key}" id="service_type_key" placeholder="Repair" size=23 >
-                    <span th:if="${#fields.hasErrors('service_type_key')}" th:errors="*{service_type_key}"></span>
+                    <input type="text" th:field="*{service_type_key}" id="service_type_key" placeholder="Repair" size=19 required>
+                  
                 	<br>
                     <label for="cost">Cost: </label>
-                    <input type="text" th:field="*{cost}" id="cost" placeholder="200" size=23 required>
-                    <span th:if="${#fields.hasErrors('cost')}" th:errors="*{cost}"></span>
+                    <input type="text" th:field="*{cost}" id="cost" placeholder="200" size=19>
+                   
                 	<br>
                     <label for="status_key">Status: </label>
                 	<select th:field="*{status_key}" id="status_key" placeholder="Status" required>
                 		<option value="Pending">Pending</option>
                 		<option value="Completed">Completed</option>
+                		<option value="Available">Available</option>
                 	</select>
-                    <span th:if="${#fields.hasErrors('status_key')}" th:errors="*{status_key}"></span>
+                
                  	<br>
                     <label for="vehicle">Vehicle: </label>
                     <select th:field="*{vehicle}" required>
@@ -79,20 +80,20 @@
                     </select>  
                  	<br>
                     <label for="maintenance_type">Maintenance Type: </label>
-                    <input type="text" th:field="*{maintenance_type}" id="maintenance_type" placeholder="Brakes" size=23  required>
-                    <span th:if="${#fields.hasErrors('maintenance_type')}" th:errors="*{maintenance_type}"></span>
+                    <input type="text" th:field="*{maintenance_type}" id="maintenance_type" placeholder="Brakes" size=19 required>
+                    
               		<br><br>
-              		<button class="buttons7" type="button" th:attr="onclick=|window.location.href='${redirectLocation}'|">Back</button>
-					<button class="buttons4" type="submit">Submit Order</button>    
-                    <br>
+              		<button class="buttons4" type="button" th:attr="onclick=|window.location.href='${redirectLocation}'|">Back</button>
+					<button class="buttons4" type="submit">Add Order</button>    
+                    <br><br>
                 </div>    
                 </form>
-            </div>
+			</div>
 		</div>
 
 		<div class="footer">
         </div>
-		<script src="javascript/pageload.js">
+		<script src="../javascript/pageload.js">
 		</script>
 	</body>
 </html>
