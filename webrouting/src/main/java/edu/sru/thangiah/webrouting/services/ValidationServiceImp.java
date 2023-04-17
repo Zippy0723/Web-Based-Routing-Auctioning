@@ -198,8 +198,8 @@ public class ValidationServiceImp {
 	public Shipments validateShipment(Hashtable<String, String> hashtable, HttpSession session) {
 
 		List<String> acceptedFreightTerms = Arrays.asList("PENDING", "AVAILABLE SHIPMENT", "AWAITING ACCEPTANCE", "BID ACCEPTED", "FROZEN");
-		List<String> states = Arrays.asList("Alabama", "Alaska", "Arizona", "Arkansas", "California", "Colorado", "Connecticut", "Delaware", "Florida", "Georgia", "Hawaii", "Idaho", "Illinois", "Indiana", "Iowa", "Kansas", "Kentucky", "Louisiana", "Maine", "Maryland", "Massachusetts", "Michigan", "Minnesota", "Mississippi", "Missouri", "Montana", "Nebraska", "Nevada", "New Hampshire", "New Jersey", "New Mexico", "New York", "North Carolina", "North Dakota", "Ohio", "Oklahoma", "Oregon", "Pennsylvania", "Rhode Island", "South Carolina", "South Dakota", "Tennessee", "Texas", "Utah", "Vermont", "Virginia", "Washington", "West Virginia", "Wisconsin", "Wyoming");
-		List<String> stateAbbreviations = Arrays.asList("AL", "AK", "AZ", "AR", "CA", "CO", "CT", "DE", "FL", "GA", "HI", "ID", "IL", "IN", "IA", "KS", "KY", "LA", "ME", "MD", "MA", "MI", "MN", "MS", "MO", "MT", "NE", "NV", "NH", "NJ", "NM", "NY", "NC", "ND", "OH", "OK", "OR", "PA", "RI", "SC", "SD", "TN", "TX", "UT", "VT", "VA", "WA", "WV", "WI", "WY");
+		List<String> states = Arrays.asList("Alabama", "Alaska", "Arizona", "Arkansas", "California", "Colorado", "Connecticut", "Delaware", "Florida", "Georgia", "Idaho", "Illinois", "Indiana", "Iowa", "Kansas", "Kentucky", "Louisiana", "Maine", "Maryland", "Massachusetts", "Michigan", "Minnesota", "Mississippi", "Missouri", "Montana", "Nebraska", "Nevada", "New Hampshire", "New Jersey", "New Mexico", "New York", "North Carolina", "North Dakota", "Ohio", "Oklahoma", "Oregon", "Pennsylvania", "Rhode Island", "South Carolina", "South Dakota", "Tennessee", "Texas", "Utah", "Vermont", "Virginia", "Washington", "West Virginia", "Wisconsin", "Wyoming");
+		List<String> stateAbbreviations = Arrays.asList("AL", "AK", "AZ", "AR", "CA", "CO", "CT", "DE", "FL", "GA", "ID", "IL", "IN", "IA", "KS", "KY", "LA", "ME", "MD", "MA", "MI", "MN", "MS", "MO", "MT", "NE", "NV", "NH", "NJ", "NM", "NY", "NC", "ND", "OH", "OK", "OR", "PA", "RI", "SC", "SD", "TN", "TX", "UT", "VT", "VA", "WA", "WV", "WI", "WY");
 
 		User user = userService.getLoggedInUser();
 
@@ -441,8 +441,7 @@ public class ValidationServiceImp {
 				}
 
 				if(allVehicleTypes.contains(make + " " + model)) {
-					session.setAttribute("message", "Can not upload mulitple Vehicle Types with the same make and model.");
-					Logger.error("{} || attempted to upload multiple Vehicle Types with the same make and model.",user.getUsername());
+					session.setAttribute("message", "There was mulitple vehicle types with the same make and model within the sheet.");
 					return null;
 				}
 				result.add(VehicleType);
@@ -484,104 +483,88 @@ public class ValidationServiceImp {
 
 
 		if(allVehicleTypes.contains(make + " " + model)) {
-			Logger.error("{} || attempted to upload a Vehicle Type but the Make and Model already exists in the Repo", user.getUsername());
 			session.setAttribute("message", "Vehicle Type make and model aleady exists.");
 			return null;
 		}
 
 		if (!(type.length() <= 32 && type.length() > 0) || !(type.matches("^[a-zA-Z ]+$"))) {
-			Logger.error("{} || attempted to upload a Vehicle Type but the Type was not between 1 and 32 alphabetic characters long.",user.getUsername());
-			session.setAttribute("message", "Type was not between 1 and 32 alphabetic characters long.");
+			session.setAttribute("message", "Type was not between 1 and 32 alphabetic characters.");
 			return null;	
 		}
 
 		if (!(subType.length() <= 32 && subType.length() > 0) || !(subType.matches("^[a-zA-Z ]+$"))) {
-			Logger.error("{} || attempted to upload a Vehicle Type but the Sub Type was not between 1 and 32 characters long.",user.getUsername());
-			session.setAttribute("message", "Sub Type was not between 1 and 32 characters long.");
+			session.setAttribute("message", "Sub Type was not between 1 and 32 characters.");
 			return null;	
 		}
 
 		if (!(description == null || description.equals(""))) {
 			if (!(description.length() <= 64 && description.length() > 0)) {
-				Logger.error("{} || attempted to upload a Vehicle Type but the Description was not between 1 and 64 characters long.",user.getUsername());
-				session.setAttribute("message", "Description was not between 1 and 64 characters long.");
+				session.setAttribute("message", "Description was not between 1 and 64 characters.");
 				return null;	
 			}
 		}
 
 		if(!(make.length() <= 32 && make.length() > 0)) {
-			Logger.error("{} || attempted to upload a Vehicle Type but the Make was not between 1 and 32 characters long.",user.getUsername());
-			session.setAttribute("message", "Make was not between 1 and 32 characters long.");
+			session.setAttribute("message", "Make was not between 1 and 32 characters.");
 			return null;
 		}
 
 		if(!(model.length() <= 32 && model.length() > 0)) {
-			Logger.error("{} || attempted to upload a Vehicle Type but the Model was not between 1 and 32 characters long.",user.getUsername());
-			session.setAttribute("message", "Model was not between 1 and 32 characters long.");
+			session.setAttribute("message", "Model was not between 1 and 32 characters.");
 			return null;
 		}
 
 		if (!(minimumWeight.length() <= 16 && minimumWeight.length() > 0) || !(minimumWeight.matches("^[0-9.]+$"))) {
-			Logger.error("{} || attempted to upload a Vehicle Type but the Minimum Weight was not between 1 and 16 numeric characters long.",user.getUsername());
-			session.setAttribute("message", "Minimum Weight was not between 1 and 16 numeric characters long.");
+			session.setAttribute("message", "Minimum Weight was not between 1 and 16 numeric characters.");
 			return null;
 		}
 
 		if (!(maximumWeight.length() <= 16 && maximumWeight.length() > 0) || !(maximumWeight.matches("^[0-9.]+$"))) { 
-			Logger.error("{} || attempted to upload a Vehicle Type but the Maximum Weight was not between 1 and 16 numeric characters long.",user.getUsername());
-			session.setAttribute("message", "Maximum Weight was not between 1 and 16 numeric characters long.");
+			session.setAttribute("message", "Maximum Weight was not between 1 and 16 numeric characters.");
 			return null;
 		}
 
 		if (!(capacity == null || capacity.equals(""))) {
 			if(!(capacity.length() <= 16 && capacity.length() > 0) || !(capacity.matches("^[0-9-.]+$"))) {
-				Logger.error("{} || attempted to upload a Vehicle Type but the Capacity was not between 1 and 16 numeric characters long.",user.getUsername());
-				session.setAttribute("message", "Capacity was not between 1 and 16 numeric characters long.");
+				session.setAttribute("message", "Capacity was not between 1 and 16 numeric characters.");
 				return null;
 			}
 		}
 
 		if(!(maximumRange.length() <= 16 && maximumRange.length() > 0) || !(maximumRange.matches("^[0-9.]+$"))) {
-			Logger.error("{} || attempted to upload a Vehicle Type but the Maximum Range was not between 1 and 16 numeric characters long.",user.getUsername());
-			session.setAttribute("message", " Maximum Range was not between 1 and 16 numeric characters long.");
+			session.setAttribute("message", "Maximum Range was not between 1 and 16 numeric characters.");
 			return null;
 		}
 
 		if (!(restrictions == null || restrictions.equals(""))) {
 			if(!(restrictions.length() <= 128 && restrictions.length() > 0)) {
-				Logger.error("{} || attempted to upload a Vehicle Type but the Restrictions was not between 1 and 128 characters long.",user.getUsername());
-				session.setAttribute("message", "Restrictions was not between 1 and 128 characters long.");
+				session.setAttribute("message", "Restrictions was not between 1 and 128 characters.");
 				return null;
 			}
 		}
 
 		if(!(height.length() <= 16 && height.length() > 0) || !(height.matches("^[0-9.]+$"))) {
-			Logger.error("{} || attempted to upload a Vehicle Type but the Height was not between 1 and 16 numeric characters long.",user.getUsername());
-			session.setAttribute("message", "Height was not between 1 and 16 numeric characters long.");
+			session.setAttribute("message", "Height was not between 1 and 16 numeric characters.");
 			return null;
 		}
 
 		if(!(emptyWeight.length() <= 16 && emptyWeight.length() > 0) || !(emptyWeight.matches("^[0-9.]+$"))) {
-			Logger.error("{} || attempted to upload a Vehicle Type but the Empty Weight was not between 1 and 16 numeric characters long.",user.getUsername());
-			session.setAttribute("message", "Empty Weight was not between 1 and 16 numeric characters long.");
+			session.setAttribute("message", "Empty Weight was not between 1 and 16 numeric characters.");
 			return null;
 		}
 
 		if(!(length.length() <= 16 && length.length() > 0) || !( length.matches("^[0-9.]+$"))) {
-			Logger.error("{} || attempted to upload a Vehicle Type but the Length was not between 1 and 16 numeric characters long.",user.getUsername());
-			session.setAttribute("message", "Length was not between 1 and 16 numeric characters long.");
+			session.setAttribute("message", "Length was not between 1 and 16 numeric characters.");
 			return null;
 		}
 
 		if(!(minimumCubicWeight.length() <= 16 && minimumCubicWeight.length() > 0) || !(minimumCubicWeight.matches("^[0-9.]+$"))){
-			Logger.error("{} || attempted to upload a Vehicle Type but the Minimum Cubic Weight was not between 1 and 16 numeric characters long.",user.getUsername());
-			session.setAttribute("message", "Minimum Cubic Weight was not between 1 and 16 numeric characters long.");
+			session.setAttribute("message", "Minimum Cubic Weight was not between 1 and 16 numeric characters.");
 			return null;
 		}
 
 		if(!(maximumCubicWeight.length() <= 16 && maximumCubicWeight.length() > 0) || !(maximumCubicWeight.matches("^[0-9.]+$"))){
-			Logger.error("{} || attempted to upload a Vehicle Type but the Maximum Cubic Weight was not between 1 and 16 numeric characters long.",user.getUsername());
-			session.setAttribute("message", "Maximum Cubic Weight was not between 1 and 16 numeric characters long.");
+			session.setAttribute("message", "Maximum Cubic Weight was not between 1 and 16 numeric characters.");
 			return null;
 		}
 
@@ -663,8 +646,7 @@ public class ValidationServiceImp {
 				}
 
 				if(allLocations.contains(locationName)) {
-					Logger.error("{} || attempted to upload multiple Locations with the same name.",user.getUsername());
-					session.setAttribute("message", "Can not upload multiple Locations with the same name.");
+					session.setAttribute("message", "There was mulitple locations with the same name within the sheet.");
 					return null;
 				}
 
@@ -687,8 +669,8 @@ public class ValidationServiceImp {
 			allLocations.add(l.getName());	
 		}
 
-		List<String> states = Arrays.asList("Alabama", "Alaska", "Arizona", "Arkansas", "California", "Colorado", "Connecticut", "Delaware", "Florida", "Georgia", "Hawaii", "Idaho", "Illinois", "Indiana", "Iowa", "Kansas", "Kentucky", "Louisiana", "Maine", "Maryland", "Massachusetts", "Michigan", "Minnesota", "Mississippi", "Missouri", "Montana", "Nebraska", "Nevada", "New Hampshire", "New Jersey", "New Mexico", "New York", "North Carolina", "North Dakota", "Ohio", "Oklahoma", "Oregon", "Pennsylvania", "Rhode Island", "South Carolina", "South Dakota", "Tennessee", "Texas", "Utah", "Vermont", "Virginia", "Washington", "West Virginia", "Wisconsin", "Wyoming");
-		List<String> stateAbbreviations = Arrays.asList("AL", "AK", "AZ", "AR", "CA", "CO", "CT", "DE", "FL", "GA", "HI", "ID", "IL", "IN", "IA", "KS", "KY", "LA", "ME", "MD", "MA", "MI", "MN", "MS", "MO", "MT", "NE", "NV", "NH", "NJ", "NM", "NY", "NC", "ND", "OH", "OK", "OR", "PA", "RI", "SC", "SD", "TN", "TX", "UT", "VT", "VA", "WA", "WV", "WI", "WY");
+		List<String> states = Arrays.asList("Alabama", "Alaska", "Arizona", "Arkansas", "California", "Colorado", "Connecticut", "Delaware", "Florida", "Georgia", "Idaho", "Illinois", "Indiana", "Iowa", "Kansas", "Kentucky", "Louisiana", "Maine", "Maryland", "Massachusetts", "Michigan", "Minnesota", "Mississippi", "Missouri", "Montana", "Nebraska", "Nevada", "New Hampshire", "New Jersey", "New Mexico", "New York", "North Carolina", "North Dakota", "Ohio", "Oklahoma", "Oregon", "Pennsylvania", "Rhode Island", "South Carolina", "South Dakota", "Tennessee", "Texas", "Utah", "Vermont", "Virginia", "Washington", "West Virginia", "Wisconsin", "Wyoming");
+		List<String> stateAbbreviations = Arrays.asList("AL", "AK", "AZ", "AR", "CA", "CO", "CT", "DE", "FL", "GA", "ID", "IL", "IN", "IA", "KS", "KY", "LA", "ME", "MD", "MA", "MI", "MN", "MS", "MO", "MT", "NE", "NV", "NH", "NJ", "NM", "NY", "NC", "ND", "OH", "OK", "OR", "PA", "RI", "SC", "SD", "TN", "TX", "UT", "VT", "VA", "WA", "WV", "WI", "WY");
 
 
 		String locationName = (String) hashtable.get("locationName");
@@ -701,52 +683,44 @@ public class ValidationServiceImp {
 		String locationLongitude = (String)hashtable.get("locationLongitude");
 		String locationType = (String)hashtable.get("locationType");
 
-		if (!(locationName.length() <= 32 && locationName.length() > 0) || !(locationName.matches("^[a-zA-Z ']+$"))) { 
-			Logger.error("{} || attempted to upload a location but the name field must be between 1 and 32 characters and alphabetic.",user.getUsername());
+		if (!(locationName.length() <= 32 && locationName.length() > 0) || !(locationName.matches("^[a-zA-Z ']+$"))) {
 			session.setAttribute("message", "Name must be between 1 and 32 characters and alphabetic.");
 			return null;
 		}
 
 		if (allLocations.contains(locationName)) { 
-			Logger.error("{} || attempted to upload a location but a location with the same name already exists.",user.getUsername());
 			session.setAttribute("message", "Location with the same name already exists.");
 			return null;
 		}
 
 		if(!(streetAddress1.length() <= 64 && streetAddress1.length() > 0) || !(streetAddress1.matches("\\d+\\s+([a-zA-Z.]+\\s?)+"))) { 
-			Logger.error("{} || attempted to upload a location but location address must be between 1 and 64 characters that are alphanumeric.",user.getUsername());
 			session.setAttribute("message", "Address must be between 1 and 64 characters that are alphanumeric.");
 			return null;
 		}
 
 		if (!(streetAddress2 == null || streetAddress2.equals(""))) {
 			if(!(streetAddress2.length() <= 64 && streetAddress2.length() > 0) || !(streetAddress2.matches("^[A-Za-z0-9./-]+(?:[\\s-][A-Za-z0-9.-]+)*$"))) {
-				Logger.error("{} || attempted to upload a location street address 2 must be between 1 and 64 characters that are alphanumeric.",user.getUsername());
 				session.setAttribute("message", "Street Address 2 must be between 1 and 64 characters that are alphanumeric.");
 				return null;
 			}
 		}
 
 		if(!(locationCity.length() <= 64 && locationCity.length() > 0) || !(locationCity.matches("^[A-Za-z]+(?:[\\s-][A-Za-z]+)*$"))) { 
-			Logger.error("{} || attempted to upload a location city but location city must be between 1 and 64 characters and is alphabetic.",user.getUsername());
 			session.setAttribute("message", "City must be between 1 and 64 characters and is alphabetic.");
 			return null;
 		}
 
 		if(!(states.contains(locationState) || stateAbbreviations.contains(locationState))) {  
-			Logger.error("{} || attempted to upload a location state but location state must be a state or state abbreviation.",user.getUsername());
 			session.setAttribute("message", "State must be a state or state abbreviation.");
 			return null;
 		}
 
 		if(!(locationZip.length() <= 12 && locationZip.length() > 0) || !(locationZip.matches("^[0-9.]+$"))){ 
-			Logger.error("{} || attempted to upload a location zip but location zip must be between 1 and 12 characters and is numeric.",user.getUsername());
 			session.setAttribute("message", "Zip must be between 1 and 12 characters and is numeric.");
 			return null;
 		}
 
 		if(!(locationType.length() <= 64 && locationType.length() > 0) || !(locationType.matches("^[a-zA-Z ]+$"))){ 
-			Logger.error("{} || attempted to upload a location type must be 1 to 32 alphabetic characters.",user.getUsername());
 			session.setAttribute("message", "Type must be 1 to 32 alphabetic characters.");
 			return null;
 		}
@@ -832,8 +806,7 @@ public class ValidationServiceImp {
 				}
 
 				if(allContacts.contains(firstName + " " + lastName)) {
-					Logger.error("{} || attempted to upload a multiple Contacts with the same first and last name.",user.getUsername());
-					session.setAttribute("message", "Cannot upload multiple Contacts with the same first and last name.");
+					session.setAttribute("message", "There was mulitple contacts with the same first name and last name within the sheet.");
 					return null;
 				}
 				result.add(contact);
@@ -857,8 +830,8 @@ public class ValidationServiceImp {
 		}
 
 
-		List<String> states = Arrays.asList("Alabama", "Alaska", "Arizona", "Arkansas", "California", "Colorado", "Connecticut", "Delaware", "Florida", "Georgia", "Hawaii", "Idaho", "Illinois", "Indiana", "Iowa", "Kansas", "Kentucky", "Louisiana", "Maine", "Maryland", "Massachusetts", "Michigan", "Minnesota", "Mississippi", "Missouri", "Montana", "Nebraska", "Nevada", "New Hampshire", "New Jersey", "New Mexico", "New York", "North Carolina", "North Dakota", "Ohio", "Oklahoma", "Oregon", "Pennsylvania", "Rhode Island", "South Carolina", "South Dakota", "Tennessee", "Texas", "Utah", "Vermont", "Virginia", "Washington", "West Virginia", "Wisconsin", "Wyoming");
-		List<String> stateAbbreviations = Arrays.asList("AL", "AK", "AZ", "AR", "CA", "CO", "CT", "DE", "FL", "GA", "HI", "ID", "IL", "IN", "IA", "KS", "KY", "LA", "ME", "MD", "MA", "MI", "MN", "MS", "MO", "MT", "NE", "NV", "NH", "NJ", "NM", "NY", "NC", "ND", "OH", "OK", "OR", "PA", "RI", "SC", "SD", "TN", "TX", "UT", "VT", "VA", "WA", "WV", "WI", "WY");
+		List<String> states = Arrays.asList("Alabama", "Alaska", "Arizona", "Arkansas", "California", "Colorado", "Connecticut", "Delaware", "Florida", "Georgia", "Idaho", "Illinois", "Indiana", "Iowa", "Kansas", "Kentucky", "Louisiana", "Maine", "Maryland", "Massachusetts", "Michigan", "Minnesota", "Mississippi", "Missouri", "Montana", "Nebraska", "Nevada", "New Hampshire", "New Jersey", "New Mexico", "New York", "North Carolina", "North Dakota", "Ohio", "Oklahoma", "Oregon", "Pennsylvania", "Rhode Island", "South Carolina", "South Dakota", "Tennessee", "Texas", "Utah", "Vermont", "Virginia", "Washington", "West Virginia", "Wisconsin", "Wyoming");
+		List<String> stateAbbreviations = Arrays.asList("AL", "AK", "AZ", "AR", "CA", "CO", "CT", "DE", "FL", "GA", "ID", "IL", "IN", "IA", "KS", "KY", "LA", "ME", "MD", "MA", "MI", "MN", "MS", "MO", "MT", "NE", "NV", "NH", "NJ", "NM", "NY", "NC", "ND", "OH", "OK", "OR", "PA", "RI", "SC", "SD", "TN", "TX", "UT", "VT", "VA", "WA", "WV", "WI", "WY");
 
 		String firstName = (String) hashtable.get("firstName");
 		String lastName = (String)hashtable.get("lastName");
@@ -873,77 +846,67 @@ public class ValidationServiceImp {
 		String workPhone = (String)hashtable.get("workPhone");
 
 		for(Contacts c: repoContacts) {
-			if((c.getFirstName() + " " + c.getLastName()) == (firstName + " " + lastName));
-			Logger.error("{} || attempted to upload a contact but a contact with the same First Name and Last Name already exists.",user.getUsername());
-			session.setAttribute("message", "Contact with the same first name and last name already exists.");
-			return null;
+			if((c.getFirstName() + " " + c.getLastName()).equals(firstName + " " + lastName)) {
+				session.setAttribute("message", "There is already a contact with the same first name and last name.");
+				return null;
+			}
 		}
 
 		if (!(firstName.length() <= 32 && firstName.length() > 0) || !(firstName.matches("^[a-zA-Z ']+$"))) { 
-			Logger.error("{} || attempted to upload a contact but Contact first name field must be between 1 and 32 characters and alphabetic.",user.getUsername());
 			session.setAttribute("message", "First name field must be between 1 and 32 characters and alphabetic.");
 			return null;
 		}
 
 		if(!(lastName.length() <= 32 && lastName.length() > 0) || !(lastName.matches("^[a-zA-Z ']+$"))) {
-			Logger.error("{} || attempted to upload a contact but Contact last name field must be between 1 and 32 characters and alphbetic.",user.getUsername());
 			session.setAttribute("message", "Last name field must be between 1 and 32 characters and alphbetic.");
 			return null;
 		}
+		
 		if (!(middleInitial == null || middleInitial.equals(""))) {
 			if(!(middleInitial.length() <= 16 && middleInitial.length() > 0) || !(middleInitial.matches("^[A-Za-z]{1}$"))) {
-				Logger.error("{} || attempted to upload a contact but Contact Middle initial must be 1 character and alphabetic.",user.getUsername());
 				session.setAttribute("message", "Middle initial must be 1 character and alphabetic.");
 				return null;
 			}
 		}
 
 		if(!(emailAddress.length() <= 64 && emailAddress.length() > 0) || !(emailAddress.matches("^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+$"))){
-			Logger.error("{} || attempted to upload a contact but Contact email address must be between 1 and 64 characters that are alpahnumeric.",user.getUsername());
 			session.setAttribute("message", "Email address must be between 1 and 64 characters that are alpahnumeric.");
 			return null;
 		}
 
 		if(!(streetAddress1.length() <= 64 && streetAddress1.length() > 0)) { 
-			Logger.error("{} || attempted to upload a contact but Contact street address 1 must be between 1 and 128 characters.",user.getUsername());
 			session.setAttribute("message", "Street address 1 must be between 1 and 128 characters.");
 			return null;
 		}
 
 		if (!(streetAddress2 == null || streetAddress2.equals(""))) {
 			if(!(streetAddress2.length() <= 64 && streetAddress2.length() > 0)) { 
-				Logger.error("{} || attempted to upload a contact but Contact street address 2 must be between 1 and 64 characters.",user.getUsername());
 				session.setAttribute("message", "Street address 2 must be between 1 and 64 characters.");
 				return null;
 			}
 		}
 		if(!(contactCity.length() <= 64 && contactCity.length() > 0) || !(contactCity.matches("^[A-Za-z]+(?:[\\s-][A-Za-z]+)*$"))) {
-			Logger.error("{} || attempted to upload a contact but Contact City must be between 1 and 64 characters and is alphabetic.",user.getUsername());
 			session.setAttribute("message", "City must be between 1 and 64 characters and is alphabetic.");
 			return null;
 		}
 
 		if(!(states.contains(contactState) || stateAbbreviations.contains(contactState))) {  
-			Logger.error("{} || attempted to upload a contact but Contact state must be a state or state abbreviation.",user.getUsername());
 			session.setAttribute("message", "State must be a state or state abbreviation.");
 			return null;
 		}
 
 		if(!(contactZip.length() <= 12 && contactZip.length() > 0) || !(contactZip.matches("^[0-9.]+$"))){ 
-			Logger.error("{} || attempted to upload a contact but Contact Zip must be between 1 and 12 numeric characters.",user.getUsername());
 			session.setAttribute("message", "Zip must be between 1 and 12 numeric characters.");
 			return null;
 		}
 
 		if(!(primaryPhone.length() <= 13 && primaryPhone.length() > 0) || !(primaryPhone.matches("\\d{3}-\\d{3}-\\d{4}"))){ 
-			Logger.error("{} || attempted to upload a contact but Contact primary phone must be in format ###-###-####.",user.getUsername());
 			session.setAttribute("message", "Primary phone must be in format ###-###-####.");
 			return null;
 		}
 
 		if (!(workPhone == null || workPhone.equals(""))) {
 			if(!(workPhone.length() <= 13 && workPhone.length() > 0) || !(workPhone.matches("\\d{3}-\\d{3}-\\d{4}"))){ 
-				Logger.error("{} || attempted to upload a contact but Contact work phone must be must be in format ###-###-####.",user.getUsername());
 				session.setAttribute("message", "Work phone must be must be in format ###-###-####.");
 				return null;
 			}
@@ -1114,8 +1077,7 @@ public class ValidationServiceImp {
 				}
 
 				if(allVehicles.contains(plate + " " + vin)) {
-					Logger.error("{} || attempted to upload multiple Vehicles with the same Plate and Vin.",user.getUsername());
-					session.setAttribute("message", "Can not upload multiple Vehicles with the same Plate and Vin.");
+					session.setAttribute("message", "There was mulitple vehicles with the same plate and vin within the sheet.");
 					return null;
 				}
 
@@ -1158,41 +1120,45 @@ public class ValidationServiceImp {
 
 		for(Vehicles v: repoVehicles) {
 			if ((v.getPlateNumber()+ " " + v.getVinNumber()).equals(plate + " " + vin)) {
-				Logger.error("{} || attempted to upload a Vehicle but the Vehicle already exists.",user.getUsername());
-			session.setAttribute("message", "Vehicle already exists.");
-			return null;
-		}
+				session.setAttribute("message", "Vehicle already exists.");
+				return null;
+			}
 		}
 
 		if(vehicleTypeId == null) {
-			Logger.error("{} || attempted to upload a Vehicle but the Vehicle Type did not exist.",user.getUsername());
-			session.setAttribute("message", "Vehicle Type did not exist. (Vehicle Types must be uploaded first, did you upload them yet?)");
+			session.setAttribute("message", "Vehicle Type did not exist.");
+			session.setAttribute("excelMessage", "Vehicle Types must be uploaded first, did you upload them yet?");
 			return null;	
 		}
 
 		if(locationId == null) {
-			Logger.error("{} || attempted to upload a Vehicle but the Location did not exist.",user.getUsername());
-			session.setAttribute("message", "Location did not exist. (Locations must be uploaded first, did you upload them yet?)");
+			session.setAttribute("message", "Location did not exist.");
+			session.setAttribute("excelMessage", "Locations must be uploaded first, did you upload them yet?");
 			return null;	
 		}
 
 		if (!(plate.length() <= 12 && plate.length() > 0) || !(plate.matches("^[a-zA-Z0-9. -]+$"))) {
-			Logger.error("{} || attempted to upload a Vehicle but the Plate was not between 1 and 12 alphanumeric characters long.",user.getUsername());
-			session.setAttribute("message", "Plate was not between 1 and 12 alphanumeric characters long.");
+			session.setAttribute("message", "Plate was not between 1 and 12 alphanumeric characters.");
 			return null;	
 		}
 
 		if (!(vin.length() <= 17 && vin.length() > 0) || !(vin.matches("^[a-zA-Z0-9.]+$"))) {
-			Logger.error("{} || attempted to upload a Vehicle but the Vin was not between 1 and 17 alphanumeric characters long.",user.getUsername());
-			session.setAttribute("message", "Vin was not between 1 and 17 alphanumeric characters long.");
+			session.setAttribute("message", "Vin was not between 1 and 17 alphanumeric characters.");
 			return null;	
 		}
 
 		if (!(manufacturedYear.length() <= 4 && manufacturedYear.length() > 0) || !(manufacturedYear.matches("^[0-9]+$"))) {
-			Logger.error("{} || attempted to upload a Vehicle but the Year was not between 1 and 4 numeric characters long.",user.getUsername());
-			session.setAttribute("message", "Year was not between 1 and 4 numeric characters long.");
+			session.setAttribute("message", "Year was not between 1950 and 2023.");
 			return null;	
-		}	
+		}
+	
+		if (manufacturedYear.matches("^[0-9]+$")) {
+			int year = Integer.parseInt(manufacturedYear);
+			if (!(year >= 1950 && year <= 2023)) {
+				session.setAttribute("message", "Year was not between 1950 and 2023.");
+				return null;
+	        } 
+		}
 
 		Vehicles vehicle = new Vehicles();
 
@@ -1518,8 +1484,8 @@ public class ValidationServiceImp {
 
 	public Contacts validateContactForm(Hashtable<String, String> hashtable, HttpSession session) {
 
-		List<String> states = Arrays.asList("Alabama", "Alaska", "Arizona", "Arkansas", "California", "Colorado", "Connecticut", "Delaware", "Florida", "Georgia", "Hawaii", "Idaho", "Illinois", "Indiana", "Iowa", "Kansas", "Kentucky", "Louisiana", "Maine", "Maryland", "Massachusetts", "Michigan", "Minnesota", "Mississippi", "Missouri", "Montana", "Nebraska", "Nevada", "New Hampshire", "New Jersey", "New Mexico", "New York", "North Carolina", "North Dakota", "Ohio", "Oklahoma", "Oregon", "Pennsylvania", "Rhode Island", "South Carolina", "South Dakota", "Tennessee", "Texas", "Utah", "Vermont", "Virginia", "Washington", "West Virginia", "Wisconsin", "Wyoming");
-		List<String> stateAbbreviations = Arrays.asList("DC", "AL", "AK", "AZ", "AR", "CA", "CO", "CT", "DE", "FL", "GA", "HI", "ID", "IL", "IN", "IA", "KS", "KY", "LA", "ME", "MD", "MA", "MI", "MN", "MS", "MO", "MT", "NE", "NV", "NH", "NJ", "NM", "NY", "NC", "ND", "OH", "OK", "OR", "PA", "RI", "SC", "SD", "TN", "TX", "UT", "VT", "VA", "WA", "WV", "WI", "WY");
+		List<String> states = Arrays.asList("Alabama", "Alaska", "Arizona", "Arkansas", "California", "Colorado", "Connecticut", "Delaware", "Florida", "Georgia", "Idaho", "Illinois", "Indiana", "Iowa", "Kansas", "Kentucky", "Louisiana", "Maine", "Maryland", "Massachusetts", "Michigan", "Minnesota", "Mississippi", "Missouri", "Montana", "Nebraska", "Nevada", "New Hampshire", "New Jersey", "New Mexico", "New York", "North Carolina", "North Dakota", "Ohio", "Oklahoma", "Oregon", "Pennsylvania", "Rhode Island", "South Carolina", "South Dakota", "Tennessee", "Texas", "Utah", "Vermont", "Virginia", "Washington", "West Virginia", "Wisconsin", "Wyoming");
+		List<String> stateAbbreviations = Arrays.asList("DC", "AL", "AK", "AZ", "AR", "CA", "CO", "CT", "DE", "FL", "GA", "ID", "IL", "IN", "IA", "KS", "KY", "LA", "ME", "MD", "MA", "MI", "MN", "MS", "MO", "MT", "NE", "NV", "NH", "NJ", "NM", "NY", "NC", "ND", "OH", "OK", "OR", "PA", "RI", "SC", "SD", "TN", "TX", "UT", "VT", "VA", "WA", "WV", "WI", "WY");
 
 		User user = userService.getLoggedInUser();
 
@@ -1774,8 +1740,8 @@ public class ValidationServiceImp {
 	public Locations validateLocationsForm(Hashtable<String, String> hashtable, HttpSession session) {
 
 
-		List<String> states = Arrays.asList("Alabama", "Alaska", "Arizona", "Arkansas", "California", "Colorado", "Connecticut", "Delaware", "Florida", "Georgia", "Hawaii", "Idaho", "Illinois", "Indiana", "Iowa", "Kansas", "Kentucky", "Louisiana", "Maine", "Maryland", "Massachusetts", "Michigan", "Minnesota", "Mississippi", "Missouri", "Montana", "Nebraska", "Nevada", "New Hampshire", "New Jersey", "New Mexico", "New York", "North Carolina", "North Dakota", "Ohio", "Oklahoma", "Oregon", "Pennsylvania", "Rhode Island", "South Carolina", "South Dakota", "Tennessee", "Texas", "Utah", "Vermont", "Virginia", "Washington", "West Virginia", "Wisconsin", "Wyoming");
-		List<String> stateAbbreviations = Arrays.asList("DC","AL", "AK", "AZ", "AR", "CA", "CO", "CT", "DE", "FL", "GA", "HI", "ID", "IL", "IN", "IA", "KS", "KY", "LA", "ME", "MD", "MA", "MI", "MN", "MS", "MO", "MT", "NE", "NV", "NH", "NJ", "NM", "NY", "NC", "ND", "OH", "OK", "OR", "PA", "RI", "SC", "SD", "TN", "TX", "UT", "VT", "VA", "WA", "WV", "WI", "WY");
+		List<String> states = Arrays.asList("Alabama", "Alaska", "Arizona", "Arkansas", "California", "Colorado", "Connecticut", "Delaware", "Florida", "Georgia", "Idaho", "Illinois", "Indiana", "Iowa", "Kansas", "Kentucky", "Louisiana", "Maine", "Maryland", "Massachusetts", "Michigan", "Minnesota", "Mississippi", "Missouri", "Montana", "Nebraska", "Nevada", "New Hampshire", "New Jersey", "New Mexico", "New York", "North Carolina", "North Dakota", "Ohio", "Oklahoma", "Oregon", "Pennsylvania", "Rhode Island", "South Carolina", "South Dakota", "Tennessee", "Texas", "Utah", "Vermont", "Virginia", "Washington", "West Virginia", "Wisconsin", "Wyoming");
+		List<String> stateAbbreviations = Arrays.asList("DC","AL", "AK", "AZ", "AR", "CA", "CO", "CT", "DE", "FL", "GA", "ID", "IL", "IN", "IA", "KS", "KY", "LA", "ME", "MD", "MA", "MI", "MN", "MS", "MO", "MT", "NE", "NV", "NH", "NJ", "NM", "NY", "NC", "ND", "OH", "OK", "OR", "PA", "RI", "SC", "SD", "TN", "TX", "UT", "VT", "VA", "WA", "WV", "WI", "WY");
 
 		User user = userService.getLoggedInUser();
 
@@ -1790,45 +1756,45 @@ public class ValidationServiceImp {
 		String locationType = (String)hashtable.get("locationType");
 
 		if (!(locationName.length() <= 32 && locationName.length() > 0) || !(locationName.matches("^[a-zA-Z ']+$"))) { 
-			Logger.error("{} || attempted to upload a location but the name field must be between 1 and 32 characters and alphabetic.",user.getUsername());
+			Logger.error("{} || attempted to update a location but the name field must be between 1 and 32 characters and alphabetic.",user.getUsername());
 			session.setAttribute("message", "Name must be between 1 and 32 characters and alphabetic.");
 			return null;
 		}
 
 		if(!(streetAddress1.length() <= 64 && streetAddress1.length() > 0) || !(streetAddress1.matches("\\d+\\s+([a-zA-Z.]+\\s?)+"))) { 
-			Logger.error("{} || attempted to upload a location but location address must be between 1 and 64 characters that are alphanumeric.",user.getUsername());
+			Logger.error("{} || attempted to update a location but location address must be between 1 and 64 characters that are alphanumeric.",user.getUsername());
 			session.setAttribute("message", "Address must be between 1 and 64 characters that are alphanumeric.");
 			return null;
 		}
 
 		if (!(streetAddress2 == null || streetAddress2.equals(""))) {
 			if(!(streetAddress2.length() <= 64 && streetAddress2.length() > 0) || !(streetAddress2.matches("^[A-Za-z0-9./-]+(?:[\\s-][A-Za-z0-9.-]+)*$"))) {
-				Logger.error("{} || attempted to upload a location street address 2 must be between 1 and 64 characters that are alphanumeric.",user.getUsername());
+				Logger.error("{} || attempted to update a location street address 2 must be between 1 and 64 characters that are alphanumeric.",user.getUsername());
 				session.setAttribute("message", "Street Address 2 must be between 1 and 64 characters that are alphanumeric.");
 				return null;
 			}
 		}
 
 		if(!(locationCity.length() <= 64 && locationCity.length() > 0) || !(locationCity.matches("^[A-Za-z]+(?:[\\s-][A-Za-z]+)*$"))) { 
-			Logger.error("{} || attempted to upload a location city but location city must be between 1 and 64 characters and is alphabetic.",user.getUsername());
+			Logger.error("{} || attempted to update a location city but location city must be between 1 and 64 characters and is alphabetic.",user.getUsername());
 			session.setAttribute("message", "City must be between 1 and 64 characters and is alphabetic.");
 			return null;
 		}
 
 		if(!(states.contains(locationState) || stateAbbreviations.contains(locationState))) {  
-			Logger.error("{} || attempted to upload a location state but location state must be a state or state abbreviation.",user.getUsername());
+			Logger.error("{} || attempted to update a location state but location state must be a state or state abbreviation.",user.getUsername());
 			session.setAttribute("message", "State must be a state or state abbreviation.");
 			return null;
 		}
 
-		if(!(locationZip.length() == 5) || !(locationZip.matches("^[0-9.]+$"))){ 
-			Logger.error("{} || attempted to upload a location zip but location zip must be 5 numeric characters.",user.getUsername());
-			session.setAttribute("message", "Zip must 5 numeric characters.");
+		if(!(locationZip.length() <= 12 && locationZip.length() > 0) || !(locationZip.matches("^[0-9.]+$"))){
+			Logger.error("{} || attempted to update a location state but zip must be between 1 and 12 numeric charcaters.",user.getUsername());
+			session.setAttribute("message", "Zip must be between 1 and 12 characters and is numeric.");
 			return null;
 		}
 
 		if(!(locationType.length() <= 64 && locationType.length() > 0) || !(locationType.matches("^[a-zA-Z ]+$"))){ 
-			Logger.error("{} || attempted to upload a location type must be 1 to 32 alphabetic characters.",user.getUsername());
+			Logger.error("{} || attempted to update a location type must be 1 to 32 alphabetic characters.",user.getUsername());
 			session.setAttribute("message", "Type must be 1 to 32 alphabetic characters.");
 			return null;
 		}
@@ -2015,8 +1981,8 @@ public class ValidationServiceImp {
 
 	public Shipments validateShipmentForm(Hashtable<String, String> hashtable, HttpSession session) {
 
-		List<String> states = Arrays.asList("Alabama", "Alaska", "Arizona", "Arkansas", "California", "Colorado", "Connecticut", "Delaware", "Florida", "Georgia", "Hawaii", "Idaho", "Illinois", "Indiana", "Iowa", "Kansas", "Kentucky", "Louisiana", "Maine", "Maryland", "Massachusetts", "Michigan", "Minnesota", "Mississippi", "Missouri", "Montana", "Nebraska", "Nevada", "New Hampshire", "New Jersey", "New Mexico", "New York", "North Carolina", "North Dakota", "Ohio", "Oklahoma", "Oregon", "Pennsylvania", "Rhode Island", "South Carolina", "South Dakota", "Tennessee", "Texas", "Utah", "Vermont", "Virginia", "Washington", "West Virginia", "Wisconsin", "Wyoming");
-		List<String> stateAbbreviations = Arrays.asList("DC", "AL", "AK", "AZ", "AR", "CA", "CO", "CT", "DE", "FL", "GA", "HI", "ID", "IL", "IN", "IA", "KS", "KY", "LA", "ME", "MD", "MA", "MI", "MN", "MS", "MO", "MT", "NE", "NV", "NH", "NJ", "NM", "NY", "NC", "ND", "OH", "OK", "OR", "PA", "RI", "SC", "SD", "TN", "TX", "UT", "VT", "VA", "WA", "WV", "WI", "WY");
+		List<String> states = Arrays.asList("Alabama", "Alaska", "Arizona", "Arkansas", "California", "Colorado", "Connecticut", "Delaware", "Florida", "Georgia", "Idaho", "Illinois", "Indiana", "Iowa", "Kansas", "Kentucky", "Louisiana", "Maine", "Maryland", "Massachusetts", "Michigan", "Minnesota", "Mississippi", "Missouri", "Montana", "Nebraska", "Nevada", "New Hampshire", "New Jersey", "New Mexico", "New York", "North Carolina", "North Dakota", "Ohio", "Oklahoma", "Oregon", "Pennsylvania", "Rhode Island", "South Carolina", "South Dakota", "Tennessee", "Texas", "Utah", "Vermont", "Virginia", "Washington", "West Virginia", "Wisconsin", "Wyoming");
+		List<String> stateAbbreviations = Arrays.asList("DC", "AL", "AK", "AZ", "AR", "CA", "CO", "CT", "DE", "FL", "GA", "ID", "IL", "IN", "IA", "KS", "KY", "LA", "ME", "MD", "MA", "MI", "MN", "MS", "MO", "MT", "NE", "NV", "NH", "NJ", "NM", "NY", "NC", "ND", "OH", "OK", "OR", "PA", "RI", "SC", "SD", "TN", "TX", "UT", "VT", "VA", "WA", "WV", "WI", "WY");
 
 		User user = userService.getLoggedInUser();
 

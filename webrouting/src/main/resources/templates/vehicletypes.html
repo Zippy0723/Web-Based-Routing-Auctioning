@@ -38,7 +38,7 @@
                     <h2 th:case="null">No vehicle types yet!</h2>
                     <div th:case="*">
                     <span th:text="${successMessage}" class="successMessage"></span>
-    				<br><br>
+    				<br>
                         <h2>Vehicle Types</h2>
                         <br>
                         <hr>
@@ -86,13 +86,13 @@
                                     <td th:text="${vehicletype.minimumCubicWeight}"></td>
                                     <td th:text="${vehicletype.maximumCubicWeight}"></td>
                                     <td><a th:href="@{/editvehicletypes/{id}(id=${vehicletype.id})}"><button style='font-size:11px'><i class='far fa-edit'></i></button></a></td>
-                                  	<td><a href="#" th:data-object-type="${vehicletype}" th:data-object-id="${vehicletype.id}"  th:attr="onclick=${'deleteObjectConfirm(this,''/deletevehicletypeconfirmation/'')'}"><button class="fa fa-times" style="color: red;"></button></a></td> 
+                                  	<td><a href="#" th:data-object-type="${vehicletype}" th:data-object-id="${vehicletype.id}" th:data-object-name="delete" th:attr="onclick=${'deleteObjectConfirm(this,''/deletevehicletypeconfirmation/'')'}"><button class="fa fa-times" style="color: red;"></button></a></td> 
                                 </tr>
                             </tbody>
                         </table>
                     </div>      
                     <br>
-                    <p><button class="buttons7" onclick="window.location.href='/signupvehicletype';">Add New Type</button>
+                    <p><button class="buttons7" onclick="window.location.href='/add-vehicletype';">Add New Type</button>
                     <button class="buttons7" onclick="window.location.href='/excel/upload-vehicletypes';">Import Excel Sheet</button>
                     <button class="buttons7" onclick="window.location.href='/excel-download-vehicletypes';">Export Excel Sheet</button></p>
                 </div>

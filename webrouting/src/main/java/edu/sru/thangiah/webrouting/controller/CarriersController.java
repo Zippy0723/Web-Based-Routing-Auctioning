@@ -423,7 +423,6 @@ public class CarriersController {
 		model.addAttribute("redirectLocation", (String) session.getAttribute("redirectLocation"));
 		model = NotificationController.loadNotificationsIntoModel(userService.getLoggedInUser(), model);
 
-
 		session.removeAttribute("message");
 
 		return "/add/add-carrier";

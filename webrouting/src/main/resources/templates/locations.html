@@ -38,8 +38,8 @@
                     <h2 th:case="null">No locations yet!</h2>
                     <div th:case="*">
                     <span th:text="${successMessage}" class="successMessage"></span>
-    				<br><br>
-                        <h2>Carrier Locations</h2>
+    				<br>
+                        <h2>Locations</h2>
                         <br>
                         <hr>
                         <span type="hidden" th:text="${error}" class="loginError"></span>
@@ -54,7 +54,6 @@
                                     <th>City</th>
                                     <th>State</th>
                                     <th>Zip Code</th>
-                                    <th>Carrier</th>
                                     <th>Location Type</th>
                                     <th>Edit</th>
                                     <th>Delete</th>
@@ -69,10 +68,9 @@
                                     <td th:text="${location.city}"></td>
                                     <td th:text="${location.state}"></td>
                                     <td th:text="${location.zip}"></td>
-                                    <td><a th:text="${location.carrier.carrierName}" th:href="@{/viewcarrier/{id}(id=${location.carrier.id})}"></a></td>
                                     <td th:text="${location.locationType}"></td>
                                     <td><a th:href="@{/editlocations/{id}(id=${location.id})}"><button style='font-size:11px'><i class='far fa-edit'></i></button></a></td>
-                                    <td><a href="#" th:data-object-type="${location}" th:data-object-id="${location.id}"  th:attr="onclick=${'deleteObjectConfirm(this,''/deletelocationconfirmation/'')'}"><button class="fa fa-times" style="color: red;"></button></a></td> 
+                                    <td><a href="#" th:data-object-type="${location}" th:data-object-id="${location.id}" th:data-object-name="delete" th:attr="onclick=${'deleteObjectConfirm(this,''/deletelocationconfirmation/'')'}"><button class="fa fa-times" style="color: red;"></button></a></td> 
             
                                 </tr>
                             </tbody>

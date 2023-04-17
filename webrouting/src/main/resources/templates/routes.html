@@ -30,17 +30,13 @@
 				<span class="nav-expand">
   					<button class=""  id="hamburger" style="display:none" onclick="nav_open()">☰</button>
 				</span>
-				<div th:if="${redirectLocation != '/routes'}">
-				<button class="buttons7" th:attr="onclick=|window.location.href='${redirectLocation}'|">Back</button>
-				<br>
-				</div>
                 <br><br>
                 <h2>Routes</h2>
 				<br>
 				<hr>
 				<br>
                 <form action="get" th:action="@{/search}" name="showRoutes" id= "showRoutes">
-				<div class="form-group">
+				<div class="form-group" style="z-index: 0;">
 					<br>
 					<h2>Filter Routes</h2>
 					<br>
@@ -72,10 +68,6 @@
                             <th>SCAC</th>
                             <th>Client Mode</th>
                             <th>Ship Date</th>
-                            <th>Freightbill Number</th>
-                            <th>Full Freight Terms</th>
-                            <th>Commodity Class</th>
-                            <th>Commodity Pieces</th>
                             <th>Shipper City</th>
                             <th>Shipper State</th>
                             <th>Shipper Zip</th>
@@ -86,6 +78,7 @@
                             <th>Consignee Zip</th>
                             <th>Latitude</th>
                             <th>Longitude</th>
+                            <th>Show Route on Map</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -95,10 +88,6 @@
                             <td th:text="${shipment.carrier.scac}"></td>
                             <td th:text="${shipment.clientMode}"></td>
                             <td th:text="${shipment.shipDate}"></td>
-                            <td th:text="${shipment.freightbillNumber}"></td>
-                            <td th:text="${shipment.fullFreightTerms}"></td>
-                            <td th:text="${shipment.commodityClass}"></td>
-                            <td th:text="${shipment.commodityPieces}"></td>
                             <td th:text="${shipment.shipperCity}"></td>
                             <td th:text="${shipment.shipperState}"></td>
                             <td th:text="${shipment.shipperZip}"></td>
@@ -109,12 +98,54 @@
                             <td th:text="${shipment.consigneeZip}"></td>
                             <td th:text="${shipment.consigneeLatitude}"></td>
                             <td th:text="${shipment.consigneeLongitude}"></td>
+                            <td><button th:attr="onclick='showShipmentOnMap(\'' + ${shipment.vehicle.location.latitude} + '\', \'' + ${shipment.vehicle.location.longitude} + '\', \'' + ${shipment.shipperLatitude} + '\', \'' + ${shipment.shipperLongitude} + '\', \'' + ${shipment.consigneeLatitude} + '\', \'' + ${shipment.consigneeLongitude} + '\')'">Show route on Map</button></td>
                         </tr>
                     </tbody>
                 </table>
+                <br><br>
+                <div class="container">
+        			<div class="col-md-8">
+            			<div id="map" class="mapframe"></div>
+        			</div>
+        			<br>
+    			</div>
+			</div>
+
+<script>
+    function initMap() {
+        map = new google.maps.Map(document.getElementById('map'), {
+            zoom: 7,
+            center: {lat: 37.7749, lng: -122.4194} // Default map center
+        });
+
+        directionsService = new google.maps.DirectionsService();
+        directionsRenderer = new google.maps.DirectionsRenderer({
+            map: map
+        });
+
+    }
+    function showShipmentOnMap(vehicleLat, vehicleLng, startLat, startLng, endLat, endLng) {
+    	var start = new google.maps.LatLng(parseFloat(vehicleLat), parseFloat(vehicleLng));
+        var stop1 = new google.maps.LatLng(parseFloat(startLat), parseFloat(startLng));
+        var end = new google.maps.LatLng(parseFloat(endLat), parseFloat(endLng));
+        
+        var request = {
+            origin: start,
+            destination: end,
+            waypoints: [{location: stop1}],
+            travelMode: 'DRIVING'
+        };
+
+        directionsService.route(request, function(result, status) {
+            if (status == 'OK') {
+                directionsRenderer.setDirections(result);
+            }
+        });
+    }
+</script>
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC9WwWWVbzUHeUBgj9AAh1aSMjSsrPpELM&callback=initMap&libraries=places"></script>
             </div>
             <br>
-        </div>
 
 		<div class="footer">
         </div>

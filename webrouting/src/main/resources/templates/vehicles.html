@@ -39,7 +39,7 @@
                     <h2 th:case="null">No vehicles yet!</h2>
                     <div th:case="*">
                     <span th:text="${successMessage}" class="successMessage"></span>
-    				<br><br>
+    				<br>
                         <h2>Vehicles</h2>
                         <br>
                         <hr>
@@ -54,8 +54,6 @@
                                     <th>Manufactured Year</th>
                                     <th>Vehicle Type</th>
                                     <th>Location</th>
-                                    <th>Carrier</th>
-                                    <th>SCAC</th>
                                     <th>Drivers</th>
                                     <th>View Shipments</th>
                                     <th>Edit</th>
@@ -70,12 +68,10 @@
                                     <td th:text="${vehicle.manufacturedYear}"></td>
                                     <td><a th:text="${vehicle.vehicleType}" th:href="@{/viewvehicletype/{id}(id=${vehicle.vehicleType.id})}"></a></td>
                                     <td><a th:text="${vehicle.location}" th:href="@{/viewlocation/{id}(id=${vehicle.location.id})}"></a></td>
-                                    <td><a th:text="${vehicle.carrier.carrierName}" th:href="@{/viewcarrier/{id}(id=${vehicle.carrier.id})}"></a></td>
-                                    <td th:text="${vehicle.carrier.scac}"></td>
                                     <td><a th:href="@{/viewvehicledrivers/{id}(id=${vehicle.id})}"><button style='font-size:11px'><i class='far fa-id-badge'></i></button></a></td> 
                                     <td><a th:href="@{/viewvehicleshipments/{id}(id=${vehicle.id})}"><button style='font-size:11px'><i class='fas fa-truck'></i></button></a></td>
                                     <td><a th:href="@{/editvehicles/{id}(id=${vehicle.id})}"><button style='font-size:11px'><i class='far fa-edit'></i></button></a></td>
-                                   	<td><a href="#" th:data-object-type="${vehicle}" th:data-object-id="${vehicle.id}"  th:attr="onclick=${'deleteObjectConfirm(this,''/deletevehicleconfirmation/'')'}"><button class="fa fa-times" style="color: red;"></button></a></td> 
+                                   	<td><a href="#" th:data-object-type="${vehicle}" th:data-object-id="${vehicle.id}" th:data-object-name="delete" th:attr="onclick=${'deleteObjectConfirm(this,''/deletevehicleconfirmation/'')'}"><button class="fa fa-times" style="color: red;"></button></a></td> 
                                 </tr>
                             </tbody>
                         </table>

@@ -1,10 +1,13 @@
 package edu.sru.thangiah.webrouting.controller;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import javax.servlet.http.HttpSession;
@@ -25,6 +28,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
 import edu.sru.thangiah.webrouting.domain.Carriers;
@@ -36,8 +40,10 @@ import edu.sru.thangiah.webrouting.domain.VehicleTypes;
 import edu.sru.thangiah.webrouting.domain.Vehicles;
 import edu.sru.thangiah.webrouting.repository.CarriersRepository;
 import edu.sru.thangiah.webrouting.repository.LocationsRepository;
+import edu.sru.thangiah.webrouting.repository.ShipmentsRepository;
 import edu.sru.thangiah.webrouting.repository.VehicleTypesRepository;
 import edu.sru.thangiah.webrouting.repository.VehiclesRepository;
+import edu.sru.thangiah.webrouting.services.ApiServiceImpl;
 import edu.sru.thangiah.webrouting.services.NotificationService;
 import edu.sru.thangiah.webrouting.services.SecurityService;
 import edu.sru.thangiah.webrouting.services.UserService;
@@ -61,6 +67,8 @@ public class VehiclesController {
 	private CarriersRepository carriersRepository;
 
 	private LocationsRepository locationsRepository;
+	
+	private ShipmentsRepository shipmentsRepository;
 
 	@Autowired
 	private UserService userService;
@@ -73,6 +81,9 @@ public class VehiclesController {
 
 	@Autowired
 	private NotificationService notificationService;
+	
+	@Autowired
+	private ApiServiceImpl apiService;
 
 	private static final Logger Logger = LoggerFactory.getLogger(VehiclesController.class);
 
@@ -83,9 +94,10 @@ public class VehiclesController {
 	 * @param vehiclesRepository Used to interact with the vehicles in the database
 	 * @param vehicleTypesRepository Used to interact with the vehicle types in the database
 	 */
-	public VehiclesController(VehiclesRepository vehiclesRepository, VehicleTypesRepository vehicleTypesRepository) {
+	public VehiclesController(VehiclesRepository vehiclesRepository, VehicleTypesRepository vehicleTypesRepository, ShipmentsRepository shipmentsRepository) {
 		this.vehiclesRepository = vehiclesRepository;
-		this.vehicleTypesRepository = vehicleTypesRepository;;
+		this.vehicleTypesRepository = vehicleTypesRepository;
+		this.shipmentsRepository = shipmentsRepository;
 	}
 
 	/**
@@ -146,219 +158,8 @@ public class VehiclesController {
 		return "vehicles";
 	}
 
-	/**
-	 * Redirects user to the /add/add-vehicle page
-	 * @param model Used to add data to the model
-	 * @param vehicles Information on the vehicle being added
-	 * @param result Ensures the information entered by the user is valid
-	 * @return "/add/add-vehicle"
-	 */
-	@GetMapping({"/add-vehicle"})
-	public String showLists(Model model, Vehicles vehicles, BindingResult result, HttpSession session) {
 
-		User user = userService.getLoggedInUser();
-		model = NotificationController.loadNotificationsIntoModel(user, model);
-		model.addAttribute("redirectLocation", (String) session.getAttribute("redirectLocation"));
-		model.addAttribute("carriers", user.getCarrier());
-		model.addAttribute("vehicleTypes", user.getCarrier().getVehicleTypes()); 
-		model.addAttribute("locations", user.getCarrier().getLocations()); 
-		model.addAttribute("currentPage","/vehicles");
-
-		return "/add/add-vehicle";
-
-		/**
-        model.addAttribute("vehicleTypes", vehicleTypesRepository.findAll()); 
-        model.addAttribute("locations", locationsRepository.findAll());   
-        model.addAttribute("carriers", carriersRepository.findAll());   
-        return "/add/add-vehicle";
-		 */
-	}
-
-	/**
-	 * Redirects user to the /upload-vehicles page when clicking "Upload an excel file" button in the vehicles section of Carrier login
-	 * @param model used to add data to the model
-	 * @return "/upload-vehicles"
-	 */
-
-	@PostMapping("/upload-vehicles")
-	public String LoadFromExcelData(@RequestParam("file") MultipartFile excelData){
-		XSSFWorkbook workbook;
-		try {
-			User user = userService.getLoggedInUser();
-			workbook = new XSSFWorkbook(excelData.getInputStream());
-
-
-			XSSFSheet worksheet = workbook.getSheetAt(0);
-
-			List<Carriers> carriersList;
-			carriersList = (List<Carriers>) carriersRepository.findAll();
-
-
-			List<VehicleTypes> vehicleTypeList;
-			vehicleTypeList = (List<VehicleTypes>) vehicleTypesRepository.findAll();
-
-			List<Long> vehicleTypeIdList = new ArrayList<Long>();
-
-			for (VehicleTypes v: vehicleTypeList) {
-				vehicleTypeIdList.add(v.getId());
-			}
-
-
-			List<Locations> locationsList;
-			locationsList = (List<Locations>) locationsRepository.findAll();
-
-			List<Long> locationIdList = new ArrayList<Long>();
-
-			for (Locations l: locationsList) {
-				locationIdList.add(l.getId());
-			}
-
-
-			for(int i=1; i<worksheet.getPhysicalNumberOfRows(); i++) {
-
-
-
-				Vehicles vehicle = new Vehicles();
-				XSSFRow row = worksheet.getRow(i);
-
-				if(row.getCell(0).getStringCellValue().isEmpty() || row.getCell(0)== null ) {
-					break;
-				}
-
-
-				String manufacturedYear = row.getCell(0).toString().strip();
-				String plateNumber = row.getCell(1).toString().strip();
-				String vinNumber = row.getCell(2).toString().strip();
-
-				String location = row.getCell(3).toString().strip();
-				long locationID = Long.parseLong(location);			//May need to be in try catch
-
-				String vehicleType = row.getCell(4).toString().strip();
-				long vehicleTypeID = Long.parseLong(vehicleType);
-
-
-
-				if (!(manufacturedYear.length() == 4) || !(manufacturedYear.matches("^[0-9]+$"))) {
-					workbook.close();
-					Logger.error("{} || attempted to upload a vehicle but the Manufactured Year must be 4 numeric characters.",user.getUsername());
-					continue;
-				}
-
-
-				if(!(plateNumber.length() < 12 && plateNumber.length() > 0 && plateNumber.matches("^[a-zA-Z0-9.]+$"))) { 
-					workbook.close();
-					Logger.error("{} || attempted to upload a vehicle but the Plate Number must be between 0 and 12 alphanumeric characters.",user.getUsername());
-					continue;
-				}
-
-				if(!(vinNumber.length() < 17 && vinNumber.length() > 0) || !(vinNumber.matches("^[a-zA-Z0-9]+$"))) {
-					workbook.close();
-					Logger.error("{} || attempted to upload a vehicle but the Vin Number must be between 0 and 17 alphanumeric characters.",user.getUsername());
-					continue;
-				}
-
-				if(!(vehicleTypeIdList.contains(vehicleTypeID))) {
-					workbook.close();
-					Logger.error("{} || attempted to upload a vehicle but the Vehicle Type ID does not exist.",user.getUsername());
-					continue;
-				}
-
-				if(!(locationIdList.contains(locationID))) {
-					workbook.close();
-					Logger.error("{} || attempted to upload a vehicle but the Vehicle Type ID does not exist.",user.getUsername());
-					continue;
-				}
-
-
-
-				vehicle.setManufacturedYear(manufacturedYear);
-				vehicle.setVinNumber(vinNumber);
-				vehicle.setVehicleType(vehicleTypesRepository.findById(vehicleTypeID).orElseThrow(() -> new IllegalArgumentException("Invalid vehicleType Id:" + vehicleTypeID)));
-				vehicle.setLocation(locationsRepository.findById(locationID).orElseThrow(() -> new IllegalArgumentException("Invalid location Id:" + locationID)));
-
-
-				vehiclesRepository.save(vehicle);
-				Logger.info("{} || successfully saved vehicle with ID {}.", user.getUsername(), vehicle.getId());
-
-			}
-
-			workbook.close();
-
-		} 
-		catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
-		return "redirect:/pendingshipments";
-	}
-	/**
-	 * Adds a vehicle to the database. Checks if there are errors in the form. <br>
-	 * If there are no errors, the vehicle is saved in the vehiclesRepository. and the user is redirect to /vehicles <br>
-	 * If there are errors, the user is redirected to the /add/add-vehicle page.
-	 * @param vehicles Information on the vehicle being added
-	 * @param result Ensures the information entered by the user is valid
-	 * @param model Used to add data to the model
-	 * @return "redirect:/vehicles" or "/add/add-vehicle"
-	 */
-	@RequestMapping({"/addvehicles"})
-	public String addVehicle(@Validated Vehicles vehicles, BindingResult result, Model model, HttpSession session) {
-		userValidator.addition(vehicles, result);
-		User user = userService.getLoggedInUser();
-		model = NotificationController.loadNotificationsIntoModel(user, model);
-		model.addAttribute("currentPage","/vehicles");
-		String redirectLocation = (String) session.getAttribute("redirectLocation");
-		model.addAttribute("redirectLocation", session.getAttribute("redirectLocation")); 
-
-		if (result.hasErrors()) {			
-
-			return "/add/add-vehicle";
-		}
-
-		Boolean deny = false;
-
-		List<Vehicles> checkVehicles = new ArrayList<>();
-		checkVehicles = (List<Vehicles>) vehiclesRepository.findAll();
-
-		for(Vehicles check: checkVehicles) {
-			if(vehicles.getVinNumber().equals(check.getVinNumber().toString())
-					|| vehicles.getPlateNumber().equals(check.getPlateNumber())) {
-				deny = true;
-				break;
-			}
-		}
-
-		if(deny == true) {
-			model.addAttribute("error", "Unable to add Vehicle. Vehicle VIN or Plate Number already exists");
-			Logger.error("{} || was unable to add Vehicle because VIN or Plate Number already exists.", user.getUsername());
-			model.addAttribute("vehicles", user.getCarrier().getVehicles());
-
-			User users = userService.getLoggedInUser();
-			List<Notification> notifications = new ArrayList<>();
-
-			if(!(users == null)) {
-				notifications = NotificationController.fetchUnreadNotifications(users);
-			}
-
-			model.addAttribute("notifications",notifications);
-
-			return "vehicles";
-		}
-
-		vehiclesRepository.save(vehicles);
-		Logger.info("{} || successfully added vehicle with ID {}.", user.getUsername(), vehicles.getId());
-
-		User users = userService.getLoggedInUser();
-		List<Notification> notifications = new ArrayList<>();
-
-		if(!(users == null)) {
-			notifications = NotificationController.fetchUnreadNotifications(users);
-		}
-
-		model.addAttribute("notifications",notifications);
-
-		return "redirect:" + redirectLocation;
-	}
+	
 
 	/**
 	 * Finds a vehicle using the id parameter and if found, redirects to confirmation page
@@ -551,5 +352,63 @@ public class VehiclesController {
 
 		return "redirect:" + redirectLocation;
 	}
+	
+	@RequestMapping("assignvehicle/{id}")
+	public String assignVehicle(@PathVariable("id") long shipmentId, Model model) {
+		User user = userService.getLoggedInUser();
+		model.addAttribute("currentPage","/shipments");
+		List<Vehicles> vehicles = (List<Vehicles>) user.getCarrier().getVehicles();
+		Shipments shipment = shipmentsRepository.findById(shipmentId)
+				.orElseThrow(() -> new IllegalArgumentException("Invalid shipment Id:" + shipmentId));
+		
+		model.addAttribute("shipment",shipment);
+		model.addAttribute("vehicles",vehicles);
+		model.addAttribute("selectedVehicle",vehicles.get(0));
+		
+		
+		model = NotificationController.loadNotificationsIntoModel(user, model);
+		return "assignvehicle";
+	}
+	
+	@PostMapping("/assignvehicletransaction/{id}")
+	public String assignVehicle(@PathVariable("id") long shipmentId, @RequestParam("vehicle") Vehicles vehicle, Model model, HttpSession session) {
+		String redirectLocation = (String) session.getAttribute("redirectLocation");
+		Shipments shipment = shipmentsRepository.findById(shipmentId)
+				.orElseThrow(() -> new IllegalArgumentException("Invalid shipment Id:" + shipmentId));
+		
+		shipment.setVehicle(vehicle);
+		shipmentsRepository.save(shipment);
+		
+		return "redirect:" + redirectLocation;
+	}
+	
+	@GetMapping("getbestvehicle/{shipmentId}")
+	@ResponseBody
+	public Long getBestVehicleId(@PathVariable("shipmentId") long shipmentId) throws NumberFormatException, UnsupportedEncodingException { //gets the vehicles that's location is closests to the shipments start location.
+		Shipments shipment = shipmentsRepository.findById(shipmentId)
+				.orElseThrow(() -> new IllegalArgumentException("Invalid shipment Id:" + shipmentId));
+		String startingLat = shipment.getShipperLatitude();
+		String startingLng = shipment.getShipperLongitude();
+		User user = userService.getLoggedInUser();
+		List<Vehicles> vehicles = (List<Vehicles>) user.getCarrier().getVehicles();
+		HashMap<Long,Double> distances = new HashMap<Long,Double>();
+		
+		for(Vehicles v : vehicles) {
+			distances.put(v.getId(),Double.parseDouble(apiService.fetchDistanceBetweenCoordinates(startingLat, startingLng, v.getLocation().getLatitude(), v.getLocation().getLongitude()).replaceAll(",", "")));
+		}
+		
+		long minKey = 0;
+		Double minValue = Double.MAX_VALUE;
 
+		for (Map.Entry<Long, Double> entry : distances.entrySet()) {
+		    long key = entry.getKey();
+		    Double value = entry.getValue();
+		    if (value < minValue) {
+		        minKey = key;
+		        minValue = value;
+		    }
+		}
+		
+		return (Long)minKey;
+	}
 }
