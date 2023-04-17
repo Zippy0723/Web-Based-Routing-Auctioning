@@ -1221,8 +1221,7 @@ public class ValidationServiceImp {
 					}
 
 					if(allDrivers.contains(contactFullName)) {
-						Logger.error("{} || attempted to upload multiple Drivers with the same Contact name.",user.getUsername());
-						session.setAttribute("message", "Can not upload multiple Drivers with the same Contact name.");
+						session.setAttribute("message", "There was mulitple Drivers with the same Contact name within the sheet.");
 						return null;
 					}
 
@@ -1268,38 +1267,34 @@ public class ValidationServiceImp {
 
 		for(Driver d : repoDrivers) {
 			if ((d.getContact().getFirstName() + " " + d.getContact().getLastName()).equals(contactFullName)) {
-				Logger.error("{} || attempted to upload a Driver but the Contact already exists.",user.getUsername());
 				session.setAttribute("message", "Driver with this Contact already exists.");
 				return null;
 			}
 		}
 
 		if(vehicleId == null) {
-			Logger.error("{} || attempted to upload a Driver but the Vehicle did not exist.",user.getUsername());
-			session.setAttribute("message", "Vehicle did not exist. (Vehicles must be uploaded first, did you upload them yet?)");
+			session.setAttribute("message", "Vehicle did not exist.");
+			session.setAttribute("excelMessage","Vehicles must be uploaded first, did you upload them yet?");
 			return null;
 		}
 
-		if(contactId == null) {
-			Logger.error("{} || attempted to upload a Driver but the Contact did not exist.",user.getUsername());
-			session.setAttribute("message", "Contact did not exist. (Contacts must be uploaded first, did you upload them yet?)");
+		if(contactId == null) {;
+			session.setAttribute("message", "Contact did not exist.");
+			session.setAttribute("excelMessage","Contacts must be uploaded first, did you upload them yet?");
 			return null;
 		}
 
 		if(!(licenseNumber.length() <= 32 && licenseNumber.length() > 0)){
-			Logger.error("{} || attempted to upload a Driver but the license number must be between 1 and 32 characters.",user.getUsername());
 			session.setAttribute("message", "License number must be between 1 and 12 characters.");
 			return null;
 		}
 
 		if(!(licenseExpiration.length() <= 12 && licenseExpiration.length() > 0) || !(licenseExpiration.matches("^\\d{2}-(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)-\\d{4}$"))){ 
-			Logger.error("{} || attempted to upload a Driver but the Date must be between 1 and 12 characters and formated MM/DD/YYYY.", user.getUsername());
 			session.setAttribute("message", "Date must be between 1 and 12 characters and formated MM/DD/YYYY.");
 			return null;
 		}
 
 		if(!(licenseClass.length() <= 12 && licenseClass.length() > 0) || !(licenseClass.matches("^[a-zA-Z-/]+$"))) { 
-			Logger.error("{} || attempted to upload a Driver but the license class must be between 1 and 12 characters.",user.getUsername());
 			session.setAttribute("message", "License class must be between 1 and 12 characters.");
 			return null;
 		}
@@ -1408,55 +1403,49 @@ public class ValidationServiceImp {
 		}
 
 		if(vehicleId == null) {
-			Logger.error("{} || attempted to upload a Maintenance Order but the vehicle did not exist.",user.getUsername());
-			session.setAttribute("message", "Vehicle did not exist. (Vehicles must be uploaded first, did you upload them yet?)");
+			session.setAttribute("message", "Vehicle did not exist.");
+			session.setAttribute("excelMessage","Vehicles must be uploaded first, did you upload them yet?");
 			return null;
 		}
 
 		if(technicianId == null) {
-			Logger.error("{} || attempted to upload a Maintenance Order but the Technician did not exist.",user.getUsername());
-			session.setAttribute("message", " Technician did not exist. (Technicians must be uploaded first, did you upload them yet?)");
+			session.setAttribute("message", "Technician did not exist.");
+			session.setAttribute("excelMessage","Technicians must be uploaded first, did you upload them yet?");
 			return null;
 		}
 
 		if (!(date == null || date.equals(""))) {
 			if(!(date.length() <= 12 && date.length() > 0 && date.matches("^\\d{2}-(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)-\\d{4}$"))) { 
-				Logger.error("{} || attempted to upload a Maintenance Order but the Date must be between 1 and 12 characters and formated MM/DD/YYYY.",user.getUsername());
-				session.setAttribute("message", "Date must be between 1 and 12 characters and formated MM/DD/YYYY.");
+				session.setAttribute("message", "Date must be between 1 and 12 characters and formated DD-MMM-YYYY.");
 				return null;
 			}
 		}
 
 		if (!(details == null || details.equals(""))) {
 			if(!(details.length() <= 128 && details.length() > 0)) {
-				Logger.error("{} || attempted to upload a Maintenance Order but the Details must be between 1 and 128 characters.",user.getUsername());
 				session.setAttribute("message", "Details must be between 1 and 128 characters.");
 				return null;
 			}
 		}
 
 		if(!(serviceType.length() <= 12 && serviceType.length() > 0) || !(serviceType.matches("^[a-zA-Z0-9.]+$"))) {
-			Logger.error("{} || attempted to upload a Maintenance Order but the Service Type must be between 1 and 12 alphanumeric characters.",user.getUsername());
 			session.setAttribute("message", "Service Type must be between 1 and 12 alphanumeric characters.");
 			return null;
 		}
 
 		if (!(cost == null || cost.equals(""))) {
 			if(!(cost.length() <= 16 && cost.length() > 0) || !(cost.matches("^[0-9.]+$"))) {
-				Logger.error("{} || attempted to upload a Maintenance Order but the Cost must be between 1 and 16 numeric characters.",user.getUsername());
 				session.setAttribute("message", "Cost must be between 1 and 16 numeric characters.");
 				return null;
 			}
 		}
 
 		if(!(status.length() <= 64 && status.length() > 0)) {
-			Logger.error("{} || attempted to upload a Maintenance Order but the Status must be between 1 and 64 characters.",user.getUsername());
 			session.setAttribute("message", "Status must be between 1 and 64 characters.");
 			return null;
 		}
 
 		if(!(type.length() <= 64 && type.length() > 0) || !(type.matches("^[a-zA-Z0-9. ]+$"))) {
-			Logger.error("{} || attempted to upload a Maintenance Order but the Maintenance Type must be between 1 and 64 characters.",user.getUsername());
 			session.setAttribute("message", "Type must be between 1 and 64 characters.");
 			return null;
 		}
@@ -1924,8 +1913,8 @@ public class ValidationServiceImp {
 
 		if (!(date == null || date.equals(""))) {
 			if(!(date.length() <= 12 && date.length() > 0 && date.matches("^\\d{2}-(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)-\\d{4}$"))) { 
-				Logger.error("{} || attempted to edit a Maintenance Order but the Date must be between 1 and 12 characters and formated DD/MMM/YYYY.",user.getUsername());
-				session.setAttribute("message", "Date must be between 1 and 12 characters and formated DD/MMM/YYYY.");
+				Logger.error("{} || attempted to edit a Maintenance Order but the Date must be between 1 and 12 characters and formated DD-MMM-YYYY.",user.getUsername());
+				session.setAttribute("message", "Date must be between 1 and 12 characters and formated DD-MMM-YYYY.");
 				return null;
 			}
 		}

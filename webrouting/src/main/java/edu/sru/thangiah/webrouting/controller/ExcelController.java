@@ -571,7 +571,7 @@ public class ExcelController {
 			List<Locations> locations = validationServiceImp.validateLocationsSheet(locationsSheet, session);
 
 			if (locations == null) {
-				Logger.error("{} || attempted to upload Lcoations but "+ session.getAttribute("message") ,user.getUsername());
+				Logger.error("{} || attempted to upload Locations but "+ session.getAttribute("message") ,user.getUsername());
 				model.addAttribute("message", session.getAttribute("message"));
 				return "/excel/upload-locations"; 
 			}
@@ -826,9 +826,19 @@ public class ExcelController {
 			List<Driver> drivers = validationServiceImp.validateDriverSheet(driverSheet, session);
 
 			if (drivers == null) {
-				Logger.error("{} || attempted to upload Drivers but failed.",user.getUsername());
-				model.addAttribute("message", session.getAttribute("message"));
-				return "/excel/upload-drivers"; 
+					String message = (String) session.getAttribute("message");
+					
+					try { 
+						Logger.error("{} || attempted to upload Drivers but " + message ,user.getUsername());
+						String excelMessage = (String) session.getAttribute("excelMessage");
+						if (!excelMessage.equals("null")){
+							message = message + " " + excelMessage; 
+						}
+					} catch(Exception e){}
+					
+					session.removeAttribute("excelMessage");
+					model.addAttribute("message", message);
+				return "/excel/upload-drivers";
 			}
 			
 			if (drivers.size() == 0) {
@@ -887,8 +897,18 @@ public class ExcelController {
 			List<MaintenanceOrders> orders = validationServiceImp.validateMaintenanceOrdersSheet(orderSheet, session);
 
 			if (orders == null) {
-				Logger.error("{} || attempted to upload Maintenance Orders but failed.",user.getUsername());
-				model.addAttribute("message", session.getAttribute("message"));
+				String message = (String) session.getAttribute("message");
+				
+				try { 
+					Logger.error("{} || attempted to upload Maintenance Orders but " + message ,user.getUsername());
+					String excelMessage = (String) session.getAttribute("excelMessage");
+					if (!excelMessage.equals("null")){
+						message = message + " " + excelMessage; 
+					}
+				} catch(Exception e){}
+				
+				session.removeAttribute("excelMessage");
+				model.addAttribute("message", message);
 				return "/excel/upload-maintenanceorders"; 
 			}
 			

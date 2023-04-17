@@ -328,6 +328,58 @@ public class EditAndAddController {
 		return "redirect:" + (String) session.getAttribute("redirectLocation");
 	}
 	
+	@GetMapping("/add-order")
+	public String showOrderAddForm(MaintenanceOrders maintenanceOrder, Model model, HttpSession session) {
+		model.addAttribute("redirectLocation", (String) session.getAttribute("redirectLocation"));
+		model.addAttribute("currentPage","/maintenanceorders");
+		User user = userService.getLoggedInUser();
+		model = NotificationController.loadNotificationsIntoModel(user, model);
+		model.addAttribute("technicians", user.getCarrier().getTechnicians());
+		model.addAttribute("vehicles", user.getCarrier().getVehicles());
+
+		session.removeAttribute("message");
+		model.addAttribute("orderForm", new MaintenanceOrders());
+
+		return "/add/add-order";
+	}
+
+
+	@PostMapping("submit-add-order")
+	public String vehicleOrderForm(@ModelAttribute("orderForm") MaintenanceOrders maintenanceOrder, Model model, HttpSession session) {
+		model.addAttribute("redirectLocation", (String) session.getAttribute("redirectLocation"));
+		model.addAttribute("currentPage","/maintenanceorders");
+		User user = userService.getLoggedInUser();
+		model = NotificationController.loadNotificationsIntoModel(user, model);
+		model.addAttribute("technicians", user.getCarrier().getTechnicians());
+		model.addAttribute("vehicles", user.getCarrier().getVehicles());
+
+		Hashtable<String, String> hashtable = new Hashtable<>();
+
+		hashtable.put("date", maintenanceOrder.getScheduled_date().strip());
+		hashtable.put("details", maintenanceOrder.getDetails().strip());
+		hashtable.put("serviceType", maintenanceOrder.getService_type_key().strip());
+		hashtable.put("cost", maintenanceOrder.getCost().strip());
+		hashtable.put("status", maintenanceOrder.getStatus_key().strip());
+		hashtable.put("type", maintenanceOrder.getMaintenance_type().strip());
+		hashtable.put("vehiclePlateAndVin", maintenanceOrder.getVehicle().getPlateNumber() + " " + maintenanceOrder.getVehicle().getVinNumber());
+		hashtable.put("techniciansContactFullName", maintenanceOrder.getTechnician().getContact().getFirstName().strip() + " " + maintenanceOrder.getTechnician().getContact().getLastName().strip());
 	
+		MaintenanceOrders result;
+
+		result = validationServiceImp.validateMaintenanceOrder(hashtable, session);
+
+
+		if (result == null) {
+			Logger.error("{} || attempted to add a new Maintenance Order but "+ session.getAttribute("message") ,user.getUsername());
+			model.addAttribute("message", session.getAttribute("message"));
+			return "/add/add-order";
+		}
+
+
+		maintenanceOrdersRepository.save(result);
+		Logger.info("{} || successfully added a new Maintenance Order with ID {}",user.getUsername(), result.getId());
+
+		return "redirect:" + (String) session.getAttribute("redirectLocation");
+	}
 
 }
