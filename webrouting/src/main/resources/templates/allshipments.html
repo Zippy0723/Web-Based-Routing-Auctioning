@@ -60,6 +60,7 @@
                                     <th>Consignee City</th>
                                     <th>Consignee State</th>
                                     <th>Consignee Zip</th>
+                                    <th>View Details</th>
                                     <th sec:authorize="hasAuthority('MASTERLIST')">Freeze</th>
                                     <th sec:authorize="hasAnyAuthority('SHIPPER','MASTERLIST')">Push to Auction</th>
                                     <th sec:authorize="hasAnyAuthority('SHIPPER','MASTERLIST')">Direct Assign</th>
@@ -82,8 +83,9 @@
                                     <td th:text="${shipment.consigneeCity}"></td>
                                     <td th:text="${shipment.consigneeState}"></td>
                                     <td th:text="${shipment.consigneeZip}"></td>
-                                    <td sec:authorize="hasAuthority('MASTERLIST')"><a href="#" th:data-object-type="${shipment}" th:data-object-id="${shipment.id}" th:data-object-name="freeze" th:attr="onclick=${'freezeShipmentConfirm(this,''/freezeshipmentconfirmation/'')'}"><button><i class='far fa-snowflake' style='font-size:11px;color: #2070b9'></i></button></a></td>
-                                    <td sec:authorize="hasAnyAuthority('SHIPPER','MASTERLIST')"><a th:classappend="${user.auctioningAllowed ? '' : 'disabled-btn'}" href="#" th:data-object-type="${shipment.client}" th:data-object-id="${shipment.id}" th:data-object-name="push" th:attr="onclick=${'pushShipmentConfirm(this,''/pushshipmentconfirmation/'')'}"><button class= "fas fa-gavel" style="color:#5C4033;"></button></a></td> 
+                                    <td><a th:href="@{/viewshipment/{id}(id=${shipment.id})}"><button style='font-size:11px'><i class='fas fa-clipboard-list'></i></button></a></td>
+                                    <td sec:authorize="hasAuthority('MASTERLIST')"><a th:href="@{/freezeshipment/{id}(id=${shipment.id})}"><button style='font-size:11px'><i class='far fa-snowflake' style='font-size:11px;color:#33e6ff'></i></button></a></td>
+                                    <td sec:authorize="hasAnyAuthority('SHIPPER','MASTERLIST')"><a th:classappend="${user.auctioningAllowed ? '' : 'disabled-btn'}" th:href="@{/pushshipment/{id}(id=${shipment.id})}"><button class='fas fa-gavel' style='font-size:11px'></button></a></td>
                                     <td sec:authorize="hasAnyAuthority('SHIPPER','MASTERLIST')"><a th:href="@{/directassignshipment/{id}(id=${shipment.id})}"><button style='font-size:11px'><i class='fas fa-truck'></i></button></a></td>
                                     <td sec:authorize="hasAnyAuthority('SHIPPER','MASTERLIST')"><a th:href="@{/editshipment/{id}(id=${shipment.id})}"><button style='font-size:11px'><i class='far fa-edit'></i></button></a></td>
                                     <td sec:authorize="hasAnyAuthority('SHIPPER','MASTERLIST')"><a href="#" th:data-object-type="${shipment.client}" th:data-object-id="${shipment.id}" th:data-object-name="delete" th:attr="onclick=${'deleteObjectConfirm(this,''/deleteshipmentconfirmation/'')'}"><button class="fa fa-times" style="color: red;"></button></a></td> 
@@ -117,6 +119,7 @@
                                     <th>Consignee City</th>
                                     <th>Consignee State</th>
                                     <th>Consignee Zip</th>
+                                    <th>View Details</th>
                                     <th>View Bids</th>
                                     <th>Winning Bid</th>
                                   
@@ -144,6 +147,7 @@
                                     <td th:text="${shipment.consigneeCity}"></td>
                                     <td th:text="${shipment.consigneeState}"></td>
                                     <td th:text="${shipment.consigneeZip}"></td>
+                                    <td><a th:href="@{/viewshipment/{id}(id=${shipment.id})}"><button style='font-size:11px'><i class='fas fa-clipboard-list'></i></button></a></td>
                                     <td><a th:href="@{/viewshipmentbids/{id}(id=${shipment.id})}"><button class="buttons11" role="button">([[${shipment.getBids().size()}]])</button></a></td>
                                     <td><p th:inline="text">[[${shipment.getLowestBidValue()}]]</p></td>
                                     <td sec:authorize="hasAuthority('CARRIER')"><a th:classappend="${user.auctioningAllowed ? '' : 'disabled-btn'}" th:href="@{/add-bid/{id}(id=${shipment.id})}"><button style='font-size:11px'><i class='fas fa-money-bill-wave' style="color: #118C4F;"></i></button></a></td>
@@ -188,6 +192,7 @@
                                     <th>Consignee City</th>
                                     <th>Consignee State</th>
                                     <th>Consignee Zip</th>
+                                    <th>View Details</th>
                                     <th>View Bids</th>
                                     <th>Winning Bid</th>
                                     <th sec:authorize="hasAuthority('MASTERLIST')">Unfreeze</th>
@@ -212,6 +217,7 @@
                                     <td th:text="${shipment.consigneeCity}"></td>
                                     <td th:text="${shipment.consigneeState}"></td>
                                     <td th:text="${shipment.consigneeZip}"></td>
+                                    <td><a th:href="@{/viewshipment/{id}(id=${shipment.id})}"><button style='font-size:11px'><i class='fas fa-clipboard-list'></i></button></a></td>
                                     <td><a th:href="@{/viewshipmentbids/{id}(id=${shipment.id})}" th:inline="text"><button class="buttons11" role="button">([[${shipment.getBids().size()}]])</button></a></td>
                                     <td><p th:inline="text">[[${shipment.getLowestBidValue()}]]</p></td>
                                     <td sec:authorize="hasAuthority('MASTERLIST')"><a href="#" th:data-object-type="${shipment}" th:data-object-id="${shipment.id}" th:data-object-name="unfreeze" th:attr="onclick=${'unfreezeShipmentConfirm(this,''/unfreezeshipmentconfirmation/'')'}"><button style='font-size:11px'><i class="fas fa-fire" style="color: #e25822;"></i></button></a></td>
@@ -242,7 +248,6 @@
 	                        <table class="dataTable">
 	                            <thead>
 	                                <tr>
-	                                    <th>View Details</th>
 	                                    <th>Shipment ID</th>
 	                                    <th>Client</th>
 	                                    <th>Carrier Name</th>
@@ -258,6 +263,7 @@
 	                                    <th>Consignee City</th>
 	                                    <th>Consignee State</th>
 	                                    <th>Consignee Zip</th>
+	                                    <th>View Details</th>
                                     	<th sec:authorize="hasAuthority('CARRIER')">Accept</th>
                                     	<th sec:authorize="hasAuthority('CARRIER')">Deny</th>
                                     	<th sec:authorize="hasAuthority('MASTERLIST')">Edit</th>
@@ -266,7 +272,6 @@
 	                            </thead>
 	                            <tbody>
 	                                <tr th:each="shipment : ${shipmentsAwaiting}">
-	                                   	<td><a th:href="@{/viewshipment/{id}(id=${shipment.id})}"><button style='font-size:11px'><i class='fas fa-clipboard-list'></i></button></a></td>
 	                                    <td th:text="${shipment.id}"></td>
 	                                    <td th:text="${shipment.client}"></td>
 	                                    <td><a th:text="${shipment.carrier.carrierName}"></a></td>
@@ -282,6 +287,7 @@
 	                                    <td th:text="${shipment.consigneeCity}"></td>
 	                                    <td th:text="${shipment.consigneeState}"></td>
 	                                    <td th:text="${shipment.consigneeZip}"></td>
+	                                    <td><a th:href="@{/viewshipment/{id}(id=${shipment.id})}"><button style='font-size:11px'><i class='fas fa-clipboard-list'></i></button></a></td>
                                         <td sec:authorize="hasAuthority('CARRIER')"><a th:href="@{/acceptawaitingshipment/{id}(id=${shipment.id})}"><button style='font-size:11px'><i class="far fa-check-circle" style="color: green;"></i></button></a></td>   
                                         <td sec:authorize="hasAuthority('CARRIER')"><a th:href="@{/denyawaitingshipment/{id}(id=${shipment.id})}"><button style='font-size:11px'><i class="far fa-times-circle" style="color: red;"></i></button></a></td>   
                                         <td sec:authorize="hasAuthority('MASTERLIST')"><a th:href="@{/editshipment/{id}(id=${shipment.id})}"><button style='font-size:11px'><i class='far fa-edit'></i></button></a></td>

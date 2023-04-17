@@ -45,7 +45,6 @@
 	                        <table class="dataTable">
 	                            <thead>
 	                                <tr>
-	                                    <th>View Details</th>
 	                                    <th>Shipment ID</th>
 	                                    <th>Client</th>
 	                                    <th>Carrier Name</th>
@@ -62,6 +61,7 @@
 	                                    <th>Consignee City</th>
 	                                    <th>Consignee State</th>
 	                                    <th>Consignee Zip</th>
+	                                    <th>View Details</th>
                                     	<th sec:authorize="hasAuthority('CARRIER')">Accept</th>
                                     	<th sec:authorize="hasAuthority('CARRIER')">Deny</th>
                                  	    <th sec:authorize="hasAuthority('MASTERLIST')">Edit</th>
@@ -70,7 +70,6 @@
 	                            </thead>
 	                            <tbody>
 	                                <tr th:each="shipment : ${shipments}">
-	                                    <td><a th:href="@{/viewshipment/{id}(id=${shipment.id})}"><button style='font-size:11px'><i class='fas fa-clipboard-list'></i></button></a></td>
 	                                    <td th:text="${shipment.id}"></td>
 	                                    <td th:text="${shipment.client}"></td>
 	                                    <td><a th:text="${shipment.carrier.carrierName}"></a></td>
@@ -87,6 +86,7 @@
 	                                    <td th:text="${shipment.consigneeCity}"></td>
 	                                    <td th:text="${shipment.consigneeState}"></td>
 	                                    <td th:text="${shipment.consigneeZip}"></td>
+	                                    <td><a th:href="@{/viewshipment/{id}(id=${shipment.id})}"><button style='font-size:11px'><i class='fas fa-clipboard-list'></i></button></a></td>
                                         <td sec:authorize="hasAuthority('CARRIER')"><a th:href="@{/acceptawaitingshipment/{id}(id=${shipment.id})}"><button style='font-size:11px'><i class="far fa-check-circle" style="color: green;"></i></button></a></td>   
                                         <td sec:authorize="hasAuthority('CARRIER')"><a th:href="@{/denyawaitingshipment/{id}(id=${shipment.id})}"><button style='font-size:11px'><i class="far fa-times-circle" style="color: red;"></i></button></a></td>
                                         <td sec:authorize="hasAuthority('MASTERLIST')"><a th:href="@{/editshipment/{id}(id=${shipment.id})}"><button style='font-size:11px'><i class='far fa-edit'></i></button></a></td>
