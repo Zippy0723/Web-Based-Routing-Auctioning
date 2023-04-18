@@ -119,7 +119,13 @@ public class EditAndAddController {
 
 	}
 	
-	
+	/**
+	 * Adds all of the required attributes to the model to render the add contact page
+	 * @param contact holds the new contact being added to the model
+	 * @param model used to load attributes into the Thymeleaf model
+	 * @param session used to load attributes into the current users HTTP session
+	 * @return /add/add-contact
+	 */
 	@GetMapping("/add-contact")
 	public String showContactAddForm(Contacts contact,Model model, HttpSession session) {
 		model.addAttribute("redirectLocation", (String) session.getAttribute("redirectLocation"));
@@ -133,6 +139,14 @@ public class EditAndAddController {
 		return "/add/add-contact";
 	}
 
+	/**
+	 * Receives a contact object by the user and passes it off for validation
+	 * Once valid it is saved to the contact repository
+	 * @param contact holds the new contact being created by the user
+	 * @param model used to load attributes into the Thymeleaf model
+	 * @param session used to load attributes into the current users HTTP session
+	 * @return /add/add-contact
+	 */
 
 	@PostMapping("submit-add-contact")
 	public String contactAddForm(@ModelAttribute("contactForm") Contacts contact, Model model, HttpSession session) {
@@ -172,6 +186,13 @@ public class EditAndAddController {
 		return "redirect:" + (String) session.getAttribute("redirectLocation");
 	}
 
+	/**
+	 * Adds all of the required attributes to the model to render the add vehicle types page
+	 * @param vehicletype holds the new vehicle type being added to the model
+	 * @param model used to load attributes into the Thymeleaf model
+	 * @param session used to load attributes into the current users HTTP session
+	 * @return /add/add-vehicletype
+	 */
 	
 	@GetMapping("/add-vehicletype")
 	public String showVehicleTypeAddForm(VehicleTypes vehicletype,Model model, HttpSession session) {
@@ -186,6 +207,14 @@ public class EditAndAddController {
 		return "/add/add-vehicletype";
 	}
 
+	/**
+	 * Receives a vehicle type object by the user and passes it off for validation
+	 * Once valid it is saved to the vehicle type repository
+	 * @param vehicletype holds the new vehicle type created by the user
+	 * @param model used to load attributes into the Thymeleaf model
+	 * @param session used to load attributes into the current users HTTP session
+	 * @return /add/add-vehicletype
+	 */
 
 	@PostMapping("submit-add-vehicletype")
 	public String vehicleTypeAddForm(@ModelAttribute("vehicleTypeForm") VehicleTypes vehicleType, Model model, HttpSession session) {
@@ -229,6 +258,13 @@ public class EditAndAddController {
 		return "redirect:" + (String) session.getAttribute("redirectLocation");
 	}
 	
+	/**
+	 * Adds all of the required attributes to the model to render the add location page
+	 * @param location holds the new location being added to the model
+	 * @param model used to load attributes into the Thymeleaf model
+	 * @param session used to load attributes into the current users HTTP session
+	 * @return /add/add-location
+	 */
 	
 	@GetMapping("/add-location")
 	public String showLocationAddForm(Locations location, Model model, HttpSession session) {
@@ -242,7 +278,15 @@ public class EditAndAddController {
 
 		return "/add/add-location";
 	}
-
+	
+	/**
+	 * Receives a location object by the user and passes it off for validation
+	 * Once valid it is saved to the location repository
+	 * @param location holds the new location created by the user
+	 * @param model used to load attributes into the Thymeleaf model
+	 * @param session used to load attributes into the current users HTTP session
+	 * @return /add/add-location
+	 */
 
 	@PostMapping("submit-add-location")
 	public String locationAddForm(@ModelAttribute("locationForm") Locations location, Model model, HttpSession session) {
@@ -279,6 +323,14 @@ public class EditAndAddController {
 		return "redirect:" + (String) session.getAttribute("redirectLocation");
 	}
 	
+	/**
+	 * Adds all of the required attributes to the model to render the add vehicle page
+	 * @param vehicle holds the new vehicle being added to the model
+	 * @param model used to load attributes into the Thymeleaf model
+	 * @param session used to load attributes into the current users HTTP session
+	 * @return /add/add-vehicle
+	 */
+	
 	@GetMapping("/add-vehicle")
 	public String showVehicleAddForm(Vehicles vehicle, Model model, HttpSession session) {
 		model.addAttribute("redirectLocation", (String) session.getAttribute("redirectLocation"));
@@ -294,6 +346,14 @@ public class EditAndAddController {
 		return "/add/add-vehicle";
 	}
 
+	/**
+	 * Receives a vehicle object by the user and passes it off for validation
+	 * Once valid it is saved to the vehicles repository
+	 * @param vehicle holds the new vehicle created by the user
+	 * @param model used to load attributes into the Thymeleaf model
+	 * @param session used to load attributes into the current users HTTP session
+	 * @return /add/add-vehicle
+	 */
 
 	@PostMapping("submit-add-vehicle")
 	public String vehicleAddForm(@ModelAttribute("vehicleForm") Vehicles vehicle, Model model, HttpSession session) {
@@ -328,6 +388,15 @@ public class EditAndAddController {
 		return "redirect:" + (String) session.getAttribute("redirectLocation");
 	}
 	
+
+	/**
+	 * Adds all of the required attributes to the model to render the add order page
+	 * @param maintenanceOrder holds the new maintenance order being added to the model
+	 * @param model used to load attributes into the Thymeleaf model
+	 * @param session used to load attributes into the current users HTTP session
+	 * @return /add/add-order
+	 */
+	
 	@GetMapping("/add-order")
 	public String showOrderAddForm(MaintenanceOrders maintenanceOrder, Model model, HttpSession session) {
 		model.addAttribute("redirectLocation", (String) session.getAttribute("redirectLocation"));
@@ -343,6 +412,14 @@ public class EditAndAddController {
 		return "/add/add-order";
 	}
 
+	/**
+	 * Receives a maintenance order object by the user and passes it off for validation
+	 * Once valid it is saved to the maintenance order repository
+	 * @param maintenanceOrder holds the new maintenance order created by the user
+	 * @param model used to load attributes into the Thymeleaf model
+	 * @param session used to load attributes into the current users HTTP session
+	 * @return /add/add-order
+	 */
 
 	@PostMapping("submit-add-order")
 	public String vehicleOrderForm(@ModelAttribute("orderForm") MaintenanceOrders maintenanceOrder, Model model, HttpSession session) {

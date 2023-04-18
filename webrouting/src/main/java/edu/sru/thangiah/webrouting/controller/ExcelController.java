@@ -97,7 +97,9 @@ public class ExcelController {
 
 	private static final Logger Logger = LoggerFactory.getLogger(ExcelController.class);
 
-
+	/**
+	 * Constructor for the ExcelController
+	 */
 	public ExcelController (BidsRepository bidsRepository, ShipmentsRepository shipmentsRepository, CarriersRepository carriersRepository, VehiclesRepository vehiclesRepository, 
 			VehicleTypesRepository vehicleTypesRepository,ValidationServiceImp validationServiceImp,LocationsRepository	locationsRepository, ContactsRepository contactsRepository, TechniciansRepository techniciansRepository,
 			DriverRepository driverRepository, MaintenanceOrdersRepository maintenanceOrdersRepository, UserRepository userRepository) {
@@ -118,8 +120,8 @@ public class ExcelController {
 
 	/**
 	 * 
-	 * @param model
-	 * @param session
+	 * @param model used to load attributes into the Thymeleaf model
+	 * @param session used to load attributes into the current users HTTP session
 	 * @return
 	 */
 	@PostMapping("/dump-excel-carrier")
@@ -355,11 +357,12 @@ public class ExcelController {
 				.body(resource);
 	}
 
-
 	/**
-	 * Reads an excel file containing shipments and adds it to the shipments repository. <br>
+	 * Reads an excel file containing shipments and adds it to the shipments repository.
 	 * After the file is uploaded and added to the database, user is redirected to the created shipments page
 	 * @param excelData Excel file that is being added to the database
+	 * @param model used to load attributes into the Thymeleaf model
+	 * @param session used to load attributes into the current users HTTP session
 	 * @return "redirect: ${redirectLocation}"
 	 */
 	@PostMapping("/upload-shipment")
@@ -481,7 +484,15 @@ public class ExcelController {
 		String redirectLocation = (String) session.getAttribute("redirectLocation");
 		return "redirect:" + redirectLocation;
 	}
-
+	
+	/**
+	 * Reads an excel file containing vehicle types and adds it to the vehicle types repository.
+	 * After the file is uploaded and added to the database, user is redirected to the vehicle types page
+	 * @param excelData Excel file that is being added to the database
+	 * @param model used to load attributes into the Thymeleaf model
+	 * @param session used to load attributes into the current users HTTP session
+	 * @return /excel/upload-vehicletypes or redirectLocation
+	 */
 	@PostMapping("/excel-upload-vehicletypes")
 	public String loadVehicleTypesFromExcel(@RequestParam("file") MultipartFile excelData, HttpSession session, Model model){
 		User user = userService.getLoggedInUser();
@@ -537,12 +548,13 @@ public class ExcelController {
 	}
 
 	/**
-	 * @param excelData is the excel data
-	 * @param session is the HTTP session used to set redirectLocation and error message
-	 * @param model is used to add error message and notifications to the page
-	 * @return
+	 * Reads an excel file containing locations and adds it to the locations repository.
+	 * After the file is uploaded and added to the database, user is redirected to the locations page
+	 * @param excelData Excel file that is being added to the database
+	 * @param model used to load attributes into the Thymeleaf model
+	 * @param session used to load attributes into the current users HTTP session
+	 * @return /excel/upload-locations or redirectLocation
 	 */
-
 	@PostMapping("/excel-upload-locations")
 	public String loadLocationsFromExcel(@RequestParam("file") MultipartFile excelData, HttpSession session, Model model){
 		User user = userService.getLoggedInUser();
@@ -598,12 +610,13 @@ public class ExcelController {
 	}
 
 	/**
-	 * @param excelData is the excel data
-	 * @param session is the HTTP session used to set redirectLocation and error message
-	 * @param model is used to add error message and notifications to the page
-	 * @return
+	 * Reads an excel file containing contacts and adds it to the contacts repository.
+	 * After the file is uploaded and added to the database, user is redirected to the contacts page
+	 * @param excelData Excel file that is being added to the database
+	 * @param model used to load attributes into the Thymeleaf model
+	 * @param session used to load attributes into the current users HTTP session
+	 * @return /excel/upload-contacts or redirectLocation
 	 */
-	
 	@PostMapping("/excel-upload-contacts")
 	public String loadContactsFromExcel(@RequestParam("file") MultipartFile excelData, HttpSession session, Model model){
 		User user = userService.getLoggedInUser();
@@ -658,12 +671,13 @@ public class ExcelController {
 	}
 	
 	/**
-	 * @param excelData is the excel data
-	 * @param session is the HTTP session used to set redirectLocation and error message
-	 * @param model is used to add error message and notifications to the page
-	 * @return
+	 * Reads an excel file containing technicians and adds it to the technicians repository.
+	 * After the file is uploaded and added to the database, user is redirected to the technicians page
+	 * @param excelData Excel file that is being added to the database
+	 * @param model used to load attributes into the Thymeleaf model
+	 * @param session used to load attributes into the current users HTTP session
+	 * @return /excel/upload-technicians or redirectLocation
 	 */
-
 	@PostMapping("/excel-upload-technicians")
 	public String loadTechniciansFromExcel(@RequestParam("file") MultipartFile excelData, HttpSession session, Model model){
 		User user = userService.getLoggedInUser();
@@ -720,12 +734,13 @@ public class ExcelController {
 	}
 
 	/**
-	 * @param excelData is the excel data
-	 * @param session is the HTTP session used to set redirectLocation and error message
-	 * @param model is used to add error message and notifications to the page
-	 * @return
+	 * Reads an excel file containing vehicles and adds it to the vehicles repository.
+	 * After the file is uploaded and added to the database, user is redirected to the vehicles page
+	 * @param excelData Excel file that is being added to the database
+	 * @param model used to load attributes into the Thymeleaf model
+	 * @param session used to load attributes into the current users HTTP session
+	 * @return /excel/upload-vehicles or redirectLocation
 	 */
-
 	@PostMapping("/excel-upload-vehicles")
 	public String loadVehicleFromExcel(@RequestParam("file") MultipartFile excelData, HttpSession session, Model model){
 		User user = userService.getLoggedInUser();
@@ -792,12 +807,13 @@ public class ExcelController {
 	}
 
 	/**
-	 * @param excelData is the excel data
-	 * @param session is the HTTP session used to set redirectLocation and error message
-	 * @param model is used to add error message and notifications to the page
-	 * @return
+	 * Reads an excel file containing drivers and adds it to the drivers repository.
+	 * After the file is uploaded and added to the database, user is redirected to the drivers page
+	 * @param excelData Excel file that is being added to the database
+	 * @param model used to load attributes into the Thymeleaf model
+	 * @param session used to load attributes into the current users HTTP session
+	 * @return /excel/upload-drivers or redirectLocation
 	 */
-
 	@PostMapping("/excel-upload-drivers")
 	public String loadDriverFromExcel(@RequestParam("file") MultipartFile excelData, HttpSession session, Model model){
 		User user = userService.getLoggedInUser();
@@ -863,12 +879,13 @@ public class ExcelController {
 	}
 
 	/**
-	 * @param excelData is the excel data
-	 * @param session is the HTTP session used to set redirectLocation and error message
-	 * @param model is used to add error message and notifications to the page
-	 * @return
+	 * Reads an excel file containing orders and adds it to the orders repository. <br>
+	 * After the file is uploaded and added to the database, user is redirected to the orders page
+	 * @param excelData Excel file that is being added to the database
+	 * @param model used to load attributes into the Thymeleaf model
+	 * @param session used to load attributes into the current users HTTP session
+	 * @return /excel/upload-maintenanceorders or redirectLocation
 	 */
-
 	@PostMapping("/excel-upload-maintenanceOrders")
 	public String loadMaintenanceOrdersFromExcel(@RequestParam("file") MultipartFile excelData, HttpSession session, Model model){
 		User user = userService.getLoggedInUser();
@@ -933,6 +950,13 @@ public class ExcelController {
 		return "redirect:" + redirectLocation;
 	}
 
+	/**
+	 * Adds all of the attributes to the model to render the upload vehicle types page
+	 * @param model used to load attributes into the Thymeleaf model
+	 * @param session used to load attributes into the current users HTTP session
+	 * @return /excel/upload-vehicletypes
+	 */
+	
 	@GetMapping("/excel/upload-vehicletypes")
 	public String vehicletypesUploadPage(Model model, HttpSession session){
 		model.addAttribute("redirectLocation", session.getAttribute("redirectLocation"));
@@ -946,6 +970,12 @@ public class ExcelController {
 		return "/excel/upload-vehicletypes";	
 	}
 
+	/**
+	 * Adds all of the attributes to the model to render the upload locations page
+	 * @param model used to load attributes into the Thymeleaf model
+	 * @param session used to load attributes into the current users HTTP session
+	 * @return /excel/upload-locations
+	 */
 	@GetMapping("/excel/upload-locations")
 	public String locationsUploadPage(Model model, HttpSession session){
 		model.addAttribute("redirectLocation", session.getAttribute("redirectLocation"));
@@ -959,6 +989,12 @@ public class ExcelController {
 		return "/excel/upload-locations";	
 	}
 
+	/**
+	 * Adds all of the attributes to the model to render the upload contacts page
+	 * @param model used to load attributes into the Thymeleaf model
+	 * @param session used to load attributes into the current users HTTP session
+	 * @return /excel/upload-contacts
+	 */
 	@GetMapping("/excel/upload-contacts")
 	public String contactsUploadPage(Model model, HttpSession session){
 		model.addAttribute("redirectLocation", session.getAttribute("redirectLocation"));
@@ -972,6 +1008,12 @@ public class ExcelController {
 		return "/excel/upload-contacts";	
 	}
 
+	/**
+	 * Adds all of the attributes to the model to render the upload drivers page
+	 * @param model used to load attributes into the Thymeleaf model
+	 * @param session used to load attributes into the current users HTTP session
+	 * @return /excel/upload-drivers
+	 */
 	@GetMapping("/excel/upload-drivers")
 	public String driversUploadPage(Model model, HttpSession session){
 		model.addAttribute("redirectLocation", session.getAttribute("redirectLocation"));
@@ -985,6 +1027,12 @@ public class ExcelController {
 		return "/excel/upload-drivers";	
 	}
 
+	/**
+	 * Adds all of the attributes to the model to render the upload orders page
+	 * @param model used to load attributes into the Thymeleaf model
+	 * @param session used to load attributes into the current users HTTP session
+	 * @return /excel/upload-maintenanceorders
+	 */
 	@GetMapping("/excel/upload-maintenanceorders")
 	public String maintenanceordersUploadPage(Model model, HttpSession session){
 		model.addAttribute("redirectLocation", session.getAttribute("redirectLocation"));
@@ -997,6 +1045,12 @@ public class ExcelController {
 		return "/excel/upload-maintenanceorders";	
 	}
 
+	/**
+	 * Adds all of the attributes to the model to render the upload technicians page
+	 * @param model used to load attributes into the Thymeleaf model
+	 * @param session used to load attributes into the current users HTTP session
+	 * @return /excel/upload-technicians
+	 */
 	@GetMapping("/excel/upload-technicians")
 	public String techniciansUploadPage(Model model, HttpSession session){
 		model.addAttribute("redirectLocation", session.getAttribute("redirectLocation"));
@@ -1010,6 +1064,12 @@ public class ExcelController {
 		return "/excel/upload-technicians";	
 	}
 
+	/**
+	 * Adds all of the attributes to the model to render the upload vehicles page
+	 * @param model used to load attributes into the Thymeleaf model
+	 * @param session used to load attributes into the current users HTTP session
+	 * @return /excel/upload-vehicles
+	 */
 	@GetMapping("/excel/upload-vehicles")
 	public String vehiclesUploadPage(Model model, HttpSession session){
 		model.addAttribute("redirectLocation", session.getAttribute("redirectLocation"));
@@ -1023,6 +1083,12 @@ public class ExcelController {
 		return "/excel/upload-vehicles";	
 	}
 
+	/**
+	 * Adds all of the attributes to the model to render the upload shipments page
+	 * @param model used to load attributes into the Thymeleaf model
+	 * @param session used to load attributes into the current users HTTP session
+	 * @return /excel/upload-shipments
+	 */
 	@GetMapping("/uploadshipments")
 	public String ListFromExcelData(Model model, HttpSession session){
 		model.addAttribute("redirectLocation", session.getAttribute("redirectLocation"));

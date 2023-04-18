@@ -89,15 +89,7 @@ public class ShipmentsController {
 	private static final Logger Logger = LoggerFactory.getLogger(ShipmentsController.class);
 
 	/**
-	 * Constructor for ShipmentsController. <br>
-	 * Instantiates the shipmentsRepository <br>
-	 * Instantiates the carriersRepository <br>
-	 * Instantiates the vehiclesRepository <br>
-	 * Instantiates the bidsRepository
-	 * @param shipmentsRepository Used to interact with the shipments in the database
-	 * @param carriersRepository Used to interact with the carriers in the database
-	 * @param vehiclesRepository Used to interact with the vehicles in the database
-	 * @param bidsRepository Used to interact with the bids in the database
+	 * Constructor for ShipmentsController.
 	 */
 	public ShipmentsController (BidsRepository bidsRepository, ShipmentsRepository shipmentsRepository, CarriersRepository carriersRepository, VehiclesRepository vehiclesRepository) {
 		this.shipmentsRepository = shipmentsRepository;
@@ -107,9 +99,9 @@ public class ShipmentsController {
 	}
 
 	/**
-	 * Redirects user to the shipper home page for shippers
-	 * @param model Used to add data to the model
-	 * @return "shipmentshomeshipper"
+	 * Adds all of the required attributes to the model to render the shipments home shipper page
+	 * @param model used to load attributes into the Thymeleaf model
+	 * @return /shipmentshomeshipper
 	 */
 	@GetMapping("/shipmentshomeshipper")
 	public String shipmentsHomeShipper(Model model) {
@@ -122,10 +114,11 @@ public class ShipmentsController {
 	}
 
 	/**
-	 * Redirects user to the shipper home page for carriers
-	 * @param model Used to add data to the model
-	 * @return "shipmentshomecarrier"
+	 * Adds all of the required attributes to the model to render the shipments home carrier page
+	 * @param model used to load attributes into the Thymeleaf model
+	 * @return /shipmentshomecarrier
 	 */
+	
 	@GetMapping("/shipmentshomecarrier")
 	public String shipmentsHomeCarrier(Model model) {
 
@@ -137,10 +130,11 @@ public class ShipmentsController {
 	}
 
 	/**
-	 * Redirects user to the shipper home page for master lists
-	 * @param model Used to add data to the model
-	 * @return "shipmentshomemaster"
+	 * Adds all of the required attributes to the model to render the shipments home master page
+	 * @param model used to load attributes into the Thymeleaf model
+	 * @return /shipmentshomemaster
 	 */
+	
 	@GetMapping("/shipmentshomemaster")
 	public String shipmentsHomeMaster(Model model) {
 
@@ -152,11 +146,11 @@ public class ShipmentsController {
 	}
 
 	/**
-	 * Adds all of the shipments to the "shipments" model and redirects user to
-	 * the shipments page.
-	 * @param model Used to add data to the model
-	 * @return "shipments"
+	 * Adds all of the required attributes to the model to render the shipments page
+	 * @param model used to load attributes into the Thymeleaf model
+	 * @return /shipments
 	 */
+	
 	@RequestMapping({"/shipments"})
 	public String showShipmentList(Model model) {
 
@@ -176,12 +170,12 @@ public class ShipmentsController {
 	}
 
 	/**
-	 * Adds the created shipments to the model depending on what role the user has 
-	 * and redirects user to /createdshipments. 
-	 * @param model Used to add data to the model
-	 * @param session stores the current logged in users HTTP session. Attribute "redirectLocation" can store a string containing the last page the user visited.
-	 * @return "createdshipments"
+	 * Adds all of the required attributes to the model to render the created shipments page
+	 * @param model used to load attributes into the Thymeleaf model
+	 * @param session used to load attributes into the current users HTTP session
+	 * @return /createdshipments
 	 */
+	
 	@RequestMapping({"/createdshipments"})
 	public String showCreatedShipmentsList(Model model, HttpSession session) {
 
@@ -233,11 +227,11 @@ public class ShipmentsController {
 	/**
 	 * Adds the accepted shipments to the model depending on what role the user has 
 	 * and redirects user to /acceptedshipments
-	 *
-	 * @param model Used to add data to the model
-	 * @param session stores the current logged in users HTTP session. Attribute "redirectLocation" can store a string containing the last page the user visited.
-	 * @return "acceptedshipments"
+	 * @param model used to load attributes into the Thymeleaf model
+	 * @param session used to load attributes into the current users HTTP session
+	 * @return /acceptedshipments
 	 */
+	
 	@RequestMapping({"/acceptedshipments"})
 	public String showAcceptedShipmentsList(Model model, HttpSession session) {
 		List<Shipments> shipmentsWCarrier = new ArrayList<>();
@@ -309,11 +303,11 @@ public class ShipmentsController {
 	/**
 	 * Adds Frozen Shipments to the Shipment model, 
 	 * or, if the user attempts to access the frozen shipments page and is not MASTERSEVER or SHIPPER, redirects them to index.
-	 * @param model Used to add data to the model
-	 * @param session stores the current logged in users HTTP session. Attribute "redirectLocation" can store a string containing the last page the user visited.
-	 * @return "frozenshipments" or "/index" if user is not MASTERLIST or SHIPPER
-
+	 * @param model used to load attributes into the Thymeleaf model
+	 * @param session used to load attributes into the current users HTTP session
+	 * @return /frozenshipments or /index
 	 */
+	
 	@RequestMapping({"/frozenshipments"})
 	public String showFrozenShipmentsList(Model model, HttpSession session) {
 		List<Shipments> shipmentsFrozen = new ArrayList<>();
@@ -360,10 +354,11 @@ public class ShipmentsController {
 
 	/**
 	 * Adds Pending Shipments to the Shipment model, then returns to the pending shipments page
-	 * @param model Used to add data to the model
-	 * @param session stores the current logged in users HTTP session. Attribute "redirectLocation" can store a string containing the last page the user visited.
-	 * @return "pendingshipments" or "/index" if user is not MASTERLIST or SHIPPER
+	 * @param model used to load attributes into the Thymeleaf model
+	 * @param session used to load attributes into the current users HTTP session
+	 * @return /pendingshipments
 	 */
+	
 	@RequestMapping({"/pendingshipments"})
 	public String showPendingShipmentsList(Model model, HttpSession session) {
 		List<Shipments> shipmentsPending = new ArrayList<>();
@@ -414,7 +409,14 @@ public class ShipmentsController {
 
 		return "pendingshipments";
 	}
-
+	/**
+	 * Adds all of the required attributes to the model to render the all shipments page
+	 * These attributes change depending on the role
+	 * @param model used to load attributes into the Thymeleaf model
+	 * @param session used to load attributes into the current users HTTP session
+	 * @return /allshipments
+	 */
+	
 	@GetMapping("/allshipments")
 	public String allShipments(Model model, HttpSession session) {
 		session.setAttribute("redirectLocation", "/allshipments");
@@ -528,6 +530,13 @@ public class ShipmentsController {
 
 	}
 
+	/**
+	 * Adds all of the required attributes to the model to render the /awaitingshipments page
+	 * @param model used to load attributes into the Thymeleaf model
+	 * @param session used to load attributes into the current users HTTP session
+	 * @return /awaitingshipments
+	 */
+	
 	@RequestMapping({"/awaitingshipments"})
 	public String showAwaitingShipmentsList(Model model, HttpSession session) {
 		List<Shipments> shipmentsAwaitingAcceptance = new ArrayList<>();
@@ -575,13 +584,14 @@ public class ShipmentsController {
 	}
 
 	/**
-	 * Redirects user to the /add/add-shipments page <br>
-	 * Adds carriers and vehicles to the model.
-	 * @param model Used to add data to the model
+	 * Redirects user to the add shipments page
+	 * Adds carriers and vehicles to the model
+	 * @param model used to load attributes into the Thymeleaf model
 	 * @param shipment Information on the shipment being added
 	 * @param result Ensures that the values entered by the user are valid
 	 * @return "/add/add-shipments"
 	 */
+	
 	@GetMapping({"/add-shipments"})
 	public String showList(Model model, Shipments shipment, BindingResult result) {
 		model.addAttribute("carriers", carriersRepository.findAll());
@@ -595,15 +605,15 @@ public class ShipmentsController {
 	}
 
 	/**
-	 * Adds a shipment to the database. Checks if there are errors in the form. <br>
-	 * Sets carrier, vehicle to null, paid amount and scac are empty strings and full freight terms is set to AVAILABLE SHIPMENT. <br>
-	 * Currently logged in user is also associated with that shipment. <br>
-	 * If there are no errors, the shipment is saved in the shipmentsRepository. and the user is redirect to /pendingshipments <br>
-	 * If there are errors, the user is redirected to the /add/add-shipments page.
+	 * Adds a shipment to the database. Checks if there are errors in the form
+	 * Sets carrier, vehicle to null, paid amount and scac are empty strings and full freight terms is set to AVAILABLE SHIPMENT. 
+	 * Currently logged in user is also associated with that shipment
+	 * If there are no errors, the shipment is saved in the shipmentsRepository. and the user is redirect to /pendingshipments 
+	 * If there are errors, the user is redirected to the /add/add-shipments page
 	 * @param shipment Stores the information on the shipment being added
 	 * @param result Ensures that the values entered by the user are valid
-	 * @param model Used to add data to the model
-	 * @return "redirect:/pendingshipments" or "/add/add-shipments"
+	 * @param model used to load attributes into the Thymeleaf model
+	 * @return redirects to /pendingshipments" or /add/add-shipments
 	 */
 	@RequestMapping({"/addshipments"})
 	public String addShipment(@Validated Shipments shipment, BindingResult result, Model model) {
@@ -680,10 +690,10 @@ public class ShipmentsController {
 
 	/**
 	 * Finds a frozen shipment that Master wants to delete. Using the id parameter and if found, redirects to delete confirmation page
-	 * @param id ID of the shipment being deleted
-	 * @param model Used to add data to the model
+	 * @param id of the shipment being deleted
+	 * @param model used to load attributes into the Thymeleaf model
 	 * @param session stores the current logged in users HTTP session. Attribute "redirectLocation" can store a string containing the last page the user visited.
-	 * @return "redirect:"/delete/deleteshipmentconfirm"  
+	 * @return redirects to /delete/deleteshipmentconfirm"  
 	 */
 
 	@GetMapping("/deleteshipment/{id}")
@@ -709,11 +719,12 @@ public class ShipmentsController {
 
 	/**
 	 * Finds a shipment using the id parameter and if found, deletes the shipment and redirects to previous page.
-	 * @param id ID of the shipment being deleted
-	 * @param model Used to add data to the model
+	 * @param id of the shipment being deleted
+	 * @param model used to load attributes into the Thymeleaf model
 	 * @param session stores the current logged in users HTTP session. Attribute "redirectLocation" can store a string containing the last page the user visited.
-	 * @return "redirect: To whatever the previous page was."" 
+	 * @return redirectLocation 
 	 */
+	
 	@GetMapping("/deleteshipmentconfirmation/{id}")
 	public String deleteShipmentConfirmation(@PathVariable("id") long id, Model model, HttpSession session) {
 		Shipments shipment = shipmentsRepository.findById(id)
@@ -746,12 +757,13 @@ public class ShipmentsController {
 	}
 
 	/**
-	 * Finds a carrier using the id parameter and if found, adds all of the shipments of that carrier
-	 * to the shipments page
-	 * @param id ID of the shipment being viewed
-	 * @param model Used to add data to the model
-	 * @return "shipments"
+	 * Finds a carrier using the id parameter and if found, adds all of the shipments of that carrier to the shipments page
+	 * @param id of the shipment being viewed
+	 * @param model used to load attributes into the Thymeleaf model
+	 * @param session used to load attributes into the current users HTTP session
+	 * @return /viewfullshipment
 	 */
+	
 	@GetMapping("/viewshipment/{id}")
 	public String viewCarrierShipments(@PathVariable("id") long id, Model model, HttpSession session) {
 		Shipments shipment = shipmentsRepository.findById(id)
@@ -768,13 +780,13 @@ public class ShipmentsController {
 	}
 
 	/**
-	 * Finds a shipment using the id parameter and if found, adds all of the bids of that shipment
-	 * to the bids page
-	 * @param id ID of the shipment being used to get the bids
-	 * @param model Used to add data to the model
+	 * Finds a shipment using the id parameter and if found, adds all of the bids of that shipment to the bids page
+	 * @param id of the shipment being used to get the bids
+	 * @param model used to load attributes into the Thymeleaf model
 	 * @param session stores the current logged in users HTTP session. Attribute "redirectLocation" can store a string containing the last page the user visited.
-	 * @return "bids"
+	 * @return /bids or /viewbidscomplete
 	 */
+	
 	@GetMapping("/viewshipmentbids/{id}")
 	public String viewShipmentBids(@PathVariable("id") long id, Model model, HttpSession session) {
 		Shipments shipment = shipmentsRepository.findById(id)
@@ -806,12 +818,13 @@ public class ShipmentsController {
 
 
 	/**
-	 * Finds a shipment by ID, then Redirects to the Freeze Shipment confirmation page
-	 * @param id ID of the shipment being frozen
-	 * @param model Used to add data to the model
+	 * Finds a shipment by ID then redirects to the Freeze Shipment confirmation page
+	 * @param id of the shipment being frozen
+	 * @param model used to load attributes into the Thymeleaf model
 	 * @param session stores the current logged in users HTTP session. Attribute "redirectLocation" can store a string containing the last page the user visited.
-	 * @return "/freeze/freezeshipmentconfirm"
+	 * @return /freeze/freezeshipmentconfirm
 	 */
+	
 	@GetMapping("/freezeshipment/{id}")
 	public String freezeShipment(@PathVariable("id") long id, Model model, HttpSession session) {
 		Shipments shipment = shipmentsRepository.findById(id)
@@ -829,11 +842,13 @@ public class ShipmentsController {
 	}
 
 	/**
-	 * Finds a shipment by ID, then sets that shipments freight terms to FROZEN, disabling interaction with it for all users except master. 
-	 * @param id ID of the shipment being frozen
-	 * @param model Used to add data to the model
-	 * @return "redirect:/createdshipments" or "redirect:/acceptedshipments" or "redirect:/pendingshipments"
+	 * Finds a shipment by ID then sets that shipments freight terms to FROZEN, disabling interaction with it for all users except master. 
+	 * @param id of the shipment being frozen
+	 * @param model used to load attributes into the Thymeleaf model
+	 * @param session used to load attributes into the current users HTTP session
+	 * @return redirects to /createdshipments or redirects to /acceptedshipments or redirects to /pendingshipments
 	 */
+	
 	@GetMapping("/freezeshipmentconfirmation/{id}")
 	public String freezeShipmentConfirmation(@PathVariable("id") long id, Model model, HttpSession session) {
 		String redirectLocation = "redirect:" + (String) session.getAttribute("redirectLocation");
@@ -855,10 +870,12 @@ public class ShipmentsController {
 
 	/**
 	 * Finds a shipment by ID, then Redirects to the Unfreeze Shipment confirmation page
-	 * @param id ID of the shipment being frozen
-	 * @param model Used to add data to the model
-	 * @return "/freeze/unfreezeshipmentconfirm"
+	 * @param id of the shipment being frozen
+	 * @param model used to load attributes into the Thymeleaf model
+	 * @param session used to load attributes into the current users HTTP session
+	 * @return /freeze/unfreezeshipmentconfirm
 	 */
+	
 	@GetMapping("/unfreezeshipment/{id}")
 	public String unfreezeShipment(@PathVariable("id") long id, Model model, HttpSession session) {
 		String redirectLocation = (String) session.getAttribute("redirectLocation");
@@ -877,10 +894,12 @@ public class ShipmentsController {
 
 	/**
 	 * Finds a shipment by ID, then sets that shipments freight terms to AVAILABLE SHIPMENT, effectively unfreezing it. 
-	 * @param id ID of the shipment being frozen
-	 * @param model Used to add data to the model
-	 * @return "redirect:/frozenshipments"
+	 * @param id of the shipment being frozen
+	 * @param model used to load attributes into the Thymeleaf model
+	 * @param session used to load attributes into the current users HTTP session
+	 * @return redirects to /frozenshipments
 	 */
+	
 	@GetMapping("/unfreezeshipmentconfirmation/{id}")
 	public String unfreezeShipmentConfirmation(@PathVariable("id") long id, Model model, HttpSession session) {
 		Shipments shipment = shipmentsRepository.findById(id)
@@ -904,9 +923,14 @@ public class ShipmentsController {
 	}
 
 	/**
-	 * @throws IOException 
-	 * 
+	 * Adds all of the required attributes to the model to render the direct assignment shipment page
+	 * @param id of the shipment being directly assigned
+	 * @param model used to load attributes into the Thymeleaf model
+	 * @param session used to load attributes into the current users HTTP session
+	 * @return /directassignshipment
+	 * @throws IOException
 	 */
+	
 	@GetMapping("/directassignshipment/{id}")
 	public String directAssignShipment(@PathVariable("id") long id, Model model, HttpSession session) throws IOException {
 		Shipments shipment = shipmentsRepository.findById(id)
@@ -933,6 +957,15 @@ public class ShipmentsController {
 
 		return "directassignshipment";
 	}
+	/**
+	 * Handles the assignment of a shipment to a carrier
+	 * @param selectedCarrierId id of the carrier selected
+	 * @param inputPrice price of the paid amount
+	 * @param shipmentId id of the shipment being assigned
+	 * @param model used to load attributes into the Thymeleaf model
+	 * @param session used to load attributes into the current users HTTP session
+	 * @return redirectLocation
+	 */
 
 	@PostMapping("/selectcarrier")
 	public String selectCarrier(@RequestParam("selectedCarrierId") Long selectedCarrierId, 
@@ -973,11 +1006,11 @@ public class ShipmentsController {
 	}
 
 	/**
-	 * 
-	 * @param id
-	 * @param model
-	 * @param session
-	 * @return
+	 * Finds the shipment in the repository and changes its freight terms to "BID ACCEPTED", taking it out of the auction
+	 * @param id of the shipment being accepted
+	 * @param model used to load attributes into the Thymeleaf model
+	 * @param session used to load attributes into the current users HTTP session
+	 * @return redirectLocation
 	 */
 	@GetMapping("/acceptawaitingshipment/{id}")
 	public String acceptAwaitingShipment(@PathVariable("id") Long id, Model model, HttpSession session) {
@@ -993,13 +1026,15 @@ public class ShipmentsController {
 		return "redirect:" + (String) session.getAttribute("redirectLocation");
 	}
 
+
 	/**
-	 * 
-	 * @param id
-	 * @param model
-	 * @param session
-	 * @return
+	 * Finds the shipment in the repository and changes its freight terms to "PENDING", keeping it in auction
+	 * @param id of the shipment being denied
+	 * @param model used to load attributes into the Thymeleaf model
+	 * @param session used to load attributes into the current users HTTP session
+	 * @return redirectLocation
 	 */
+	
 	@GetMapping("/denyawaitingshipment/{id}")
 	public String denyAwaitingShipment(@PathVariable("id") Long id, Model model, HttpSession session) {
 		Shipments shipment = shipmentsRepository.findById(id)
@@ -1120,6 +1155,14 @@ public class ShipmentsController {
 	}
 
 
+	/**
+	 * Adds all of the required attributes to the model to render the edit shipments page
+	 * @param id of the shipment being edited 
+	 * @param model used to load attributes into the Thymeleaf model
+	 * @param session used to load attributes into the current users HTTP session
+	 * @return /edit/edit-shipments
+	 */
+	
 	@GetMapping("/editshipment/{id}")
 	public String showShipmentsEditForm(@PathVariable("id") long id, Model model, HttpSession session) {
 		Shipments shipment = shipmentsRepository.findById(id)
@@ -1138,8 +1181,16 @@ public class ShipmentsController {
 
 	}
 
-
-
+	/**
+	 * Receives and passes the new shipment object off to be validated
+	 * Once validated the object is saved to the shipments repository
+	 * @param id of the shipment being edited
+	 * @param shipment holds new shipment object submitted by the user
+	 * @param model used to load attributes into the Thymeleaf model
+	 * @param session used to load attributes into the current users HTTP session
+	 * @return redirects to /shipments or /edit/edit-shipments
+	 */
+	
 	@PostMapping("/updateshipment/{id}")
 	public String updateShipment(@PathVariable("id") long id, Shipments shipment, 
 			Model model, HttpSession session) {
@@ -1152,7 +1203,6 @@ public class ShipmentsController {
 
 		User user = userService.getLoggedInUser();
 		model = NotificationController.loadNotificationsIntoModel(user, model);
-
 
 		Hashtable<String, String> hashtable = new Hashtable<>();
 
@@ -1189,7 +1239,6 @@ public class ShipmentsController {
 		result.setId(id);
 		result.setCarrier(temp.getCarrier());
 		result.setUser(temp.getUser());
-
 
 		shipmentsRepository.save(result);
 		Logger.info("{} || successfully updated the shipment with ID {}",user.getUsername(), result.getId());

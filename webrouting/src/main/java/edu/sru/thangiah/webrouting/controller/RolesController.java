@@ -27,20 +27,19 @@ public class RolesController {
 	private RoleRepository roleRepository;
 
 	/**
-	 * Constructor for roles. <br>
-	 * Instantiates the roleRepository
-	 * @param roleRepository Used to interact with the roles in the database
+	 * Constructor for RolesController
 	 */
+	
 	public RolesController(RoleRepository roleRepository) {
 		this.roleRepository = roleRepository;
 	}
 
 	/**
-	 * Adds all of the roles to the "role" model and redirects user to
-	 * the roles page.
-	 * @param model Used to add data to the model
-	 * @return "roles"
+	 * Adds all of the required attributes to render the roles page
+	 * @param model used to load attributes into the Thymeleaf model
+	 * @return /roles
 	 */
+	
 	@RequestMapping({"/roles"})
 	public String showRoleList(Model model) {
 		model.addAttribute("role", roleRepository.findAll());

@@ -52,11 +52,17 @@ public class BackupController {
 
 	final static DateTimeFormatter CUSTOM_FORMATTER = DateTimeFormatter.ofPattern("yyyy_MM_dd_hh.mm");
 
+	/**
+	 * Constructor for the BackupController
+	 */
 	public BackupController() {
 		this.dbName = "webrouting";
 		this.outputFile = "";
 	}
-
+	/**
+	 * Execution method for the sql backup
+	 * Fires every 20 minutes
+	 */
 	@Scheduled(fixedRate = 1200000) //Every twenty minutes
 	public void executeBackup() {
 		try {
@@ -75,7 +81,7 @@ public class BackupController {
 	}
 	/**
 	 * Redirects users to the Database restore page
-	 * @param model: stores the springboot model
+     * @param model used to load attributes into the Thymeleaf model
 	 * @return /database
 	 */
 	@GetMapping("/database")
@@ -87,6 +93,14 @@ public class BackupController {
 		return "database";
 	}
 
+	/**
+	 * Restores the database using a backup file
+	 * @param model used to load attributes into the Thymeleaf model
+	 * @param backupFile stores the sql backup information
+	 * @throws AccessException
+	 * @throws IOException
+	 * @return /database
+	 */
 	@PostMapping("/restore-database")
 	public String restoreDatabase(Model model, @RequestParam("file") MultipartFile backupFile) throws AccessException, IOException {
 		File tmpFile = convertMultipartFileToFile(backupFile);
@@ -115,10 +129,9 @@ public class BackupController {
 	//TODO: citation of code
 
 	/**
-	 * 
-	 * @param file
-	 * @return
+	 * Converts a multipart file to an excel file
 	 * @throws IOException
+	 * @return excel file
 	 */
 	private File convertMultipartFileToFile(MultipartFile file) throws IOException
 	{    

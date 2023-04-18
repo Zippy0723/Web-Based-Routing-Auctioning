@@ -48,20 +48,19 @@ public class DriverController {
 	private static final Logger Logger = LoggerFactory.getLogger(DriverController.class);
 
 	/**
-	 * Constructor for DriverController. <br>
-	 * Instantiates the driverRepository
-	 * @param driverRepository Used to interact with drivers in the database
+	 * Constructor for DriverController.
 	 */
 	public DriverController (DriverRepository driverRepository) {
 		this.driverRepository = driverRepository;
 	}
 
 	/**
-	 * Adds all of the drivers to the "drivers" model and redirects user to
-	 * the drivers page.
-	 * @param model Used to add data to the model
-	 * @return "drivers"
+	 * Adds all of required attributes to the model to render the drivers page
+	 * @param model used to load attributes into the Thymeleaf model
+	 * @param session used to load attributes into the current users HTTP session
+	 * @return /drivers
 	 */
+	
 	@RequestMapping({"/drivers"})
 	public String showDriversList(Model model, HttpSession session) {
 		try {
@@ -97,12 +96,12 @@ public class DriverController {
 	}
 
 	/**
-	 * Redirects user to the /add/add-driver page <br>
-	 * Adds all of the carriers, contacts, and vehicles to the model
-	 * @param model Used to add data to the model
+	 * Adds all of the attributes to the model to render the add driver page
+	 * @param model used to load attributes into the Thymeleaf model
+	 * @param session used to load attributes into the current users HTTP session
 	 * @param drivers Stores the information for the driver that is being added
 	 * @param result Ensures the input from the user are valid
-	 * @return "/add/add-driver"
+	 * @return /add/add-driver
 	 */
 	@GetMapping({"/add-driver"})
 	public String showLists(Model model, Driver drivers, BindingResult result, HttpSession session) {
@@ -118,13 +117,14 @@ public class DriverController {
 	}
 
 	/**
-	 * Adds a driver to the database. Checks if there are errors in the form. <br>
-	 * If there are no errors, the driver is saved in the driverRepository. and the user is redirect to /drivers <br>
+	 * Adds a driver to the database. Checks if there are errors in the form.
+	 * If there are no errors, the driver is saved in the driverRepository. and the user is redirect to /drivers 
 	 * If there are errors, the user is redirected to the /add/add-driver page.
 	 * @param drivers Stores the information of the driver that is to be added
 	 * @param result Ensures the inputs from the user are valid
-	 * @param model Used to add data to the model
-	 * @return "redirect:/drivers" or "/add/add-driver"
+	 * @param model used to load attributes into the Thymeleaf model
+	 * @param session used to load attributes into the current users HTTP session
+	 * @return redirects to /drivers or /add/add-driver
 	 */
 	@RequestMapping({"/adddriver"})
 	public String addDriver(@Validated Driver drivers, BindingResult result, Model model, HttpSession session) {
@@ -163,9 +163,9 @@ public class DriverController {
 	}
 
 	/**
-	 * Redirects user to the /uploaddrivers page when clicking "Upload an excel file" button in the Drivers section of Carrier login
+	 * Redirects user to the upload drivers page when clicking "Upload an excel file" button in the Drivers section of Carrier login
 	 * @param model used to add data to the model
-	 * @return "/uploaddrivers"
+	 * @return /uploaddrivers
 	 */
 
 	@RequestMapping({"/uploaddrivers"})
@@ -175,10 +175,10 @@ public class DriverController {
 	}
 
 	/**
-	 * Finds a driver using the id parameter and if found, redirects user to confrimation page
+	 * Finds a driver using the id parameter and if found, redirects user to confirmation page for deleting a driver
 	 * @param id Stores the ID of the driver to be deleted
-	 * @param model Used to add data to the model
-	 * @return "redirect:/drivers"
+	 * @param model used to load attributes into the Thymeleaf model
+	 * @return /delete/deletedriverconfirm
 	 */
 	@GetMapping("/deletedriver/{id}")
 	public String deleteDriver(@PathVariable("id") long id, Model model) {
@@ -195,9 +195,9 @@ public class DriverController {
 
 	/**
 	 * Finds a driver using the id parameter and if found, deletes the driver and redirects to drivers page
-	 * @param id ID of the driver being deleted
-	 * @param model Used to add data to the model
-	 * @return "redirect:/drivers"
+	 * @param id of the driver being deleted
+	 * @param model used to load attributes into the Thymeleaf model
+	 * @return redirects to /drivers
 	 */
 	@GetMapping("/deletedriverconfirmation/{id}")
 	public String deleteDriverConfirmation(@PathVariable("id") long id, Model model) {
@@ -214,11 +214,10 @@ public class DriverController {
 	}
 
 	/**
-	 * Finds a driver using the id parameter and if found, adds the details of that driver
-	 * to the drivers page
+	 * Adds all of the required attributes to the model to render the drivers page
 	 * @param id Stores the ID of the driver to be viewed
-	 * @param model Used to add data to the model
-	 * @return "drivers"
+	 * @param model used to load attributes into the Thymeleaf model
+	 * @return /drivers
 	 */
 	@GetMapping("/viewdriver/{id}")
 	public String viewDriver(@PathVariable("id") long id, Model model) {
@@ -234,6 +233,13 @@ public class DriverController {
 		return "drivers";
 	}
 
+	/**
+	 * Adds all of the required attributes to the model to render the edit drivers page
+	 * @param id of the driver being edited 
+	 * @param model used to load attributes into the Thymeleaf model
+	 * @param session used to load attributes into the current users HTTP session
+	 * @return /edit/edit-drivers
+	 */
 
 	@GetMapping("/editdriver/{id}")
 	public String showDriversEditForm(@PathVariable("id") long id, Model model, HttpSession session) {
@@ -256,6 +262,16 @@ public class DriverController {
 	}
 
 
+	/**
+	 * Receives and passes the new driver object off to be validated
+	 * Once validated the object is saved to the drivers repository
+	 * @param driver holds new driver object submitted by the user
+	 * @param id of the driver being edited 
+	 * @param model used to load attributes into the Thymeleaf model
+	 * @param session used to load attributes into the current users HTTP session
+	 * @return redirects to /drivers or /edit/edit-drivers
+	 */
+	
 	@PostMapping("edit-drivers/{id}")
 	public String driverUpdateForm(@PathVariable("id") long id, Driver driver, Model model, HttpSession session) {
 		String redirectLocation = (String) session.getAttribute("redirectLocation");

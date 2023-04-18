@@ -43,20 +43,20 @@ public class TechniciansController {
 	private static final Logger Logger = LoggerFactory.getLogger(TechniciansController.class);
 
 	/**
-	 * Constructor for TechniciansController. <br>
-	 * Instantiates the techniciansRepository
-	 * @param techniciansRepository Used to interact with technicians in the database
+	 * Constructor for TechniciansController
 	 */
+	
 	public TechniciansController(TechniciansRepository techniciansRepository) {
 		this.techniciansRepository = techniciansRepository;
 	}
 
 	/**
-	 * Adds all of the technicians to the "technicians" model and redirects user to
-	 * the technicians page.
-	 * @param model Used to add data to the model
-	 * @return "technicians"
+	 * Adds all of the required attributes to the model to render the technicians page
+	 * @param model used to load attributes into the Thymeleaf model
+	 * @param session used to load attributes into the current users HTTP session
+	 * @return /technicians
 	 */
+	
 	@RequestMapping({"/technicians"})
 	public String showTechList(Model model, HttpSession session) {
 
@@ -88,13 +88,14 @@ public class TechniciansController {
 	}
 
 	/**
-	 * Redirects user to the /add/add-technician page <br>
-	 * Adds contacts to the model
-	 * @param model Used to add data to the model
+	 * Adds all of the required attributes to the model to render the add-technician page
+	 * @param model used to load attributes into the Thymeleaf model
 	 * @param technician Information on the technician being added
 	 * @param result Ensures the information entered by the user is valid
-	 * @return "/add/add-technician"
+	 * @param session used to load attributes into the current users HTTP session
+	 * @return /add/add-technician
 	 */
+	
 	@GetMapping({"/add-technician"})
 	public String showContactList(Model model, Technicians technician, BindingResult result, HttpSession session) {
 		model.addAttribute("contacts", userService.getLoggedInUser().getCarrier().getContacts()); 
@@ -107,13 +108,14 @@ public class TechniciansController {
 	}
 
 	/**
-	 * Adds a technician to the database. Checks if there are errors in the form. <br>
-	 * If there are no errors, the technician is saved in the techniciansRepository. and the user is redirect to /technicians <br>
+	 * Adds a technician to the database. Checks if there are errors in the form.
+	 * If there are no errors, the technician is saved in the techniciansRepository
 	 * If there are errors, the user is redirected to the /add/add-technician page.
 	 * @param technician Information on the technician being added
 	 * @param result Ensures information entered by the user is valid
-	 * @param model Used to add data to the model
-	 * @return "redirect:/technicians" or "/add/add-technician"
+	 * @param model used to load attributes into the Thymeleaf model
+	 * @param session used to load attributes into the current users HTTP session
+	 * @return redirects to /technicians or /add/add-technician
 	 */
 	@RequestMapping({"/addtechnician"})
 	public String addtechnician(@Validated Technicians technician, BindingResult result, Model model, HttpSession session) {
@@ -164,10 +166,12 @@ public class TechniciansController {
 	/**
 	 * Finds a technician using the id parameter and if found, redirects to confirmation page 
 	 * If there are dependency issues, the technician is not deleted and an error is displayed to the user.
-	 * @param id ID of the technician being deleted
-	 * @param model Used to add data to the model
-	 * @return "redirect:/technicians"
+	 * @param id of the technician being deleted
+	 * @param model used to load attributes into the Thymeleaf model
+	 * @param session used to load attributes into the current users HTTP session
+	 * @return redirects to /technicians
 	 */
+	
 	@GetMapping("/deletetechnician/{id}")
 	public String deletetechnician(@PathVariable("id") long id, Model model, HttpSession session) {
 		Technicians technician = techniciansRepository.findById(id)
@@ -190,10 +194,11 @@ public class TechniciansController {
 
 	/**
 	 * Finds a technician using the id parameter and if found, deletes the technician and redirects to technicians page
-	 * @param id ID of the technician being deleted
-	 * @param model Used to add data to the model
-	 * @return "redirect:/technicians"
+	 * @param id of the technician being deleted
+	 * @param model used to load attributes into the Thymeleaf model
+	 * @return redirects to /technicians
 	 */
+	
 	@GetMapping("/deletetechnicianconfirmation/{id}")
 	public String deleteTechnicianConfirmation(@PathVariable("id") long id, Model model) {
 		Technicians technician = techniciansRepository.findById(id)
@@ -209,11 +214,11 @@ public class TechniciansController {
 	}
 
 	/**
-	 * Finds a technician using the id parameter and if found, adds the details of that technician
-	 * to the technicians page
-	 * @param id ID of the technician being viewed
-	 * @param model Used to add data to the model
-	 * @return "technicians"
+	 * Finds a technician using the id parameter and if found, adds the details of that technician to the technicians page
+	 * @param id of the technician being viewed
+	 * @param model used to load attributes into the Thymeleaf model
+	 * @param session used to load attributes into the current users HTTP session
+	 * @return /technicians
 	 */
 	@GetMapping("/viewtechnician/{id}")
 	public String viewTechnician(@PathVariable("id") long id, Model model, HttpSession session) {
@@ -233,10 +238,12 @@ public class TechniciansController {
 
 	/**
 	 * Gets all of the maintenance orders associated with the technician and adds those to the maintenance order page
-	 * @param id ID of the technician used to get the maintenance orders
-	 * @param model Used to add data to the model
-	 * @return "maintenanceorders"
+	 * @param id of the technician used to get the maintenance orders
+	 * @param model used to load attributes into the Thymeleaf model
+	 * @param session used to load attributes into the current users HTTP session
+	 * @return /maintenanceorders
 	 */
+	
 	@GetMapping("/viewmaintenanceorders/{id}")
 	public String viewMaintenanceOrders(@PathVariable("id") long id, Model model, HttpSession session) {
 		Technicians technician = techniciansRepository.findById(id)
@@ -251,7 +258,14 @@ public class TechniciansController {
 
 		return "maintenanceorders";
 	}
-
+	
+	/**
+	 * Adds all of the required attributes to the model to render the edit technicians page
+	 * @param id of the technician being edited 
+	 * @param model used to load attributes into the Thymeleaf model
+	 * @param session used to load attributes into the current users HTTP session
+	 * @return /edit/edit-technicians 
+	 */
 
 	@GetMapping("/edittechnician/{id}")
 	public String showEditForm(@PathVariable("id") long id, Model model, HttpSession session) {
@@ -266,7 +280,17 @@ public class TechniciansController {
 
 		return "/edit/edit-technicians";
 	}
-
+	
+	/**
+	 * Receives the new technician object and validates it
+	 * Once valid the object is saved to the technicians repository
+	 * @param id of the technician being edited
+	 * @param technician holds the new technician object submitted by the user
+	 * @param model used to load attributes into the Thymeleaf model
+	 * @param session used to load attributes into the current users HTTP session
+	 * @return redirects to /technicians or /edit/edit-technicians
+	 */
+	
 	@PostMapping("/edittechnicians/{id}")
 	public String updateTechnician(@PathVariable("id") long id, Technicians technician, 
 			Model model, HttpSession session) {

@@ -59,10 +59,13 @@ public class ForgottenPasswordController {
 	private String redirect;
 
 	private static final Logger Logger = LoggerFactory.getLogger(ForgottenPasswordController.class);
+	
 	/**
-	 * Used to handle the request and shows the user the form
-	 * @return forgotpasswordform - the form the user will fill out to recieve a link
+	 * Adds all of the attributes to the model to render the forgot password form page
+	 * @param model used to load attributes into the Thymeleaf model
+	 * @return /forgotpasswordform
 	 */
+	
 	@GetMapping("/forgotpassword")
 	public String forgotPassword(Model model) {
 		model.addAttribute("currentPage","/login");
@@ -70,14 +73,14 @@ public class ForgottenPasswordController {
 	}
 
 	/**
-	 * Method for handling the input from the user and sending the userfound 
-	 * a reset password email
-	 * @param model - used to output messages to the user
+	 * Handles the input from the user and sending the user a reset password email
+	 * @param model used to load attributes into the Thymeleaf model
 	 * @param request - used to get the email from the form
-	 * @return forgotpasswordform - this will ensure that the model displays the message
+	 * @return /forgotpasswordform - this will ensure that the model displays the message
 	 * @throws UnsupportedEncodingException
 	 * @throws MessagingException
 	 */
+
 	@PostMapping("/forgotpassword")
 	public String forgotPasswordForm(Model model,HttpServletRequest request) throws UnsupportedEncodingException, MessagingException {
 		email = request.getParameter("email");
@@ -94,8 +97,8 @@ public class ForgottenPasswordController {
 	 * method that finds the user by their OTP code, if the user does not have the same code
 	 * they will not be able to proceed
 	 * @param otpCode - passed in the URL, used for finding the user
-	 * @param model - used to output messages to the user
-	 * @return forgotpassword or resetpasword form
+	 * @param model used to load attributes into the Thymeleaf model
+	 * @return /forgotpassword or /resetpaswordform
 	 */
 	@GetMapping("/resetpassword")
 	public String resetPassword(@RequestParam(required=true, value="code") String otpCode, Model model) {
@@ -118,7 +121,7 @@ public class ForgottenPasswordController {
 	 * @param request - used to recieve the otpCode and the password
 	 * @param model - used to send messages back to the user
 	 * @param redirectAttr - Used to add flash Attributes for binding result and userForm
-	 * @return resetpasswordform - used to display the messages
+	 * @return /resetpasswordform 
 	 */
 	@PostMapping("/resetpassword")
 	public String resetPasswordForm(@ModelAttribute("userForm") User userForm, BindingResult bindingResult, HttpServletRequest request, Model model, RedirectAttributes redirectAttr) {

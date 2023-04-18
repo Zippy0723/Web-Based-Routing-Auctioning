@@ -51,11 +51,7 @@ public class MaintenanceOrderController {
 	private static final Logger Logger = LoggerFactory.getLogger(MaintenanceOrderController.class);
 
 	/**
-	 * Constructor for MaintenanceOrderController. <br>
-	 * Instantiates the maintenanceOrderRepository <br>
-	 * Instantiates the techniciansRepository
-	 * @param maintenanceOrderRepository Used to interact with maintenance orders in the database
-	 * @param techniciansRepository Used to interact with technicians in the database
+	 * Constructor for MaintenanceOrderController.
 	 */
 	public MaintenanceOrderController(MaintenanceOrdersRepository maintenanceOrderRepository, TechniciansRepository techniciansRepository) {
 		this.maintenanceOrderRepository = maintenanceOrderRepository;
@@ -63,10 +59,11 @@ public class MaintenanceOrderController {
 	}
 
 	/**
-	 * Adds all of the maintenance orders to the "maintenanceOrder" model and redirects user to
-	 * the maintenanceorders page.
-	 * @param model Used to add data to the model
-	 * @return "maintenanceorders"
+	 * Adds all of the maintenance orders to the /maintenanceOrder model and redirects user to
+	 * the maintenanceorders page
+	 * @param model used to load attributes into the Thymeleaf model
+	 * @param session used to load attributes into the current users HTTP session
+	 * @return /maintenanceorders
 	 */
 	@RequestMapping({"/maintenanceorders"})
 	public String showMaintenanceOrdersList(Model model, HttpSession session) {
@@ -121,8 +118,8 @@ public class MaintenanceOrderController {
 	/**
 	 * Finds a maintenance order using the id parameter and if found, redirects to confirmation page
 	 * @param id Stores the ID of the maintenance order to be deleted
-	 * @param model Used to add data to the model
-	 * @return "redirect:/maintenanceorders"
+	 * @param model used to load attributes into the Thymeleaf model
+	 * @return redirects to /maintenanceorders
 	 */
 	@GetMapping("/deleteorder/{id}")
 	public String deleteMaintenance(@PathVariable("id") long id, Model model) {
@@ -140,9 +137,9 @@ public class MaintenanceOrderController {
 
 	/**
 	 * Finds an order using the id parameter and if found, deletes the order and redirects to orders page
-	 * @param id ID of the order being deleted
+	 * @param id of the order being deleted
 	 * @param model Used to add data to the model
-	 * @return "redirect:/maintenanceorders"
+	 * @return redirects to /maintenanceorders
 	 */
 	@GetMapping("/deleteorderconfirmation/{id}")
 	public String deleteOrderConfirmation(@PathVariable("id") long id, Model model) {
@@ -158,6 +155,14 @@ public class MaintenanceOrderController {
 
 		return "redirect:/maintenanceorders";
 	}
+	
+	/**
+	 * Adds all of the required attributes to the model to render the edit orders page
+	 * @param id of the order being edited 
+	 * @param model used to load attributes into the Thymeleaf model
+	 * @param session used to load attributes into the current users HTTP session
+	 * @return /edit/edit-orders 
+	 */
 
 	@GetMapping("/editorder/{id}")
 	public String showOrdersEditForm(@PathVariable("id") long id, Model model, HttpSession session ) {
@@ -177,6 +182,16 @@ public class MaintenanceOrderController {
 		return "/edit/edit-orders";
 	}
 
+	/**
+	 * Receives and passes the new order object off to be validated
+	 * Once validated the object is saved to the maintenance order repository
+	 * @param id of the order being edited
+	 * @param maintenanceOrder holds new order object submitted by the user
+	 * @param model used to load attributes into the Thymeleaf model
+	 * @param session used to load attributes into the current users HTTP session
+	 * @return redirects to /maintenanceorders or /edit/edit-orders
+	 */
+	
 	@PostMapping("/editorders/{id}")
 	public String updateOrder(@PathVariable("id") long id, MaintenanceOrders maintenanceOrder, 
 			Model model, HttpSession session) {
@@ -196,7 +211,6 @@ public class MaintenanceOrderController {
 		MaintenanceOrders result;
 
 
-
 		hashtable.put("date", maintenanceOrder.getScheduled_date().strip());
 		hashtable.put("details", maintenanceOrder.getDetails().strip());
 		hashtable.put("serviceType", maintenanceOrder.getService_type_key().strip());
@@ -205,7 +219,6 @@ public class MaintenanceOrderController {
 		hashtable.put("type", maintenanceOrder.getMaintenance_type().strip());
 
 		result = validationServiceImp.validateMaintenanceOrderForm(hashtable, session);
-
 
 
 		if (result == null) {

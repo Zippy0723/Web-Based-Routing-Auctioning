@@ -47,7 +47,9 @@ public class SimulationController {
 
 	private static final Logger Logger = LoggerFactory.getLogger(SimulationController.class);
 
-
+	/**
+	 * Constructor for the SimulationController.
+	 */
 	public SimulationController (BidsRepository bidsRepository, ShipmentsRepository shipmentsRepository, UserRepository userRepository) {
 		this.shipmentsRepository = shipmentsRepository;
 		this.bidsRepository = bidsRepository;
@@ -56,6 +58,12 @@ public class SimulationController {
 	}
 
 
+	/**
+	 * Adds all of the required attributes to the model to render the simulations page
+	 * @param model used to load attributes into the Thymeleaf model
+	 * @param session used to load attributes into the current users HTTP session
+	 * @return /simulations/selection
+	 */
 	@GetMapping("/simulations")
 	public String simulationsPage(Model model, HttpSession session){
 		session.setAttribute("redirectLocation", "/simulations");
@@ -71,6 +79,12 @@ public class SimulationController {
 	}
 
 
+	/**
+	 * Mapping for bid simulation button, calls the doBidsSimulation method
+	 * @param model used to load attributes into the Thymeleaf model
+	 * @param session used to load attributes into the current users HTTP session
+	 * @return redirectLocation
+	 */
 	@PostMapping("/bidsimulation")
 	public String bidsSimulation(Model model, HttpSession session) {
 		User user = userService.getLoggedInUser();
@@ -79,6 +93,13 @@ public class SimulationController {
 		return "redirect:" + (String) session.getAttribute("redirectLocation");
 	}
 
+	/**
+	 * Mapping for direct assignment simulation button, calls the doDirectAssignSimulation method
+	 * @param model used to load attributes into the Thymeleaf model
+	 * @param session used to load attributes into the current users HTTP session
+	 * @return redirectLocation
+	 */
+	
 	@PostMapping("/directassignsimulation")
 	public String auctionSimulation(Model model, HttpSession session) {
 		User user = userService.getLoggedInUser();
@@ -88,6 +109,10 @@ public class SimulationController {
 	}
 
 
+	/**
+	 * Driver function for the bids simulation. Constructs the simulation over 20 seconds
+	 */
+	
 	private void doBidsSimulation() {
 		try {
 			System.out.println("Shipper is creating a shipment.");
@@ -118,7 +143,10 @@ public class SimulationController {
 		}
 	}
 
-
+	/**
+	 * Driver function for the direct assign simulation. Constructs the simulation over 20 seconds
+	 */
+	
 	private void doDirectAssignSimulation() {
 		try {
 			System.out.println("Shipper is creating a shipment.");
@@ -143,7 +171,11 @@ public class SimulationController {
 		}
 	}
 
-
+	/**
+	 * Creates a shipment and gives it to 'SHIPPER'
+	 * @return shipment
+	 */
+	
 	private Shipments makeShipment(){
 
 		User shipper = userRepository.findByEmail("shipper@gmail.com");
@@ -181,14 +213,22 @@ public class SimulationController {
 		return shipment;
 	}
 
-
+	/**
+	 * Takes in a shipment and pushes it to auction
+	 * @param shipment holds the shipment that is being pushed to auction
+	 */
+	
 	private void pushToAuction(Shipments shipment) {
 
 		shipment.setFullFreightTerms("AVAILABLE SHIPMENT");
 		shipmentsRepository.save(shipment);
 	}
 
-
+	/**
+	 * Takes in a shipment and adds a bid to it by 'CARRIER'
+	 * @param shipment holds the shipment that the bid is referring to
+	 * @return bid
+	 */
 	private Bids addBids(Shipments shipment) {
 
 		Carriers carrier = userRepository.findByEmail("carrier@gmail.com").getCarrier();
@@ -206,7 +246,11 @@ public class SimulationController {
 		return bid;
 	}
 
-
+	/**
+	 * Takes in a bid and accepts it
+	 * @param shipment holds the shipment that the bid is referring to
+	 */
+	
 	private void acceptBid(Bids bid) {
 
 		Carriers carrier = bid.getCarrier();
@@ -222,6 +266,11 @@ public class SimulationController {
 				"ALERT: You have won the auction on shipment with ID " + shipment.getId() + " with a final bid value of " + bid.getPrice(), false);
 	}
 
+	/**
+	 * Takes in a shipment directly assigns it to 'CARRIER'
+	 * @param shipment holds the shipment that is being directly assigned
+	 */
+	
 	private void directAssignShipment(Shipments shipment) {
 
 		Carriers carrier = userRepository.findByEmail("carrier@gmail.com").getCarrier();
@@ -237,7 +286,11 @@ public class SimulationController {
 
 	}
 
-
+	/**
+	 * Accepts a bid for the shipment being passed
+	 * @param shipment
+	 */
+	
 	private void acceptAwaitingShipment(Shipments shipment) {
 
 		shipment.setFullFreightTerms("BID ACCEPTED");

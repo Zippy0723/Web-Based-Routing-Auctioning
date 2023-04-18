@@ -50,9 +50,7 @@ public class CarriersController {
 
 
 	/**
-	 * Constructor for CarriersController. <br>
-	 * Instantiates the carriersRepository
-	 * @param carriersRepository Used to interact with carriers in the database
+	 * Constructor for CarriersController. 
 	 */
 	public CarriersController (CarriersRepository carriersRepository, UserRepository userRepository) {
 		this.carriersRepository = carriersRepository;
@@ -61,11 +59,11 @@ public class CarriersController {
 
 	/**
 	 * Adds all of the carriers to the "carriers" model and redirects user to
-	 * the carriers page. <br>
+	 * the carriers page. 
 	 * If a user is logged in as a carrier, the detials of their carrier is added to the page.
-	 * @param model Used to add data to the model
-	 * @param session Used to store the uses HttpSession
-	 * @return "carriers"
+	 * @param model used to load attributes into the Thymeleaf model
+	 * @param session used to load attributes into the current users HTTP session
+	 * @return /carriers
 	 */
 	@RequestMapping({"/carriers"})
 	public String showCarriersList(Model model, HttpSession session) {
@@ -94,7 +92,7 @@ public class CarriersController {
 	/**
 	 * Redirects user to the /uploadcarrier page when clicking "Upload an excel file" button in the carriers section of AdminTry
 	 * @param model used to add data to the model
-	 * @return "/uploadcarrier"
+	 * @return /uploadcarrier
 	 */
 
 	@RequestMapping({"/uploadcarrier"})
@@ -107,8 +105,9 @@ public class CarriersController {
 	 * Finds a carrier using the id parameter and if found, adds the details of that carrier
 	 * to a form and redirects the user to that update form.
 	 * @param id Stores the ID of the carrier to be edited
-	 * @param model Used to add data to the model
-	 * @return "update/update-carrier"
+	 * @param model used to load attributes into the Thymeleaf model
+	 * @param session used to load attributes into the current users HTTP session
+	 * @return /update/update-carrier
 	 */
 	@GetMapping("/editcarrier/{id}")
 	public String showEditForm(@PathVariable("id") long id, Model model, HttpSession session) {
@@ -132,8 +131,9 @@ public class CarriersController {
 	 * Finds a carrier using the id parameter and if found, adds all of the shipments of that carrier
 	 * to the shipments page
 	 * @param id Stores the ID of the carrier for the shipments to be added to the model
-	 * @param model Used to add data to the model
-	 * @return "shipments"
+	 * @param model used to load attributes into the Thymeleaf model
+	 * @param session used to load attributes into the current users HTTP session
+	 * @return /shipments
 	 */
 	@GetMapping("/viewcarriershipments/{id}")
 	public String viewCarrierShipments(@PathVariable("id") long id, Model model, HttpSession session) {
@@ -154,8 +154,9 @@ public class CarriersController {
 	 * Finds a carrier using the id parameter and if found, adds all of the bids of that carrier
 	 * to the bids page
 	 * @param id Stores the ID of the carrier for the bids to be added to the model
-	 * @param model Used to add data to the model
-	 * @return "bids"
+	 * @param model used to load attributes into the Thymeleaf model
+	 * @param session used to load attributes into the current users HTTP session
+	 * @return /bids
 	 */
 	@GetMapping("/viewcarrierbids/{id}")
 	public String viewCarrierBids(@PathVariable("id") long id, Model model, HttpSession session) {
@@ -190,8 +191,9 @@ public class CarriersController {
 	/**
 	 * Finds a carrier using the id parameter and if found shows the carrier on the carrier page
 	 * @param id Stores the ID of the carrier to be viewed
-	 * @param model Used to add data to the model
-	 * @return "carriers"
+	 * @param model used to load attributes into the Thymeleaf model
+	 * @param session used to load attributes into the current users HTTP session
+	 * @return /carriers
 	 */
 	@GetMapping("/viewcarrier/{id}")
 	public String viewCarrier(@PathVariable("id") long id, Model model, HttpSession session) {
@@ -211,14 +213,14 @@ public class CarriersController {
 	}
 
 	/**
-	 * Updates a carrier to the database. Checks if there are errors in the form. <br>
-	 * If there are no errors, the carrier is updated in the carriersRepository. and the user is redirected to /carriers <br>
+	 * Updates a carrier to the database. Checks if there are errors in the form.
+	 * If there are no errors, the carrier is updated in the carriersRepository. and the user is redirected to /carriers 
 	 * If there are errors, the user is redirected to the /update/update-carriers page.
 	 * @param id Stores the ID of the carrier to be updated
 	 * @param carrier Stores information on the carrier that is being updated
 	 * @param result Checks user inputs to ensure they are valid
 	 * @param model Used to add data to the model
-	 * @return "redirect:/carriers" or "/update/update-carriers"
+	 * @return redirect:/carriers or /update/update-carriers
 	 */
 	@PostMapping("/updatecarrier/{id}")
 	public String updateCarrier(@PathVariable("id") long id, @Validated Carriers carrier, 
@@ -260,7 +262,10 @@ public class CarriersController {
 	}
 
 	/**
-	 * 
+	 * Receives and carrier object and finds the corresponding user object associated
+	 * @param carrier holds the carrier object
+	 * @param result holds the user found
+	 * @return result
 	 */
 	public static User getUserFromCarrier(Carriers carrier) { //This helper function is to fix a lack of relationship between carriers and users in the database. it should not be permenant.
 		List<User> carrierUsers = new ArrayList<>();
@@ -281,7 +286,14 @@ public class CarriersController {
 
 		return result;
 	}
-
+	
+	/**
+	 * Adds the required attributes to the model to render the edit carriers page
+	 * @param id of the carrier being edited
+	 * @param model used to load attributes into the Thymeleaf model
+	 * @param session used to load attributes into the current users HTTP session
+	 * @return /index or /edit/edit-carrier 
+	 */
 
 	@GetMapping("/editcarriers/{id}")
 	public String showCarrierEditForm(@PathVariable("id") long id, Model model, HttpSession session) {
@@ -308,6 +320,15 @@ public class CarriersController {
 	}
 
 
+	/**
+	 * Receives a carrier and user object that gets validated and saved to the repository through the edit carriers page
+	 * @param id of the user calling the method
+	 * @param user holds the user object being created
+	 * @param carrier holds the new carrier object passed by the user
+	 * @param model used to load attributes into the Thymeleaf model
+	 * @param session used to load attributes into the current users HTTP session
+	 * @return /edit/edit-carriers or redirect: + redirectLocation
+	 */
 
 	@PostMapping("edit-carrier/{id}")
 	public String carrierUpdateForm(@PathVariable("id") long id, User user, Carriers carrier, Model model, HttpSession session) {
@@ -416,6 +437,13 @@ public class CarriersController {
 		return "redirect:" + redirectLocation;
 	}
 
+	/**
+	 * Adds all of the required attributes to render the add carrier page to the model
+	 * @param user user object being passed to the model
+	 * @param model used to load attributes into the Thymeleaf model
+	 * @param session used to load attributes into the current users HTTP session
+	 * @return /add/add-carrier
+	 */
 
 	@GetMapping("/addcarrier")
 	public String showCarrierAddForm(User user, Model model, HttpSession session) {
@@ -429,6 +457,20 @@ public class CarriersController {
 	}
 
 
+	/**
+	 * Receives a carrier and user object from the add carrier page.
+	 * Validates and saves the new user and carrier
+	 * @param userForm holds the user object
+	 * @param model used to load attributes into the Thymeleaf model
+	 * @param session used to load attributes into the current users HTTP session
+	 * @param carrierName holds the carrier name of the new carrier
+	 * @param scac holds the scac of the new carrier
+	 * @param ltl holds the ltl of the new carrier
+	 * @param ftl holds the ftl of the new carrier
+	 * @param pallets holds the pallets of the new carrier
+	 * @param weight holds the weight of the new carrier
+	 * @return /add/add-carrier or redirect: + redirectLocation
+	 */
 	@PostMapping("addcarrierform")
 	public String carrierAddForm(@ModelAttribute("userForm") User userForm, Model model,
 			String carrierName, String scac, boolean ltl, boolean ftl, String pallets, String weight, HttpSession session) {
@@ -439,9 +481,6 @@ public class CarriersController {
 
 		List <User> repoUsers =  userRepository.findAll();
 		List <Carriers> repoCarriers =  (List<Carriers>) carriersRepository.findAll();
-
-
-
 
 		String username = userForm.getUsername().strip();
 		String emailAddress = userForm.getEmail().strip();
