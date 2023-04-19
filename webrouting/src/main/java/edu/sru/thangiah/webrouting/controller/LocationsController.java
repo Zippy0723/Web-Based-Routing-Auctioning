@@ -52,19 +52,18 @@ public class LocationsController {
 	private static final Logger Logger = LoggerFactory.getLogger(LocationsController.class);
 
 	/**
-	 * Constructor for LocationsController. <br>
-	 * Instantiates the locationsRepository
-	 * @param locationsRepository Used to interact with locations in the database
+	 * Constructor for LocationsController
+	 * @param locationsRepository Instantiates the locations Repository
 	 */
 	public LocationsController (LocationsRepository locationsRepository) {
 		this.locationsRepository = locationsRepository;
 	}
 
 	/**
-	 * Adds all of the locations to the "locations" model and redirects user to
-	 * the locations page.
-	 * @param model Used to add data to the model
-	 * @return "locations"
+	 * Adds all of the attributes to the model to render the locations page
+	 * @param model used to load attributes into the Thymeleaf model
+	 * @param session used to load attributes into the current users HTTP session
+	 * @return /locations
 	 */
 	@RequestMapping({"/locations"})
 	public String showLocationsList(Model model, HttpSession session) {
@@ -112,7 +111,7 @@ public class LocationsController {
 	/**
 	 * Redirects user to the /uploadlocations page when clicking "Upload an excel file" button in the locations section of Carrier login
 	 * @param model used to add data to the model
-	 * @return "/uploadlocations"
+	 * @return /uploadlocations
 	 */
 
 	@RequestMapping({"/uploadlocations"})
@@ -124,9 +123,10 @@ public class LocationsController {
 	/**
 	 * Finds a location using the id parameter and if found, redirects to the confirmation page
 	 * Makes sure there are no dependencies before deleting. If there are, an error message is displayed
-	 * @param id Stores the ID of the location to be deleted
-	 * @param model Used to add data to the model
-	 * @return "redirect:/locations"
+	 * @param id of the location to be deleted
+	 * @param model used to load attributes into the Thymeleaf model
+	 * @param session used to load attributes into the current users HTTP session
+	 * @return /delete/deletelocationconfirm or redirectLocation
 	 */
 	@GetMapping("/deletelocations/{id}")
 	public String deleteLocation(@PathVariable("id") long id, Model model, HttpSession session ) {
@@ -149,9 +149,9 @@ public class LocationsController {
 
 	/**
 	 * Finds a location using the id parameter and if found, deletes the location and redirects to locations page
-	 * @param id ID of the location being deleted
-	 * @param model Used to add data to the model
-	 * @return "redirect:/locations"
+	 * @param id  of the location being deleted
+	 * @param model used to load attributes into the Thymeleaf model
+	 * @return redirects to /locations
 	 */
 	@GetMapping("/deletelocationconfirmation/{id}")
 	public String deleteLocationConfirmation(@PathVariable("id") long id, Model model) {
@@ -168,11 +168,11 @@ public class LocationsController {
 	}
 
 	/**
-	 * Finds a location using the id parameter and if found, adds the details of that location
-	 * to the locations page
-	 * @param id Stores the ID of the location to be viewed
-	 * @param model Used to add data to the model
-	 * @return "locations"
+	 * Finds a location using the id parameter and if found, adds the details of that location to the locations page
+	 * @param id of the location to be viewed
+	 * @param model used to load attributes into the Thymeleaf model
+	 * @param session used to load attributes into the current users HTTP session
+	 * @return /locations
 	 */
 	@GetMapping("/viewlocation/{id}")
 	public String viewLocation(@PathVariable("id") long id, Model model, HttpSession session) {
@@ -189,6 +189,14 @@ public class LocationsController {
 		return "locations";
 	}
 
+	/**
+	 * Adds all of the required attributes to the model to render the edit locations page
+	 * @param id of the location being edited
+	 * @param model used to load attributes into the Thymeleaf model
+	 * @param session used to load attributes into the current users HTTP session
+	 * @return /edit/edit-locations
+	 */
+	
 	@GetMapping("/editlocations/{id}")
 	public String showLocationsEditForm(@PathVariable("id") long id, Model model, HttpSession session) {
 		Locations locations = locationsRepository.findById(id)
@@ -207,6 +215,16 @@ public class LocationsController {
 		return "/edit/edit-locations";
 	}
 
+	/**
+	 * Receives and passes the new location object off to be validated
+	 * Once validated the object is saved to the location repository
+	 * @param id of the location being edited
+	 * @param locations holds the new location object submitted by the user
+	 * @param model used to load attributes into the Thymeleaf model
+	 * @param session used to load attributes into the current users HTTP session
+	 * @return redirect to /locations or /edit/edit-locations
+	 */
+	
 	@PostMapping("edit-locations/{id}")
 	public String locationsUpdateForm(@PathVariable("id") long id, Locations locations, Model model, HttpSession session) {
 		String redirectLocation = (String) session.getAttribute("redirectLocation");

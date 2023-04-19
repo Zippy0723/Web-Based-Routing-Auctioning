@@ -26,7 +26,7 @@ import net.bytebuddy.utility.RandomString;
  */
 
 /**
- * Implements the UserService Interface <br>
+ * Implements the UserService Interface
  * Used as a service for Spring Security
  * @author Logan Kirkwood	llk1005@sru.edu
  * @since 2/7/2022
@@ -60,8 +60,6 @@ public class UserServiceImpl implements UserService {
 	 * Saves the user in the userRepository and encodes the password <br>
 	 * The password is encrypted using the BCryptPasswordEncoder
 	 * @param user User being saved
-	 * @throws MessagingException 
-	 * @throws UnsupportedEncodingException 
 	 */
 	@Override
 	public void save(User user) {
@@ -143,7 +141,9 @@ public class UserServiceImpl implements UserService {
 		save(user);
 	}
 	
-	
+	/**
+	 * Returns the currently logged in user
+	 */
 	
 	public User getLoggedInUser() {
 		if (securityService.isAuthenticated()) {

@@ -319,8 +319,9 @@ public class Carriers {
 		return technicians;
 	}
 
+
 	/**
-	 * @param tehnicans the tehnicans to set
+	 * @param technicians holds the technicians being set
 	 */
 	public void setTehnicans(List<Technicians> technicians) {
 		this.technicians = technicians;

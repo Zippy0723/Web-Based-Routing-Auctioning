@@ -508,10 +508,19 @@ public class Shipments {
 		this.bids = bids;
 	}
 
+	/**
+	 * Returns the shipper city, shipper state, consignee city, consignee state, and users username
+	 */
+	
 	public String toString() {
 		return shipperCity + ", " + shipperState + " to " + consigneeCity + ", " + consigneeState + " created by " + user.getUsername();
 	}
 
+	/**
+	 * Finds the lowest bid object on the shipment
+	 * @return winningbid
+	 */
+	
 	public Bids getLowestBid(){
 		Bids winningBid = null;
 		Double lowestBidValue = Double.POSITIVE_INFINITY;
@@ -525,11 +534,15 @@ public class Shipments {
 				winningBid = b;
 			}
 		}
-
 		return winningBid;
 
 	}
 
+	/**
+	 * Finds the lowest bids value
+	 * @return lowestBidValue
+	 */
+	
 	public Double getLowestBidValue(){
 		Bids winningBid = null;
 		Double lowestBidValue = Double.POSITIVE_INFINITY;

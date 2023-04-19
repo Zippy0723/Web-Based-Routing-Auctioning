@@ -35,7 +35,6 @@ public class UserValidator implements Validator {
 	
 	private Matcher matcher;
 	
-	
 
 	/**
 	 * Constructor for the UserValidator
@@ -56,7 +55,7 @@ public class UserValidator implements Validator {
     
     /**
      * Checks the email to see if the email is a duplicate
-     * @param Object o - Object being validated
+     * @param o - Object being validated
      * @param errors - Used to show the errors if they are found
      * @author Josh Gearhart	jjg1018@sru.edu
      */
@@ -77,8 +76,6 @@ public class UserValidator implements Validator {
     		if(!user.getEmail().contains("@")) {
     			errors.rejectValue("email", "invalid.email", "This email is not a valid email");
     			}
-        	
-        
     }
     /**
      * Checks the password and confirmPassword to see if they have a valid length
@@ -105,10 +102,10 @@ public class UserValidator implements Validator {
     }
    }
     /**
-     * Checks the username and the password to see if the length is valid. <br>
-     * Username must be between 6 and 32 characters in length. <br>
-     * Username has not been taken. <br>
-     * Password must be between 8 and 32 characters in length.
+     * Checks the username and the password to see if the length is valid
+     * Username must be between 6 and 32 characters in length
+     * Username has not been taken
+     * Password must be between 8 and 32 characters in length
      * @param o Object being validated
      * @param errors Used to store if there are errors
      */
@@ -144,9 +141,9 @@ public class UserValidator implements Validator {
     }
     
     /**
-     * Checks the username and the password to see if the length is valid. <br>
-     * Username must be between 6 and 32 characters in length. <br>
-     * Password must be between 8 and 32 characters in length.
+     * Checks the username and the password to see if the length is valid
+     * Username must be between 6 and 32 characters in length
+     * Password must be between 8 and 32 characters in length
      * @param o Object being validated
      * @param errors Used to store if there are errors
      * @author Josh Gearhart 	jjg1018@sru.edu
@@ -179,7 +176,7 @@ public class UserValidator implements Validator {
     }
       /**
        * Validation function used to check form values before saving to system.
-       * @param Object o -  Object being validated
+       * @param o -  Object being validated
        * @param errors - Errors object used to store if there are errors
        * @author Josh Gearhart	jjg1018@sru.edu
        */

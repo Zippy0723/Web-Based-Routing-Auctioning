@@ -51,8 +51,11 @@ public class EmailingImpl implements Emailing {
 	private User user;
 	
 
-    
-  
+    /**
+     * Constructor for the EmailingImpl 
+     * @param userRepository Instantiates the user Repository
+     * @param sendMail Instantiates the JavaMailSender
+     */
 
 	public EmailingImpl(UserRepository userRepository, JavaMailSender sendMail) {
 		this.userRepository = userRepository;
@@ -62,7 +65,7 @@ public class EmailingImpl implements Emailing {
 	/**
      * Method for setting the verification code for the user 
      * As well as sets their status to disabled
-     * @param User user is getting verification code made and disabled
+     * @param user is getting verification code made and disabled
      */
 	@Override
     public void saveVerificationCode(User user) {
@@ -76,8 +79,6 @@ public class EmailingImpl implements Emailing {
 	 * Method for sending an email to the user, also formats email
 	 * @param user User who is receiving the email
 	 * @param webUrl for the verification code to take back to
-	 * @throws UnsupportedEncodingException 
-	 * @throws MessagingException 
 	 */
 	@Override
 	@Async
@@ -96,7 +97,6 @@ public class EmailingImpl implements Emailing {
 	/**
 	 * Security function for handling account verification, if account has been verified then it returns false
 	 * else it will verify the account
-	 * @param verifycode to find the user.
 	 * @return true or false
 	 */
 	
@@ -116,7 +116,7 @@ public class EmailingImpl implements Emailing {
 	
 	/**
 	 * Finds the verification code and returns the user for specified code
-	 * @param verification for finding the user
+	 * @param verificationCode for finding the user
 	 * @return User
 	 */
 	@Override
@@ -182,8 +182,8 @@ public class EmailingImpl implements Emailing {
 	
 	/**
 	 * Method for an admin sending the forgot password email to a user.
-	 * @param String username - the username of the user who is having their password reset
-	 * @param String webUrl - used to create the context path of the application
+	 * @param username - the username of the user who is having their password reset
+	 * @param webUrl - used to create the context path of the application
 	 */
 	@Async
 	public void forgotPasswordAdminFunction(String username, String webUrl)  {

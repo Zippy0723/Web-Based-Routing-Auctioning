@@ -36,7 +36,7 @@ import edu.sru.thangiah.webrouting.web.UserValidator;
 
 /**
  * Handles the Thymeleaf controls for the pages
- * dealing with carriers.
+ * dealing with bids
  * @author Ian Black	imb1007@sru.edu
  * @since 4/8/2022
  */
@@ -60,15 +60,14 @@ public class BidsController {
 	private UserValidator userValidator;
 
 	private static final Logger Logger = LoggerFactory.getLogger(BidsController.class);
+	
 	/**
-	 * Constructor for BidsController. <br>
-	 * Instantiates the bidsRepository <br>
-	 * Instantiates the carriersRepository <br>
-	 * Instantiates the shipmentsRepository
-	 * @param bidsRepository Used to interact with bids in the database
-	 * @param shipmentsRepository Used to interact with shipments in the database
-	 * @param carriersRepository Used to interact with carriers in the database
+	 * Constructor for the BidsController
+	 * @param bidsRepository Instantiates the bids Repository
+	 * @param shipmentsRepository Instantiates the shipments Repository
+	 * @param carriersRepository Instantiates the carriers Repository
 	 */
+	
 	public BidsController(BidsRepository bidsRepository, ShipmentsRepository shipmentsRepository, CarriersRepository carriersRepository) {
 		this.bidsRepository = bidsRepository;
 		this.shipmentsRepository = shipmentsRepository;
@@ -76,14 +75,13 @@ public class BidsController {
 	}
 
 	/**
-	 * Redirects user to the /add/add-bid page <br>
-	 * Adds shipments and carriers to the model
+	 * Sets up the add bid page with required model attributes
 	 * @param id ID of the shipment being found
 	 * @param model Used to add data the model
 	 * @param bid Holds information for the new bid
 	 * @param result Checks entered data to ensure it is valid
 	 * @param session stores the current logged in users HTTP session. Attribute "redirectLocation" can store a string containing the last page the user visited.
-	 * @return "/add/add-bid"
+	 * @return /add/add-bid
 	 */
 	@GetMapping({"/add-bid/{id}"})
 	public String showBidList(@PathVariable("id") long id, Model model, Bids bid, BindingResult result, HttpSession session) {
@@ -106,14 +104,15 @@ public class BidsController {
 	}
 
 	/**
-	 * Adds a bid to the database. Checks if there are errors in the form. <br>
-	 * Adds the date, time, and logged in user to the bid. <br>
-	 * If there are no errors, the bid is saved in the bidsRepository. and the user is redirect to /bids <br>
+	 * Adds a bid to the database. Checks if there are errors in the form
+	 * Adds the date, time, and logged in user to the bid
+	 * If there are no errors, the bid is saved in the bidsRepository. and the user is redirect to /bids 
 	 * If there are errors, the user is redirected to the /add/add-technician page.
 	 * @param bid Holds information for the new bid
 	 * @param result Checks entered data to ensure it is valid
-	 * @param model Used to add data to the model
-	 * @return "redirect:/createdshipments" or "/add/add-bid"
+	 * @param model used to load attributes into the Thymeleaf model
+	 * @param session used to load attributes into the current users HTTP session
+	 * @return redirects to /createdshipments or /add/add-bid
 	 */
 	@RequestMapping({"/addbid"})
 	public String addBid(@Validated Bids bid, BindingResult result, Model model, HttpSession session) {
@@ -166,9 +165,9 @@ public class BidsController {
 	/**
 	 * Finds a bid using the id parameter and if found, redirects user to delete confirmation page
 	 * @param id Holds the ID of the bid to be deleted
-	 * @param model Used to add data to the model
-	 * @param session stores the current logged in users HTTP session. Attribute "redirectLocation" can store a string containing the last page the user visited.
-	 * @return "/delete/deletebidconfirm" if succesful, "redirect: + redirectLocation" otherwise
+	 * @param model used to load attributes into the Thymeleaf model
+	 * @param session used to load attributes into the current users HTTP session
+	 * @return /delete/deletebidconfirm if successful, redirectLocation otherwise
 	 */
 	@GetMapping("/deletebid/{id}")
 	public String deleteBid(@PathVariable("id") long id, Model model, HttpSession session) {
@@ -197,9 +196,9 @@ public class BidsController {
 	/**
 	 * Finds a bid using the id parameter and if found, deletes the bid and redirects to created shipments page
 	 * @param id ID of the bid being deleted
-	 * @param model Used to add data to the model
-	 * @param session stores the current logged in users HTTP session. Attribute "redirectLocation" can store a string containing the last page the user visited.
-	 * @return "redirect: + redirectLocation" (redirectLocation is stored in the HttpSession and set during page loads for critical pages)
+	 * @param model used to load attributes into the Thymeleaf model
+	 * @param session used to load attributes into the current users HTTP session
+	 * @return redirectLocation
 	 */
 	@GetMapping("/deletebidconfirmation/{id}")
 	public String deleteUserConfirm(@PathVariable("id") long id, Model model, HttpSession session) {
@@ -223,8 +222,8 @@ public class BidsController {
 	/**
 	 * Finds a shipment using the id parameter and if found, redirects users to the reset shipment bids confirmation page
 	 * @param id : Holds the ID of the shipment to be reset
-	 * @param model Used to add data to the model
-	 * @param session stores the current logged in users HTTP session. Attribute "redirectLocation" can store a string containing the last page the user visited.
+	 * @param model used to load attributes into the Thymeleaf model
+	 * @param session used to load attributes into the current users HTTP session
 	 * @return "reset/resetshipmentbidsconfirm"
 	 */
 	@GetMapping("/resetshipmentbids/{id}")
@@ -244,9 +243,9 @@ public class BidsController {
 	/**
 	 * Finds a shipment using the id parameter and if found, gets all of that shipments bids then removes then. Then, returns the user to their redirectlocation
 	 * @param id : Holds the ID of the shipment to be reset
-	 * @param model Used to add data to the model
-	 * @param session stores the current logged in users HTTP session. Attribute "redirectLocation" can store a string containing the last page the user visited.
-	 * @return "redirect: + redirectLocation" (redirectLocation is stored in the HttpSession and set during page loads for critical pages)
+	 * @param model used to load attributes into the Thymeleaf model
+	 * @param session used to load attributes into the current users HTTP session
+	 * @return redirectLocation
 	 */
 	@GetMapping("/resetshipmentbidsconfirmation/{id}")
 	public String resetShipmentBidsConfirmation(@PathVariable("id") long id, Model model, HttpSession session) {
@@ -275,12 +274,13 @@ public class BidsController {
 	}
 
 	/**
-	 * Accepts a bid from the carrier. <br>
-	 * Assigns a carrier, price, scac, and changes the full freight terms of a shipment. <br>
+	 * Accepts a bid from the carrier.
+	 * Assigns a carrier, price, scac, and changes the full freight terms of a shipment.
 	 * Updates the shipment using the shipmentsRepository.
 	 * @param id Holds the ID of the bid to be accepted
-	 * @param model Used to add data to the model
-	 * @return "redirect:/shipmentshomeshipper"
+	 * @param model used to load attributes into the Thymeleaf model
+	 * @param session used to load attributes into the current users HTTP session
+	 * @return redirectLocation
 	 */
 	@GetMapping("/acceptbid/{id}")
 	public String acceptBid(@PathVariable("id") long id, Model model, HttpSession session) {
@@ -319,6 +319,13 @@ public class BidsController {
 	}
 
 
+	/**
+	 * Adds all of the attributes to the model required for the /edit/edit-bids page
+	 * @param id of the bid being edited
+	 * @param model used to load attributes into the Thymeleaf model
+	 * @param session used to load attributes into the current users HTTP session
+	 * @return /edit/edit-bids
+	 */
 	@GetMapping("/editbids/{id}")
 	public String showBidsEditForm(@PathVariable("id") long id, Model model, HttpSession session ) {
 		Bids bid = bidsRepository.findById(id)
@@ -346,6 +353,15 @@ public class BidsController {
 		return "/edit/edit-bids";
 	}
 
+	/**
+	 * Receives the new bid object and validates it
+	 * Once valid it is saved to the bids repository
+	 * @param id of the bid being edited
+	 * @param bid holds the information of the new bid object
+	 * @param model used to load attributes into the Thymeleaf model
+	 * @param session used to load attributes into the current users HTTP session
+	 * @return redirect: + redirectLocation or /edit/edit-bids
+	 */
 	
 	@PostMapping("/editbids/{id}")
 	public String updateBid(@PathVariable("id") Long id, Bids bid, Model model, HttpSession session) {

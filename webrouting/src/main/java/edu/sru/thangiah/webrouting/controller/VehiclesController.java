@@ -88,11 +88,10 @@ public class VehiclesController {
 	private static final Logger Logger = LoggerFactory.getLogger(VehiclesController.class);
 
 	/**
-	 * Constructor for VehiclesController. <br>
-	 * Instantiates the vehiclesRepository <br>
-	 * Instantiates the vehicleTypesRepository
-	 * @param vehiclesRepository Used to interact with the vehicles in the database
-	 * @param vehicleTypesRepository Used to interact with the vehicle types in the database
+	 * 
+	 * @param vehiclesRepository Instantiates the vehicles Repository
+	 * @param vehicleTypesRepository Instantiates the vehicletypes Repository
+	 * @param shipmentsRepository Instantiates the shipments Repository
 	 */
 	public VehiclesController(VehiclesRepository vehiclesRepository, VehicleTypesRepository vehicleTypesRepository, ShipmentsRepository shipmentsRepository) {
 		this.vehiclesRepository = vehiclesRepository;
@@ -101,11 +100,12 @@ public class VehiclesController {
 	}
 
 	/**
-	 * Adds all of the vehicles to the "vehicles" model and redirects user to
-	 * the vehicles page.
-	 * @param model Used to add data to the model
-	 * @return "vehicles"
+	 * Adds all of the required attributes to the model to render the vehicles page
+	 * @param model used to load attributes into the Thymeleaf model
+	 * @param session used to load attributes into the current users HTTP session
+	 * @return /vehicles
 	 */
+	
 	@RequestMapping({"/vehicles"})
 	public String showVehicleList(Model model, HttpSession session) {
 
@@ -158,16 +158,14 @@ public class VehiclesController {
 		return "vehicles";
 	}
 
-
-	
-
 	/**
 	 * Finds a vehicle using the id parameter and if found, redirects to confirmation page
 	 * If there are dependency issues, the vehicle is not deleted and an error is displayed to the user.
-	 * @param id ID of the vehicle being deleted
-	 * @param model  Used to add data to the model
-	 * @return "redirect:/vehicles"
+	 * @param model used to load attributes into the Thymeleaf model
+	 * @param session used to load attributes into the current users HTTP session
+	 * @return /delete/deletevehicleconfirm
 	 */
+	
 	@GetMapping("/deletevehicles/{id}")
 	public String deleteVehicle(@PathVariable("id") long id, Model model, HttpSession session) {
 		Vehicles vehicle = vehiclesRepository.findById(id)
@@ -190,10 +188,11 @@ public class VehiclesController {
 
 	/**
 	 * Finds a vehicle using the id parameter and if found, deletes the vehicle and redirects to vehicles page
-	 * @param id ID of the vehicle being deleted
-	 * @param model Used to add data to the model
-	 * @return "redirect:/vehicles"
+	 * @param id of the vehicle being deleted
+	 * @param model used to load attributes into the Thymeleaf model
+	 * @return redirects to /vehicles
 	 */
+	
 	@GetMapping("/deletevehicleconfirmation/{id}")
 	public String deleteVehicleConfirmation(@PathVariable("id") long id, Model model) {
 		Vehicles vehicle = vehiclesRepository.findById(id)
@@ -214,12 +213,13 @@ public class VehiclesController {
 	}
 
 	/**
-	 * Finds a vehicle using the id parameter and if found, adds the details of that vehicle
-	 * to the vehicles page
-	 * @param id ID of the vehicle being viewed
-	 * @param model Used to add data to the model
-	 * @return "vehicles"
+	 * Finds a vehicle using the id parameter and if found, adds the details of that vehicle to the vehicles page
+	 * @param id of the vehicle being viewed
+	 * @param model used to load attributes into the Thymeleaf model
+	 * @param session used to load attributes into the current users HTTP session
+	 * @return /vehicles
 	 */
+	
 	@GetMapping("/viewvehicle/{id}")
 	public String viewVehicle(@PathVariable("id") long id, Model model, HttpSession session) {
 
@@ -236,15 +236,12 @@ public class VehiclesController {
 		return "vehicles";
 	}
 
-
-
-
 	/**
-	 * Finds a vehicle using the id parameter and if found, adds all of the drivers of that vehicle
-	 * to the drivers page
-	 * @param id ID of the vehicle used to get the drivers
-	 * @param model Used to add data to the model
-	 * @return "drivers"
+	 * Finds a vehicle using the id parameter and if found, adds all of the drivers of that vehicle to the drivers page
+	 * @param id of the vehicle being viewed
+	 * @param model used to load attributes into the Thymeleaf model
+	 * @param session used to load attributes into the current users HTTP session
+	 * @return /drivers
 	 */
 	@GetMapping("/viewvehicledrivers/{id}")
 	public String viewVehicleDrivers(@PathVariable("id") long id, Model model, HttpSession session) {
@@ -262,12 +259,13 @@ public class VehiclesController {
 	}
 
 	/**
-	 * Finds a carrier using the id parameter and if found, adds all of the shipments of that carrier
-	 * to the shipments page
-	 * @param id ID of the vehicle used to ge the shipments
-	 * @param model Used to add data to the model
-	 * @return "shipments"
+	 * Finds a carrier using the id parameter and if found, adds all of the shipments of that carrier to the shipments page
+	 * @param id of the vehicle used to ge the shipments
+	 * @param model used to load attributes into the Thymeleaf model
+	 * @param session used to load attributes into the current users HTTP session
+	 * @return /shipments
 	 */
+	
 	@GetMapping("/viewvehicleshipments/{id}")
 	public String viewVehicleShipments(@PathVariable("id") long id, Model model, HttpSession session) {
 		Vehicles vehicle = vehiclesRepository.findById(id)
@@ -283,6 +281,13 @@ public class VehiclesController {
 		return "shipments";
 	}
 
+	/**
+	 * Adds all of the required attributes to the model to render the edit vehicles page
+	 * @param id of the vehicle being edited 
+	 * @param model used to load attributes into the Thymeleaf model
+	 * @param session used to load attributes into the current users HTTP session
+	 * @return /edit/edit-vehicles
+	 */
 
 	@GetMapping("/editvehicles/{id}")
 	public String showVehiclesEditForm(@PathVariable("id") long id, Model model, HttpSession session) {
@@ -305,7 +310,16 @@ public class VehiclesController {
 	}
 
 
-
+	/**
+	 * Receives the new vehicles object and passes it off to be validated
+	 * Once valid the object is saved to the vehicles repository
+	 * @param id of the vehicle being edited
+	 * @param vehicle holds the new vehicle object submitted by the user
+	 * @param model used to load attributes into the Thymeleaf model
+	 * @param session used to load attributes into the current users HTTP session
+	 * @return redirects to /vehicles or /edit/edit-vehicles
+	 */
+	
 	@PostMapping("edit-vehicles/{id}")
 	public String vehicleUpdateForm(@PathVariable("id") long id, Vehicles vehicle, Model model, HttpSession session) {
 		String redirectLocation = (String) session.getAttribute("redirectLocation");
@@ -353,6 +367,13 @@ public class VehiclesController {
 		return "redirect:" + redirectLocation;
 	}
 	
+	/**
+	 * Adds all of the required attributes to the model to render the assign vehicles page
+	 * @param shipmentId holds the id of the shipment being assigned
+	 * @param model used to load attributes into the Thymeleaf model
+	 * @return /assignvehicle
+	 */
+	
 	@RequestMapping("assignvehicle/{id}")
 	public String assignVehicle(@PathVariable("id") long shipmentId, Model model) {
 		User user = userService.getLoggedInUser();
@@ -370,6 +391,15 @@ public class VehiclesController {
 		return "assignvehicle";
 	}
 	
+	/**
+	 * Attaches a vehicle to a shipment
+	 * @param shipmentId holds the id of the shipment being assigned
+	 * @param vehicle holds the vehicle being assigned
+	 * @param model used to load attributes into the Thymeleaf model
+	 * @param session used to load attributes into the current users HTTP session
+	 * @return redirectLocation
+	 */
+	
 	@PostMapping("/assignvehicletransaction/{id}")
 	public String assignVehicle(@PathVariable("id") long shipmentId, @RequestParam("vehicle") Vehicles vehicle, Model model, HttpSession session) {
 		String redirectLocation = (String) session.getAttribute("redirectLocation");
@@ -381,6 +411,14 @@ public class VehiclesController {
 		
 		return "redirect:" + redirectLocation;
 	}
+	
+	/**
+	 * Finds the closest vehicle to the shipment location based on location
+	 * @param shipmentId holds the id of the shipment being assigned
+	 * @return minKey
+	 * @throws NumberFormatException
+	 * @throws UnsupportedEncodingException
+	 */
 	
 	@GetMapping("getbestvehicle/{shipmentId}")
 	@ResponseBody

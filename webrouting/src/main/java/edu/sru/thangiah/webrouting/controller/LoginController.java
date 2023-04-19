@@ -72,11 +72,13 @@ public class LoginController {
 	private HttpServletRequest request;
 
 	private static final Logger Logger = LoggerFactory.getLogger(LoginController.class);
+	
 	/**
-	 * Constructor for LoginController <br>
-	 * Instantiates carriersRepository
-	 * @param carriersRepository Used to interact with the carriers in the database
+	 * Constructor for the LoginController
+	 * @param carriersRepository Instantiates the carriers Repository
+	 * @param notificationRepository Instantiates the notifications Repository
 	 */
+	
 	public LoginController(CarriersRepository carriersRepository, NotificationRepository notificationRepository) {
 		this.carriersRepository = carriersRepository;
 		this.notificationRepository = notificationRepository;
@@ -84,9 +86,10 @@ public class LoginController {
 
 	/**
 	 * Redirects user to the registration home page
-	 * @param model Used to add data to the model
-	 * @return "registrationhome"
+	 * @param model used to load attributes into the Thymeleaf model
+	 * @return /registrationhome
 	 */
+	
 	@GetMapping("/registrationhome")
 	public String registrationHome(Model model) {
 		model.addAttribute("currentPage","/registrationhome");
@@ -94,10 +97,11 @@ public class LoginController {
 	}
 
 	/**
-	 * Redirects user to the registration shipper page and adds a new instance of a User to the userForm model.
-	 * @param model Used to add data to the model
-	 * @return "registration"
+	 * Redirects user to the registration shipper page and adds a new instance of a User to the userForm model
+	 * @param model used to load attributes into the Thymeleaf model
+	 * @return /registration
 	 */
+	
 	@GetMapping("/registrationshipper")
 	public String registrationShipperInitial(Model model) {
 		model.addAttribute("currentPage","/registrationhome");
@@ -111,15 +115,15 @@ public class LoginController {
 	}
 
 	/**
-	 * Adds a user to the database. Checks if there are errors in the form. <br>
-	 * If there are no errors, and the Recaptcha is valid the user is saved in the userService and sent a verification email. and the user is redirect to /registrationshipper <br>
+	 * Adds a user to the database. Checks if there are errors in the form
+	 * If there are no errors, and the Recaptcha is valid the user is saved in the userService and sent a verification email. and the user is redirect to /registrationshipper 
 	 * If there are errors, the user is redirected to the registrationlogin page.
 	 * @param userForm Stores information on the user
 	 * @param bindingResult Ensures the user inputs are valid
 	 * @param redirectAttr - Used to display the Message to the user
-	 * @return "registrationshipper" or "registrationlogin"
-	 * @throws IOException 
-	 * @throws MessagingException 
+	 * @return /registrationshipper or /registrationlogin
+	 * @throws IOException exception
+	 * @throws MessagingException exception
 	 */
 
 	@PostMapping("/registrationshipper")
@@ -152,10 +156,11 @@ public class LoginController {
 
 
 	/**
-	 * Redirects user to the registration carrier page and adds a new instance of a User to the userForm model.
-	 * @param model Used to add data to the model
-	 * @return "registrationcarrier"
+	 * Adds all of the required attributes to the model to render the registration carrier page
+	 * @param model used to load attributes into the Thymeleaf model
+	 * @return /registrationcarrier
 	 */
+	
 	@GetMapping("/registrationcarrier")
 	public String registrationCarrierInitial(Model model) {
 		model.addAttribute("currentPage","/registrationhome");
@@ -169,7 +174,7 @@ public class LoginController {
 	}
 
 	/**
-	 * Adds a user to the database. Checks if there are errors in the form. <br>
+	 * Adds a user to the database. Checks if there are errors in the form
 	 * Creates a new instance of a carrier. 
 	 * Associates that carrier with the user. 
 	 * If there are no errors, and the Recaptcha is verified the user is saved in the userService. and the user is redirect to /registrationcarrier 
@@ -186,9 +191,10 @@ public class LoginController {
 	 * @param weight Weight carrier can hold
 	 * @param redirectAttr - Used to display the Message to the user
 	 * @return "registrationcarrier" or "registrationlogin"
-	 * @throws MessagingException 
-	 * @throws UnsupportedEncodingException 
+	 * @throws MessagingException exception
+	 * @throws UnsupportedEncodingException exception
 	 */
+	
 	@PostMapping("/registrationcarrier")
 	public String registrationCarrier(@ModelAttribute("userForm") User userForm, BindingResult bindingResult, Model model,
 			String carrierName, String scac, boolean ltl, boolean ftl, String pallets, String weight,RedirectAttributes redirectAttr) throws UnsupportedEncodingException, MessagingException {
@@ -261,12 +267,13 @@ public class LoginController {
 	}
 
 	/**
-	 * Tries to login the user. If successful, user is redirected to the index page. <br>
-	 * If there are errors, the error is added to the error model and the user is redirected to "registrationlogin".
+	 * Tries to login the user. If successful, user is redirected to the index page.
+	 * If there are errors, the error is added to the error model and the user is redirected to /registrationlogin
 	 * @param model Used to add data to the model
 	 * @param error Returns an error if username or password are invalid
-	 * @return "redirect:/" or "registrationlogin"
+	 * @return redirects to index or /registrationlogin
 	 */
+	
 	@GetMapping("/registrationlogin")
 	public String registrationLogin(Model model, String error) {
 		if (securityService.isAuthenticated()) {
@@ -280,13 +287,13 @@ public class LoginController {
 	}
 
 	/**
-	 * Tries to login the user. If successful, the user is redirected to the index page. <br>
-	 * If there are errors, the error is added to the error model and the user is redirected to "login". <br>
+	 * Tries to login the user. If successful, the user is redirected to the index page
+	 * If there are errors, the error is added to the error model and the user is redirected to /login
 	 * If the user logs out, the logout message is added to the message model.
 	 * @param model Used to add data to the model
 	 * @param error Returns an error if there is one during login
 	 * @param logout Returns a string if the user logs out
-	 * @return "redirect:/" or "login"
+	 * @return redirects to /index or /login
 	 */
 	@GetMapping("/login")
 	public String login(Model model, String error, String logout) {
@@ -306,9 +313,10 @@ public class LoginController {
 
 	/**
 	 * Redirects the user to the index page from /
-	 * @param model Used to add data to the model
-	 * @return "/index"
+	 * @param model used to load attributes into the Thymeleaf model
+	 * @return /index
 	 */
+	
 	@GetMapping({"/"})
 	public String welcome(Model model) {
 		User user = userService.getLoggedInUser();
@@ -353,8 +361,9 @@ public class LoginController {
 
 	/**
 	 * Displays the 403 access denied page
-	 * @return "/403"
+	 * @return /403
 	 */
+	
 	@GetMapping("/403")
 	public String error403() {
 		return "/403";

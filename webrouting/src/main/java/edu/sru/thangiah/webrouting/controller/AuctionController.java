@@ -27,6 +27,13 @@ import edu.sru.thangiah.webrouting.services.NotificationService;
 import edu.sru.thangiah.webrouting.services.SecurityService;
 import edu.sru.thangiah.webrouting.services.UserService;
 
+/**
+ * Handles the Thymeleaf controls for the pages
+ * dealing with auctioning
+ * @author Thomas Haley tjh1019@sru.edu
+ * @since 1/01/2023
+ */
+
 @Controller
 public class AuctionController {
 	
@@ -38,9 +45,6 @@ public class AuctionController {
 	@Autowired
 	private NotificationService notificationService;
 
-	/**
-	 * Constructor for AuctionController.
-	 */
 	private ShipmentsRepository shipmentsRepository;
 
 	private UserRepository userRepository;
@@ -49,6 +53,12 @@ public class AuctionController {
 
 	private static final Logger Logger = LoggerFactory.getLogger(AuctionController.class);
 
+	/**
+	 * Constructor for the AuctionController
+	 * @param sr Instantiates the Shipments Repository
+	 * @param ur Instantiates the User Repository
+	 * @param br Instantiates the Bids Repository
+	 */
 	public AuctionController (ShipmentsRepository sr, UserRepository ur, BidsRepository br) {
 		this.shipmentsRepository = sr;
 		this.userRepository = ur;
@@ -58,7 +68,10 @@ public class AuctionController {
 	/**
 	 * Finds a given shipment by ID, then redirects to the force end auction confirmation page if the shipment has any bids placed on it
 	 * If the shipment has no bids on it, or is not AVAILABLE SHIPMENT, returns the user to their page and alerts the master that the operation has failed
-	 * @
+	 * @param id of the shipment that won the auction
+	 * @param model used to load attributes into the Thymeleaf model
+	 * @param session used to load attributes into the current users HTTP session
+	 * @return /force/forceendauctionconfirm 
 	 */
 	@RequestMapping("/forceendauction/{id}")
 	public String forceEndAuction(@PathVariable("id") long id, Model model, HttpSession session) {
@@ -88,7 +101,11 @@ public class AuctionController {
 		return "/force/forceendauctionconfirm";
 	}
 	/**
-	 * Finds a given shipment by ID, then 
+	 * Finds given shipment by ID, then redirects the user to confirm or deny the push of the shipment to auction
+	 * @param id of the shipment that won the auction
+	 * @param model used to load attributes into the Thymeleaf model
+	 * @param session used to load attributes into the current users HTTP session
+	 * @return /push/pushshipmentconfirm
 	 */
 	@RequestMapping("/pushshipment/{id}")
 	public String pushShipment(@PathVariable("id") long id, Model model, HttpSession session) {
@@ -111,7 +128,11 @@ public class AuctionController {
 	}
 
 	/**
-	 * 
+	 * Allows the user to confirm or deny the shipment to move into the auction
+	 * @param id of the shipment that is being pushed to auction
+	 * @param model used to load attributes into the Thymeleaf model
+	 * @param session used to load attributes into the current users HTTP session
+	 * @return redirects the user to the base shipments page
 	 */
 	@RequestMapping("/pushshipmentconfirmation/{id}")
 	public String pushShipmentConfirmation(@PathVariable("id") long id, Model model, HttpSession session) {
@@ -141,7 +162,11 @@ public class AuctionController {
 	}
 
 	/**
-	 * 
+	 * Finds the shipment by ID and removes that shipment from the auction
+	 * @param id of shipment being removed from auction
+	 * @param model used to load attributes into the Thymeleaf model
+	 * @param session used to load attributes into the current users HTTP session
+	 * @return /reset/removefromauctionconfirm
 	 */
 	@RequestMapping("/removefromauction/{id}")
 	public String removeFromAuction(@PathVariable("id") long id, Model model, HttpSession session) {
@@ -169,10 +194,11 @@ public class AuctionController {
 	}
 
 	/**
-	 * 
-	 * @param id
-	 * @param model
-	 * @return
+	 * Finds the shipment by the ID and then redirects the user back to the base page if they confirm or deny the confirmation
+	 * @param id of shipment being removed from auction
+	 * @param model used to load attributes into the Thymeleaf model
+	 * @param session used to load attributes into the current users HTTP session
+	 * @return redirects the user back to the base shipments page
 	 */
 	@RequestMapping("/removefromauctionconfirmation/{id}")
 	public String removeFromAuctionConfirmation(@PathVariable("id") long id, Model model, HttpSession session) {
@@ -202,7 +228,11 @@ public class AuctionController {
 	}
 
 	/**
-	 * 
+	 * Finds the shipment by the ID, then allows the user to confirm or deny the ending of auction for the shipment
+	 * @param id of shipment being removed from auction
+	 * @param model used to load attributes into the Thymeleaf model
+	 * @param session used to load attributes into the current users HTTP session
+	 * @return redirects the user back to the base shipments page
 	 */
 	@RequestMapping("/forceendauctionconfirmation/{id}")
 	public String forceEndAuctionConfirmation(@PathVariable("id") long id, Model model, HttpSession session) {
@@ -245,7 +275,11 @@ public class AuctionController {
 	}
 
 	/**
-	 * 
+	 * Finds the user by ID, then returns the user to a confirmation page for toggling auctioning
+	 * @param id of the user the auctioning is being toggled on
+	 * @param model used to load attributes into the Thymeleaf model
+	 * @param session used to load attributes into the current users HTTP session
+	 * @return /toggle/toggleauctioningconfirm
 	 */
 	@GetMapping("/toggleauctioning/{id}")
 	public String toggleAuctioning(@PathVariable("id") long id, Model model, HttpSession session) {
@@ -267,6 +301,14 @@ public class AuctionController {
 		return "/toggle/toggleauctioningconfirm";
 	}
 
+
+	/**
+	 * Finds the user by ID, then returns the user to the base users page if the confirm or deny toggling auctioning
+	 * @param id of the user the auctioning is being toggled on
+	 * @param model used to load attributes into the Thymeleaf model
+	 * @param session used to load attributes into the current users HTTP session
+	 * @return redirects the user back to the base users page
+	 */
 	@GetMapping("/toggleauctioningconfirmation/{id}")
 	public String toggleAuctioningconfirmation(@PathVariable("id") long id, Model model, HttpSession session) {
 		User user = userRepository.findById(id)

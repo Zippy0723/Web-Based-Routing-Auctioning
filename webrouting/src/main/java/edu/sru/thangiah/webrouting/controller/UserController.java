@@ -97,13 +97,15 @@ public class UserController {
 
 	private static final Logger Logger = LoggerFactory.getLogger(UserController.class);
 	/**
-	 * Constructor for UserController. <br>
-	 * Instantiates the userRepository <br>
-	 * Instantiates the roleRepository
-	 * @param userRepository Used to interact with the users in the database
-	 * @param roleRepository Used to interact with the roles in the database
-	 * @param carriersRepository Used to interact with the carriers in the database
+	 * Constructor for the UserController
+	 * @param userRepository Instantiates the user Repository
+	 * @param roleRepository Instantiates the roles Repository
+	 * @param carriersRepository Instantiates the carriers Repository
+	 * @param shipmentsRepository Instantiates the shipments Repository
+	 * @param bidsRepository Instantiates the bids Repository
+	 * @param notificationRepository Instantiates the notifications Repository
 	 */
+	
 	public UserController(UserRepository userRepository, RoleRepository roleRepository, CarriersRepository carriersRepository, ShipmentsRepository shipmentsRepository, BidsRepository bidsRepository, NotificationRepository notificationRepository) {
 		this.userRepository = userRepository;
 		this.roleRepository = roleRepository;
@@ -113,6 +115,13 @@ public class UserController {
 		this.notficationRepository = notificationRepository;
 	}
 
+	/**
+	 * Adds all of the attributes to the model to render the user home page
+	 * @param model used to load attributes into the Thymeleaf model
+	 * @param session used to load attributes into the current users HTTP session
+	 * @return /userhome
+	 */
+	
 	@GetMapping("/userhome")
 	public String showUserHome(Model model, HttpSession session) {
 		User user = userService.getLoggedInUser();
@@ -124,11 +133,12 @@ public class UserController {
 	}
 
 	/**
-	 * Adds all of the users to the "userstable" model and redirects user to
-	 * the users page.
-	 * @param model Used to add data to the model
-	 * @return "users"
+	 * Adds all of the attributes to the model to render the users page
+	 * @param model used to load attributes into the Thymeleaf model
+	 * @param session used to load attributes into the current users HTTP session
+	 * @return /users
 	 */
+	
 	@GetMapping({"/users"})
 	public String showUserList(Model model, HttpSession session) {
 		List<User> userList = userRepository.findAll();
@@ -167,6 +177,13 @@ public class UserController {
 		return "users";
 	}
 
+	/**
+	 * Adds all of the attributes to the model to render the carrier administration page
+	 * @param model used to load attributes into the Thymeleaf model
+	 * @param session used to load attributes into the current users HTTP session
+	 * @return /CarrierAdministrationPage
+	 */
+	
 	@GetMapping("/CarrierAdministrationPage")
 	public String carrierAdministrationPage(Model model, HttpSession session) {
 		List<User> userList = userRepository.findAll();
@@ -188,6 +205,13 @@ public class UserController {
 		return "CarrierAdministrationPage";
 	}
 
+	/**
+	 * Adds all of the attributes to the model to render the shipper administration page
+	 * @param model used to load attributes into the Thymeleaf model
+	 * @param session used to load attributes into the current users HTTP session
+	 * @return /ShipperAdministrationPage
+	 */
+	
 	@RequestMapping("/ShipperAdministrationPage")
 	public String shipperAdministrationPage(Model model, HttpSession session) {
 		List<User> userList = userRepository.findAll();
@@ -211,9 +235,9 @@ public class UserController {
 	}
 
 	/**
-	 * Redirects user to the /add/add-user-home page
-	 * @param model Used to add data to the model
-	 * @return "/add/add-user-home"
+	 * Adds all of the attributes to the model to render the add user home page
+	 * @param model used to load attributes into the Thymeleaf model
+	 * @return /add/add-user-home
 	 */
 
 	@RequestMapping({"/signup"})
@@ -222,14 +246,14 @@ public class UserController {
 		model.addAttribute("currentPage","/users");
 		return "/add/add-user-home";
 	}
-	/**
-	 * Redirects user to the /add/add-user-carrier page. <br>
-	 * Adds instance of user to the userForm. <br>
-	 * @param user Stores information on the user being added
-	 * @param model Used to add data to the model
-	 * @return "/add/add-user-carrier"
-	 */
 
+	/**
+	 * Adds all of the attributes to the model to render the add user carrier page
+	 * @param user used to add userForm to the model
+	 * @param model used to load attributes into the Thymeleaf model
+	 * @return /add/add-user-carrier
+	 */
+	
 	@RequestMapping({"/addcarrieruser"})
 	public String showCarrierPage(User user, Model model) {
 		model.addAttribute("userForm", new User());
@@ -241,8 +265,8 @@ public class UserController {
 
 	/**
 	 * Redirects user to the /upload users page when clicking "Upload an excel file" button in the users section of AdminTry
-	 * @param model used to add data to the model
-	 * @return "/uploadusers"
+	 * @param model used to load attributes into the Thymeleaf model
+	 * @return /uploadusers
 	 */
 
 	@RequestMapping({"/uploadusers"})
@@ -254,12 +278,12 @@ public class UserController {
 	}
 
 	/**
-	 * Redirects user to the /add/add-user page and displays all of the roles 
-	 * except for the CARRIER role as that is created on a separate page.
-	 * @param model Used to add data to the model
-	 * @param user Used to the store the information on the user being added
-	 * @return "/add/add-user"
+	 * Adds all of the attributes to the model to render the add user page
+	 * @param user used to add userForm to the model
+	 * @param model used to load attributes into the Thymeleaf model
+	 * @return /add/add-user
 	 */
+	
 	@RequestMapping({"/addotheruser"})
 	public String showOtherPage(User user, Model model) {
 		List<Role> roles = (List<Role>) roleRepository.findAll();
@@ -276,6 +300,15 @@ public class UserController {
 		return "/add/add-user";
 	}
 
+	/**
+	 * Adds all of the attributes to the model to render the add user shipper page
+	 * @param user used to add userForm to the model
+	 * @param model used to load attributes into the Thymeleaf model
+	 * @param session used to load attributes into the current users HTTP session
+	 * @return /add/add-user-shipper
+	 */
+	
+	
 	@RequestMapping({"/addshipperuser"})
 	public String showShipperPage(User user, Model model, HttpSession session) {
 		List<Role> roles = (List<Role>) roleRepository.findAll();
@@ -297,19 +330,20 @@ public class UserController {
 	}
 
 	/**
-	 * Adds a user with the CARRIER role to the database. <br> 
+	 * Adds a user with the CARRIER role to the database
 	 * Creates an instance of a carrier and associates it with the new user.
 	 * @param userForm Information on the user being added
 	 * @param bindingResult Ensures the inputs from the user are valid
-	 * @param model Used to add data to the model
+	 * @param model used to load attributes into the Thymeleaf model
 	 * @param carrierName Name of the carrier
 	 * @param scac SCAC code of the carrier
 	 * @param ltl Whether or not LTL is offered by the carrier
 	 * @param ftl Whether or not FTL is offered by the carrier
 	 * @param pallets Number of pallets a carrier can handle
 	 * @param weight Weight a carrier can handle
-	 * @return "redirect:/users" or "/add/add-user-carrier"
+	 * @return redirects to /users or /add/add-user-carrier
 	 */
+	
 	@RequestMapping({"/addusercarrier"})
 	public String addUserCarrier(@ModelAttribute("userForm") User userForm, BindingResult bindingResult, Model model,
 			String carrierName, String scac, boolean ltl, boolean ftl, String pallets, String weight) {
@@ -376,13 +410,13 @@ public class UserController {
 	}
 
 	/**
-	 * Adds a user to the database. Checks if there are errors in the form. <br>
-	 * If there are no errors, the user is saved in the userService. and the user is redirect to /users <br>
+	 * Adds a user to the database. Checks if there are errors in the form
+	 * If there are no errors, the user is saved in the userService and the user is redirect to /users 
 	 * If there are errors, the user is redirected to the /add/add-user page.
 	 * @param user Information on the uesr being added
 	 * @param result Ensures the information given by the user is valid
-	 * @param model Used to add data to the model
-	 * @return "redirect:/users" or "/add/add-user"
+	 * @param model used to load attributes into the Thymeleaf model
+	 * @return redirects to /users or /add/add-user
 	 */
 	@RequestMapping({"/adduser"})
 	public String addUser(@Validated User user, BindingResult result, Model model) {
@@ -397,6 +431,15 @@ public class UserController {
 		Logger.info("{} || successfully saved the user {}." ,loggedInUser.getUsername(), user.getUsername());
 		return "redirect:/users";
 	}
+	
+	/**
+	 * Recieves user data form the user and validates it
+	 * Once valid it is saved to the user Repository
+	 * @param userForm holds all of the user data entered by the user
+	 * @param model used to load attributes into the Thymeleaf model
+	 * @param session used to load attributes into the current users HTTP session
+	 * @return /add/add-user-shipper
+	 */
 
 	@RequestMapping({"/addusershipper"})
 	public String addUserShipper(@ModelAttribute("userForm") User userForm, Model model, HttpSession session) {
@@ -467,10 +510,11 @@ public class UserController {
 	/**
 	 * Finds a user using the id parameter and if found, redirects user to confirmation page
 	 * Checks if there are dependencies and if so, user is not deleted and an error message is displayed to the user
-	 * @param id ID of the user being deleted
-	 * @param model Used to add data to the model
-	 * @return "/delete/deleteuserconfirm" or "users"
+	 * @param id of the user being deleted
+	 * @param model used to load attributes into the Thymeleaf model
+	 * @return /delete/deleteuserconfirm" or /users
 	 */
+	
 	@GetMapping("/deleteuser/{id}")
 	public String deleteUser(@PathVariable("id") long id, Model model) {
 		User user = userRepository.findById(id)
@@ -486,10 +530,11 @@ public class UserController {
 
 	/**
 	 * Finds a user using the id parameter and if found, deletes the user and redirects to users page
-	 * @param id ID of the user being deleted
-	 * @param model Used to add data to the model
-	 * @return "redirect:/users"
+	 * @param id of the user being deleted
+	 * @param model used to load attributes into the Thymeleaf model
+	 * @return redirects to /users
 	 */
+	
 	@GetMapping("/deleteuserconfirmation/{id}")
 	public String deleteUserConfirm(@PathVariable("id") long id, Model model) {
 		User user = userRepository.findById(id)
@@ -535,11 +580,12 @@ public class UserController {
 
 	/**
 	 * Finds a user using the id parameter and if found, adds the details of that user
-	 * to a form and redirects the user to that update form. Also adds the roles, and carriers to the form.
-	 * @param id ID of the user being edited 
-	 * @param model Used to add data to the model
-	 * @return "update/update-user"
+	 * to a form and redirects the user to that update form. Also adds the roles, and carriers to the form
+	 * @param id of the user being edited 
+	 * @param model used to load attributes into the Thymeleaf model
+	 * @return /update/update-user
 	 */
+	
 	@GetMapping("/edituser/{id}")
 	public String showEditForm(@PathVariable("id") long id, Model model) {
 		User user = userRepository.findById(id)
@@ -599,6 +645,13 @@ public class UserController {
 		}
 	}
 
+	/**
+	 * Finds the shipper from the Repository and adds its information to the model
+	 * @param id of the shipper being edited
+	 * @param model used to load attributes into the Thymeleaf model
+	 * @return /update/update-shipper-user
+	 */
+	
 	@GetMapping("/editshipperuser/{id}")
 	public String showShipperEditForm(@PathVariable("id") long id, Model model) {
 		User user = userRepository.findById(id)
@@ -627,6 +680,12 @@ public class UserController {
 		return "/update/update-shipper-user";
 	}
 
+	/**
+	 * Finds the carrier from the Repository and adds its information to the model
+	 * @param id of the shipper being edited
+	 * @param model used to load attributes into the Thymeleaf model
+	 * @return /update/update-carrier-use
+	 */
 
 	@GetMapping("/editcarrieruser/{id}")
 	public String showCarrierEditForm(@PathVariable("id") long id, Model model) {
@@ -655,6 +714,7 @@ public class UserController {
 
 		return "/update/update-carrier-user";
 	}
+	
 	/**
 	 * Admin functionality to update a certain users information
 	 * @param id - ID of the user being updated
@@ -666,7 +726,7 @@ public class UserController {
 	 * @param redirectAttr - Used to display messages to the user after being redirected
 	 * @param updateEmail - stores the users previous email to allow them to keep the same email
 	 * @author Josh Gearhart 	jjg1018@sru.edu
-	 * @return "redirect:/users" or "/update/update-user"
+	 * @return redirects to users or /update/update-user
 	 */
 
 	@PostMapping("/updateuser/{id}")
@@ -709,6 +769,20 @@ public class UserController {
 		}
 	}
 
+	/**
+	 * Admin functionality to update a certain users information
+	 * @param id - ID of the user being updated
+	 * @param user - Information on the user being updated
+	 * @param result - Ensures inputs from the user are valid
+	 * @param model - Used to add data to the model
+	 * @param nocarrier - Signifies if user is supposed to have a carrier associated with them
+	 * @param resetPassword - when checked resets the users password
+	 * @param redirectAttr - Used to display messages to the user after being redirected
+	 * @param updateEmail - stores the users previous email to allow them to keep the same email
+	 * @author Josh Gearhart 	jjg1018@sru.edu
+	 * @return redirects to /ShipperAdministrationPage or /update/update-shipper-user
+	 */
+	
 	@PostMapping("/updateshipperuser/{id}")
 	public String updateShipperUser(@PathVariable("id") long id, @Validated User user, 
 			BindingResult result, Model model, boolean nocarrier, boolean resetPassword, RedirectAttributes redirectAttr, String updateEmail) {
@@ -739,6 +813,20 @@ public class UserController {
 		return "redirect:/ShipperAdministrationPage";
 	}
 
+	/**
+	 * Admin functionality to update a certain users information
+	 * @param id - ID of the user being updated
+	 * @param user - Information on the user being updated
+	 * @param result - Ensures inputs from the user are valid
+	 * @param model - Used to add data to the model
+	 * @param nocarrier - Signifies if user is supposed to have a carrier associated with them
+	 * @param resetPassword - when checked resets the users password
+	 * @param redirectAttr - Used to display messages to the user after being redirected
+	 * @param updateEmail - stores the users previous email to allow them to keep the same email
+	 * @author Josh Gearhart 	jjg1018@sru.edu
+	 * @return redirects to /CarrierAdministrationPage or /update/update-carrier-user
+	 */
+	
 	@PostMapping("/updatecarrieruser/{id}")
 	public String updateCarrierUser(@PathVariable("id") long id, @Validated User user, 
 			BindingResult result, Model model, boolean nocarrier, boolean resetPassword, RedirectAttributes redirectAttr, String updateEmail) {
@@ -768,11 +856,12 @@ public class UserController {
 
 		return "redirect:/CarrierAdministrationPage";
 	}
+	
 	/**
-	 * Redirects user to the /update/update-user-details page.
-	 * Adds details of currently logged in user to the form.
+	 * Redirects user to the /update/update-user-details page
+	 * Adds details of currently logged in user to the form
 	 * @param model - Used to add data to the model
-	 * @return "/update/update-user-details"
+	 * @return /update/update-user-details
 	 * @author Josh Gearhart 	jjg1018@sru.edu
 	 */
 	@GetMapping("update-user-details")
@@ -799,16 +888,16 @@ public class UserController {
 	}
 
 	/**
-	 * Updates users username, password, and email. Sets role, shipments, carrier, and id to that of <br>
-	 * the currently logged in user. <br>
-	 * If there are errors, the user is redirected to the home page with an error message displayed. <br>
+	 * Updates users username, password, and email. Sets role, shipments, carrier, and id to that of 
+	 * the currently logged in user
+	 * If there are errors, the user is redirected to the home page with an error message displayed
 	 * If there are no errors, the user is still redirected to the home page but with a  message being displayed.
 	 * @param user - Stores information on the user being updated
 	 * @param result - Ensures information entered by the user is valid
 	 * @param model - Used to add data to the model
 	 * @param updateEmail - stores the users previous email to allow them to keep the same email
 	 * @author Josh Gearhart 	jjg1018@sru.edu
-	 * @return "/index"
+	 * @return /index
 	 */
 
 	@PostMapping("/updatedetails")
@@ -839,6 +928,14 @@ public class UserController {
 		return "/index";
 	}
 
+	/**
+	 * Finds the user in the from the user Repository and toggles the enabled attributed
+	 * @param id of the user being toggled
+	 * @param model used to load attributes into the Thymeleaf model
+	 * @param session used to load attributes into the current users HTTP session
+	 * @return redirectLocation
+	 */
+	
 	@RequestMapping("/toggleenabled/{id}")
 	public String toggleEnabled(@PathVariable("id") long id, Model model, HttpSession session) {
 		User user = userRepository.findById(id)
@@ -851,6 +948,12 @@ public class UserController {
 	}
 
 
+	/**
+	 * Adds all of the required attributes to the model to render the view available roles page
+	 * @param model used to load attributes into the Thymeleaf model
+	 * @return /viewavailableroles
+	 */
+	
 	@RequestMapping({"/viewavailableroles"})
 	public String showAvailableRoleList(Model model) {
 		model.addAttribute("role", roleRepository.findAll());
@@ -859,6 +962,12 @@ public class UserController {
 		return "viewavailableroles";
 	}
 
+	/**
+	 * Adds all of the required attributes to the model to render the add roles page
+	 * @param model used to load attributes into the Thymeleaf model
+	 * @return /add/add/role
+	 */
+	
 	@RequestMapping({"/rolesignup"})
 	public String shownAddRolePage(Model model) {
 		model.addAttribute("currentPage","/users");
@@ -866,6 +975,12 @@ public class UserController {
 		return "/add/add-role";
 	}
 
+	/**
+	 * Receives a role from the user and saves it to the roles repository
+	 * @param model used to load attributes into the Thymeleaf model
+	 * @return redirects to /viewavailableroles
+	 */
+	
 	@PostMapping({"/addrole"})
 	public String addRole(@RequestParam("roleName") String roleName, Model model) {
 		Role role = new Role(roleName);
@@ -876,6 +991,14 @@ public class UserController {
 
 
 
+	/**
+	 * Adds all of the required attributes to the model to render the edit shippers page
+	 * @param id of the shipper being edited
+	 * @param model used to load attributes into the Thymeleaf model
+	 * @param session used to load attributes into the current users HTTP session
+	 * @return /edit/edit-shippers
+	 */
+	
 	@GetMapping("/editshippers/{id}")
 	public String showUserEditForm(@PathVariable("id") long id, Model model, HttpSession session) {
 		User userForm = userRepository.findById(id)
@@ -895,6 +1018,16 @@ public class UserController {
 	}
 
 
+	/**
+	 * Receives new user data validates it
+	 * Once valid its saved to the user Repository
+	 * @param id of the shipper being edited
+	 * @param user holds the new user information from the user
+	 * @param model used to load attributes into the Thymeleaf model
+	 * @param session used to load attributes into the current users HTTP session
+	 * @return
+	 */
+	
 	@PostMapping("edit-shipper/{id}")
 	public String shipperUpdateForm(@PathVariable("id") long id, User user, Model model, HttpSession session) {
 		String redirectLocation = (String) session.getAttribute("redirectLocation");

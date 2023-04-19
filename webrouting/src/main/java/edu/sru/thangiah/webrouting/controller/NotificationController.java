@@ -19,26 +19,41 @@ import edu.sru.thangiah.webrouting.repository.UserRepository;
 import edu.sru.thangiah.webrouting.services.SecurityService;
 import edu.sru.thangiah.webrouting.services.UserService;
 
+/**
+ * Handles the Thymeleaf controls for the pages
+ * dealing with notification
+ * @author Thomas Haley tjh1019@sru.edu
+ * @since 1/01/2023
+ */
+
 @Controller
 public class NotificationController {
 
 	@Autowired
 	UserService userService;
-
-	/**
-	 * Constructor for NotificationController.
-	 */
+	
 	private static UserRepository userRepository;
+	
 	private static NotificationRepository notificationRepository;
+	
+	/**
+	 * Constructor for NotificationController
+	 * @param ur Instantiates the user Repository
+	 * @param nr Instantiates the notification Repository
+	 */
 
 	public NotificationController(UserRepository ur, NotificationRepository nr) {
 		NotificationController.userRepository = ur;
 		NotificationController.notificationRepository = nr;
 	}
 
+
 	/**
-	 * Handles loading the notifications page
+	 * Adds all of the required attributes to the model to render the unread notifications page
+	 * @param model used to load attributes into the Thymeleaf model
+	 * @return /unreadnotifications
 	 */
+	
 	@RequestMapping("/unreadnotifications")
 	public String unreadNotifications(Model model) {
 		User user = userService.getLoggedInUser();
@@ -53,8 +68,11 @@ public class NotificationController {
 	}
 
 	/**
-	 * 
+	 * Adds all of the required attributes to the model to render the read notifications page
+	 * @param model used to load attributes into the Thymeleaf model
+	 * @return /readnotifications
 	 */
+	
 	@RequestMapping("/readnotifications")
 	public String readNotifications(Model model) {
 		User user = userService.getLoggedInUser();
@@ -73,8 +91,12 @@ public class NotificationController {
 	}
 
 	/**
-	 * 
+	 * Marks the selected notification as read
+	 * @param model used to load attributes into the Thymeleaf model
+	 * @param id of the notification being marked as read
+	 * @return redirects to /unreadnotifications
 	 */
+	
 	@RequestMapping("/markasread/{id}")
 	public String markAsRead(Model model, @PathVariable("id") long id) {
 		Notification notification = notificationRepository.findById(id)
@@ -88,8 +110,12 @@ public class NotificationController {
 	}
 
 	/**
-	 * 
+	 * Marks the selected notification as unread
+	 * @param model used to load attributes into the Thymeleaf model
+	 * @param id of the notification being marked as read
+	 * @return redirects to /readnotifications
 	 */
+	
 	@RequestMapping("/markasunread/{id}")
 	public String markAsUnread(Model model, @PathVariable("id") long id) {
 		Notification notification = notificationRepository.findById(id)
@@ -103,10 +129,11 @@ public class NotificationController {
 	}
 
 	/**
-	 * 
-	 * @param model
-	 * @return
+	 * Marks all notifications as read
+	 * @param model used to load attributes into the Thymeleaf model
+	 * @return redirects to /unreadnotifications
 	 */
+	
 	@RequestMapping("/markallasread")
 	public String markAllAsRead(Model model) {
 		User user = userService.getLoggedInUser();
@@ -121,11 +148,12 @@ public class NotificationController {
 
 	}
 
-	//TODO: these static methods should be refactored to be a part of NotificationService, that way they wont have to be static and dont have potential to cause weird issues
-
 	/**
-	 * 
+	 * Takes in a user and finds all of the associated notifications that are unread
+	 * @param user holds the user that has notifications
+	 * @return result
 	 */
+	
 	public static List<Notification> fetchUnreadNotifications(User user){
 		List<Notification> notifications = user.getNotifications();
 		List<Notification> result = new ArrayList<>();
@@ -140,8 +168,11 @@ public class NotificationController {
 	}
 
 	/**
-	 * 
+	 * Takes in a user and finds all of the associated notifications that are read
+	 * @param user holds the user that has notifications
+	 * @return result
 	 */
+	
 	public static List<Notification> fetchReadNotifications(User user){
 		List<Notification> notifications = user.getNotifications();
 		List<Notification> result = new ArrayList<>();
@@ -156,8 +187,12 @@ public class NotificationController {
 	}
 
 	/**
-	 * 
+	 * Loads the notifications into the model
+	 * @param user holds the currently logged in user
+	 * @param model used to load attributes into the Thymeleaf model
+	 * @return model
 	 */
+	
 	public static Model loadNotificationsIntoModel(User user, Model model) {
 		List<Notification> notifications = new ArrayList<>();
 

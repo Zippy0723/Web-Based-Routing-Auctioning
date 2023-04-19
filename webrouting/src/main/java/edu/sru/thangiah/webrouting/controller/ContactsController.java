@@ -54,19 +54,19 @@ public class ContactsController {
 
 
 	/**
-	 * Constructor for ContactsController. <br>
-	 * Instantiates the contactsRepository
-	 * @param contactsRepository Used to interact with Contacts in the database
+	 * Constructor for ContactsController
+	 * @param contactsRepository Instantiates the contacts Repository
 	 */
+	
 	public ContactsController(ContactsRepository contactsRepository) {
 		this.contactsRepository = contactsRepository;
 	}
 
 	/**
-	 * Adds all of the contacts to the "contacts" model and redirects user to
-	 * the contacts page.
-	 * @param model Used to add data to the model
-	 * @return "contacts"
+	 * Adds all of the contacts to the "contacts" model and redirects user to the contacts page
+	 * @param model used to load attributes into the Thymeleaf model
+	 * @param session used to load attributes into the current users HTTP session
+	 * @return /contacts
 	 */
 	@RequestMapping({"/contacts"})
 	public String showContactList(Model model, HttpSession session) {
@@ -102,7 +102,7 @@ public class ContactsController {
 	/**
 	 * Redirects user to the /uploadcontacts page when clicking "Upload an excel file" button in the contacts section of Carrier login
 	 * @param model used to add data to the model
-	 * @return "/uploadcontacts"
+	 * @return /uploadcontacts
 	 */
 
 	@RequestMapping({"/uploadcontacts"})
@@ -114,9 +114,10 @@ public class ContactsController {
 	/**
 	 * Finds a contact using the id parameter and if found, redirects user to delete confirmation page
 	 * Checks if dependencies are empty before deleting it.
-	 * @param id Stores the ID of the contact to be deleted
-	 * @param model Used to add data to the model
-	 * @return "contacts" or "/delete/deletecontactconfirm"
+	 * @param id  of the contact to be deleted
+	 * @param model used to load attributes into the Thymeleaf model
+	 * @param session used to load attributes into the current users HTTP session
+	 * @return /contacts or /delete/deletecontactconfirm
 	 */
 	@GetMapping("/deletecontact/{id}")
 	public String deleteContact(@PathVariable("id") long id, Model model, HttpSession session) {
@@ -142,9 +143,9 @@ public class ContactsController {
 
 	/**
 	 * Finds a contact using the id parameter and if found, deletes the contact and redirects to contacts page
-	 * @param id ID of the contact being deleted
-	 * @param model Used to add data to the model
-	 * @return "redirect:/contacts"
+	 * @param id of the contact being deleted
+	 * @param model used to load attributes into the Thymeleaf model
+	 * @return redirects to /contacts
 	 */
 	@GetMapping("/deletecontactconfirmation/{id}")
 	public String deleteContactConfirmation(@PathVariable("id") long id, Model model) {
@@ -161,11 +162,11 @@ public class ContactsController {
 	}
 
 	/**
-	 * Finds a contact using the id parameter and if found, adds the details of that contact
-	 * to the view contact page
+	 * Adds the required attributes to the model to render the contacts page
 	 * @param id Stores the ID of the contact to be viewed
-	 * @param model Used to add data to the model
-	 * @return "/view/view-contact"
+	 * @param model used to load attributes into the Thymeleaf model
+	 * @param session used to load attributes into the current users HTTP session
+	 * @return /contacts
 	 */
 	@GetMapping("/viewcontact/{id}")
 	public String viewContact(@PathVariable("id") long id, Model model, HttpSession session) {
@@ -183,6 +184,14 @@ public class ContactsController {
 		return "contacts";
 	}
 
+	/**
+	 * Adds the required attributes to the model to render the edit contact page
+	 * @param id of the contact being edited
+	 * @param model used to load attributes into the Thymeleaf model
+	 * @param session used to load attributes into the current users HTTP session
+	 * @return /edit/edit-contacts
+	 */
+	
 	@GetMapping("/editcontact/{id}")
 	public String showContactsEditForm(@PathVariable("id") long id, Model model, HttpSession session) {
 		Contacts contacts = contactsRepository.findById(id)
@@ -201,6 +210,15 @@ public class ContactsController {
 		return "/edit/edit-contacts";
 	}
 
+	/**
+	 * Recives a new contact object from the user
+	 * Validates the contact and then saves it to the contacts repository
+	 * @param id of the contact being edited
+	 * @param contacts holds the new contact information
+	 * @param model used to load attributes into the Thymeleaf model
+	 * @param session used to load attributes into the current users HTTP session
+	 * @return /edit/edit-contacts or redirects to /contacts
+	 */
 
 	@PostMapping("edit-contact/{id}")
 	public String contactsUpdateForm(@PathVariable("id") long id, Contacts contacts, Model model, HttpSession session) {

@@ -13,11 +13,21 @@ import org.springframework.security.web.authentication.logout.LogoutSuccessHandl
 import org.springframework.security.web.authentication.logout.SimpleUrlLogoutSuccessHandler;
 
 
+
+/**
+ * Extends the SimpleUrlLogoutSuccessHandler to log interaction
+ * @author Dakota Myers drm1022@sru.edu
+ * @since 1/01/2023
+ */
+
 public class CustomLogoutSuccessHandler extends SimpleUrlLogoutSuccessHandler implements LogoutSuccessHandler {
 	
 	
 	private static final Logger Logger = LoggerFactory.getLogger(CustomLogoutSuccessHandler.class);
 
+	/**
+	 * Logs the logout interaction
+	 */
 	@Override
     public void onLogoutSuccess(
       HttpServletRequest request, 
