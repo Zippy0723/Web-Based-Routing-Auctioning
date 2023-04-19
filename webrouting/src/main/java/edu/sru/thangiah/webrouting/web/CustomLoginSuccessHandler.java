@@ -21,6 +21,9 @@ public class CustomLoginSuccessHandler extends SimpleUrlAuthenticationSuccessHan
 	
 	private static final Logger Logger = LoggerFactory.getLogger(CustomLoginSuccessHandler.class);
 	
+	/**
+	 * This extends the springboot AuthenticationSuccess to log who logged in
+	 */
 	
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,

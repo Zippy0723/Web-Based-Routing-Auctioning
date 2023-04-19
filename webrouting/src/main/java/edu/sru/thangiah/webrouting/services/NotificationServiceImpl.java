@@ -22,7 +22,6 @@ public class NotificationServiceImpl implements NotificationService {
 		this.notificationRepository = notificationRepository;
 	}
 
-
 	/**
 	 * Creates a new notification with the specified parameters
 	 */

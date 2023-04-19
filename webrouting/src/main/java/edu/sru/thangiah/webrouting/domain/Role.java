@@ -50,7 +50,7 @@ public class Role {
 
 	/**
 	 * Sets the Role ID
-	 * @param id ID of the role
+	 * @param id of the role
 	 */
 	public void setId(long id) {
 		this.id = id;
@@ -68,6 +68,7 @@ public class Role {
 	 * Sets the Role Name
 	 * @param name Name of the role
 	 */
+	
 	public void setName(String name) {
 		this.name = name.trim();
 	}
@@ -76,6 +77,7 @@ public class Role {
 	 * Gets the Users List
 	 * @return users
 	 */
+	
 	public List<User> getUsers() {
 		return users;
 	}
@@ -84,6 +86,7 @@ public class Role {
 	 * Sets the Users List
 	 * @param users Users of the role
 	 */
+	
 	public void setUsers(List<User> users) {
 		this.users = users;
 	}
@@ -92,6 +95,7 @@ public class Role {
 	 * Prints out the name of the instance of the role
 	 * @return role name
 	 */
+	
 	public String toString() {
 		return this.getName();
 	}

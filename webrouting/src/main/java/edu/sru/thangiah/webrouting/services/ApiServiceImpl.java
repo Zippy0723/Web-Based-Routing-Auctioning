@@ -16,8 +16,14 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 @Service
 public class ApiServiceImpl {
 	
+	/**
+	 * Uses google maps api to find the latitude and longitude of the city and state passed
+	 * @param city holds the city being searched
+	 * @param state holds the state bing searched
+	 * @return result 
+	 */
 	 public String fetchLatitudeAndLongitude(String city, String state) {
-	        String apiKey = "AIzaSyC9WwWWVbzUHeUBgj9AAh1aSMjSsrPpELM"; 
+	        String apiKey = "AIzaSyC9WwWWVbzUHeUBgj9AAh1aSMjSsrPpELM"; //NEEDS REPLACED
 	        String result = "";
 	        try {
 	        	String encodedCity = URLEncoder.encode(city, "UTF-8");
@@ -77,6 +83,11 @@ public class ApiServiceImpl {
 			return result;
 	    } 
 
+	 /**
+	  * Used to trim the longitude and latitude coordinates
+	  * @param str holds the string being trimmed
+	  * @return str
+	  */
 	 public String padOrTrimString(String str) {
 	        // If the input string is longer than the target length, trim it
 		 	int targetLength = 9;
@@ -97,9 +108,19 @@ public class ApiServiceImpl {
 	        }
 	    }
 	 
+	 /**
+	  * Using google maps api, finds the distance between coordinates, returns the distance
+	  * @param originLatitude holds the starting latitude
+	  * @param originLongitude holds the starting longitude
+	  * @param destinationLatitude holds the ending latitude
+	  * @param destinationLongitude holds the ending longitude
+	  * @return result
+	  * @throws UnsupportedEncodingException
+	  */
+	 
 	 public String fetchDistanceBetweenCoordinates(String originLatitude, String originLongitude, String destinationLatitude, String destinationLongitude) throws UnsupportedEncodingException {
 		 
-		 String apiKey = "AIzaSyC9WwWWVbzUHeUBgj9AAh1aSMjSsrPpELM"; 
+		 String apiKey = "AIzaSyC9WwWWVbzUHeUBgj9AAh1aSMjSsrPpELM"; //NEEDS REPLACED
 	     String result = "";
 	     
 	     String urlString = "https://maps.googleapis.com/maps/api/directions/json?" +

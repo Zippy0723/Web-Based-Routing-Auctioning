@@ -37,15 +37,18 @@ public class VerifyEmailController {
 			return "verificationfail";
 	}
 
+	/**
+	 * Mapping for verified page
+	 */
+	
 	@GetMapping("/verified")
-	public void verifiedppage() {
+	public void verifiedppage() {}
 
-	}
-
+	/**
+	 * Mapping for verification fail page
+	 */
+	
 	@GetMapping("/verificationfail")
-	public void verifiedFailed() {
-
-	}
-
+	public void verifiedFailed() {}
 
 }

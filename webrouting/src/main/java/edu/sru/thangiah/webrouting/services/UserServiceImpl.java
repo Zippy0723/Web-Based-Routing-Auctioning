@@ -143,7 +143,9 @@ public class UserServiceImpl implements UserService {
 		save(user);
 	}
 	
-	
+	/**
+	 * Returns the currently logged in user
+	 */
 	
 	public User getLoggedInUser() {
 		if (securityService.isAuthenticated()) {

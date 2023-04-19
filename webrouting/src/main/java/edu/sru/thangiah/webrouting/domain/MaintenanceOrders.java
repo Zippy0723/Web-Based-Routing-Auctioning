@@ -220,6 +220,10 @@ public class MaintenanceOrders {
 		this.carrier = carrier;
 	}
 
+	/**
+	 * Returns the details attribute and vehicle
+	 */
+	
 	public String toString() {
 		return details + " for " + vehicle.toString();
 	}

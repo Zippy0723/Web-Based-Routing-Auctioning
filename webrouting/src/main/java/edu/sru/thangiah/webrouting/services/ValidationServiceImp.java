@@ -76,6 +76,20 @@ public class ValidationServiceImp {
 	private static final Logger Logger = LoggerFactory.getLogger(ValidationServiceImp.class);
 
 
+	/**
+	 * Constructor for the ValidationServiceImp
+	 * @param bidsRepository holds the bid sRepository
+	 * @param shipmentsRepository holds the shipments Repository
+	 * @param carriersRepository holds the carriers Repository
+	 * @param vehiclesRepository holds the vehicles Repository
+	 * @param vehicleTypesRepository holds the vehicleTypes Repository
+	 * @param locationsRepository holds the locations Repository
+	 * @param contactsRepository holds the contacts Repository
+	 * @param techniciansRepository holds the technicians Repository
+	 * @param driverRepository holds the driver Repository
+	 * @param maintenanceOrdersRepository holds the maintenanceOrders Repository
+	 */
+	
 	public ValidationServiceImp (BidsRepository bidsRepository, ShipmentsRepository shipmentsRepository, CarriersRepository carriersRepository, VehiclesRepository vehiclesRepository, 
 			VehicleTypesRepository vehicleTypesRepository,LocationsRepository	locationsRepository, ContactsRepository contactsRepository, TechniciansRepository techniciansRepository,
 			DriverRepository driverRepository, MaintenanceOrdersRepository maintenanceOrdersRepository) {
@@ -93,6 +107,13 @@ public class ValidationServiceImp {
 	}
 
 
+	/**
+	 * Validates the shipment excel sheet, returns a list of valid shipments
+	 * @param worksheet holds the shipment worksheet
+	 * @param session used to load attributes into the current users HTTP session
+	 * @return result
+	 */
+	
 	public List<Shipments> validateShipmentSheet(XSSFSheet worksheet, HttpSession session){
 
 		List <Shipments> result = new ArrayList<>();
@@ -195,6 +216,14 @@ public class ValidationServiceImp {
 		return result;
 	}
 
+	/**
+	 * Validates all of the shipment object attributes
+	 * Returns valid shipment
+	 * @param hashtable holds the attributes of the shipment
+	 * @param session used to load attributes into the current users HTTP session
+	 * @return shipment
+	 */
+	
 	public Shipments validateShipment(Hashtable<String, String> hashtable, HttpSession session) {
 
 		List<String> acceptedFreightTerms = Arrays.asList("PENDING", "AVAILABLE SHIPMENT", "AWAITING ACCEPTANCE", "BID ACCEPTED", "FROZEN");
@@ -368,6 +397,13 @@ public class ValidationServiceImp {
 	}
 
 
+	/**
+	 * Validates the vehicles types excel sheet, returns a list of valid vehicle types
+	 * @param worksheet holds the vehicle types worksheet
+	 * @param session used to load attributes into the current users HTTP session
+	 * @return result
+	 */
+	
 	public List<VehicleTypes> validateVehicleTypesSheet(XSSFSheet worksheet, HttpSession session){
 		List <VehicleTypes> result = new ArrayList<>();
 		User user = userService.getLoggedInUser();
@@ -455,6 +491,14 @@ public class ValidationServiceImp {
 		return result;
 	}
 
+	/**
+	 * Validates all of the vehicle type object attributes
+	 * Returns valid vehicle type
+	 * @param hashtable holds the attributes of the vehicle types
+	 * @param session used to load attributes into the current users HTTP session
+	 * @return vehicletype
+	 */
+	
 	public VehicleTypes validateVehicleTypes(Hashtable<String, String> hashtable, HttpSession session) {
 
 		User user = userService.getLoggedInUser();
@@ -597,6 +641,13 @@ public class ValidationServiceImp {
 
 	}
 
+	/**
+	 * Validates the locations excel sheet, returns a list of valid locations
+	 * @param worksheet holds the locations worksheet
+	 * @param session used to load attributes into the current users HTTP session
+	 * @return result
+	 */
+	
 	public List<Locations> validateLocationsSheet(XSSFSheet worksheet, HttpSession session){
 		List <Locations> result = new ArrayList<>();
 		User user = userService.getLoggedInUser();
@@ -661,6 +712,15 @@ public class ValidationServiceImp {
 
 		return result;
 	}
+	
+	/**
+	 * Validates all of the location object attributes
+	 * Returns valid location
+	 * @param hashtable holds the attributes of the location
+	 * @param session used to load attributes into the current users HTTP session
+	 * @return location
+	 */
+	
 	public Locations validateLocations(Hashtable<String, String> hashtable, HttpSession session) {
 		User user = userService.getLoggedInUser();
 		List <Locations> repoLocations = user.getCarrier().getLocations();
@@ -751,6 +811,13 @@ public class ValidationServiceImp {
 		return location;
 	}
 
+	/**
+	 * Validates the contacts excel sheet, returns a list of valid contacts
+	 * @param worksheet holds the contacts worksheet
+	 * @param session used to load attributes into the current users HTTP session
+	 * @return result
+	 */
+	
 	public List<Contacts> validateContactsSheet(XSSFSheet worksheet, HttpSession session){
 		List <Contacts> result = new ArrayList<>();
 		User user = userService.getLoggedInUser();
@@ -820,6 +887,15 @@ public class ValidationServiceImp {
 		
 		return result;
 	}
+	
+	/**
+	 * Validates all of the contact object attributes
+	 * Returns valid contact
+	 * @param hashtable holds the attributes of the contact
+	 * @param session used to load attributes into the current users HTTP session
+	 * @return contact
+	 */
+	
 	public Contacts validateContact(Hashtable<String, String> hashtable, HttpSession session) {
 		User user = userService.getLoggedInUser();
 		List <Contacts> repoContacts =  user.getCarrier().getContacts();
@@ -932,6 +1008,13 @@ public class ValidationServiceImp {
 	}
 
 
+	/**
+	 * Validates the technicians excel sheet, returns a list of valid technicians
+	 * @param worksheet holds the technicians worksheet
+	 * @param session used to load attributes into the current users HTTP session
+	 * @return result
+	 */
+	
 	public List<Technicians> validateTechniciansSheet(XSSFSheet worksheet, HttpSession session){
 		List <Technicians> result = new ArrayList<>();
 		User user = userService.getLoggedInUser();
@@ -983,6 +1066,14 @@ public class ValidationServiceImp {
 	}
 
 
+	/**
+	 * Validates all of the technician object attributes
+	 * Returns valid technicians
+	 * @param hashtable holds the attributes of the technician
+	 * @param session used to load attributes into the current users HTTP session
+	 * @return technician
+	 */
+	
 	public Technicians validateTechnicians(Hashtable<String, String> hashtable, HttpSession session) {
 		User user = userService.getLoggedInUser();
 		List <Contacts> repoContacts = user.getCarrier().getContacts();
@@ -1036,6 +1127,14 @@ public class ValidationServiceImp {
 
 		return technician;
 	}
+	
+	/**
+	 * Validates the vehicles excel sheet, returns a list of valid vehicles
+	 * @param worksheet holds the vehicles worksheet
+	 * @param session used to load attributes into the current users HTTP session
+	 * @return result
+	 */
+	
 	public List<Vehicles> validateVehiclesSheet(XSSFSheet worksheet, HttpSession session){
 		User user = userService.getLoggedInUser();
 		List <Vehicles> result = new ArrayList<>();
@@ -1092,6 +1191,14 @@ public class ValidationServiceImp {
 		return result;
 	}
 
+	/**
+	 * Validates all of the vehicle object attributes
+	 * Returns valid vehicle 
+	 * @param hashtable holds the attributes of the vehicle 
+	 * @param session used to load attributes into the current users HTTP session
+	 * @return vehicle
+	 */
+	
 	public Vehicles validateVehicles(Hashtable<String, String> hashtable, HttpSession session) {
 		User user = userService.getLoggedInUser();
 		List <VehicleTypes> repoVehicleTypes =  user.getCarrier().getVehicleTypes();
@@ -1181,6 +1288,13 @@ public class ValidationServiceImp {
 		return vehicle;
 	}
 
+	/**
+	 * Validates the driver excel sheet, returns a list of valid driver
+	 * @param worksheet holds the driver worksheet
+	 * @param session used to load attributes into the current users HTTP session
+	 * @return result
+	 */
+	
 	public List<Driver> validateDriverSheet(XSSFSheet worksheet, HttpSession session){
 		List <Driver> result = new ArrayList<>();
 		User user = userService.getLoggedInUser();
@@ -1237,6 +1351,14 @@ public class ValidationServiceImp {
 		return result;
 	}
 
+	/**
+	 * Validates all of the driver object attributes
+	 * Returns valid driver
+	 * @param hashtable holds the attributes of the driver
+	 * @param session used to load attributes into the current users HTTP session
+	 * @return driver
+	 */
+	
 	public Driver validateDriver(Hashtable<String, String> hashtable, HttpSession session) {
 		User user = userService.getLoggedInUser();
 		List <Contacts> repoContacts = user.getCarrier().getContacts();
@@ -1314,8 +1436,13 @@ public class ValidationServiceImp {
 		return driver;
 	}
 
-
-
+	/**
+	 * Validates the maintenance orders excel sheet, returns a list of valid maintenance orders
+	 * @param worksheet holds the maintenance orders worksheet
+	 * @param session used to load attributes into the current users HTTP session
+	 * @return result
+	 */
+	
 	public List<MaintenanceOrders> validateMaintenanceOrdersSheet(XSSFSheet worksheet, HttpSession session){
 		List <MaintenanceOrders> result = new ArrayList<>();
 		try {
@@ -1371,6 +1498,15 @@ public class ValidationServiceImp {
 		}
 		return result;
 	}
+	
+	/**
+	 * Validates all of the maintenance order object attributes
+	 * Returns valid maintenance order
+	 * @param hashtable holds the attributes of the maintenance order
+	 * @param session used to load attributes into the current users HTTP session
+	 * @return maintenaceOrder
+	 */
+	
 	public MaintenanceOrders validateMaintenanceOrder(Hashtable<String, String> hashtable, HttpSession session) {
 		User user = userService.getLoggedInUser();
 		List <Technicians> repoTechnicians = user.getCarrier().getTechnicians();
@@ -1469,8 +1605,13 @@ public class ValidationServiceImp {
 	}
 
 
-
-
+	/**
+	 * Validates a contact form for the edit page
+	 * Once valid returns contact
+	 * @param hashtable holds the attributes of the contact
+	 * @param session used to load attributes into the current users HTTP session
+	 * @return contact
+	 */
 	public Contacts validateContactForm(Hashtable<String, String> hashtable, HttpSession session) {
 
 		List<String> states = Arrays.asList("Alabama", "Alaska", "Arizona", "Arkansas", "California", "Colorado", "Connecticut", "Delaware", "Florida", "Georgia", "Idaho", "Illinois", "Indiana", "Iowa", "Kansas", "Kentucky", "Louisiana", "Maine", "Maryland", "Massachusetts", "Michigan", "Minnesota", "Mississippi", "Missouri", "Montana", "Nebraska", "Nevada", "New Hampshire", "New Jersey", "New Mexico", "New York", "North Carolina", "North Dakota", "Ohio", "Oklahoma", "Oregon", "Pennsylvania", "Rhode Island", "South Carolina", "South Dakota", "Tennessee", "Texas", "Utah", "Vermont", "Virginia", "Washington", "West Virginia", "Wisconsin", "Wyoming");
@@ -1580,6 +1721,14 @@ public class ValidationServiceImp {
 		return contact;
 	}
 
+	/**
+	 * Validates a vehicle types form for the edit page
+	 * Once valid returns vehicle type
+	 * @param hashtable holds the attributes of the vehicle type
+	 * @param session used to load attributes into the current users HTTP session
+	 * @return vehicle type
+	 */
+	
 	public VehicleTypes validateVehicleTypesForm(Hashtable<String, String> hashtable, HttpSession session) {
 
 		User user = userService.getLoggedInUser();			
@@ -1726,6 +1875,14 @@ public class ValidationServiceImp {
 
 	}
 
+	/**
+	 * Validates a location form for the edit page
+	 * Once valid returns location
+	 * @param hashtable holds the attributes of the location
+	 * @param session used to load attributes into the current users HTTP session
+	 * @return location
+	 */
+	
 	public Locations validateLocationsForm(Hashtable<String, String> hashtable, HttpSession session) {
 
 
@@ -1813,6 +1970,14 @@ public class ValidationServiceImp {
 		return location;
 	}
 
+	/**
+	 * Validates a vehicle form for the edit page
+	 * Once valid returns vehicle
+	 * @param hashtable holds the attributes of the vehicle
+	 * @param session used to load attributes into the current users HTTP session
+	 * @return vehicle
+	 */
+	
 	public Vehicles validateVehiclesForm(Hashtable<String, String> hashtable, HttpSession session) {
 		User user = userService.getLoggedInUser();
 		String plate = (String) hashtable.get("plate");
@@ -1857,6 +2022,14 @@ public class ValidationServiceImp {
 		return vehicle;
 	}
 
+	/**
+	 * Validates a driver form for the edit page
+	 * Once valid returns driver
+	 * @param hashtable holds the attributes of the driver
+	 * @param session used to load attributes into the current users HTTP session
+	 * @return driver
+	 */
+	
 	public Driver validateDriverForm(Hashtable<String, String> hashtable, HttpSession session) {
 		User user = userService.getLoggedInUser();
 
@@ -1898,6 +2071,14 @@ public class ValidationServiceImp {
 		return driver;
 	}
 
+	/**
+	 * Validates a maintenance order form for the edit page
+	 * Once valid returns maintenance order
+	 * @param hashtable holds the attributes of the maintenance order
+	 * @param session used to load attributes into the current users HTTP session
+	 * @return maintenanceOrder
+	 */
+	
 	public MaintenanceOrders validateMaintenanceOrderForm(Hashtable<String, String> hashtable, HttpSession session) {
 
 		User user = userService.getLoggedInUser();
@@ -1968,6 +2149,14 @@ public class ValidationServiceImp {
 		return maintenanceOrder;
 	}
 
+	/**
+	 * Validates a shipment form for the edit page
+	 * Once valid returns shipment
+	 * @param hashtable holds the attributes of the shipment
+	 * @param session used to load attributes into the current users HTTP session
+	 * @return shipment
+	 */
+	
 	public Shipments validateShipmentForm(Hashtable<String, String> hashtable, HttpSession session) {
 
 		List<String> states = Arrays.asList("Alabama", "Alaska", "Arizona", "Arkansas", "California", "Colorado", "Connecticut", "Delaware", "Florida", "Georgia", "Idaho", "Illinois", "Indiana", "Iowa", "Kansas", "Kentucky", "Louisiana", "Maine", "Maryland", "Massachusetts", "Michigan", "Minnesota", "Mississippi", "Missouri", "Montana", "Nebraska", "Nevada", "New Hampshire", "New Jersey", "New Mexico", "New York", "North Carolina", "North Dakota", "Ohio", "Oklahoma", "Oregon", "Pennsylvania", "Rhode Island", "South Carolina", "South Dakota", "Tennessee", "Texas", "Utah", "Vermont", "Virginia", "Washington", "West Virginia", "Wisconsin", "Wyoming");
@@ -2101,7 +2290,6 @@ public class ValidationServiceImp {
 		shipment.setConsigneeZip(consigneeZip);
 		shipment.setConsigneeLatitude(consigneeLatitude);
 		shipment.setConsigneeLongitude(consigneeLongitude);
-
 
 		return shipment;	
 

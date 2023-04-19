@@ -117,6 +117,7 @@ public class TechniciansController {
 	 * @param session used to load attributes into the current users HTTP session
 	 * @return redirects to /technicians or /add/add-technician
 	 */
+	
 	@RequestMapping({"/addtechnician"})
 	public String addtechnician(@Validated Technicians technician, BindingResult result, Model model, HttpSession session) {
 		if (result.hasErrors()) {

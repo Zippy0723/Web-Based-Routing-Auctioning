@@ -55,16 +55,18 @@ public class VehicleTypesController {
 	/**
 	 * Constructor for VehicleTypesController
 	 */
+	
 	public VehicleTypesController(VehicleTypesRepository vehicleTypesRepository) {
 		this.vehicleTypesRepository = vehicleTypesRepository;
 	}
 
 	/**
-	 * Adds all of the vehicle types to the "vehicletypes" model and redirects user to
-	 * the vehicletypes page.
-	 * @param model Used to add data to the model
-	 * @return "locations"
+	 * Adds all of the required attributes to the model to render the vehicle types page
+	 * @param model used to load attributes into the Thymeleaf model
+	 * @param session used to load attributes into the current users HTTP session
+	 * @return /vehicletypes
 	 */
+	
 	@RequestMapping({"/vehicletypes"})
 	public String showVehicleTypeList(Model model, HttpSession session) {
 		User user = userService.getLoggedInUser();
@@ -98,8 +100,8 @@ public class VehicleTypesController {
 
 	/**
 	 * Redirects user to the /uploadvehicletypes page when clicking "Upload an excel file" button in the Vehicle Types section of Carrier login
-	 * @param model used to add data to the model
-	 * @return "/uploadvehicletypes"
+	 * @param model used to load attributes into the Thymeleaf model
+	 * @return /uploadvehicletypes
 	 */
 
 	@RequestMapping({"/uploadvehicletypes"})
@@ -110,11 +112,13 @@ public class VehicleTypesController {
 
 	/**
 	 * Finds a vehicle type using the id parameter and if found, redirects to confirmation page
-	 * If there are dependency issues, the vehicle is not deleted and an error is displayed to the user.
-	 * @param id ID of the vehicle type being deleted
-	 * @param model Used to add data to the model
-	 * @return "redirect:/vehicletypes"
+	 * If there are dependency issues, the vehicle is not deleted and an error is displayed to the user
+	 * @param id of the vehicle type being deleted
+	 * @param model used to load attributes into the Thymeleaf model
+	 * @param session used to load attributes into the current users HTTP session
+	 * @return redirects to /vehicletypes
 	 */
+	
 	@GetMapping("/deletevehicletype/{id}")
 	public String deleteVehicleType(@PathVariable("id") long id, Model model, HttpSession session) {
 		VehicleTypes vehicleTypes = vehicleTypesRepository.findById(id)
@@ -137,10 +141,11 @@ public class VehicleTypesController {
 
 	/**
 	 * Finds a vehicle type using the id parameter and if found, deletes the vehicle type and redirects to vehicle types page
-	 * @param id ID of the vehicle type being deleted
-	 * @param model Used to add data to the model
-	 * @return "redirect:/contacts"
+	 * @param id of the vehicle type being deleted
+	 * @param model used to load attributes into the Thymeleaf model
+	 * @return redirects to vehicle types
 	 */
+	
 	@GetMapping("/deletevehicletypeconfirmation/{id}")
 	public String deleteContactConfirmation(@PathVariable("id") long id, Model model) {
 		VehicleTypes vehicleTypes = vehicleTypesRepository.findById(id)
@@ -156,12 +161,13 @@ public class VehicleTypesController {
 	}
 
 	/**
-	 * Finds a location using the id parameter and if found, adds the details of that location
-	 * to the locations page
-	 * @param id ID of the vehicle type being viewed 
-	 * @param model Used to add data to the model
-	 * @return "locations"
+	 * Finds the vehicle type of the id passed and adds it to the model
+	 * @param id of the vehicle type being viewed
+	 * @param model used to load attributes into the Thymeleaf model
+	 * @param session used to load attributes into the current users HTTP session
+	 * @return /vehicletypes
 	 */
+	
 	@GetMapping("/viewvehicletype/{id}")
 	public String viewVehicleType(@PathVariable("id") long id, Model model, HttpSession session) {
 		VehicleTypes vehicleType = vehicleTypesRepository.findById(id)
@@ -179,6 +185,14 @@ public class VehicleTypesController {
 	}
 	
 
+	/**
+	 * Adds all of the attributes to the model to render the edit vehicle types page
+	 * @param id of the vehicle type being edited
+	 * @param model used to load attributes into the Thymeleaf model
+	 * @param session used to load attributes into the current users HTTP session
+	 * @return /edit/edit-vehicletypes
+	 */
+	
 	@GetMapping("/editvehicletypes/{id}")
 	public String showVehicleTypesEditForm(@PathVariable("id") long id, Model model, HttpSession session) {
 		VehicleTypes vehicleType = vehicleTypesRepository.findById(id)
@@ -197,7 +211,16 @@ public class VehicleTypesController {
 		return "/edit/edit-vehicletypes";
 	}
 
-
+	/**
+	 * Receives a new vehicle type object and passes it for validation
+	 * Once valid it saves it to the vehicle types repository
+	 * @param id of the vehicle type being edited
+	 * @param vehicleType stores the new vehicle type object submitted by the user
+	 * @param model used to load attributes into the Thymeleaf model
+	 * @param session used to load attributes into the current users HTTP session
+	 * @return /edit/edit-vehicletypes
+	 */
+	
 	@PostMapping("edit-vehicletypes/{id}")
 	public String vehicleTypeUpdateForm(@PathVariable("id") long id, VehicleTypes vehicleType, Model model, HttpSession session) {
 		String redirectLocation = (String) session.getAttribute("redirectLocation");

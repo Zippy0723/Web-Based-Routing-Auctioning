@@ -13,6 +13,10 @@ import org.springframework.security.web.authentication.logout.LogoutSuccessHandl
 import org.springframework.security.web.authentication.logout.SimpleUrlLogoutSuccessHandler;
 
 
+/**
+ * This extends the springboot onLogoutSuccessHandler to log who logged out
+ */
+
 public class CustomLogoutSuccessHandler extends SimpleUrlLogoutSuccessHandler implements LogoutSuccessHandler {
 	
 	
