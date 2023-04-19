@@ -77,8 +77,8 @@ public class ForgottenPasswordController {
 	 * @param model used to load attributes into the Thymeleaf model
 	 * @param request - used to get the email from the form
 	 * @return /forgotpasswordform - this will ensure that the model displays the message
-	 * @throws UnsupportedEncodingException
-	 * @throws MessagingException
+	 * @throws UnsupportedEncodingException exception
+	 * @throws MessagingException exception
 	 */
 
 	@PostMapping("/forgotpassword")

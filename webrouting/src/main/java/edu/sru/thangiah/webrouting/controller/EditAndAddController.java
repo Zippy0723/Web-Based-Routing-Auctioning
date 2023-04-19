@@ -232,7 +232,7 @@ public class EditAndAddController {
 	/**
 	 * Receives a vehicle type object by the user and passes it off for validation
 	 * Once valid it is saved to the vehicle type repository
-	 * @param vehicletype holds the new vehicle type created by the user
+	 * @param vehicleType holds the new vehicle type created by the user
 	 * @param model used to load attributes into the Thymeleaf model
 	 * @param session used to load attributes into the current users HTTP session
 	 * @return /add/add-vehicletype

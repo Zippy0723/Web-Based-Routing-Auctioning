@@ -51,8 +51,11 @@ public class EmailingImpl implements Emailing {
 	private User user;
 	
 
-    
-  
+    /**
+     * Constructor for the EmailingImpl 
+     * @param userRepository Instantiates the user Repository
+     * @param sendMail Instantiates the JavaMailSender
+     */
 
 	public EmailingImpl(UserRepository userRepository, JavaMailSender sendMail) {
 		this.userRepository = userRepository;
@@ -76,8 +79,8 @@ public class EmailingImpl implements Emailing {
 	 * Method for sending an email to the user, also formats email
 	 * @param user User who is receiving the email
 	 * @param webUrl for the verification code to take back to
-	 * @throws UnsupportedEncodingException 
-	 * @throws MessagingException 
+	 * @throws UnsupportedEncodingException exception
+	 * @throws MessagingException exception
 	 */
 	@Override
 	@Async
@@ -96,7 +99,6 @@ public class EmailingImpl implements Emailing {
 	/**
 	 * Security function for handling account verification, if account has been verified then it returns false
 	 * else it will verify the account
-	 * @param verifycode to find the user.
 	 * @return true or false
 	 */
 	

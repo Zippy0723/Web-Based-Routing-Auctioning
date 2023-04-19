@@ -997,6 +997,12 @@ public class ShipmentsController {
 		return "redirect:" + session.getAttribute("redirectLocation");
 	}
 
+	/**
+	 * Assigns shipment to carrier
+	 * @param shipment holds shipment being assigned
+	 * @param paidAmount holds the paid amount
+	 * @param carrier holds the carrier being assigned
+	 */
 	public void assignShipment(Shipments shipment, Double paidAmount, Carriers carrier) {
 
 		User user = CarriersController.getUserFromCarrier(carrier);

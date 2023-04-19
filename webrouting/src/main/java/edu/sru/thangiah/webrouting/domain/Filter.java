@@ -1,5 +1,11 @@
 package edu.sru.thangiah.webrouting.domain;
 
+/**
+ * Constructs the template for the Filter used when filtering logs
+ * @author Dakota Myers drm1022@sru.edu
+ * @since 1/01/2023
+ */
+
 public class Filter {
 
 	private String startDate;

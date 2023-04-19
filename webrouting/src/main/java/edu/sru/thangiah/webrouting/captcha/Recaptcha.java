@@ -13,16 +13,16 @@ import org.springframework.web.client.RestTemplate;
 /**
  * Used for verifying the recaptcha
  * @author Josh Gearhart	jjg1018@sru.edu
- * @Since 9/6/2022
+ * @since 9/6/2022
  */
 @Component
 public class Recaptcha {
 	
     @Value("https://www.google.com/recaptcha/api/siteverify")
-	private String url;
+    private String url;
 
-	@Value("${google.recaptcha.key.secret}")
-	private String secret;
+    @Value("${google.recaptcha.key.secret}")
+    private String secret;
 	
 	@Autowired
     private RestTemplate restTemplate;

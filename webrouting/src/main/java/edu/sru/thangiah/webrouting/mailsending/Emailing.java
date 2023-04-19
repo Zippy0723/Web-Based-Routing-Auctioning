@@ -40,6 +40,11 @@ public interface Emailing{
 	
 	void updateUsersEmail(String userEmail, String webUrl, String previousEmail);
 
+	/**
+	 * 
+	 * @param message
+	 * @param reciverEmail
+	 */
 	void notificationEmailFunction(String message, String reciverEmail);
 	 
 }

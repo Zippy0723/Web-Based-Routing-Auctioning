@@ -11,6 +11,12 @@ import javax.persistence.Table;
 import org.hibernate.annotations.GenericGenerator;
 import org.springframework.lang.NonNull;
 
+
+/**
+ * Constructs the template for the Notification Repository
+ * @author Thomas Haley tjh1019@sru.edu
+ * @since 1/01/2023
+ */
 @Entity
 @Table(name="notifications")
 public class Notification {
@@ -37,7 +43,6 @@ public class Notification {
 
 	/**
 	 * Constructor for Notification
-	 * 
 	 * This Entity needs a constructor unlike the other ones because it is instantiated through the static method NotificationController.addNotification
 	 * @param user : The user the notification is intended for
 	 * @param timesent : a formatted string containing the results of LocalDateTime.now() at the time of message sending

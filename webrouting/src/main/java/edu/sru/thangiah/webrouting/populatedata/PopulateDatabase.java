@@ -43,7 +43,6 @@ public class PopulateDatabase implements ApplicationRunner{
 	/**
 	 * Populates bids table
 	 * @param statement - used to connect to the sql database and make updates
-	 * @throws SQLException if the bids have already been added
 	 * @author Josh Gearhart & Nick Bushee	jjg1018@sru.edu	nab1017@sru.edu
 	 */
 	public void populateBids(Statement statement) {
@@ -59,7 +58,6 @@ public class PopulateDatabase implements ApplicationRunner{
 	/**
 	 * Populates carriers table
 	 * @param statement - used to connect to the sql database and make updates
-	 * @throws SQLException if the carriers have already been added
 	 * @author Josh Gearhart & Nick Bushee	jjg1018@sru.edu	nab1017@sru.edu
 	 */
 	
@@ -243,7 +241,6 @@ public class PopulateDatabase implements ApplicationRunner{
 	/**
 	 * Populates the user table with two users
 	 * @param statement - used to connect to the sql database and make updates
-	 * @throws SQLException if the users have already been created
 	 * @author Josh Gearhart	jjg1018@sru.edu
 	 */
 	public void populateUser(Statement statement) {
@@ -273,7 +270,12 @@ public class PopulateDatabase implements ApplicationRunner{
 		connect = DriverManager.getConnection(url, user, pass);
 		return connect;
 	}
-	
+	/**
+	 * Connects to database
+	 * @param connect connects to database
+	 * @return sqlStatment
+	 * @throws SQLException exception
+	 */
 	public Statement setStatement(Connection connect) throws SQLException {
 		sqlStatement = connect.createStatement();
 		return sqlStatement;
@@ -282,7 +284,7 @@ public class PopulateDatabase implements ApplicationRunner{
 	/**
 	 * Method that calls our populating user and roles methods calls the create method to make the connection 
 	 * then passes connection to populating methods
-	 * @throws SQLException
+	 * @throws SQLException exception
 	 * @author Josh Gearhart	jjg1018@sru.edu
 	 */
 	public void populateDb() throws SQLException {

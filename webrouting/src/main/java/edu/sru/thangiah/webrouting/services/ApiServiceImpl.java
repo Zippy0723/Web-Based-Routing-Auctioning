@@ -120,7 +120,7 @@ public class ApiServiceImpl {
 	  * @param destinationLatitude holds the ending latitude
 	  * @param destinationLongitude holds the ending longitude
 	  * @return result
-	  * @throws UnsupportedEncodingException
+	  * @throws UnsupportedEncodingException exception
 	  */
 	 
 	 public String fetchDistanceBetweenCoordinates(String originLatitude, String originLongitude, String destinationLatitude, String destinationLongitude) throws UnsupportedEncodingException {

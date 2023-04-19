@@ -10,6 +10,11 @@ import org.springframework.ui.Model;
  * TODO: Check and add proper citation if needed
  */
 
+/**
+ * Handles the controls for the backup system
+ * @author Thomas Haley tjh1019@sru.edu
+ * @since 1/01/2023
+ */
 public class BackupUtil {
 
 	/**
@@ -18,8 +23,8 @@ public class BackupUtil {
 	 * @param dbPassword holds the database password
 	 * @param dbName holds the database name
 	 * @param outputFile holds the backup file
-	 * @throws IOException
-	 * @throws InterruptedException
+	 * @throws IOException exception
+	 * @throws InterruptedException exception
 	 */
 	
 	public static void backupDatabase(String dbUsername, String dbPassword, String dbName, String outputFile)
@@ -56,8 +61,8 @@ public class BackupUtil {
 	 * @param dbName holds the database name
 	 * @param sourceFile holds the sql backup file
 	 * @param model used to load attributes into the Thymeleaf model
-	 * @throws IOException
-	 * @throws InterruptedException
+	 * @throws IOException exception
+	 * @throws InterruptedException exception
 	 */
 	
 	public static void restoreDatabase(String dbUsername, String dbPassword, String dbName, String sourceFile, Model model)

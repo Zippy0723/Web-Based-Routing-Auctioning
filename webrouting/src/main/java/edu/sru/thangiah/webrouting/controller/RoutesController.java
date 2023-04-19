@@ -105,6 +105,7 @@ public class RoutesController {
 	 * Adds all of the routes to the "routes" model and redirects user to
 	 * the locations page.
 	 * @param model Used to add data to the model
+	 * @param session Used to add attributes to the HTTP Session
 	 * @return "routes"
 	 */
 	@RequestMapping({"/routes"})

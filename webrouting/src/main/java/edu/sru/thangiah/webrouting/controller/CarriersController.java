@@ -222,7 +222,8 @@ public class CarriersController {
 	 * @param carrier Stores information on the carrier that is being updated
 	 * @param result Checks user inputs to ensure they are valid
 	 * @param model Used to add data to the model
-	 * @return redirect:/carriers or /update/update-carriers
+	 * @param session used to load attributes into the current users HTTP session
+	 * @return redirects to /carriers or /update/update-carriers
 	 */
 	@PostMapping("/updatecarrier/{id}")
 	public String updateCarrier(@PathVariable("id") long id, @Validated Carriers carrier, 
@@ -266,7 +267,6 @@ public class CarriersController {
 	/**
 	 * Receives and carrier object and finds the corresponding user object associated
 	 * @param carrier holds the carrier object
-	 * @param result holds the user found
 	 * @return result
 	 */
 	public static User getUserFromCarrier(Carriers carrier) { //This helper function is to fix a lack of relationship between carriers and users in the database. it should not be permenant.

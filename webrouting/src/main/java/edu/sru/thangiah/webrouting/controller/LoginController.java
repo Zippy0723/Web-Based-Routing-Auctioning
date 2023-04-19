@@ -122,8 +122,8 @@ public class LoginController {
 	 * @param bindingResult Ensures the user inputs are valid
 	 * @param redirectAttr - Used to display the Message to the user
 	 * @return /registrationshipper or /registrationlogin
-	 * @throws IOException 
-	 * @throws MessagingException 
+	 * @throws IOException exception
+	 * @throws MessagingException exception
 	 */
 
 	@PostMapping("/registrationshipper")
@@ -191,8 +191,8 @@ public class LoginController {
 	 * @param weight Weight carrier can hold
 	 * @param redirectAttr - Used to display the Message to the user
 	 * @return "registrationcarrier" or "registrationlogin"
-	 * @throws MessagingException 
-	 * @throws UnsupportedEncodingException 
+	 * @throws MessagingException exception
+	 * @throws UnsupportedEncodingException exception
 	 */
 	
 	@PostMapping("/registrationcarrier")

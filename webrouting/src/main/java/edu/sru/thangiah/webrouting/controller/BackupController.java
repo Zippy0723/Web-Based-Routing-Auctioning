@@ -105,8 +105,8 @@ public class BackupController {
 	 * Restores the database using a backup file
 	 * @param model used to load attributes into the Thymeleaf model
 	 * @param backupFile stores the sql backup information
-	 * @throws AccessException
-	 * @throws IOException
+	 * @throws AccessException exception
+	 * @throws IOException exception
 	 * @return /database
 	 */
 	@PostMapping("/restore-database")
