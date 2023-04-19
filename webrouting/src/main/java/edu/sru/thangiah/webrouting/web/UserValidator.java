@@ -55,7 +55,7 @@ public class UserValidator implements Validator {
     
     /**
      * Checks the email to see if the email is a duplicate
-     * @param Object o - Object being validated
+     * @param o - Object being validated
      * @param errors - Used to show the errors if they are found
      * @author Josh Gearhart	jjg1018@sru.edu
      */
@@ -176,7 +176,7 @@ public class UserValidator implements Validator {
     }
       /**
        * Validation function used to check form values before saving to system.
-       * @param Object o -  Object being validated
+       * @param o -  Object being validated
        * @param errors - Errors object used to store if there are errors
        * @author Josh Gearhart	jjg1018@sru.edu
        */

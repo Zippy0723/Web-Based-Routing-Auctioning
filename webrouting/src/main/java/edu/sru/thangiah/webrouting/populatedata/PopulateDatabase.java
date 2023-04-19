@@ -43,7 +43,7 @@ public class PopulateDatabase implements ApplicationRunner{
 	/**
 	 * Populates bids table
 	 * @param statement - used to connect to the sql database and make updates
-	 * @author Josh Gearhart & Nick Bushee	jjg1018@sru.edu	nab1017@sru.edu
+	 * @author Josh Gearhart Nick Bushee	jjg1018@sru.edu	nab1017@sru.edu
 	 */
 	public void populateBids(Statement statement) {
 		try {
@@ -58,7 +58,7 @@ public class PopulateDatabase implements ApplicationRunner{
 	/**
 	 * Populates carriers table
 	 * @param statement - used to connect to the sql database and make updates
-	 * @author Josh Gearhart & Nick Bushee	jjg1018@sru.edu	nab1017@sru.edu
+	 * @author Josh Gearhart  Nick Bushee	jjg1018@sru.edu	nab1017@sru.edu
 	 */
 	
 	public void populateCarriers(Statement statement) {
@@ -153,7 +153,6 @@ public class PopulateDatabase implements ApplicationRunner{
 	/**
 	 * Populates shipments table
 	 * @param statement - used to connect to the sql database and make updates
-	 * @throws SQLException if the shipments have already been added
 	 * @author Josh Gearhart	jjg1018@sru,edu
 	 */
 	public void populateShipments(Statement statement) {
@@ -225,7 +224,6 @@ public class PopulateDatabase implements ApplicationRunner{
 	/**
 	 * Populates the roles table with specified roles
 	 * @param statement - used to connect to the sql database and make updates
-	 * @throws SQLException if the roles have already been added
 	 * @author Josh Gearhart	jjg1018@sru.edu
 	 */
 	public void populateRolesTable(Statement statement)  {

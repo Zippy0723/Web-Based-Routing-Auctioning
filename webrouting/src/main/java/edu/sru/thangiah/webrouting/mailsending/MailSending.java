@@ -11,7 +11,7 @@ public class MailSending {
 	
 	
 	/**Used to create a context path for the email
-	 * @param Servlet request handles requesting the url to throw into the string url.
+	 * @param request handles requesting the url to throw into the string url.
 	 * @return a servlet path that replaces the set string
 	 */
 	

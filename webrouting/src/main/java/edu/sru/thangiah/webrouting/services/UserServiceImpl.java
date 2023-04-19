@@ -60,8 +60,6 @@ public class UserServiceImpl implements UserService {
 	 * Saves the user in the userRepository and encodes the password <br>
 	 * The password is encrypted using the BCryptPasswordEncoder
 	 * @param user User being saved
-	 * @throws MessagingException 
-	 * @throws UnsupportedEncodingException 
 	 */
 	@Override
 	public void save(User user) {

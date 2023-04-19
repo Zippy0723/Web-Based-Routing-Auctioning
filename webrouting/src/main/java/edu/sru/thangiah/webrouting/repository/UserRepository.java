@@ -21,7 +21,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
 	/**
 	 *creates the findByVerificationCode method
 	 *Query the database
-	 * @param verification code for finding the user
+	 * @param code for finding the user
 	 * @return the User found
 	 * @author Josh Gearhart	jjg1018@sru.edu
 	 */
@@ -40,7 +40,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
 	/**
 	 *creates the findByOtpCode method
 	 *Query the database
-	 * @param OTP code for finding the user
+ * @param otp code for finding the user
 	 * @return the User found
 	 * @author Josh Gearhart	jjg1018@sru.edu
 	 */

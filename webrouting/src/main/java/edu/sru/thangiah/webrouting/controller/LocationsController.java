@@ -52,7 +52,8 @@ public class LocationsController {
 	private static final Logger Logger = LoggerFactory.getLogger(LocationsController.class);
 
 	/**
-	 * Constructor for LocationsController.
+	 * Constructor for LocationsController
+	 * @param locationsRepository Instantiates the locations Repository
 	 */
 	public LocationsController (LocationsRepository locationsRepository) {
 		this.locationsRepository = locationsRepository;
