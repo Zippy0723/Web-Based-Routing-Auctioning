@@ -44,6 +44,7 @@ public class TechniciansController {
 
 	/**
 	 * Constructor for TechniciansController
+	 * @param techniciansRepository Instantiates the technicians Repository
 	 */
 	
 	public TechniciansController(TechniciansRepository techniciansRepository) {

@@ -26,7 +26,7 @@ import net.bytebuddy.utility.RandomString;
  */
 
 /**
- * Implements the UserService Interface <br>
+ * Implements the UserService Interface
  * Used as a service for Spring Security
  * @author Logan Kirkwood	llk1005@sru.edu
  * @since 2/7/2022

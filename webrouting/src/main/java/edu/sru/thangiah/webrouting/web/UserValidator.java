@@ -35,7 +35,6 @@ public class UserValidator implements Validator {
 	
 	private Matcher matcher;
 	
-	
 
 	/**
 	 * Constructor for the UserValidator

@@ -15,6 +15,11 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 
+/**
+ * Extends the SimpleUrlAuthenticationSuccessHandler to log interaction
+ * @author Dakota Myers drm1022@sru.edu
+ * @since 1/01/2023
+ */
 
 public class CustomLoginSuccessHandler extends SimpleUrlAuthenticationSuccessHandler implements AuthenticationSuccessHandler {
 	

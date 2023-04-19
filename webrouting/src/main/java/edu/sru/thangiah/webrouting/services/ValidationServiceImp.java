@@ -42,7 +42,11 @@ import edu.sru.thangiah.webrouting.repository.VehiclesRepository;
 import edu.sru.thangiah.webrouting.web.UserValidator;
 
 
-
+/**
+ * Handles all of the validation for the database interactions
+ * @author Dakota Myers drm1022@sru.edu
+ * @since 1/01/2023
+ */
 @Service
 public class ValidationServiceImp {
 

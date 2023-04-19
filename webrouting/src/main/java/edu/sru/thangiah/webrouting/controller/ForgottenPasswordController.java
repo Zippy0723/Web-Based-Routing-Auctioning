@@ -29,8 +29,8 @@ import edu.sru.thangiah.webrouting.web.UserValidator;
 /**
  * Controller class for the forgot password functionality
  * @author Josh Gearhart 	jjg1018@sru.edu
- *
  */
+
 @Controller
 public class ForgottenPasswordController {
 

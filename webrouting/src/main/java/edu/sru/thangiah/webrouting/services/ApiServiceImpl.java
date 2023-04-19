@@ -13,6 +13,11 @@ import org.springframework.stereotype.Service;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+/**
+ * Handles all of the API calls
+ * @author Dakota Myers drm1022@sru.edu
+ * @since 1/01/2023
+ */
 @Service
 public class ApiServiceImpl {
 	

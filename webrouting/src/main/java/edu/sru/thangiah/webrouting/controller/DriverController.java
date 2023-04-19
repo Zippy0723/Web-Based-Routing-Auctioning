@@ -47,9 +47,12 @@ public class DriverController {
 
 	private static final Logger Logger = LoggerFactory.getLogger(DriverController.class);
 
+
 	/**
-	 * Constructor for DriverController.
+	 * Constructor for DriverController
+	 * @param driverRepository Instantiates the driver Repository
 	 */
+	
 	public DriverController (DriverRepository driverRepository) {
 		this.driverRepository = driverRepository;
 	}

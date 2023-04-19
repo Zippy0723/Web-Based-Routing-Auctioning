@@ -19,6 +19,13 @@ import edu.sru.thangiah.webrouting.repository.UserRepository;
 import edu.sru.thangiah.webrouting.services.SecurityService;
 import edu.sru.thangiah.webrouting.services.UserService;
 
+/**
+ * Handles the Thymeleaf controls for the pages
+ * dealing with notification
+ * @author Thomas Haley tjh1019@sru.edu
+ * @since 1/01/2023
+ */
+
 @Controller
 public class NotificationController {
 
@@ -30,7 +37,9 @@ public class NotificationController {
 	private static NotificationRepository notificationRepository;
 	
 	/**
-	 * Constructor for NotificationController.
+	 * Constructor for NotificationController
+	 * @param ur Instantiates the user Repository
+	 * @param nr Instantiates the notification Repository
 	 */
 
 	public NotificationController(UserRepository ur, NotificationRepository nr) {

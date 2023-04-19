@@ -50,7 +50,9 @@ public class CarriersController {
 
 
 	/**
-	 * Constructor for CarriersController. 
+	 * Constructor for CarriersController
+	 * @param carriersRepository Instantiates the carriers Repository
+	 * @param userRepository Instantiates the user Repository
 	 */
 	public CarriersController (CarriersRepository carriersRepository, UserRepository userRepository) {
 		this.carriersRepository = carriersRepository;

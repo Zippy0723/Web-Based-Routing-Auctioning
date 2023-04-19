@@ -75,6 +75,8 @@ public class LoginController {
 	
 	/**
 	 * Constructor for the LoginController
+	 * @param carriersRepository Instantiates the carriers Repository
+	 * @param notificationRepository Instantiates the notifications Repository
 	 */
 	
 	public LoginController(CarriersRepository carriersRepository, NotificationRepository notificationRepository) {

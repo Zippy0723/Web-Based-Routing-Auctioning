@@ -110,7 +110,7 @@ public class LocationsController {
 	/**
 	 * Redirects user to the /uploadlocations page when clicking "Upload an excel file" button in the locations section of Carrier login
 	 * @param model used to add data to the model
-	 * @return "/uploadlocations"
+	 * @return /uploadlocations
 	 */
 
 	@RequestMapping({"/uploadlocations"})

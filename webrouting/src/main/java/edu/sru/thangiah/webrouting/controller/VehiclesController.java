@@ -88,7 +88,10 @@ public class VehiclesController {
 	private static final Logger Logger = LoggerFactory.getLogger(VehiclesController.class);
 
 	/**
-	 * Constructor for VehiclesController
+	 * 
+	 * @param vehiclesRepository Instantiates the vehicles Repository
+	 * @param vehicleTypesRepository Instantiates the vehicletypes Repository
+	 * @param shipmentsRepository Instantiates the shipments Repository
 	 */
 	public VehiclesController(VehiclesRepository vehiclesRepository, VehicleTypesRepository vehicleTypesRepository, ShipmentsRepository shipmentsRepository) {
 		this.vehiclesRepository = vehiclesRepository;

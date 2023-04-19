@@ -32,6 +32,13 @@ import edu.sru.thangiah.webrouting.services.SecurityService;
 import edu.sru.thangiah.webrouting.services.UserService;
 import edu.sru.thangiah.webrouting.utilities.BackupUtil;
 
+/**
+ * Handles the Thymeleaf controls for the pages
+ * dealing with the backup system
+ * @author Thomas Haley tjh1019@sru.edu
+ * @since 1/01/2023
+ */
+
 @Controller
 public class BackupController {
 
@@ -55,6 +62,7 @@ public class BackupController {
 	/**
 	 * Constructor for the BackupController
 	 */
+	
 	public BackupController() {
 		this.dbName = "webrouting";
 		this.outputFile = "";

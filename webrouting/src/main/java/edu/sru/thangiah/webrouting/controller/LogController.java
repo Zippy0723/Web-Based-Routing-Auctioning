@@ -40,31 +40,39 @@ import edu.sru.thangiah.webrouting.domain.User;
 import edu.sru.thangiah.webrouting.repository.UserRepository;
 import edu.sru.thangiah.webrouting.services.UserService;
 
+/**
+ * Handles the Thymeleaf controls for the pages
+ * dealing with the logging system
+ * @author Dakota Myers drm1022@sru.edu
+ */
 
 @Controller
 public class LogController {
-	/**
-	 * This creates logs from the log file and uploads them to the model.
-	 * It also allows the user to filter the logs
-	 * @param model is used to add data to the model
-	 * @return "loghome"
-	 */
 
 	@Autowired
 	private UserService userService;
 	
 	private UserRepository userRepository;
 
+	/**
+	 * Constructor for the LogController
+	 * @param userRepository Instantiates the user Repository
+	 */
 
 	public LogController(UserRepository userRepository) {
-
 		this.userRepository = userRepository;
-
 	}
 
-
+	/**
+	 * Adds all of the required attributes to the model to render the log home page
+	 * @param model used to load attributes into the Thymeleaf model
+	 * @param filter used to load the filter into the model
+	 * @param session used to load attributes into the current users HTTP session
+	 * @return /loghome
+	 */
+	
 	@GetMapping("/loghome")
-	public String logHome(Model model, Filter filter, BindingResult result, HttpSession session) {
+	public String logHome(Model model, Filter filter, HttpSession session) {
 		session.removeAttribute("message");
 		session.setAttribute("redirectLocation", "/loghome");
 		model.addAttribute("redirectLocation", "/loghome");
@@ -79,6 +87,13 @@ public class LogController {
 		return "loghome";
 	}
 
+	/**
+	 * Recieves the filter object from the user and applies it to the logs that are uploaded on the page
+	 * @param filter used to load the filter into the model
+	 * @param model used to load attributes into the Thymeleaf model
+	 * @param session used to load attributes into the current users HTTP session
+	 * @return /loghome
+	 */
 	@PostMapping("/applyFilter")
 	public String applyFilter(Filter filter, Model model, HttpSession session) {
 		session.removeAttribute("message");
@@ -125,6 +140,13 @@ public class LogController {
 		return "loghome";
 	}
 
+	/**
+	 * Applies the current filter to the log list and returns an excel file containing them
+	 * @param model used to load attributes into the Thymeleaf model
+	 * @param session used to load attributes into the current users HTTP session
+	 * @return excel file
+	 */
+	
 	@RequestMapping("/downloadLogs")
 	public ResponseEntity<Resource> downloadLogs(Model model, HttpSession session) {
 		Filter filter = new Filter();
@@ -175,6 +197,11 @@ public class LogController {
 		}
 	}
 
+	/**
+	 * Parses the WebroutingApplication.log file and adds all of the logs to a list to return to the user
+	 * @return logs
+	 */
+	
 	public ArrayList<Log> getLogs(){
 		try {
 			ArrayList<Log> logs = new ArrayList<Log>();
@@ -208,11 +235,23 @@ public class LogController {
 		}
 	}
 
+	/**
+	 * Finds all of the users in the user Repository
+	 * @return allUsers
+	 */
+	
 	public ArrayList <User> getAllUsers(){
 		ArrayList<User> allUsers = (ArrayList) userRepository.findAll();	 
 		return allUsers;
 	}
 
+	/**
+	 * Applies a filter to the logs based on the starting date
+	 * @param filter holds the filter object
+	 * @param logs holds the logs
+	 * @return logs
+	 */
+	
 	public ArrayList<Log> startDateFilter(Filter filter, ArrayList<Log> logs) {
 		LocalDate startDate = LocalDate.parse(filter.getStartDate());
 
@@ -226,6 +265,13 @@ public class LogController {
 		return logs;
 	}
 
+	/**
+	 * Applies a filter to the logs based on the ending date
+	 * @param filter holds the filter object
+	 * @param logs holds the logs
+	 * @return logs
+	 */
+	
 	public ArrayList<Log> endDateFilter(Filter filter, ArrayList<Log> logs) {
 		LocalDate endDate = LocalDate.parse(filter.getEndDate());
 
@@ -239,6 +285,13 @@ public class LogController {
 		return logs;
 	}
 
+	/**
+	 * Checks to see if start date is before end date
+	 * @param filter holds the filter object
+	 * @param session used to load attributes into the current users HTTP session
+	 * @return true or false
+	 */
+	
 	public boolean checkDateOrder(Filter filter, HttpSession session) {
 		LocalDate startDate = LocalDate.parse(filter.getStartDate());
 		LocalDate endDate = LocalDate.parse(filter.getEndDate());
@@ -251,6 +304,12 @@ public class LogController {
 		return false;
 	}
 
+	/**
+	 * Applies a filter to the logs based on the level
+	 * @param filter holds the filter object
+	 * @param logs holds the logs
+	 * @return logs
+	 */
 
 	public ArrayList<Log> levelFilter(Filter filter, ArrayList<Log> logs){
 
@@ -264,6 +323,13 @@ public class LogController {
 		return logs;
 	}
 
+	/**
+	 * Applies a filter to the logs based on the user 
+	 * @param filter holds the filter object
+	 * @param logs holds the logs
+	 * @return logs
+	 */
+	
 	public ArrayList<Log> userFilter(Filter filter, ArrayList<Log> logs){
 
 		for (int i = 0; i < logs.size(); i++) {
@@ -275,6 +341,12 @@ public class LogController {
 		}
 		return logs;
 	}
+	
+	/**
+	 * Creates an excel file containing all of the logs that are passed to it
+	 * @param logs holds the logs
+	 * @return Excel file
+	 */
 
 	public ResponseEntity<Resource> getDownloadableLogs(ArrayList<Log> logs){
 
@@ -335,6 +407,10 @@ public class LogController {
 	}
 
 
+	/**
+	 * Populates the WebroutingApplication.log file with 3 random logs for every day of the current year that has passed
+	 */
+	
 	public void  populateLogs() {
 		try {
 			FileOutputStream fos = new FileOutputStream("WebroutingApplication.log", true);

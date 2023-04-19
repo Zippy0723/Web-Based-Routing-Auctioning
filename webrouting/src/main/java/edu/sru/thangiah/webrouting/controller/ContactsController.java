@@ -54,8 +54,10 @@ public class ContactsController {
 
 
 	/**
-	 * Constructor for ContactsController.
+	 * Constructor for ContactsController
+	 * @param contactsRepository Instantiates the contacts Repository
 	 */
+	
 	public ContactsController(ContactsRepository contactsRepository) {
 		this.contactsRepository = contactsRepository;
 	}

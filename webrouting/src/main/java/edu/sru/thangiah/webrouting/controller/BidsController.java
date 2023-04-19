@@ -36,7 +36,7 @@ import edu.sru.thangiah.webrouting.web.UserValidator;
 
 /**
  * Handles the Thymeleaf controls for the pages
- * dealing with carriers.
+ * dealing with bids
  * @author Ian Black	imb1007@sru.edu
  * @since 4/8/2022
  */
@@ -60,9 +60,14 @@ public class BidsController {
 	private UserValidator userValidator;
 
 	private static final Logger Logger = LoggerFactory.getLogger(BidsController.class);
+	
 	/**
-	 * Constructor for BidsController. 
+	 * Constructor for the BidsController
+	 * @param bidsRepository Instantiates the bids Repository
+	 * @param shipmentsRepository Instantiates the shipments Repository
+	 * @param carriersRepository Instantiates the carriers Repository
 	 */
+	
 	public BidsController(BidsRepository bidsRepository, ShipmentsRepository shipmentsRepository, CarriersRepository carriersRepository) {
 		this.bidsRepository = bidsRepository;
 		this.shipmentsRepository = shipmentsRepository;

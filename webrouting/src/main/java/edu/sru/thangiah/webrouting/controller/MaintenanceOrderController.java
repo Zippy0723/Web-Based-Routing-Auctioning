@@ -51,8 +51,11 @@ public class MaintenanceOrderController {
 	private static final Logger Logger = LoggerFactory.getLogger(MaintenanceOrderController.class);
 
 	/**
-	 * Constructor for MaintenanceOrderController.
+	 * Constructor for MaintenanceOrderController
+	 * @param maintenanceOrderRepository Instantiates the maintenanceOrder Repository
+	 * @param techniciansRepository Instantiates the technicians Repository
 	 */
+	
 	public MaintenanceOrderController(MaintenanceOrdersRepository maintenanceOrderRepository, TechniciansRepository techniciansRepository) {
 		this.maintenanceOrderRepository = maintenanceOrderRepository;
 		this.techniciansRepository = techniciansRepository;

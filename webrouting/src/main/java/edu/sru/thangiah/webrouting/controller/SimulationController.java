@@ -30,6 +30,13 @@ import edu.sru.thangiah.webrouting.services.UserService;
 import edu.sru.thangiah.webrouting.services.ValidationServiceImp;
 import edu.sru.thangiah.webrouting.web.UserValidator;
 
+/**
+ * Handles the Thymeleaf controls for the pages
+ * dealing with the simulation
+ * @author Dakota Myers drm1022@sru.edu
+ * @since 1/01/2023
+ */
+
 @Controller
 public class SimulationController {
 
@@ -48,15 +55,18 @@ public class SimulationController {
 	private static final Logger Logger = LoggerFactory.getLogger(SimulationController.class);
 
 	/**
-	 * Constructor for the SimulationController.
+	 * Constructor for the SimulationController
+	 * @param bidsRepository Instantiates the bids Repository
+	 * @param shipmentsRepository Instantiates the shipments Repository
+	 * @param userRepository Instantiates the user Repository
 	 */
+	
 	public SimulationController (BidsRepository bidsRepository, ShipmentsRepository shipmentsRepository, UserRepository userRepository) {
 		this.shipmentsRepository = shipmentsRepository;
 		this.bidsRepository = bidsRepository;
 		this.userRepository = userRepository;
 
 	}
-
 
 	/**
 	 * Adds all of the required attributes to the model to render the simulations page

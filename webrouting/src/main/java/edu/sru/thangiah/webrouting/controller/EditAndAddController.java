@@ -56,7 +56,12 @@ import edu.sru.thangiah.webrouting.services.UserService;
 import edu.sru.thangiah.webrouting.services.ValidationServiceImp;
 import edu.sru.thangiah.webrouting.web.UserValidator;
 
-
+/**
+ * Handles the Thymeleaf controls for the pages
+ * dealing with edit and add screens
+ * @author Dakota Myers drm1022@sru.edu
+ * @since 1/01/2023
+ */
 
 @Controller
 public class EditAndAddController {
@@ -100,6 +105,23 @@ public class EditAndAddController {
 	private static final Logger Logger = LoggerFactory.getLogger(EditAndAddController.class);
 
 
+	/**
+	 * Constructor for the EditAndAddController
+	 * @param bidsRepository Instantiates the bids Repository
+	 * @param shipmentsRepository Instantiates the shipments Repository
+	 * @param carriersRepository Instantiates the carriers Repository
+	 * @param vehiclesRepository Instantiates the vehicles Repository
+	 * @param vehicleTypesRepository Instantiates the vehicleTypes Repository
+	 * @param locationsRepository Instantiates the locations Repository
+	 * @param contactsRepository Instantiates the contacts Repository
+	 * @param techniciansRepository Instantiates the technicians Repository
+	 * @param driverRepository Instantiates the driver Repository
+	 * @param maintenanceOrdersRepository Instantiates the maintenanceOrders Repository
+	 * @param validationServiceImp Instantiates the validation Service Implementation
+	 * @param userRepository Instantiates the user Repository
+	 * @param roleRepository Instantiates the roles Repository
+	 */
+	
 	public EditAndAddController (BidsRepository bidsRepository, ShipmentsRepository shipmentsRepository, CarriersRepository carriersRepository, VehiclesRepository vehiclesRepository, 
 			VehicleTypesRepository vehicleTypesRepository,LocationsRepository	locationsRepository, ContactsRepository contactsRepository, TechniciansRepository techniciansRepository,
 			DriverRepository driverRepository, MaintenanceOrdersRepository maintenanceOrdersRepository, ValidationServiceImp validationServiceImp, UserRepository userRepository, RoleRepository roleRepository) {

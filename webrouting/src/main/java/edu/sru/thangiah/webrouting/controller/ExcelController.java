@@ -62,6 +62,12 @@ import edu.sru.thangiah.webrouting.services.UserService;
 import edu.sru.thangiah.webrouting.services.ValidationServiceImp;
 import edu.sru.thangiah.webrouting.web.UserValidator;
 
+/**
+ * Handles the Thymeleaf controls for the pages
+ * dealing with excel importing and exporting
+ * @author Dakota Myers drm1022@sru.edu
+ * @since 1/01/2023
+ */
 @Controller
 public class ExcelController {
 
@@ -99,6 +105,18 @@ public class ExcelController {
 
 	/**
 	 * Constructor for the ExcelController
+	 * @param bidsRepository Instantiates the bids Repository
+	 * @param shipmentsRepository Instantiates the shipments Repository
+	 * @param carriersRepository Instantiates the carriers Repository
+	 * @param vehiclesRepository Instantiates the vehicles Repository
+	 * @param vehicleTypesRepository Instantiates the vehicleTypes Repository
+	 * @param validationServiceImp Instantiates the validation Service Implementation
+	 * @param locationsRepository Instantiates the locations Repository
+	 * @param contactsRepository Instantiates the contacts Repository
+	 * @param techniciansRepository Instantiates the technicians Repository
+	 * @param driverRepository Instantiates the driver Repository
+	 * @param maintenanceOrdersRepository Instantiates the maintenanceOrders Repository
+	 * @param userRepository Instantiates the user Repository
 	 */
 	public ExcelController (BidsRepository bidsRepository, ShipmentsRepository shipmentsRepository, CarriersRepository carriersRepository, VehiclesRepository vehiclesRepository, 
 			VehicleTypesRepository vehicleTypesRepository,ValidationServiceImp validationServiceImp,LocationsRepository	locationsRepository, ContactsRepository contactsRepository, TechniciansRepository techniciansRepository,

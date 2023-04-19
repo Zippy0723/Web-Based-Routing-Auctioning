@@ -27,6 +27,13 @@ import edu.sru.thangiah.webrouting.services.NotificationService;
 import edu.sru.thangiah.webrouting.services.SecurityService;
 import edu.sru.thangiah.webrouting.services.UserService;
 
+/**
+ * Handles the Thymeleaf controls for the pages
+ * dealing with auctioning
+ * @author Thomas Haley tjh1019@sru.edu
+ * @since 1/01/2023
+ */
+
 @Controller
 public class AuctionController {
 	
@@ -48,6 +55,9 @@ public class AuctionController {
 
 	/**
 	 * Constructor for the AuctionController
+	 * @param sr Instantiates the Shipments Repository
+	 * @param ur Instantiates the User Repository
+	 * @param br Instantiates the Bids Repository
 	 */
 	public AuctionController (ShipmentsRepository sr, UserRepository ur, BidsRepository br) {
 		this.shipmentsRepository = sr;

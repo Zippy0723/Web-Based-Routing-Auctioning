@@ -28,6 +28,7 @@ public class RolesController {
 
 	/**
 	 * Constructor for RolesController
+	 * @param roleRepository Instantiates the roles Repository
 	 */
 	
 	public RolesController(RoleRepository roleRepository) {

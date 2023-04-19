@@ -89,8 +89,13 @@ public class ShipmentsController {
 	private static final Logger Logger = LoggerFactory.getLogger(ShipmentsController.class);
 
 	/**
-	 * Constructor for ShipmentsController.
+	 * Constructor for the ShipmentsController
+	 * @param bidsRepository Instantiates the bids Repository
+	 * @param shipmentsRepository Instantiates the shipments Repository
+	 * @param carriersRepository Instantiates the carriers Repository
+	 * @param vehiclesRepository Instantiates the vehicles Repository
 	 */
+	
 	public ShipmentsController (BidsRepository bidsRepository, ShipmentsRepository shipmentsRepository, CarriersRepository carriersRepository, VehiclesRepository vehiclesRepository) {
 		this.shipmentsRepository = shipmentsRepository;
 		this.carriersRepository = carriersRepository;

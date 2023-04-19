@@ -36,10 +36,10 @@ public class RoutesController {
 	private UserService userService;
 
 	/**
-	 * Constructor for RoutesController. <br>
-	 * Instantiates the vehiclesRepository <br>
-	 * @param vehiclesRepository Used to interact with the vehicles in the database
+	 * Constructor for RoutesController
+	 * @param vehiclesRepository Instantiates the vehicles Repository
 	 */
+	
 	public RoutesController (VehiclesRepository vehiclesRepository) {
 		this.vehiclesRepository = vehiclesRepository;
 	}
