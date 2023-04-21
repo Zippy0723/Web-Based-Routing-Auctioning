@@ -125,7 +125,8 @@
 					 input.value = data;
 				 },
 			     error : function (jqXHR, textStatus, errorThrown) {
-			    	 location.reload()
+			    	 alert(errorThrown);
+			    	 location.reload();
 			      }
 				});
 		}

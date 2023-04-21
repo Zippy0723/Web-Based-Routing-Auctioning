@@ -1,0 +1,70 @@
+<!doctype html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+	<head>
+		<title>Freight Rate Home</title>
+
+		<link rel="stylesheet" type="text/css" href="/styles/reset.css" />
+        <link rel="stylesheet" type="text/css" href="/styles/main.css" />
+        <link rel="stylesheet" type="text/css" href="/styles/login.css">
+        <link rel="stylesheet" type="text/css" href="/styles/menubar.css">
+        <link rel="stylesheet" type="text/css" href="/styles/table1.css">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+        <link rel="stylesheet" type="text/css" href="/styles/smoothness/jquery-ui-1.10.2.css" />
+
+	</head>
+	<body>
+		<div id="wrapper">
+
+            <div id="heading">
+                <h1 class="heading_content">Enterprise Routing System&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;Customer Service: 1 (800) 778-9111</h1>
+            </div>
+            <div id="menu-wrapper">
+            	<br><br>
+            </div>
+            
+           <div th:replace="fragments/general.html :: sidebar"></div>
+           <div th:replace="fragments/general.html :: profile-bar"></div>
+			<script src="https://kit.fontawesome.com/fe29baf689.js" crossorigin="anonymous"></script>
+			
+			<div id="content">
+				<span class="nav-expand">
+  					<button class="expander"  id="hamburger" style="display:none" onclick="nav_open()">☰</button>
+				</span>
+				<div class="alert alert-info" th:if="${message}">
+       		    <span th:text="${message}"></span>
+       	        </div>
+       	         <br>
+        		<h2>Upload file</h2>
+        		<br>
+	            	*** Warning: Upload time varies with file size; larger files take more time.
+	       		<br><br>
+	            	*** The Excel must match the template on the Freight Rate Table page. To download a template Excel file <a href="/documents/FreightRateTable - SAMPLE.xlsx" download>Click Here!</a>
+	        	<br><br>
+	        		*** Warning: Uploading a freight rate tables file will override your existing freight rate tables!
+	        	<br><br> 
+				<hr>
+				<form th:action="@{/upload-freightratetable}" enctype="multipart/form-data" method="POST">
+				<div class="form-group2">
+					<br>
+					<h2> Choose Excel File to Upload</h2>
+					<br>
+					<input required type="file" name="file" />
+					<br><br><br><br>
+					<button type="submit" class="buttons6">Upload File</button>
+					<br>
+				</div>
+				</form>
+	      		<br><br><br><br>
+	      		<h3>Current Freight Rate Tables: </h3>
+            	</div>
+        	</div>
+
+		<div class="footer">
+        </div>
+		<script src="javascript/pageload.js">
+		</script>
+		<script src="javascript/deleteObject.js"></script>
+		<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+	</body>
+</html>   
