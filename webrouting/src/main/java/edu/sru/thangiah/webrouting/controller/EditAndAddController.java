@@ -25,6 +25,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestAttribute;
+import org.springframework.web.bind.annotation.RequestMapping;
 
 import edu.sru.thangiah.webrouting.controller.ExcelController;
 import edu.sru.thangiah.webrouting.domain.Bids;
@@ -444,7 +446,7 @@ public class EditAndAddController {
 	 */
 
 	@PostMapping("submit-add-order")
-	public String vehicleOrderForm(@ModelAttribute("orderForm") MaintenanceOrders maintenanceOrder, Model model, HttpSession session) {
+	public String maintenanceOrderForm(@ModelAttribute("orderForm") MaintenanceOrders maintenanceOrder, Model model, HttpSession session) {
 		model.addAttribute("redirectLocation", (String) session.getAttribute("redirectLocation"));
 		model.addAttribute("currentPage","/maintenanceorders");
 		User user = userService.getLoggedInUser();
@@ -478,6 +480,70 @@ public class EditAndAddController {
 		maintenanceOrdersRepository.save(result);
 		Logger.info("{} || successfully added a new Maintenance Order with ID {}",user.getUsername(), result.getId());
 
+		return "redirect:" + (String) session.getAttribute("redirectLocation");
+	}
+	
+	@GetMapping("/add-shipment")
+	public String showShipmentAddForm(Shipments shipment, Model model, HttpSession session) {
+		model.addAttribute("redirectLocation", (String) session.getAttribute("redirectLocation"));
+		model.addAttribute("currentPage","/shipments");
+		User user = userService.getLoggedInUser();
+		model = NotificationController.loadNotificationsIntoModel(user, model);
+		
+		
+		session.removeAttribute("message");
+		
+		model.addAttribute("shipments", new Shipments());
+
+		return "/add/add-shipment";
+	}
+	
+	@PostMapping("submit-add-shipment")
+	public String shipmentOrderForm(@ModelAttribute("shipments") Shipments shipment, Model model, HttpSession session) {
+		model.addAttribute("redirectLocation", (String) session.getAttribute("redirectLocation"));
+		model.addAttribute("currentPage","/shipments");
+		User user = userService.getLoggedInUser();
+		model = NotificationController.loadNotificationsIntoModel(user, model);
+
+		Hashtable<String, String> hashtable = new Hashtable<>();
+
+		hashtable.put("clientName", shipment.getClient().strip());
+		hashtable.put("clientMode", shipment.getClientMode().strip());
+		hashtable.put("date", shipment.getShipDate().strip());
+		hashtable.put("commodityClass", shipment.getCommodityClass().strip());
+		hashtable.put("commodityPieces", shipment.getCommodityPieces().strip());
+		hashtable.put("commodityPaidWeight", shipment.getCommodityPaidWeight().strip());
+		hashtable.put("shipperCity", shipment.getShipperCity().strip());
+		hashtable.put("shipperState", shipment.getShipperState().strip());
+		hashtable.put("shipperZip", shipment.getShipperZip().strip());
+		hashtable.put("shipperLatitude", "");
+		hashtable.put("shipperLongitude", "");
+		hashtable.put("consigneeCity", shipment.getConsigneeCity().strip());
+		hashtable.put("consigneeState", shipment.getConsigneeState().strip());
+		hashtable.put("consigneeZip", shipment.getConsigneeZip().strip());
+		hashtable.put("consigneeLatitude", "");
+		hashtable.put("consigneeLongitude", "");
+
+		Shipments result;
+
+		result = validationServiceImp.validateShipmentForm(hashtable, session);
+
+		if (result == null) {
+			Logger.error("{} || attempted to add a shipment but "+ session.getAttribute("message"), user.getUsername());
+			model.addAttribute("message", session.getAttribute("message"));
+			return "/add/add-shipment";
+		}
+
+		result.setScac("");
+		result.setFullFreightTerms("PENDING");
+		result.setPaidAmount("");
+		result.setFreightbillNumber("");
+		result.setCarrier(null);
+		result.setUser(user);
+		result.setVehicle(null);
+
+		shipmentsRepository.save(result);
+		Logger.info("{} || successfully added a new shipment with ID {}",user.getUsername(), result.getId());
 		return "redirect:" + (String) session.getAttribute("redirectLocation");
 	}
 

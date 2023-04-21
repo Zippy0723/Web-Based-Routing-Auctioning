@@ -411,7 +411,7 @@ public class ExcelController {
 			List<Shipments> shipments = validationServiceImp.validateShipmentSheet(worksheet, session);
 
 			if (shipments == null) {
-				Logger.error("{} || attempted to upload shipments but failed.",user.getUsername());
+				Logger.error("{} || attempted to upload Shipments but "+ session.getAttribute("message") ,user.getUsername());
 				model.addAttribute("message", session.getAttribute("message"));
 				return "/excel/upload-shipments";
 			}

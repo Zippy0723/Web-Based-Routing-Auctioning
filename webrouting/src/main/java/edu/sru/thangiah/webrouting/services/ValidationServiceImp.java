@@ -202,7 +202,7 @@ public class ValidationServiceImp {
 
 				shipment = validateShipment(hashtable, session);
 				if (shipment == null) {
-					return null;								//Change this to return null if you want the upload to fail if any are incorrect
+					return null;								//Change this to continue if you want it to continue after one is invalid
 				}
 
 				shipment.setCarrier(null);					//THIS IS DEFAULT
@@ -259,99 +259,83 @@ public class ValidationServiceImp {
 
 
 		if(!(acceptedFreightTerms.contains(fullFreightTerms))) {
-			Logger.error("{} || attempted to upload a shipment but the Full Freight Terms must be an accepted term.",user.getUsername());
 			session.setAttribute("message", "Full Freight Term must be an accepted term.");
 			return null;
 		}
 
 		if(!(scac.length() <= 4 && scac.length() >= 2) || !(scac.matches("^[a-zA-Z0-9]+$"))) {
 			if (!(scac.equals("") || scac == null)) {
-				Logger.error("{} || attempted to upload a shipment but the SCAC must be between 2 and 4 characters long or empty.",user.getUsername());
 				session.setAttribute("message", "SCAC must be between 2 and 4 characters long or empty.");
 				return null;
 			}	
 		}
 
 		if(!(paidAmount.length() <= 16 && paidAmount.length() > 0) || !(freightBillNumber.matches("^[0-9]*\\.?[0-9]+$"))) {
-			Logger.error("{} || attempted to upload a shipment but the Paid Amount must be between 1 and 16 numbers long.",user.getUsername());
 			session.setAttribute("message", "Paid Amount must be between 1 and 16 numbers long.");
 			return null;
 		}
 
 		if(!(freightBillNumber.length() <= 32 && freightBillNumber.length() > 0) || !(freightBillNumber.matches("^[0-9]*\\.?[0-9]+$"))) {
-			Logger.error("{} || attempted to upload a shipment but the Freight Bill Number must be between 1 and 32 numbers long.",user.getUsername());
 			session.setAttribute("message", "Freight Bill Number must be between 1 and 32 numbers long.");
 			return null;
 		}
 
 		if (!(clientName.length() <= 64 && clientName.length() > 0)) {
-			Logger.error("{} || attempted to upload a shipment but the Client Name must be between 1 and 64 characters.",user.getUsername());
 			session.setAttribute("message", "Client Name must be between 1 and 64 characters.");
 			return null;
 		}
 
 		if(!(clientMode.equals("LTL") || clientMode.equals("FTL"))) {
-			Logger.error("{} || attempted to upload a shipment but the Client Mode must be LTL or FTL.",user.getUsername());
 			session.setAttribute("message", "Client Mode must be LTL or FTL.");
 			return null;
 		}
 
 		if(!(date.length() <= 12 && date.length() > 0 && date.matches("^\\d{2}-(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)-\\d{4}$"))) { 
-			Logger.error("{} || attempted to upload a shipment but the Date must be between 1 and 12 characters and formated MM/DD/YYYY.",user.getUsername());
 			session.setAttribute("message", "Date must be between 1 and 12 characters and formated MM/DD/YYYY.");
 			return null;
 		}
 
 		if(!(commodityClass.length() <= 12 && commodityClass.length() > 0) || !(commodityClass.matches("^[a-zA-Z0-9.]+$"))) {
-			Logger.error("{} || attempted to upload a shipment but the Commodity Class must be between 1 and 12 characters and alphanumeric.",user.getUsername());
 			session.setAttribute("message", "Commodity Class must be between 1 and 12 characters and alphanumeric.");
 			return null;
 		}
 
 		if(!(commodityPieces.length() <= 64 && commodityPieces.length() > 0) || !(commodityPieces.matches("^[0-9.]+$"))) {
-			Logger.error("{} || attempted to upload a shipment but the Commodity Pieces must be between 1 and 64 characters long and numeric.",user.getUsername());
 			session.setAttribute("message", "Commodity Pieces must be between 1 and 64 characters long and numeric.");
 			return null;
 		}
 
 		if(!(commodityPaidWeight.length() <= 16 && commodityPaidWeight.length() > 0) || !(commodityPaidWeight.matches("^[0-9.]*\\.?[0-9.]+$"))) {
-			Logger.error("{} || attempted to upload a shipment but the Commodity Paid Weight must be between 1 and 16 characters long and numeric.",user.getUsername());
 			session.setAttribute("message", "Commodity Paid Weight must be between 1 and 16 characters long and numeric.");
 			return null;
 		}
 
 		if(!(shipperCity.length() <= 64 && shipperCity.length() > 0) || !(shipperCity.matches("^[A-Za-z]+(?:[\\s-][A-Za-z]+)*$"))) {
-			Logger.error("{} || attempted to upload a shipment but the Shipper City must be between 1 and 64 characters and alphabetic.",user.getUsername());
 			session.setAttribute("message", "Shipper City must be between 1 and 64 characters and alphabetic.");
 			return null;
 		}
 
 		if(!(states.contains(shipperState) || stateAbbreviations.contains(shipperState))) {
-			Logger.error("{} || attempted to upload a shipment but the Shipper State must be a state or state abbreviation.",user.getUsername());
 			session.setAttribute("message", "Shipper State must be a state or state abbreviation.");
 			return null;
 		}
 
 		if(!(shipperZip.length() <= 12 && shipperZip.length() > 0) || !(shipperZip.matches("^[0-9.]+$"))){
-			Logger.error("{} || attempted to upload a shipment but the Shipper Zip must be between 1 and 12 characters and numeric.",user.getUsername());
 			session.setAttribute("message", "Shipper Zip must be between 1 and 12 characters and numeric.");
 			return null;
 		}
 
 		if(!(consigneeCity.length() <= 64 && consigneeCity.length() > 0) || !( consigneeCity.matches("^[A-Za-z]+(?:[\\s-][A-Za-z]+)*$"))) {
-			Logger.error("{} || attempted to upload a shipment but the Consignee City must be between 1 and 64 characters and alphabetic.",user.getUsername());
 			session.setAttribute("message", "Consignee City must be between 1 and 64 characters and alphabetic.");
 			return null;
 		}
 
 		if(!(states.contains(consigneeState) || stateAbbreviations.contains(consigneeState))) {
-			Logger.error("{} || attempted to upload a shipment but the Consignee State must be a state or state abbreviation.",user.getUsername());
 			session.setAttribute("message", "Consignee State must be a state or state abbreviation.");
 			return null;
 		}
 
 		if(!(consigneeZip.length() <= 12 && consigneeZip.length() > 0) || !(consigneeZip.matches("^[0-9.]+$"))){
-			Logger.error("{} || attempted to upload a shipment but the Consignee Zip must be between 1 and 12 characters and numeric.",user.getUsername());
 			session.setAttribute("message", "Consignee Zip must be between 1 and 12 characters and is alphabetic.");
 			return null;
 		}
@@ -2188,75 +2172,63 @@ public class ValidationServiceImp {
 
 
 		if (!(clientName.length() <= 64 && clientName.length() > 0)) {
-			Logger.error("{} || attempted to edit a shipment but the Client Name must be between 1 and 64 characters.",user.getUsername());
 			session.setAttribute("message", "Client Name must be between 1 and 64 characters.");
 			return null;
 		}
 
 		if(!(clientMode.equals("LTL") || clientMode.equals("FTL"))) {
-			Logger.error("{} || attempted to edit a shipment but the Client Mode must be LTL or FTL.",user.getUsername());
 			session.setAttribute("message", "Client Mode must be LTL or FTL.");
 			return null;
 		}
 
 
 		if(!(date.length() <= 12 && date.length() > 0 && date.matches("^\\d{2}-(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)-\\d{4}$"))) { 
-			Logger.error("{} || attempted to edit a shipment but the Date must be between 1 and 12 characters and formated DD/MMM/YYYY.",user.getUsername());
 			session.setAttribute("message", "Date must be between 1 and 12 characters and formated DD/MMM/YYYY");
 			return null;
 		}
 
 
 		if(!(commodityClass.length() <= 12 && commodityClass.length() > 0) || !(commodityClass.matches("^[a-zA-Z0-9.]+$"))) {
-			Logger.error("{} || attempted to edit a shipment but the Commodity Class must be between 1 and 12 characters and alphanumeric.",user.getUsername());
 			session.setAttribute("message", "Commodity Class must be between 1 and 12 characters and alphanumeric.");
 			return null;
 		}
 
 		if(!(commodityPieces.length() <= 64 && commodityPieces.length() > 0) || !(commodityPieces.matches("^[0-9.]+$"))) {
-			Logger.error("{} || attempted to edit a shipment but the Commodity Pieces must be between 1 and 64 characters long and numeric.",user.getUsername());
 			session.setAttribute("message", "Commodity Pieces must be between 1 and 64 characters long and numeric.");
 			return null;
 		}
 
 		if(!(commodityPaidWeight.length() <= 16 && commodityPaidWeight.length() > 0) || !(commodityPaidWeight.matches("^[0-9.]*\\.?[0-9.]+$"))) {
-			Logger.error("{} || attempted to edit a shipment but the Commodity Paid Weight must be between 1 and 16 characters long and numeric.",user.getUsername());
 			session.setAttribute("message", "Commodity Paid Weight must be between 1 and 16 characters long and numeric.");
 			return null;
 		}
 
 		if(!(shipperCity.length() <= 64 && shipperCity.length() > 0) || !(shipperCity.matches("^[A-Za-z]+(?:[\\s-][A-Za-z]+)*$"))) {
-			Logger.error("{} || attempted to edit a shipment but the Shipper City must be between 1 and 64 characters and is alphabetic.",user.getUsername());
 			session.setAttribute("message", "Shipper City must be between 1 and 64 characters and is alphabetic.");
 			return null;
 		}
 
 		if(!(states.contains(shipperState) || stateAbbreviations.contains(shipperState))) {
-			Logger.error("{} || attempted to edit a shipment but the Shipper State must be a state or state abbreviation.",user.getUsername());
 			session.setAttribute("message", "Shipper State must be a state or state abbreviation.");
 			return null;
 		}
 
 		if(!(shipperZip.length() <= 12 && shipperZip.length() > 0) || !(shipperZip.matches("^[0-9.]+$"))){
-			Logger.error("{} || attempted to edit a shipment but the Shipper Zip must be between 1 and 12 characters and is numeric.",user.getUsername());
 			session.setAttribute("message", "Shipper Zip must be between 1 and 12 characters and is numeric.");
 			return null;
 		}
 
 		if(!(consigneeCity.length() <= 64 && consigneeCity.length() > 0) || !( consigneeCity.matches("^[A-Za-z]+(?:[\\s-][A-Za-z]+)*$"))) {
-			Logger.error("{} || attempted to edit a shipment but the Consignee City must be between 1 and 64 characters and is alphabetic.",user.getUsername());
 			session.setAttribute("message", "Consignee City must be between 1 and 64 characters and is alphabetic.");
 			return null;
 		}
 
 		if(!(states.contains(consigneeState) || stateAbbreviations.contains(consigneeState))) {
-			Logger.error("{} || attempted to edit a shipment but the Consignee State must be a state or state abbreviation.",user.getUsername());
 			session.setAttribute("message", "Consignee State must be a state or state abbreviation.");
 			return null;
 		}
 
 		if(!(consigneeZip.length() <= 12 && consigneeZip.length() > 0) || !(consigneeZip.matches("^[0-9.]+$"))){
-			Logger.error("{} || attempted to edit a shipment but the Consignee Zip must be between 1 and 12 characters and is alphabetic.",user.getUsername());
 			session.setAttribute("message", "Consignee Zip must be between 1 and 12 characters and is alphabetic.");
 			return null;
 		}

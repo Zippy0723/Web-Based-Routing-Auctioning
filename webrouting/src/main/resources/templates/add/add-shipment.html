@@ -22,8 +22,8 @@
             	<br><br>
             </div>
             
-           <div th:replace="fragments/general.html :: sidebar"></div>
-           <div th:replace="fragments/general.html :: profile-bar"></div>
+            <div th:replace="fragments/general.html :: sidebar"></div>
+            <div th:replace="fragments/general.html :: profile-bar"></div>
 			<script src="https://kit.fontawesome.com/fe29baf689.js" crossorigin="anonymous"></script>
 			
 			<div id="content">
@@ -32,16 +32,18 @@
 				</span>
 				<br><br>
                 <h2>Add Shipment</h2>
-                <small>Coordinates must begin with a negative symbol or number followed by 2-3 digits, a decimal point and 7 trailing digits</small>
-                <form action="#" th:action="@{/addshipments}" th:object="${shipments}" method="post">
+                <br>
+              <span type="hidden" th:text="${message}" class=errorMessage></span>
+              <br>
+                <form action="#" th:action="@{submit-add-shipment}" th:object="${shipments}" method="post">
 				<hr>
-				<div class="form-group7">
+				<div class="form-group">
 					<br>
-					<h2> Enter Shipment Info</h2>
+					<h2> Edit Shipment Info</h2>
 					<br>
 	                <label for="client">Client: </label> 
-	                <input type="text" th:field="*{client}" id="client" placeholder="Amazon" size=23 required>
-	                <span th:if="${#fields.hasErrors('client')}" th:errors="*{client}"></span>
+	                <input type="text" th:field="*{client}" id="client" placeholder="Amazon" size=19 required>
+
 	            	<br>
 	                <label for="clientMode">Client Mode: </label>
 	                <select th:field="*{clientMode}" required>
@@ -52,31 +54,27 @@
 	                </select> 
 	            	<br>
 	                <label for="shipDate">Ship Date: </label>    
-	                <input type="date" th:field="*{shipDate}" id="shipDate" placeholder="Ship Date" required>
-	                <span th:if="${#fields.hasErrors('shipDate')}" th:errors="*{shipDate}"></span>
+	                <input type="text" th:field="*{shipDate}" id="shipDate" placeholder="06-Dec-2022" size=19 required>
+
 	             	<br>
 	                <label for="commodityClass">Commodity Class: </label> 
-	                <input type="text" th:field="*{commodityClass}" id="commodityClass" placeholder="500 or AB05" size=23 required>
-	                <span th:if="${#fields.hasErrors('commodityClass')}" th:errors="*{commodityClass}"></span>
+	                <input type="text" th:field="*{commodityClass}" id="commodityClass" placeholder="500 or AB05" size=19 required>
+
 	             	<br>
 	                <label for="commodityPieces">Commodity Pieces: </label>   
-	                <input type="text" th:field="*{commodityPieces}" id="commodityPieces" placeholder="300" size=23  required>
-	                <span th:if="${#fields.hasErrors('commodityPieces')}" th:errors="*{commodityPieces}"></span>
+	                <input type="text" th:field="*{commodityPieces}" id="commodityPieces" placeholder="300"size=19 required>
+
 	             	<br>
 	                <label for="commodityPaidWeight">Commodity Paid Weight: </label>
-	                <input type="text" th:field="*{commodityPaidWeight}" id="commodityPaidWeight" placeholder="4000" size=23 required>
-	                <span th:if="${#fields.hasErrors('commodityPaidWeight')}" th:errors="*{commodityPaidWeight}"></span>
-	             	<br><br>
-             	</div>
-	             <div class="form-group8">
+	                <input type="text" th:field="*{commodityPaidWeight}" id="commodityPaidWeight" placeholder="4000" size=19 required>
+	                
 	             	<br>
 	                <label for="shipperCity">Shipper City: </label> 
-	                <input type="text" th:field="*{shipperCity}" id="shipperCity" placeholder="Slippery Rock" size=23 required>
-	                <span th:if="${#fields.hasErrors('shipperCity')}" th:errors="*{shipperCity}"></span>
+	                <input type="text" th:field="*{shipperCity}" id="shipperCity" placeholder="Slippery Rock" size=19 required>
+
 	             	<br>
 	                <label for="shipperState">Shipper State: </label> 
-	                <select name="shipperState" th:field="*{shipperState}" id="state">
-                        <option value= ""></option>
+	                 <select name="shipperState" th:field="*{shipperState}" id="shipperState">
                         <option value="AL">Alabama</option>
  						<option value="AK">Alaska</option>
   						<option value="AZ">Arizona</option>
@@ -128,27 +126,17 @@
   						<option value="WI">Wisconsin</option>
   						<option value="WY">Wyoming</option>
                         </select>
-	                <span th:if="${#fields.hasErrors('shipperState')}" th:errors="*{shipperState}"></span>
 	             	<br>
 	                <label for="shipperZip">Shipper Zip: </label> 
-	                <input type="text" th:field="*{shipperZip}" id="shipperZip" placeholder="16057" size=23 required minlength = "5" maxlength = "10" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1');">
-	                <span th:if="${#fields.hasErrors('shipperZip')}" th:errors="*{shipperZip}"></span>
-	             	<br>
-	                <label for="shipperLatitude">Shipper Latitude: </label>  
-	                <input type="text" th:field="*{shipperLatitude}" id="shipperLatitude" placeholder="-89.4532612 or without '-'" size=23 required>
-	                <span th:if="${#fields.hasErrors('shipperLatitude')}" th:errors="*{shipperLatitude}"></span>
-	             	<br>
-	                <label for="shipperLongitude">Shipper Longitude: </label> 
-	                <input type="text" th:field="*{shipperLongitude}" id="shipperLongitude" placeholder="-179.5742489 or without '-'" size=23 required>
-	                <span th:if="${#fields.hasErrors('shipperLongitude')}" th:errors="*{shipperLongitude}"></span>
+	                <input type="text" th:field="*{shipperZip}" id="shipperZip" placeholder="16057" size=19 required >
+
 	             	<br>
 	                <label for="consigneeCity">Consignee City: </label>  
-	                <input type="text" th:field="*{consigneeCity}" id="consigneeCity" placeholder="Philadelphia" size=23 required>
-	                <span th:if="${#fields.hasErrors('consigneeCity')}" th:errors="*{consigneeCity}"></span>
+	                <input type="text" th:field="*{consigneeCity}" id="consigneeCity" placeholder="Philadelphia" size=19 required>
+
 	             	<br>
 	                <label for="consigneeState">Consignee State: </label>   
 	                <select name="consigneeState" th:field="*{consigneeState}" id="consigneeState">
-                        <option value= ""></option>
                         <option value="AL">Alabama</option>
  						<option value="AK">Alaska</option>
   						<option value="AZ">Arizona</option>
@@ -160,7 +148,6 @@
   						<option value="DC">Dist of Columbia</option>
   						<option value="FL">Florida</option>
   						<option value="GA">Georgia</option>
-  						<option value="HI">Hawaii</option>
   						<option value="ID">Idaho</option>
   						<option value="IL">Illinois</option>
   						<option value="IN">Indiana</option>
@@ -201,32 +188,22 @@
   						<option value="WI">Wisconsin</option>
   						<option value="WY">Wyoming</option>
                         </select>
-	                <span th:if="${#fields.hasErrors('consigneeState')}" th:errors="*{consigneeState}"></span>
 	             	<br>
 	                <label for="consigneeZip">Consignee Zip: </label>   
-	                <input type="text" th:field="*{consigneeZip}" id="consigneeZip" placeholder="17482" size=23 required minlength = "5" maxlength = "10" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1');">
-	                <span th:if="${#fields.hasErrors('consigneeZip')}" th:errors="*{consigneeZip}"></span>
-	             	<br>
-	                <label for="consigneeLatitude">Consignee Latitude: </label> 
-	                <input type="text" th:field="*{consigneeLatitude}" id="consigneeLatitude" placeholder="-89.628502 or without '-'" size=23 required>
-	                <span th:if="${#fields.hasErrors('consigneeLatitude')}" th:errors="*{consigneeLatitude}"></span>
-	             	<br>
-	                <label for="consigneeLongitude">Consignee Longitude: </label>
-	                <input type="text" th:field="*{consigneeLongitude}" id="consigneeLongitude" placeholder="-179.7265037 or without '-'" size=23 required>
-	                <span th:if="${#fields.hasErrors('consigneeLongitude')}" th:errors="*{consigneeLongitude}"></span>
+	                <input type="text" th:field="*{consigneeZip}" id="consigneeZip" placeholder="17482" size=19 required>
+	              
+	             
 	                <br><br>
-	                <p sec:authorize="hasAuthority('SHIPPER')"><button class="buttons7" type="button"  onclick="window.location.href='./pendingshipments';">Back</button>
+	                	<button class="buttons4" type="button" th:attr="onclick=|window.location.href='${redirectLocation}'|">Back</button>
 						<button class="buttons4" type="submit">Add Shipment</button>
-					</p>
-					<br>
+					<br><br>
 				</div>
 	            </form>
 			</div>
 		</div>
-
 		<div class="footer">
         </div>
-		<script src="javascript/pageload.js">
+		<script src="../javascript/pageload.js">
 		</script>
 	</body>
 </html>
