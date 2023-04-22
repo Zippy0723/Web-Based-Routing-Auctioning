@@ -58,6 +58,7 @@
 		</script>
 		<script>
 		function getBestVehicle(){
+			$('*').css('cursor','wait')
 			let bestId;
 			var shipmentId = document.querySelector('[name="shipmentId"]').getAttribute('value');
 			var domain = window.location.hostname;
@@ -75,12 +76,14 @@
 		            for (var i = 0; i < options.length; i++) {
 		                if (options[i].value == response) {
 		                    select.selectedIndex = i;
+		                    $('*').css('cursor', 'default');
 		                    break;
 		                }
 		            }
 		        },
 			    error: function(xhr, status, error) {
 			        console.error(error);
+			        $('*').css('cursor', 'default');
 			    }
 			});
 			

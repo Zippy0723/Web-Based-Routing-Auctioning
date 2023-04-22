@@ -110,7 +110,7 @@
         			<br>
     			</div>
 			</div>
-
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
 	//draws the map widget onto the page
     function initMap() {
@@ -126,6 +126,7 @@
 
     }
     function showShipmentOnMap(vehicleLat, vehicleLng, startLat, startLng, endLat, endLng) {
+		$('*').css('cursor','wait')
     	var start = new google.maps.LatLng(parseFloat(vehicleLat), parseFloat(vehicleLng));
         var stop1 = new google.maps.LatLng(parseFloat(startLat), parseFloat(startLng));
         var end = new google.maps.LatLng(parseFloat(endLat), parseFloat(endLng));
@@ -141,6 +142,7 @@
             if (status == 'OK') {
                 directionsRenderer.setDirections(result);
             }
+			$('*').css('cursor','default')
         });
     }
 </script>
