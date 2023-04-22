@@ -779,7 +779,9 @@ child elements*/
 }
 
 .carrier-box {
-  border: 1px solid #ccc;
+  color: black;
+  font-weight: bold;
+  border: clear;
   padding: 10px;
   margin-bottom: 10px;
 }
