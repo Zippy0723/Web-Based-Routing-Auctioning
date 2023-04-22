@@ -1,6 +1,9 @@
 package edu.sru.thangiah.webrouting.controller;
 
 import java.io.IOException;
+import java.sql.Date;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Hashtable;
@@ -412,139 +415,4 @@ public class EditAndAddController {
 		return "redirect:" + (String) session.getAttribute("redirectLocation");
 	}
 	
-
-	/**
-	 * Adds all of the required attributes to the model to render the add order page
-	 * @param maintenanceOrder holds the new maintenance order being added to the model
-	 * @param model used to load attributes into the Thymeleaf model
-	 * @param session used to load attributes into the current users HTTP session
-	 * @return /add/add-order
-	 */
-	
-	@GetMapping("/add-order")
-	public String showOrderAddForm(MaintenanceOrders maintenanceOrder, Model model, HttpSession session) {
-		model.addAttribute("redirectLocation", (String) session.getAttribute("redirectLocation"));
-		model.addAttribute("currentPage","/maintenanceorders");
-		User user = userService.getLoggedInUser();
-		model = NotificationController.loadNotificationsIntoModel(user, model);
-		model.addAttribute("technicians", user.getCarrier().getTechnicians());
-		model.addAttribute("vehicles", user.getCarrier().getVehicles());
-
-		session.removeAttribute("message");
-		model.addAttribute("orderForm", new MaintenanceOrders());
-
-		return "/add/add-order";
-	}
-
-	/**
-	 * Receives a maintenance order object by the user and passes it off for validation
-	 * Once valid it is saved to the maintenance order repository
-	 * @param maintenanceOrder holds the new maintenance order created by the user
-	 * @param model used to load attributes into the Thymeleaf model
-	 * @param session used to load attributes into the current users HTTP session
-	 * @return /add/add-order
-	 */
-
-	@PostMapping("submit-add-order")
-	public String maintenanceOrderForm(@ModelAttribute("orderForm") MaintenanceOrders maintenanceOrder, Model model, HttpSession session) {
-		model.addAttribute("redirectLocation", (String) session.getAttribute("redirectLocation"));
-		model.addAttribute("currentPage","/maintenanceorders");
-		User user = userService.getLoggedInUser();
-		model = NotificationController.loadNotificationsIntoModel(user, model);
-		model.addAttribute("technicians", user.getCarrier().getTechnicians());
-		model.addAttribute("vehicles", user.getCarrier().getVehicles());
-
-		Hashtable<String, String> hashtable = new Hashtable<>();
-
-		hashtable.put("date", maintenanceOrder.getScheduled_date().strip());
-		hashtable.put("details", maintenanceOrder.getDetails().strip());
-		hashtable.put("serviceType", maintenanceOrder.getService_type_key().strip());
-		hashtable.put("cost", maintenanceOrder.getCost().strip());
-		hashtable.put("status", maintenanceOrder.getStatus_key().strip());
-		hashtable.put("type", maintenanceOrder.getMaintenance_type().strip());
-		hashtable.put("vehiclePlateAndVin", maintenanceOrder.getVehicle().getPlateNumber() + " " + maintenanceOrder.getVehicle().getVinNumber());
-		hashtable.put("techniciansContactFullName", maintenanceOrder.getTechnician().getContact().getFirstName().strip() + " " + maintenanceOrder.getTechnician().getContact().getLastName().strip());
-	
-		MaintenanceOrders result;
-
-		result = validationServiceImp.validateMaintenanceOrder(hashtable, session);
-
-
-		if (result == null) {
-			Logger.error("{} || attempted to add a new Maintenance Order but "+ session.getAttribute("message") ,user.getUsername());
-			model.addAttribute("message", session.getAttribute("message"));
-			return "/add/add-order";
-		}
-
-
-		maintenanceOrdersRepository.save(result);
-		Logger.info("{} || successfully added a new Maintenance Order with ID {}",user.getUsername(), result.getId());
-
-		return "redirect:" + (String) session.getAttribute("redirectLocation");
-	}
-	
-	@GetMapping("/add-shipment")
-	public String showShipmentAddForm(Shipments shipment, Model model, HttpSession session) {
-		model.addAttribute("redirectLocation", (String) session.getAttribute("redirectLocation"));
-		model.addAttribute("currentPage","/shipments");
-		User user = userService.getLoggedInUser();
-		model = NotificationController.loadNotificationsIntoModel(user, model);
-		
-		
-		session.removeAttribute("message");
-		
-		model.addAttribute("shipments", new Shipments());
-
-		return "/add/add-shipment";
-	}
-	
-	@PostMapping("submit-add-shipment")
-	public String shipmentOrderForm(@ModelAttribute("shipments") Shipments shipment, Model model, HttpSession session) {
-		model.addAttribute("redirectLocation", (String) session.getAttribute("redirectLocation"));
-		model.addAttribute("currentPage","/shipments");
-		User user = userService.getLoggedInUser();
-		model = NotificationController.loadNotificationsIntoModel(user, model);
-
-		Hashtable<String, String> hashtable = new Hashtable<>();
-
-		hashtable.put("clientName", shipment.getClient().strip());
-		hashtable.put("clientMode", shipment.getClientMode().strip());
-		hashtable.put("date", shipment.getShipDate().strip());
-		hashtable.put("commodityClass", shipment.getCommodityClass().strip());
-		hashtable.put("commodityPieces", shipment.getCommodityPieces().strip());
-		hashtable.put("commodityPaidWeight", shipment.getCommodityPaidWeight().strip());
-		hashtable.put("shipperCity", shipment.getShipperCity().strip());
-		hashtable.put("shipperState", shipment.getShipperState().strip());
-		hashtable.put("shipperZip", shipment.getShipperZip().strip());
-		hashtable.put("shipperLatitude", "");
-		hashtable.put("shipperLongitude", "");
-		hashtable.put("consigneeCity", shipment.getConsigneeCity().strip());
-		hashtable.put("consigneeState", shipment.getConsigneeState().strip());
-		hashtable.put("consigneeZip", shipment.getConsigneeZip().strip());
-		hashtable.put("consigneeLatitude", "");
-		hashtable.put("consigneeLongitude", "");
-
-		Shipments result;
-
-		result = validationServiceImp.validateShipmentForm(hashtable, session);
-
-		if (result == null) {
-			Logger.error("{} || attempted to add a shipment but "+ session.getAttribute("message"), user.getUsername());
-			model.addAttribute("message", session.getAttribute("message"));
-			return "/add/add-shipment";
-		}
-
-		result.setScac("");
-		result.setFullFreightTerms("PENDING");
-		result.setPaidAmount("");
-		result.setFreightbillNumber("");
-		result.setCarrier(null);
-		result.setUser(user);
-		result.setVehicle(null);
-
-		shipmentsRepository.save(result);
-		Logger.info("{} || successfully added a new shipment with ID {}",user.getUsername(), result.getId());
-		return "redirect:" + (String) session.getAttribute("redirectLocation");
-	}
-
 }

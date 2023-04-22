@@ -1,6 +1,11 @@
 package edu.sru.thangiah.webrouting.controller;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Hashtable;
 import java.util.List;
 
@@ -15,6 +20,7 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -176,11 +182,28 @@ public class MaintenanceOrderController {
 		model.addAttribute("currentPage","/maintenanceorders");
 		model.addAttribute("technicians", user.getCarrier().getTechnicians());
 		model.addAttribute("vehicles", user.getCarrier().getVehicles());
-		model.addAttribute("maintenanceOrders", maintenanceOrder);
 		model.addAttribute("redirectLocation", (String) session.getAttribute("redirectLocation"));
 		model = NotificationController.loadNotificationsIntoModel(user, model);
 
 		session.removeAttribute("message");
+		
+		if(!maintenanceOrder.getScheduled_date().equals("")) {
+		//This converts the date to a format that the page is expecting to load it into the date object form
+		try {
+			SimpleDateFormat inputFormat = new SimpleDateFormat("dd-MMM-yyyy");
+	        Date date;
+			date = inputFormat.parse(maintenanceOrder.getScheduled_date());
+	        SimpleDateFormat outputFormat = new SimpleDateFormat("yyyy-MM-dd");
+	        String formattedDate = outputFormat.format(date);
+	        maintenanceOrder.setScheduled_date(formattedDate);
+	        
+		} catch (ParseException e) {
+			
+			System.out.println("Failed to convert date for the forms expected date");
+		}
+		}
+		
+		model.addAttribute("maintenanceOrders", maintenanceOrder);
 
 		return "/edit/edit-orders";
 	}
@@ -213,6 +236,10 @@ public class MaintenanceOrderController {
 
 		MaintenanceOrders result;
 
+		if (!maintenanceOrder.getScheduled_date().equals(""))
+		{
+			maintenanceOrder.setScheduled_date(dateConverter(maintenanceOrder.getScheduled_date()));	
+		}
 
 		hashtable.put("date", maintenanceOrder.getScheduled_date().strip());
 		hashtable.put("details", maintenanceOrder.getDetails().strip());
@@ -235,8 +262,101 @@ public class MaintenanceOrderController {
 
 
 		maintenanceOrderRepository.save(result);
-		Logger.info("{} || successfully updated the maintenance order with ID {}",loggedInUser.getUsername(), maintenanceOrder.getId());
+		Logger.info("{} || successfully updated the Maintenance Order with ID {}",loggedInUser.getUsername(), maintenanceOrder.getId());
 		return "redirect:" + redirectLocation;
+	}
+	
+
+	/**
+	 * Adds all of the required attributes to the model to render the add order page
+	 * @param maintenanceOrder holds the new maintenance order being added to the model
+	 * @param model used to load attributes into the Thymeleaf model
+	 * @param session used to load attributes into the current users HTTP session
+	 * @return /add/add-order
+	 */
+	
+	@GetMapping("/add-order")
+	public String showOrderAddForm(MaintenanceOrders maintenanceOrder, Model model, HttpSession session) {
+		model.addAttribute("redirectLocation", (String) session.getAttribute("redirectLocation"));
+		model.addAttribute("currentPage","/maintenanceorders");
+		User user = userService.getLoggedInUser();
+		model = NotificationController.loadNotificationsIntoModel(user, model);
+		model.addAttribute("technicians", user.getCarrier().getTechnicians());
+		model.addAttribute("vehicles", user.getCarrier().getVehicles());
+
+		session.removeAttribute("message");
+		model.addAttribute("orderForm", new MaintenanceOrders());
+
+		return "/add/add-order";
+	}
+
+	/**
+	 * Receives a maintenance order object by the user and passes it off for validation
+	 * Once valid it is saved to the maintenance order repository
+	 * @param maintenanceOrder holds the new maintenance order created by the user
+	 * @param model used to load attributes into the Thymeleaf model
+	 * @param session used to load attributes into the current users HTTP session
+	 * @return /add/add-order
+	 */
+
+	@PostMapping("submit-add-order")
+	public String maintenanceOrderForm(@ModelAttribute("orderForm") MaintenanceOrders maintenanceOrder, Model model, HttpSession session) {
+		model.addAttribute("redirectLocation", (String) session.getAttribute("redirectLocation"));
+		model.addAttribute("currentPage","/maintenanceorders");
+		User user = userService.getLoggedInUser();
+		model = NotificationController.loadNotificationsIntoModel(user, model);
+		model.addAttribute("technicians", user.getCarrier().getTechnicians());
+		model.addAttribute("vehicles", user.getCarrier().getVehicles());
+
+		Hashtable<String, String> hashtable = new Hashtable<>();
+
+		if (!maintenanceOrder.getScheduled_date().equals(""))
+		{
+			maintenanceOrder.setScheduled_date(dateConverter(maintenanceOrder.getScheduled_date()));	
+		}
+		
+		hashtable.put("date", maintenanceOrder.getScheduled_date().strip());
+		hashtable.put("details", maintenanceOrder.getDetails().strip());
+		hashtable.put("serviceType", maintenanceOrder.getService_type_key().strip());
+		hashtable.put("cost", maintenanceOrder.getCost().strip());
+		hashtable.put("status", maintenanceOrder.getStatus_key().strip());
+		hashtable.put("type", maintenanceOrder.getMaintenance_type().strip());
+		hashtable.put("vehiclePlateAndVin", maintenanceOrder.getVehicle().getPlateNumber() + " " + maintenanceOrder.getVehicle().getVinNumber());
+		hashtable.put("techniciansContactFullName", maintenanceOrder.getTechnician().getContact().getFirstName().strip() + " " + maintenanceOrder.getTechnician().getContact().getLastName().strip());
+	
+		MaintenanceOrders result;
+
+		result = validationServiceImp.validateMaintenanceOrder(hashtable, session);
+
+
+		if (result == null) {
+			Logger.error("{} || attempted to add a new Maintenance Order but "+ session.getAttribute("message") ,user.getUsername());
+			model.addAttribute("message", session.getAttribute("message"));
+			return "/add/add-order";
+		}
+
+
+		maintenanceOrderRepository.save(result);
+		Logger.info("{} || successfully added a new Maintenance Order with ID {}",user.getUsername(), result.getId());
+
+		return "redirect:" + (String) session.getAttribute("redirectLocation");
+	}
+	
+	/**
+	 * Converts date from date picker into the expect format for saving to the repositories
+	 * @param originalDateString holds the original date
+	 * @return newDateString
+	 */
+	
+	String dateConverter(String originalDateString) {
+		
+		DateTimeFormatter originalDateFormatter = DateTimeFormatter.ISO_LOCAL_DATE;
+		LocalDate originalDate = LocalDate.parse(originalDateString, originalDateFormatter);
+
+		DateTimeFormatter newDateFormatter = DateTimeFormatter.ofPattern("dd-MMM-yyyy");
+		String newDateString = originalDate.format(newDateFormatter);
+		
+		return newDateString;
 	}
 
 }
