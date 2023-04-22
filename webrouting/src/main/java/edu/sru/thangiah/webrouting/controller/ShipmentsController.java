@@ -589,111 +589,6 @@ public class ShipmentsController {
 	}
 
 	/**
-	 * Redirects user to the add shipments page
-	 * Adds carriers and vehicles to the model
-	 * @param model used to load attributes into the Thymeleaf model
-	 * @param shipment Information on the shipment being added
-	 * @param result Ensures that the values entered by the user are valid
-	 * @return "/add/add-shipments"
-	 */
-	
-	@GetMapping({"/add-shipments"})
-	public String showList(Model model, Shipments shipment, BindingResult result) {
-		model.addAttribute("carriers", carriersRepository.findAll());
-		model.addAttribute("vehicles", vehiclesRepository.findAll());
-		model.addAttribute("currentPage","/shipments");
-
-		User user = userService.getLoggedInUser();
-		model = NotificationController.loadNotificationsIntoModel(user, model);
-
-		return "/add/add-shipments";
-	}
-
-	/**
-	 * Adds a shipment to the database. Checks if there are errors in the form
-	 * Sets carrier, vehicle to null, paid amount and scac are empty strings and full freight terms is set to AVAILABLE SHIPMENT. 
-	 * Currently logged in user is also associated with that shipment
-	 * If there are no errors, the shipment is saved in the shipmentsRepository. and the user is redirect to /pendingshipments 
-	 * If there are errors, the user is redirected to the /add/add-shipments page
-	 * @param shipment Stores the information on the shipment being added
-	 * @param result Ensures that the values entered by the user are valid
-	 * @param model used to load attributes into the Thymeleaf model
-	 * @return redirects to /pendingshipments" or /add/add-shipments
-	 */
-	@RequestMapping({"/addshipments"})
-	public String addShipment(@Validated Shipments shipment, BindingResult result, Model model) {
-		userValidator.addition(shipment, result);
-		if (result.hasErrors()) {
-
-			User users = userService.getLoggedInUser();
-			List<Notification> notifications = new ArrayList<>();
-
-			if(!(users == null)) {
-				notifications = NotificationController.fetchUnreadNotifications(users);
-			}
-
-			model.addAttribute("notifications",notifications);
-
-			return "/add/add-shipments";
-		}
-
-		User user = userService.getLoggedInUser();
-
-		boolean deny = false;
-		List<Shipments> shipmentsList = (List<Shipments>) shipmentsRepository.findAll();
-
-		for (Shipments s : shipmentsList) {
-			if (s.getCommodityClass().equals(shipment.getCommodityClass()) 
-					&& s.getCommodityPaidWeight().equals(shipment.getCommodityPaidWeight())
-					&& s.getCommodityPieces().equals(shipment.getCommodityPieces())
-					&& s.getClient().equals(shipment.getClient())
-					&& s.getConsigneeLatitude().equals(shipment.getConsigneeLatitude())
-					&& s.getConsigneeLongitude().equals(shipment.getConsigneeLongitude())
-					&& s.getShipDate().equals(shipment.getShipDate())) {
-				deny = true;
-			}
-		}
-
-		if (deny == true) {
-			model.addAttribute("error", "Error adding a shipment: Shipment already exists!");
-			Logger.error("{} || attempted to add a shipment that already exists.", user.getUsername());
-			List<Shipments> shipmentsWOCarrier = new ArrayList<>();
-			if (user.getRole().toString().equals("SHIPPER")) {
-				List<Shipments> shipments = user.getShipments();
-				if (shipments.size() != 0 && shipments != null) {
-					for (int i = 0; i < shipments.size(); i++) {
-						if (shipments.get(i).getFullFreightTerms().equals("AVAILABLE SHIPMENT")) {
-							shipmentsWOCarrier.add(shipments.get(i));
-						}
-					}
-				}
-				if (shipmentsWOCarrier.size() != 0 && shipmentsWOCarrier != null) {
-					model.addAttribute("shipments", shipmentsWOCarrier);   
-				}
-
-			}
-
-			model = NotificationController.loadNotificationsIntoModel(user, model);
-
-			return "pendingshipments";
-		}
-
-		shipment.setCarrier(null);
-		shipment.setVehicle(null);
-		shipment.setPaidAmount("");
-		shipment.setScac("");
-		shipment.setFreightbillNumber("");
-		shipment.setFullFreightTerms("PENDING");
-		shipment.setUser(userService.getLoggedInUser());
-		shipmentsRepository.save(shipment);
-		Logger.info("{} || has successfully added a new shipment with ID {}.",user.getUsername(), shipment.getId());       
-
-		model = NotificationController.loadNotificationsIntoModel(user, model);
-
-		return "redirect:/pendingshipments";
-	}
-
-	/**
 	 * Finds a frozen shipment that Master wants to delete. Using the id parameter and if found, redirects to delete confirmation page
 	 * @param id of the shipment being deleted
 	 * @param model used to load attributes into the Thymeleaf model
@@ -1239,6 +1134,7 @@ public class ShipmentsController {
 		result = validationServiceImp.validateShipmentForm(hashtable, session);
 
 		if (result == null) {
+			Logger.error("{} || attempted to edit a shipment but "+ session.getAttribute("message"), user.getUsername());
 			model.addAttribute("message", session.getAttribute("message"));
 			return "/edit/edit-shipments";
 		}

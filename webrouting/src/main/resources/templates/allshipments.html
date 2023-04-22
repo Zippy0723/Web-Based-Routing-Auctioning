@@ -35,7 +35,7 @@
        	        </div>
        	        <span th:text="${successMessage}" class="successMessage"></span>
 				<br>
-    			  <p sec:authorize="hasAuthority('SHIPPER')"><button class="buttons7" onclick="window.location.href='/uploadshipments';">Import Excel Sheet</button><button class="buttons7" onclick="window.location.href='/add-shipments';">Add New Shipment</button></p>
+    			  <p sec:authorize="hasAuthority('SHIPPER')"><button class="buttons7" onclick="window.location.href='/uploadshipments';">Import Excel Sheet</button><button class="buttons7" onclick="window.location.href='/add-shipment';">Add New Shipment</button></p>
     			  <br>
     			  <br>
 				<div th:if="${status != 'CARRIER'}">
