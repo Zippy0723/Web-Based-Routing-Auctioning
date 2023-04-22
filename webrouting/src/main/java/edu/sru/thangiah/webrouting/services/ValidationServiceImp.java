@@ -214,7 +214,7 @@ public class ValidationServiceImp {
 		}
 		catch (Exception e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			session.setAttribute("message", "Excel File was incorrectly formatted.");
 			return null;
 		}
 		return result;
@@ -473,7 +473,7 @@ public class ValidationServiceImp {
 		}
 		catch (Exception e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			session.setAttribute("message", "Excel File was incorrectly formatted.");
 			return null;
 		}
 		return result;
@@ -694,7 +694,7 @@ public class ValidationServiceImp {
 		}
 		catch (Exception e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			session.setAttribute("message", "Excel File was incorrectly formatted.");
 			return null;
 		}
 
@@ -869,7 +869,7 @@ public class ValidationServiceImp {
 		}
 		catch (Exception e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			session.setAttribute("message", "Excel File was incorrectly formatted.");
 			return null;
 		}
 		
@@ -1046,7 +1046,7 @@ public class ValidationServiceImp {
 			}
 			catch (Exception e) {
 				// TODO Auto-generated catch block
-				e.printStackTrace();
+				session.setAttribute("message", "Excel File was incorrectly formatted.");
 				return null;
 			}
 		}
@@ -1143,14 +1143,8 @@ public class ValidationServiceImp {
 				String vehicleTypeMakeModel = row.getCell(3).toString().strip();
 				String locationName = row.getCell(4).toString().strip();
 
-				try {
 				manufacturedYear = manufacturedYear.substring(0, manufacturedYear.length() - 2);
-				}
-				catch(Exception e){
-					session.setAttribute("message", "Excel File was incorrectly formatted.");
-					return null;
-					
-				}
+				
 				Hashtable<String, String> hashtable = new Hashtable<>();
 
 				hashtable.put("plate", plate);
@@ -1179,7 +1173,7 @@ public class ValidationServiceImp {
 		}
 		catch (Exception e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			session.setAttribute("message", "Excel File was incorrectly formatted.");
 			return null;
 		}
 		return result;
@@ -1338,7 +1332,7 @@ public class ValidationServiceImp {
 			}
 			catch (Exception e) {
 				// TODO Auto-generated catch block
-				e.printStackTrace();
+				session.setAttribute("message", "Excel File was incorrectly formatted.");
 				return null;
 			}
 		}
@@ -1487,7 +1481,7 @@ public class ValidationServiceImp {
 		}
 		catch (Exception e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			session.setAttribute("message", "Excel File was incorrectly formatted.");
 			return null;
 		}
 		return result;
