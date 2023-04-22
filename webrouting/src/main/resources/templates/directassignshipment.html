@@ -115,12 +115,13 @@
 			var selectedRadioButton = document.querySelector('input[type="radio"]:checked');
 			var selectedCarrier = selectedRadioButton.value;
 			var shipmentId = document.querySelector('[name="shipmentId"]').getAttribute('value');
-
+			var domain = window.location.hostname;
+			
 			$.ajax({
 				 type : "GET",
 				 contentType: "application/json",
 				 dataType: "json",
-				 url : "http://localhost:8080/getfreightrateprice/" + shipmentId + "-" + selectedCarrier,
+				 url : "http://" + domain + ":8080/getfreightrateprice/" + shipmentId + "-" + selectedCarrier,
 				 success : function (data, status) {
 					 input.value = data;
 				 },

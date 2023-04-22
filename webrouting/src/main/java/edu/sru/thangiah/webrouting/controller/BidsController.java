@@ -39,6 +39,8 @@ import edu.sru.thangiah.webrouting.web.UserValidator;
  * dealing with bids
  * @author Ian Black	imb1007@sru.edu
  * @since 4/8/2022
+ * @author Thomas Haley    tjh1019@sru.edu
+ * @since 1/1/2023
  */
 
 @Controller
