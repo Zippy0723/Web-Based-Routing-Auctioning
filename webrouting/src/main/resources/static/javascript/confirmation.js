@@ -1,4 +1,8 @@
+//Each function takes link and targetUrl as argurments
+//link triggers the delete operation and contains the data attributes 
+//TargetUrl is the base URL for the delete operation 
 
+//Delete confirmation popup takes the link and targetUrl
 function deleteObjectConfirm(link,targetUrl) {
   var objectType = link.dataset.objectType;
   var objectId = link.dataset.objectId;
@@ -23,8 +27,7 @@ function deleteObjectConfirm(link,targetUrl) {
 				});
 			}
 		}
-
-
+//Push Shipment to Auction confirmation popup 
 function pushShipmentConfirm(link,targetUrl) {
   var objectId = link.dataset.objectId;
   var objectName = link.dataset.objectName;
@@ -49,7 +52,7 @@ function pushShipmentConfirm(link,targetUrl) {
 			}
 		}
 }
-
+//Remove from Auction confirmation popup 
 function auctionRemoveConfirm(link,targetUrl) {
   var objectId = link.dataset.objectId;
   var objectName = link.dataset.objectName;
@@ -74,7 +77,7 @@ function auctionRemoveConfirm(link,targetUrl) {
 			}
 		}
 }
-
+//Freeze Shipment confirmation popup 
 function freezeShipmentConfirm(link,targetUrl) {
   var objectType = link.dataset.objectType;
   var objectId = link.dataset.objectId;
@@ -100,7 +103,7 @@ function freezeShipmentConfirm(link,targetUrl) {
 			}
 		}
 }
-
+//Unfreeze Shipment confirmation popup 
 function unfreezeShipmentConfirm(link,targetUrl) {
   var objectId = link.dataset.objectId;
   var objectName = link.dataset.objectName;
@@ -125,7 +128,7 @@ function unfreezeShipmentConfirm(link,targetUrl) {
 			}
 		}
 }
-
+//Reset Bid confirmation popup 
 function resetBidConfirm(link,targetUrl) {
   var objectId = link.dataset.objectId;
   var objectName = link.dataset.objectName;
@@ -150,7 +153,7 @@ function resetBidConfirm(link,targetUrl) {
 			}
 		}
 }
-
+//Force End Auction confirmation popup 
 function endAuctionConfirm(link,targetUrl) {
   var objectId = link.dataset.objectId;
   var objectName = link.dataset.objectName;
