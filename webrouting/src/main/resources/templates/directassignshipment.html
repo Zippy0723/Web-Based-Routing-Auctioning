@@ -112,6 +112,7 @@
         <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 		<script>
 		function fetchPrice(){
+			$('*').css('cursor','wait')
 			var input = document.getElementById("inputPrice");
 			var selectedRadioButton = document.querySelector('input[type="radio"]:checked');
 			var selectedCarrier = selectedRadioButton.value;
@@ -125,8 +126,10 @@
 				 url : "http://" + domain + ":8080/getfreightrateprice/" + shipmentId + "-" + selectedCarrier,
 				 success : function (data, status) {
 					 input.value = data;
+					 $('*').css('cursor','default')
 				 },
 			     error : function (jqXHR, textStatus, errorThrown) {
+			    	 $('*').css('cursor','default')
 			    	 location.reload();
 			      }
 				});
