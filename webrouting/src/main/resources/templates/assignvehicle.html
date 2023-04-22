@@ -20,7 +20,7 @@
                 <h1 class="heading_content">Enterprise Routing System&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;Customer Service: 1 (800) 778-9111</h1>
             </div>
             <div id="menu-wrapper">
-            	<br><br>
+            	<br>
             </div>
             
            <div th:replace="fragments/general.html :: sidebar"></div>
@@ -36,15 +36,17 @@
                 <form action="#" th:action="@{/assignvehicletransaction/{shipmentId}(shipmentId=${shipment.id})}" method="post">
         <hr>
         <div class="form-group">
+        <br>
             <select name="vehicle" class="form-control" required>
-                <option value="" disabled selected>Select a vehicle</option>
                 <th:block th:each="vehicle : ${vehicles}">
                     <option th:text="${vehicle}" th:value="${vehicle.id}"></option>
                 </th:block>
             </select>
             <input type="hidden" th:name="shipmentId" th:value="${shipment.id}"/>
-            <button type="submit" class="btn btn-primary">Assign Vehicle</button>
-            <button type="button" class="btn btn-primary" th:onclick="getBestVehicle()">Select Best Vehicle (Based on Distance)</button>
+            <button class="buttons6" type="submit" >Assign Vehicle</button>
+            <br>
+            <button class="buttons6" type="button"  th:onclick="getBestVehicle()">Select Best Vehicle (Based on Distance)</button>
+            <br><br>
         </div>
     </form>
             </div>
