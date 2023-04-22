@@ -384,7 +384,6 @@ public class VehiclesController {
 		
 		model.addAttribute("shipment",shipment);
 		model.addAttribute("vehicles",vehicles);
-		model.addAttribute("selectedVehicle",vehicles.get(0));
 		
 		
 		model = NotificationController.loadNotificationsIntoModel(user, model);

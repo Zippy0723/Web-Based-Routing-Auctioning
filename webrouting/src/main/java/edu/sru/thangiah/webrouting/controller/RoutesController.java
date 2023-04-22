@@ -63,7 +63,7 @@ public class RoutesController {
 
 		if (anydate) {
 			model.addAttribute("shipments", vehicle.getShipments());
-			model.addAttribute("vehicle", vehiclesRepository.findAll());
+			model.addAttribute("vehicle", getVehiclesWithShipmentsFromList(userService.getLoggedInUser().getCarrier().getVehicles()));
 
 			User users = userService.getLoggedInUser();
 			List<Notification> notifications = new ArrayList<>();
@@ -92,7 +92,7 @@ public class RoutesController {
 
 			System.out.println(shownShipments);
 			model.addAttribute("shipments", shownShipments);
-			model.addAttribute("vehicle", getVehiclesWithShipments());
+			model.addAttribute("vehicle", getVehiclesWithShipmentsFromList(userService.getLoggedInUser().getCarrier().getVehicles()));
 
 			User user = userService.getLoggedInUser();
 			model = NotificationController.loadNotificationsIntoModel(user, model);
@@ -128,12 +128,12 @@ public class RoutesController {
 	}
 
 	/**
-	 * Looks through the list of vehicles and determines if that vehicle has shipments associated with it. <br>
+	 * Looks through the list of vehicles and determines if that vehicle has shipments associated with it
 	 * If there are shipments, it is added to a list called displayedList which is returned to the user.
 	 * @return displayedList
 	 */
 	public List<Vehicles> getVehiclesWithShipments() {
-		Iterable<Vehicles> vehicles = vehiclesRepository.findAll();
+		Iterable<Vehicles> vehicles = (userService.getLoggedInUser().getCarrier().getVehicles());
 		List<Vehicles> displayedList = new ArrayList<>();
 		for (Vehicles vehicle : vehicles) {
 			if (!vehicle.getShipments().isEmpty()) {
