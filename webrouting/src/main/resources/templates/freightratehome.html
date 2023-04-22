@@ -95,7 +95,26 @@
 		<script src="javascript/deleteObject.js"></script>
 		<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 		
+		
+
 <script>
+    // Retrieve the selected carrier value from localStorage, if available
+    var selectedCarrier = localStorage.getItem("selectedCarrier");
+    if (selectedCarrier) {
+        document.getElementById("selectedCarrierId").value = selectedCarrier;
+    }
+
+    // Listen for change event on carrier select and store the selected value in localStorage
+    document.getElementById("selectedCarrierId").addEventListener("change", function() {
+        var selectedValue = this.value;
+        localStorage.setItem("selectedCarrier", selectedValue);
+    });
+</script>
+		
+<script>
+	//The reason why I did this instead of using a th:each is a long and complex tale 
+	//Ripe with misfortune, and pain. But basically, theres no good reason. 
+
     $(document).ready(function() {
         // Get the distance breakpoints and price per mile values
         var distanceBreakpoints = $('#distanceBreakpoints').text();
