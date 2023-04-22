@@ -59,6 +59,9 @@ public class User {
 	@OneToMany(mappedBy = "user")
 	private List<Notification> notifications = new ArrayList<>();
 
+	@OneToMany(mappedBy = "user")
+	private List<FreightRateTable> freightRateTables = new ArrayList<>();
+	
 	@Column(name = "verification_code", nullable=true, length=64)
 	private String verificationCode;
 
@@ -76,10 +79,6 @@ public class User {
 
 	@NonNull
 	private boolean auctioningAllowed;
-
-	@Lob
-	@Column(name= "freightratetable",nullable=true)
-	private byte[] freightRateTables;
 
 	/**
 	 * Gets the User ID
@@ -325,14 +324,15 @@ public class User {
 	/**
 	 * @return the freightRateTables
 	 */
-	public byte[] getFreightRateTables() {
+	public List<FreightRateTable> getFreightRateTables() {
 		return freightRateTables;
 	}
 
 	/**
 	 * @param freightRateTables the freightRateTables to set
 	 */
-	public void setFreightRateTables(byte[] freightRateTables) {
+	public void setFreightRateTables(List<FreightRateTable> freightRateTables) {
 		this.freightRateTables = freightRateTables;
 	}
+
 }

@@ -437,29 +437,6 @@ public class ExcelController {
 		return "redirect:" + redirectLocation;	
 	}
 
-	@PostMapping("/upload-freightrate-table")
-	public String uploadFreightRateTable(@RequestParam("file") MultipartFile excelData, HttpSession session, Model model) {
-		String redirectLocation = (String) session.getAttribute("redirectLocation");
-		XSSFWorkbook workbook;
-		User user = userService.getLoggedInUser();
-		model = NotificationController.loadNotificationsIntoModel(user, model);
-
-		try {
-			workbook = new XSSFWorkbook(excelData.getInputStream());
-			ByteArrayOutputStream bos = new ByteArrayOutputStream();
-			workbook.write(bos);
-			bos.close();
-			byte[] freightRateTable = bos.toByteArray();
-			user.setFreightRateTables(freightRateTable);
-			userRepository.save(user);
-
-		} catch (Exception e){
-			session.setAttribute("message", "Uploaiding freight rate table has failed, please check your excel file");
-		}
-
-		return "redirect:" + (String) session.getAttribute("redirectLocation");
-	}
-
 
 	@GetMapping("/excel-download-vehicletypes")
 	public String downloadVehicleTypesFromExcel(HttpSession session){
