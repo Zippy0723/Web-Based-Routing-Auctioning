@@ -41,7 +41,7 @@
 					<h2>Filter Routes</h2>
 					<br>
                     <label for="vehicle">Select Vehicle: </label>
-                    <select name="id" required>
+                    <select name="id" id="vehicleSelect" required>
                         <th:block th:each="vehicle : ${vehicle}">
                             <option th:text="${vehicle}" th:value="${vehicle.id}"></option>
                         </th:block>
@@ -112,6 +112,7 @@
 			</div>
 
 <script>
+	//draws the map widget onto the page
     function initMap() {
         map = new google.maps.Map(document.getElementById('map'), {
             zoom: 7,
@@ -142,6 +143,20 @@
             }
         });
     }
+</script>
+
+<script>
+	//caches whatever vehicle is selected in th:block, then sets the selector back to what it was before on page refresh.
+
+    var selectedVehicle = localStorage.getItem("selectedVehicle");
+    if (selectedVehicle) {
+        document.getElementById("vehicleSelect").value = selectedVehicle;
+    }
+
+    document.getElementById("vehicleSelect").addEventListener("change", function() {
+        var selectedValue = this.value;
+        localStorage.setItem("selectedVehicle", selectedValue);
+    });
 </script>
 <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC9WwWWVbzUHeUBgj9AAh1aSMjSsrPpELM&callback=initMap&libraries=places"></script>
             </div>
