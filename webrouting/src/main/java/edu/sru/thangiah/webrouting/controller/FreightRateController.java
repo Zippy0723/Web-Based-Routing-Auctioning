@@ -16,7 +16,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -35,6 +37,11 @@ import edu.sru.thangiah.webrouting.services.ApiServiceImpl;
 import edu.sru.thangiah.webrouting.services.NotificationService;
 import edu.sru.thangiah.webrouting.services.UserService;
 
+/**
+ * Controller for freight rate table functions
+ * @author Thomas Haley
+ *
+ */
 @Controller
 public class FreightRateController {
 	
@@ -61,11 +68,20 @@ public class FreightRateController {
 		this.shipmentsRepository = shipmentsRepository;
 	}
 	
+	/**
+	 * Loads the Freight rate table homepage
+	 * 
+	 * @param model
+	 * @param session
+	 * @return
+	 */
 	@RequestMapping("/freightratehome")
 	public String freightRateHome(Model model,HttpSession session) {
 		User user = userService.getLoggedInUser();
 		model = NotificationController.loadNotificationsIntoModel(user, model);
 		model.addAttribute("currentPage","/freightratehome");
+		ArrayList<Carriers> carriers = (ArrayList<Carriers>) carrierRepository.findAll();
+		model.addAttribute("carriers",carriers);
 		
 		try {
 			model.addAttribute("message",session.getAttribute("message"));
@@ -74,10 +90,36 @@ public class FreightRateController {
 		catch(Exception e){
 			//do nothing
 		}
+		try {
+			Long selectedCarrierId = (Long) session.getAttribute("selectedCarrierID");
+			Carriers selectedCarrier = carrierRepository.findById(selectedCarrierId)
+					.orElseThrow(() -> new IllegalArgumentException("Invalid carrier Id:" + selectedCarrierId));
+			session.removeAttribute("selectedCarrier");
+			List<FreightRateTable> tables = user.getFreightRateTables();
+			
+			for(FreightRateTable table : tables) {
+				if(table.getCarrier() == selectedCarrier) {
+					model.addAttribute("distancebreakpoints",table.getDistanceBreakPoints().replace("]", "").replace("[", ""));
+					model.addAttribute("priceppermiles",table.getPricePerMileArray().replace("]", "").replace("[", ""));
+				}
+			}
+
+		}
+		catch(Exception e){
+			//do nothing
+		}
 
 		return "freightratehome";
 	}
 	
+	/**
+	 * Uploads a freight rate table from excel into the SQL database 
+	 * 
+	 * @param excelData the file the user uploaded
+	 * @param model pointer to the thymeleaf model
+	 * @param session pointer to the users HTTP session
+	 * @return
+	 */
 	@RequestMapping("upload-freightratetable")
 	public String loadFreightRateTable(@RequestParam("file") MultipartFile excelData, Model model, HttpSession session) {
 		XSSFWorkbook workbook;
@@ -156,8 +198,15 @@ public class FreightRateController {
 		
 	}
 	
-	/*
+	/**
+	 * Method intended to be called through AJAX, fetches the price of a shipment given the
+	 * users freight rate table. Returns null if no freight rate table exists for the carrier
 	 * 
+	 * @param shipmentid Id of the Shipment being Priced
+	 * @param carrierid Id of the selected carrier
+	 * @param session pointer to the current users HTTP sessions
+	 * @return result The price of the shipment dictated by the freight rate table
+	 * @throws IOException
 	 */
 	@RequestMapping(value="/getfreightrateprice/{shipmentid}-{carrierid}",method = RequestMethod.GET)
 	@ResponseBody
@@ -197,9 +246,6 @@ public class FreightRateController {
 			session.setAttribute("message", "There is a formatting error in your freight rate table. Unable to price shipment");
 			return null;
 		}
-
-		System.out.println(price);
-		System.out.println(distance);
 		
 		Double result = null;
 		try {
@@ -211,5 +257,19 @@ public class FreightRateController {
 		}
 		
 		return result.toString();
+	}
+	
+	/**
+	 * Shows the freight rate home page with a specific carriers freight rate table selected
+	 * 
+	 * @param selectedCarrier the carrier the user selected in the dropdown
+	 * @param session pointer to the users http session
+	 * @return
+	 */
+	@PostMapping("displayCarrierFreightRateTable")
+	public String displayCarrierFreightRateTable(@RequestParam("selectedCarrierId") Long selectedCarrierId, HttpSession session) {
+		session.setAttribute("selectedCarrierID", selectedCarrierId);
+		
+		return "redirect:/freightratehome";
 	}
 }

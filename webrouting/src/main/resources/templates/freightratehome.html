@@ -56,7 +56,35 @@
 				</div>
 				</form>
 	      		<br><br><br><br>
+	      		<div style="display: flex;justify-content: center;align-items: center;">
 	      		<h3>Current Freight Rate Tables: </h3>
+	      		<form th:action="@{/displayCarrierFreightRateTable}" method="post">
+                <select name="selectedCarrierId" id="selectedCarrierId">
+                <option th:each="carrier : ${carriers}" th:value="${carrier.id}" th:text="${carrier.scac}"></option>
+                </select>
+                <input type="submit">
+                </form>
+                </div>
+                <div style="display: flex;justify-content: center;align-items: center;">
+                <table class="dataTable" style="width:30%">
+                <thead>
+                <tr>
+                	<th>Distance Breakpoints</th>
+                	<th>Price per mile</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+            <td>
+                <div th:text="${distancebreakpoints}" id="distanceBreakpoints"></div>
+            </td>
+            <td>
+                <div th:text="${priceppermiles}" id="pricePerMile"></div>
+            </td>
+                </tr>
+                </tbody>
+                </table>
+            	</div>
             	</div>
         	</div>
 
@@ -66,5 +94,24 @@
 		</script>
 		<script src="javascript/deleteObject.js"></script>
 		<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+		
+<script>
+    $(document).ready(function() {
+        // Get the distance breakpoints and price per mile values
+        var distanceBreakpoints = $('#distanceBreakpoints').text();
+        var pricePerMile = $('#pricePerMile').text();
+
+        // Split the values by comma and join with <br/> to create newlines
+        var distanceBreakpointsArray = distanceBreakpoints.split(',');
+        var pricePerMileArray = pricePerMile.split(',');
+
+        var distanceBreakpointsHtml = distanceBreakpointsArray.join('<br/>');
+        var pricePerMileHtml = pricePerMileArray.join('<br/>');
+
+        // Update the divs with the newlines-separated values
+        $('#distanceBreakpoints').html(distanceBreakpointsHtml);
+        $('#pricePerMile').html(pricePerMileHtml);
+    });
+</script>
 	</body>
 </html>   

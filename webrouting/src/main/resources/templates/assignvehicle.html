@@ -58,11 +58,12 @@
 		function getBestVehicle(){
 			let bestId;
 			var shipmentId = document.querySelector('[name="shipmentId"]').getAttribute('value');
+			var domain = window.location.hostname;
 
 			// Make an AJAX request to the API
 			$.ajax({
 			    type: "GET",
-			    url: "http://localhost:8080/getbestvehicle/" + shipmentId, 
+			    url: "http://" + domain + ":8080/getbestvehicle/" + shipmentId, 
 			    success: function(response) {
 		            // Get the select element and options
 		            var select = document.getElementsByName("vehicle")[0];

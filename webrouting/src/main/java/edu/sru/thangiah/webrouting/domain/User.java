@@ -22,6 +22,8 @@ import org.springframework.lang.NonNull;
  * Class for the User handling all user attributes
  * @author Josh Gearhart	jjg1018@sru.edu
  * @since 1/30/2022
+ * @author Thomas Haley     tjh1019@sru.edu
+ * @since 1/1/2023
  */
 
 @Entity

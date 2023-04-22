@@ -10,6 +10,13 @@ import javax.persistence.Table;
 
 import org.hibernate.annotations.GenericGenerator;
 
+/**
+ * Stores a table that can generate pricing for shipment based on factors about those shipments
+ * 
+ * @author Thomas Haley    tjh1019@sru.edu
+ * @since 1/1/2023
+ *
+ */
 @Entity
 @Table(name = "freight_rate_tables")
 public class FreightRateTable {
