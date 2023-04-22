@@ -4,8 +4,10 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
-
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.EmptyStackException;
 import java.util.Hashtable;
@@ -975,12 +977,29 @@ public class ShipmentsController {
 
 		User user = userService.getLoggedInUser();
 		model = NotificationController.loadNotificationsIntoModel(user, model);
-
-		model.addAttribute("shipments", shipment);
 		model.addAttribute("redirectLocation", session.getAttribute("redirectLocation"));
 		model.addAttribute("currentPage","/shipments");
 
 		session.removeAttribute("message");
+
+
+		//This converts the date to a format that the page is expecting to load it into the date object form
+		try {
+			SimpleDateFormat inputFormat = new SimpleDateFormat("dd-MMM-yyyy");
+	        Date date;
+			date = inputFormat.parse(shipment.getShipDate());
+	        SimpleDateFormat outputFormat = new SimpleDateFormat("yyyy-MM-dd");
+	        String formattedDate = outputFormat.format(date);
+	        shipment.setShipDate(formattedDate);
+	        
+		} catch (ParseException e) {
+			
+			System.out.println("Failed to convert date for the forms expected date");
+		}
+
+		
+		model.addAttribute("shipments", shipment);
+
 
 		return "/edit/edit-shipments";
 
@@ -1010,6 +1029,8 @@ public class ShipmentsController {
 		model = NotificationController.loadNotificationsIntoModel(user, model);
 
 		Hashtable<String, String> hashtable = new Hashtable<>();
+		
+		shipment.setShipDate(dateConverter(shipment.getShipDate()));
 
 		hashtable.put("clientName", shipment.getClient().strip());
 		hashtable.put("clientMode", shipment.getClientMode().strip());
@@ -1050,6 +1071,107 @@ public class ShipmentsController {
 		Logger.info("{} || successfully updated the shipment with ID {}",user.getUsername(), result.getId());
 		return "redirect:" + redirectLocation;
 
+	}
+	
+	/**
+	 * Adds all of the required attributes to the model to render the add shipment page
+	 * @param shipment holds the new shipment bing added to the form
+	 * @param model used to load attributes into the Thymeleaf model
+	 * @param session used to load attributes into the current users HTTP session
+	 * @return /add/add-shipment
+	 */
+	
+	@GetMapping("/add-shipment")
+	public String showShipmentAddForm(Shipments shipment, Model model, HttpSession session) {
+		model.addAttribute("redirectLocation", (String) session.getAttribute("redirectLocation"));
+		model.addAttribute("currentPage","/shipments");
+		User user = userService.getLoggedInUser();
+		model = NotificationController.loadNotificationsIntoModel(user, model);
+		
+		
+		session.removeAttribute("message");
+		
+		model.addAttribute("shipments", new Shipments());
+
+		return "/add/add-shipment";
+	}
+	
+	/**
+	 * Receives a shipment object by the user and passes it off for validation
+	 * Once valid it is saved to the shipment repository
+	 * @param shipment holds the shipment object submitted by the user
+	 * @param model used to load attributes into the Thymeleaf model
+	 * @param session used to load attributes into the current users HTTP session
+	 * @return /add/add-shipment
+	 */
+	
+	@PostMapping("submit-add-shipment")
+	public String shipmentOrderForm(@ModelAttribute("shipments") Shipments shipment, Model model, HttpSession session) {
+		model.addAttribute("redirectLocation", (String) session.getAttribute("redirectLocation"));
+		model.addAttribute("currentPage","/shipments");
+		User user = userService.getLoggedInUser();
+		model = NotificationController.loadNotificationsIntoModel(user, model);
+
+		Hashtable<String, String> hashtable = new Hashtable<>();
+
+		
+		shipment.setShipDate(dateConverter(shipment.getShipDate()));
+		
+		hashtable.put("clientName", shipment.getClient().strip());
+		hashtable.put("clientMode", shipment.getClientMode().strip());
+		hashtable.put("date", shipment.getShipDate().strip());
+		hashtable.put("commodityClass", shipment.getCommodityClass().strip());
+		hashtable.put("commodityPieces", shipment.getCommodityPieces().strip());
+		hashtable.put("commodityPaidWeight", shipment.getCommodityPaidWeight().strip());
+		hashtable.put("shipperCity", shipment.getShipperCity().strip());
+		hashtable.put("shipperState", shipment.getShipperState().strip());
+		hashtable.put("shipperZip", shipment.getShipperZip().strip());
+		hashtable.put("shipperLatitude", "");
+		hashtable.put("shipperLongitude", "");
+		hashtable.put("consigneeCity", shipment.getConsigneeCity().strip());
+		hashtable.put("consigneeState", shipment.getConsigneeState().strip());
+		hashtable.put("consigneeZip", shipment.getConsigneeZip().strip());
+		hashtable.put("consigneeLatitude", "");
+		hashtable.put("consigneeLongitude", "");
+
+		Shipments result;
+
+		result = validationServiceImp.validateShipmentForm(hashtable, session);
+
+		if (result == null) {
+			Logger.error("{} || attempted to add a shipment but "+ session.getAttribute("message"), user.getUsername());
+			model.addAttribute("message", session.getAttribute("message"));
+			return "/add/add-shipment";
+		}
+
+		result.setScac("");
+		result.setFullFreightTerms("PENDING");
+		result.setPaidAmount("");
+		result.setFreightbillNumber("");
+		result.setCarrier(null);
+		result.setUser(user);
+		result.setVehicle(null);
+
+		shipmentsRepository.save(result);
+		Logger.info("{} || successfully added a new shipment with ID {}",user.getUsername(), result.getId());
+		return "redirect:" + (String) session.getAttribute("redirectLocation");
+	}
+	
+	/**
+	 * Converts date from date picker into the expect format for saving to the repositories
+	 * @param originalDateString holds the original date
+	 * @return newDateString
+	 */
+	
+	String dateConverter(String originalDateString) {
+		
+		DateTimeFormatter originalDateFormatter = DateTimeFormatter.ISO_LOCAL_DATE;
+		LocalDate originalDate = LocalDate.parse(originalDateString, originalDateFormatter);
+
+		DateTimeFormatter newDateFormatter = DateTimeFormatter.ofPattern("dd-MMM-yyyy");
+		String newDateString = originalDate.format(newDateFormatter);
+		
+		return newDateString;
 	}
 
 }

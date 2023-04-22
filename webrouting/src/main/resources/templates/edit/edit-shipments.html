@@ -54,7 +54,7 @@
 	                </select> 
 	            	<br>
 	                <label for="shipDate">Ship Date: </label>    
-	                <input type="text" th:field="*{shipDate}" id="shipDate" placeholder="06-Dec-2022" size=19 required>
+	                <input type="date" th:field="*{shipDate}" id="shipDate" placeholder="06-Dec-2022" size=19 onkeydown="return false" required>
 
 	             	<br>
 	                <label for="commodityClass">Commodity Class: </label> 

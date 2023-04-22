@@ -40,11 +40,11 @@
 					method="post">
 
 					<label class="filterContent" for="startDate">Start Date:</label>
-					<input class="filterInput" type="date" th:field="*{startDate}" name="stateDate" id="startDate" placeholder="01/01/1970" size=19>
+					<input class="filterInput" type="date" th:field="*{startDate}" name="stateDate" id="startDate" placeholder="01/01/1970" onkeydown="return false" size=19>
 
 
 					<label class="filterContent" for="endDate">End Date:</label> 
-					<input class="filterInput" type="date" th:field="*{endDate}" name="endDate" id="endDate" placeholder="01/01/1990" size=19>
+					<input class="filterInput" type="date" th:field="*{endDate}" name="endDate" id="endDate" placeholder="01/01/1990" onkeydown="return false" size=19>
 
 
 					<label class="filterContent" for="level">Level: </label> 
