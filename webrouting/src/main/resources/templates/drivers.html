@@ -49,7 +49,6 @@
                                 <tr>
                                     <th>Driver ID</th>
                                     <th>Contact</th>
-                                    <th>Carrier</th>
                                     <th>Vehicle</th>
                                     <th>License Number</th>
                                     <th>License expiration</th>
@@ -62,7 +61,6 @@
                                 <tr th:each="driver : ${drivers}">
                                     <td th:text="${driver.id}"></td>
                                     <td><a th:text="${driver.contact}" th:href="@{/viewcontact/{id}(id=${driver.contact.id})}"></a></td>
-                                    <td><a th:text="${driver.carrier.carrierName}" th:href="@{/viewcarrier/{id}(id=${driver.carrier.id})}"></a></td>
                                     <td><a th:text="${driver.vehicle}" th:href="@{/viewvehicle/{id}(id=${driver.vehicle.id})}"></a></td>
                                		<td th:text="${driver.lisence_number}"></td>
                                     <td th:text="${driver.lisence_expiration}"></td>

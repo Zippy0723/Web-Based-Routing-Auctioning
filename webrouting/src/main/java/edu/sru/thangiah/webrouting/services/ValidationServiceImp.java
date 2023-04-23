@@ -1395,7 +1395,7 @@ public class ValidationServiceImp {
 		}
 
 		if(!(licenseNumber.length() <= 32 && licenseNumber.length() > 0)){
-			session.setAttribute("message", "License number must be between 1 and 12 characters.");
+			session.setAttribute("message", "License number must be between 1 and 32 characters.");
 			return null;
 		}
 
@@ -2030,7 +2030,7 @@ public class ValidationServiceImp {
 
 		if(!(licenseNumber.length() <= 32 && licenseNumber.length() > 0)){
 			Logger.error("{} || attempted to edit a Driver but the license number must be between 1 and 32 characters.",user.getUsername());
-			session.setAttribute("message", "License number must be between 1 and 12 characters.");
+			session.setAttribute("message", "License number must be between 1 and 32 characters.");
 			return null;
 		}
 

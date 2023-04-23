@@ -979,6 +979,14 @@ public class ShipmentsController {
 		model = NotificationController.loadNotificationsIntoModel(user, model);
 		model.addAttribute("redirectLocation", session.getAttribute("redirectLocation"));
 		model.addAttribute("currentPage","/shipments");
+		
+		try {
+			model.addAttribute("message", session.getAttribute("message"));
+		}
+		catch(Exception e)
+		{
+			//do nothing
+		}
 
 		session.removeAttribute("message");
 
@@ -1024,10 +1032,7 @@ public class ShipmentsController {
 		Shipments temp = shipmentsRepository.findById(id)
 				.orElseThrow(() -> new IllegalArgumentException("Invalid Shipment Id:" + id));
 
-
 		User user = userService.getLoggedInUser();
-		model = NotificationController.loadNotificationsIntoModel(user, model);
-
 		Hashtable<String, String> hashtable = new Hashtable<>();
 		
 		shipment.setShipDate(dateConverter(shipment.getShipDate()));
@@ -1055,8 +1060,7 @@ public class ShipmentsController {
 
 		if (result == null) {
 			Logger.error("{} || attempted to edit a shipment but "+ session.getAttribute("message"), user.getUsername());
-			model.addAttribute("message", session.getAttribute("message"));
-			return "/edit/edit-shipments";
+			return "redirect:/editshipment/"+id;
 		}
 
 		result.setScac(temp.getScac());
@@ -1111,15 +1115,15 @@ public class ShipmentsController {
 		model.addAttribute("currentPage","/shipments");
 		User user = userService.getLoggedInUser();
 		model = NotificationController.loadNotificationsIntoModel(user, model);
+		
+		model.addAttribute("shipments", shipment);
 
 		Hashtable<String, String> hashtable = new Hashtable<>();
-
 		
-		shipment.setShipDate(dateConverter(shipment.getShipDate()));
 		
 		hashtable.put("clientName", shipment.getClient().strip());
 		hashtable.put("clientMode", shipment.getClientMode().strip());
-		hashtable.put("date", shipment.getShipDate().strip());
+		hashtable.put("date", dateConverter(shipment.getShipDate()));
 		hashtable.put("commodityClass", shipment.getCommodityClass().strip());
 		hashtable.put("commodityPieces", shipment.getCommodityPieces().strip());
 		hashtable.put("commodityPaidWeight", shipment.getCommodityPaidWeight().strip());
