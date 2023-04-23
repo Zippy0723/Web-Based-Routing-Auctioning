@@ -110,9 +110,6 @@ body {
 			border: 1px solid grey;
 		}
 		
-		#dualFormButtonContainer {
-			
-		}
 
 	/* ------------- */
 	/* sticky footer */
@@ -331,10 +328,7 @@ body {
 	cursor: pointer;
 }
 
-input#routeDate {
-	width: 161.14px;
-	height: 18.13px;
-}
+
 .buttons7 {
 	padding: 5px 7px;
 	border-radius: 25px;
@@ -405,7 +399,10 @@ input#routeDate {
 
 .buttons11 {font-size: 10px}
 
-
+input#exceUpload{
+	width: 143px;
+	height: 25px;
+}
 /* 9 Form Styles in Total
    All are off-shoots of .form-group
    and .form-group2 to accommodate input
@@ -435,24 +432,12 @@ input#routeDate {
 }
 
 .form-group > select {
-	width: 166.14px;
-	height: 22.33;
+	width: 150px;
+}
+.form-group > input{
+	width: 143px;
 }
 
-select#contact {
-	width: 166.4px;
-	height: 22px;
-}
-
-select#technician {
-	width: 166.4px;
-	height: 22px;
-}
-
-input#date {
-	width: 161.4px;
-	height: 18px;
-}
 
 .form-group2{
 	background-color: white;
@@ -474,7 +459,7 @@ input#date {
 	text-shadow: 0 0 1px black;
 }
 .form-group2 > select {
-	width: 166.14px;
+	width: 143px;
 	height: 22.33px;
 }
 
@@ -482,11 +467,11 @@ input#date {
 	text-align: right;
 	min-width: 170px;
 }
-
-input#license_expiration {
-	width: 161.4px;
-	height: 18px;
+.form-group2 > input{
+	height: 25px;
 }
+
+
 .form-group3{
 	background-color: #006438;
 	text-align: center;
@@ -644,13 +629,14 @@ input#license_expiration {
 	min-width: 170px;
 }
 
+
 input#shipDate {
-	width: 161.4px;
+	width: 143px;
 	height: 18px;
 }
 label {
 	display: inline-block;
-	width: 180px;
+	width: 200px;
 	text-align: right;
 }
 section h2 {
