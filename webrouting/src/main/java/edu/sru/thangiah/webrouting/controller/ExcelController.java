@@ -137,245 +137,6 @@ public class ExcelController {
 	}
 
 	/**
-	 * 
-	 * @param model used to load attributes into the Thymeleaf model
-	 * @param session used to load attributes into the current users HTTP session
-	 * @return
-	 */
-	@PostMapping("/dump-excel-carrier")
-	public ResponseEntity<Resource> dumpExcelCarrier(Model model, HttpSession session) {
-		String redirectLocation = (String) session.getAttribute("redirectLocation");
-		XSSFWorkbook workbook = new XSSFWorkbook();
-		XSSFSheet vehicleTypesWorksheet = workbook.createSheet("Vehicle Types");
-		XSSFSheet locationsWorksheet = workbook.createSheet("Locations");
-		XSSFSheet contactsWorksheet = workbook.createSheet("Contacts");
-		XSSFSheet vehicleWorksheet = workbook.createSheet("Vehicles");
-		XSSFSheet technicansWorksheet = workbook.createSheet("Technicans");
-		XSSFSheet driversWorksheet = workbook.createSheet("Drivers");
-		XSSFSheet maintenanceOrdersWorksheet = workbook.createSheet("Maintenance Orders");
-
-		User user = userService.getLoggedInUser();
-		Carriers carrier = user.getCarrier();
-
-		List<Contacts> contacts = carrier.getContacts();
-		XSSFRow contactsHeaderRow = contactsWorksheet.createRow(0);
-		contactsHeaderRow.createCell(0).setCellValue("First Name");
-		contactsHeaderRow.createCell(1).setCellValue("Last Name");
-		contactsHeaderRow.createCell(2).setCellValue("Middle Initial");
-		contactsHeaderRow.createCell(3).setCellValue("Email");
-		contactsHeaderRow.createCell(4).setCellValue("Street Address 1");
-		contactsHeaderRow.createCell(5).setCellValue("Street Address 2");
-		contactsHeaderRow.createCell(6).setCellValue("City");
-		contactsHeaderRow.createCell(7).setCellValue("State");
-		contactsHeaderRow.createCell(8).setCellValue("Zip Code");
-		contactsHeaderRow.createCell(9).setCellValue("Primary Phone");
-		contactsHeaderRow.createCell(10).setCellValue("Work Phone");
-
-		int rowIndex = 1;
-		for(Contacts contact : contacts) {
-			XSSFRow curRow = contactsWorksheet.createRow(rowIndex++);
-			curRow.createCell(0).setCellValue(contact.getFirstName());
-			curRow.createCell(1).setCellValue(contact.getLastName());
-			curRow.createCell(2).setCellValue(contact.getMiddleInitial());
-			curRow.createCell(3).setCellValue(contact.getEmailAddress());
-			curRow.createCell(4).setCellValue(contact.getStreetAddress1());
-			curRow.createCell(5).setCellValue(contact.getStreetAddress2());
-			curRow.createCell(6).setCellValue(contact.getCity());
-			curRow.createCell(7).setCellValue(contact.getState());
-			curRow.createCell(8).setCellValue(contact.getZip());
-			curRow.createCell(9).setCellValue(contact.getPrimaryPhone());
-			curRow.createCell(10).setCellValue(contact.getWorkPhone());
-		}
-
-		List<Locations> locations = carrier.getLocations();
-		XSSFRow locationHeaderRow = locationsWorksheet.createRow(0);
-		locationHeaderRow.createCell(0).setCellValue("Name");
-		locationHeaderRow.createCell(1).setCellValue("Street Address 1");
-		locationHeaderRow.createCell(2).setCellValue("Street Address 2");
-		locationHeaderRow.createCell(3).setCellValue("City");
-		locationHeaderRow.createCell(4).setCellValue("State");
-		locationHeaderRow.createCell(5).setCellValue("Zip Code");
-		locationHeaderRow.createCell(6).setCellValue("Latitude");
-		locationHeaderRow.createCell(7).setCellValue("Longitude");
-		locationHeaderRow.createCell(8).setCellValue("Location Type");
-
-		rowIndex = 1;
-		for(Locations location : locations) {
-			XSSFRow curRow = locationsWorksheet.createRow(rowIndex++);
-			curRow.createCell(0).setCellValue(location.getName());
-			curRow.createCell(1).setCellValue(location.getStreetAddress1());
-			curRow.createCell(2).setCellValue(location.getStreetAddress2());
-			curRow.createCell(3).setCellValue(location.getCity());
-			curRow.createCell(4).setCellValue(location.getState());
-			curRow.createCell(5).setCellValue(location.getZip());
-			curRow.createCell(6).setCellValue(location.getLatitude());
-			curRow.createCell(7).setCellValue(location.getLongitude());
-			curRow.createCell(8).setCellValue(location.getLocationType());
-		}
-
-		List<Vehicles> vehicles = carrier.getVehicles();
-		XSSFRow vehicleHeaderRow = vehicleWorksheet.createRow(0);
-		vehicleHeaderRow.createCell(0).setCellValue("Plate Number");
-		vehicleHeaderRow.createCell(1).setCellValue("VIN Number");
-		vehicleHeaderRow.createCell(2).setCellValue("Manufactured Year");
-		vehicleHeaderRow.createCell(3).setCellValue("Vehicle Type Make + Model");
-		vehicleHeaderRow.createCell(4).setCellValue("Location + Address");
-
-		rowIndex = 1;
-		for(Vehicles vehicle : vehicles) {
-			XSSFRow curRow = vehicleWorksheet.createRow(rowIndex++);
-			curRow.createCell(0).setCellValue(vehicle.getPlateNumber());
-			curRow.createCell(1).setCellValue(vehicle.getVinNumber());
-			curRow.createCell(2).setCellValue(vehicle.getManufacturedYear());
-			curRow.createCell(3).setCellValue(vehicle.getVehicleType().getMake() + " " + vehicle.getVehicleType().getModel());
-			curRow.createCell(4).setCellValue(vehicle.getLocation().getName() + " " + vehicle.getLocation().getStreetAddress1());
-		}
-
-		List<VehicleTypes> vehicleTypes = carrier.getVehicleTypes();
-		XSSFRow vehicleTypesHeaderRow = vehicleTypesWorksheet.createRow(0);
-		vehicleTypesHeaderRow.createCell(0).setCellValue("Type");
-		vehicleTypesHeaderRow.createCell(1).setCellValue("Sub Type");
-		vehicleTypesHeaderRow.createCell(2).setCellValue("Description");
-		vehicleTypesHeaderRow.createCell(3).setCellValue("Make");
-		vehicleTypesHeaderRow.createCell(4).setCellValue("Model");
-		vehicleTypesHeaderRow.createCell(5).setCellValue("Minimum Weight");
-		vehicleTypesHeaderRow.createCell(6).setCellValue("Maximumm Weight");
-		vehicleTypesHeaderRow.createCell(7).setCellValue("Capacity");
-		vehicleTypesHeaderRow.createCell(8).setCellValue("Maximum Range");
-		vehicleTypesHeaderRow.createCell(9).setCellValue("Restrictions");
-		vehicleTypesHeaderRow.createCell(10).setCellValue("Height");
-		vehicleTypesHeaderRow.createCell(11).setCellValue("Empty Weight");
-		vehicleTypesHeaderRow.createCell(12).setCellValue("Length");
-		vehicleTypesHeaderRow.createCell(13).setCellValue("Minimum Cubic Weight");
-		vehicleTypesHeaderRow.createCell(14).setCellValue("Maximum Cubic Weight");
-
-		rowIndex = 1;
-		for (VehicleTypes type : vehicleTypes) {
-			XSSFRow curRow = vehicleTypesWorksheet.createRow(rowIndex++);
-			curRow.createCell(0).setCellValue(type.getType());
-			curRow.createCell(1).setCellValue(type.getSubType());
-			curRow.createCell(2).setCellValue(type.getDescription());
-			curRow.createCell(3).setCellValue(type.getMake());
-			curRow.createCell(4).setCellValue(type.getModel());
-			curRow.createCell(5).setCellValue(type.getMinimumWeight());
-			curRow.createCell(6).setCellValue(type.getMaximumWeight());
-			curRow.createCell(7).setCellValue(type.getCapacity());
-			curRow.createCell(8).setCellValue(type.getMaximumRange());
-			curRow.createCell(9).setCellValue(type.getRestrictions());
-			curRow.createCell(10).setCellValue(type.getHeight());
-			curRow.createCell(11).setCellValue(type.getEmptyWeight());
-			curRow.createCell(12).setCellValue(type.getLength());
-			curRow.createCell(13).setCellValue(type.getMinimumWeight());
-			curRow.createCell(14).setCellValue(type.getMaximumCubicWeight());
-		}
-
-		List<Driver> drivers = carrier.getDrivers();
-		XSSFRow driversHeaderRow = driversWorksheet.createRow(0);
-		driversHeaderRow.createCell(0).setCellValue("Contact First + Last Name");
-		driversHeaderRow.createCell(1).setCellValue("Vehicle Plate Number + VIN");
-		driversHeaderRow.createCell(2).setCellValue("License Number");
-		driversHeaderRow.createCell(3).setCellValue("License Expiration");
-		driversHeaderRow.createCell(4).setCellValue("License Class");
-
-		rowIndex = 1;
-		for (Driver driver : drivers) {
-			XSSFRow curRow = driversWorksheet.createRow(rowIndex++);
-			curRow.createCell(0).setCellValue(driver.getContact().getFirstName() + " " + driver.getContact().getLastName());
-			curRow.createCell(1).setCellValue(driver.getVehicle().getPlateNumber() + " " + driver.getVehicle().getVinNumber());
-			curRow.createCell(2).setCellValue(driver.getLisence_number());
-			curRow.createCell(3).setCellValue(driver.getLisence_expiration());
-			curRow.createCell(4).setCellValue(driver.getLisence_class());
-		}
-
-		List<Technicians> technicians = carrier.getTechnicians();
-		XSSFRow technicansHeaderRow = technicansWorksheet.createRow(0);
-		technicansHeaderRow.createCell(0).setCellValue("Contact First + Last Name");
-		technicansHeaderRow.createCell(1).setCellValue("Skill Grade");
-
-		rowIndex = 1;
-		for(Technicians tech : technicians) {
-			XSSFRow curRow = technicansWorksheet.createRow(rowIndex++);
-			curRow.createCell(0).setCellValue(tech.getContact().getFirstName() + " " + tech.getContact().getLastName());
-			curRow.createCell(1).setCellValue(tech.getSkill_grade());
-		}
-
-		List<MaintenanceOrders> maintenaneOrders = carrier.getOrders();
-		XSSFRow maintenaneOrdersHeaderRow = maintenanceOrdersWorksheet.createRow(0);
-		maintenaneOrdersHeaderRow.createCell(0).setCellValue("Technican First + Last Name");
-		maintenaneOrdersHeaderRow.createCell(1).setCellValue("Scheduled Date");
-		maintenaneOrdersHeaderRow.createCell(2).setCellValue("Details");
-		maintenaneOrdersHeaderRow.createCell(3).setCellValue("Service Type");
-		maintenaneOrdersHeaderRow.createCell(4).setCellValue("Cost");
-		maintenaneOrdersHeaderRow.createCell(5).setCellValue("Status");
-		maintenaneOrdersHeaderRow.createCell(6).setCellValue("Vehicle Plate Number + Vin");
-		maintenaneOrdersHeaderRow.createCell(7).setCellValue("Maintence Type");
-
-		rowIndex = 1;
-		for (MaintenanceOrders order : maintenaneOrders) {
-			XSSFRow curRow = maintenanceOrdersWorksheet.createRow(rowIndex++);
-			curRow.createCell(0).setCellValue(order.getTechnician().getContact().getFirstName() + " " + order.getTechnician().getContact().getLastName());
-			curRow.createCell(1).setCellValue(order.getScheduled_date());
-			curRow.createCell(2).setCellValue(order.getDetails());
-			curRow.createCell(3).setCellValue(order.getService_type_key());
-			curRow.createCell(4).setCellValue(order.getCost());
-			curRow.createCell(5).setCellValue(order.getStatus_key());
-			curRow.createCell(6).setCellValue(order.getVehicle().getPlateNumber() + " " + order.getVehicle().getVinNumber());
-			curRow.createCell(7).setCellValue(order.getMaintenance_type());
-		}
-
-		for (int i = 0; i < contactsHeaderRow.getLastCellNum(); i++) {
-			contactsWorksheet.autoSizeColumn(i);
-		}
-		for (int i = 0; i < contactsHeaderRow.getLastCellNum(); i++) {
-			locationsWorksheet.autoSizeColumn(i);
-		}
-		for (int i = 0; i < vehicleTypesHeaderRow.getLastCellNum(); i++) {
-			vehicleTypesWorksheet.autoSizeColumn(i);
-		}
-		for (int i = 0; i < vehicleHeaderRow.getLastCellNum(); i++) {
-			vehicleWorksheet.autoSizeColumn(i);
-		}
-		for (int i = 0; i < driversHeaderRow.getLastCellNum(); i++) {
-			driversWorksheet.autoSizeColumn(i);
-		}
-		for (int i = 0; i < technicansHeaderRow.getLastCellNum(); i++) {
-			technicansWorksheet.autoSizeColumn(i);
-		}
-		for (int i = 0; i < maintenaneOrdersHeaderRow.getLastCellNum(); i++) {
-			maintenanceOrdersWorksheet.autoSizeColumn(i);
-		}
-
-		byte[] workbookBytes;
-		try (ByteArrayOutputStream outputStream = new ByteArrayOutputStream()) {
-			workbook.write(outputStream);
-			workbookBytes = outputStream.toByteArray();
-		} catch (IOException e) {
-			e.printStackTrace();
-			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-		} finally {
-			try {
-				workbook.close();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		}
-
-		// Create a Resource object from the byte array
-		ByteArrayResource resource = new ByteArrayResource(workbookBytes);
-
-		// Set the headers for the response
-		HttpHeaders headers = new HttpHeaders();
-		headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=vehicles.xlsx");
-		headers.add(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_OCTET_STREAM_VALUE);
-
-		// Return a ResponseEntity with the resource and headers
-		return ResponseEntity.ok()
-				.headers(headers)
-				.contentLength(workbookBytes.length)
-				.body(resource);
-	}
-
-	/**
 	 * Reads an excel file containing shipments and adds it to the shipments repository.
 	 * After the file is uploaded and added to the database, user is redirected to the created shipments page
 	 * @param excelData Excel file that is being added to the database
@@ -439,45 +200,464 @@ public class ExcelController {
 
 
 	@GetMapping("/excel-download-vehicletypes")
-	public String downloadVehicleTypesFromExcel(HttpSession session){
-		String redirectLocation = (String) session.getAttribute("redirectLocation");
-		return "redirect:" + redirectLocation;
+	public ResponseEntity<Resource> downloadVehicleTypesFromExcel(HttpSession session){
+		XSSFWorkbook workbook = new XSSFWorkbook();
+		XSSFSheet vehicleTypesWorksheet = workbook.createSheet("Vehicle Types");
+		User user = userService.getLoggedInUser();
+		Carriers carrier = user.getCarrier();
+		int rowIndex;
+
+		
+		List<VehicleTypes> vehicleTypes = carrier.getVehicleTypes();
+		XSSFRow vehicleTypesHeaderRow = vehicleTypesWorksheet.createRow(0);
+		vehicleTypesHeaderRow.createCell(0).setCellValue("Type");
+		vehicleTypesHeaderRow.createCell(1).setCellValue("Sub Type");
+		vehicleTypesHeaderRow.createCell(2).setCellValue("Description");
+		vehicleTypesHeaderRow.createCell(3).setCellValue("Make");
+		vehicleTypesHeaderRow.createCell(4).setCellValue("Model");
+		vehicleTypesHeaderRow.createCell(5).setCellValue("Minimum Weight");
+		vehicleTypesHeaderRow.createCell(6).setCellValue("Maximumm Weight");
+		vehicleTypesHeaderRow.createCell(7).setCellValue("Capacity");
+		vehicleTypesHeaderRow.createCell(8).setCellValue("Maximum Range");
+		vehicleTypesHeaderRow.createCell(9).setCellValue("Restrictions");
+		vehicleTypesHeaderRow.createCell(10).setCellValue("Height");
+		vehicleTypesHeaderRow.createCell(11).setCellValue("Empty Weight");
+		vehicleTypesHeaderRow.createCell(12).setCellValue("Length");
+		vehicleTypesHeaderRow.createCell(13).setCellValue("Minimum Cubic Weight");
+		vehicleTypesHeaderRow.createCell(14).setCellValue("Maximum Cubic Weight");
+
+		rowIndex = 1;
+		for (VehicleTypes type : vehicleTypes) {
+			XSSFRow curRow = vehicleTypesWorksheet.createRow(rowIndex++);
+			curRow.createCell(0).setCellValue(type.getType());
+			curRow.createCell(1).setCellValue(type.getSubType());
+			curRow.createCell(2).setCellValue(type.getDescription());
+			curRow.createCell(3).setCellValue(type.getMake());
+			curRow.createCell(4).setCellValue(type.getModel());
+			curRow.createCell(5).setCellValue(type.getMinimumWeight());
+			curRow.createCell(6).setCellValue(type.getMaximumWeight());
+			curRow.createCell(7).setCellValue(type.getCapacity());
+			curRow.createCell(8).setCellValue(type.getMaximumRange());
+			curRow.createCell(9).setCellValue(type.getRestrictions());
+			curRow.createCell(10).setCellValue(type.getHeight());
+			curRow.createCell(11).setCellValue(type.getEmptyWeight());
+			curRow.createCell(12).setCellValue(type.getLength());
+			curRow.createCell(13).setCellValue(type.getMinimumWeight());
+			curRow.createCell(14).setCellValue(type.getMaximumCubicWeight());
+		}
+		
+		for (int i = 0; i < vehicleTypesHeaderRow.getLastCellNum(); i++) {
+			vehicleTypesWorksheet.autoSizeColumn(i);
+		}
+		
+		byte[] workbookBytes;
+		try (ByteArrayOutputStream outputStream = new ByteArrayOutputStream()) {
+			workbook.write(outputStream);
+			workbookBytes = outputStream.toByteArray();
+		} catch (IOException e) {
+			e.printStackTrace();
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+		} finally {
+			try {
+				workbook.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+
+		// Create a Resource object from the byte array
+		ByteArrayResource resource = new ByteArrayResource(workbookBytes);
+
+		// Set the headers for the response
+		HttpHeaders headers = new HttpHeaders();
+		headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=vehicletypes.xlsx");
+		headers.add(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_OCTET_STREAM_VALUE);
+
+		// Return a ResponseEntity with the resource and headers
+		return ResponseEntity.ok()
+				.headers(headers)
+				.contentLength(workbookBytes.length)
+				.body(resource);
+		
 	}
 
 	@GetMapping("/excel-download-locations")
-	public String downloadLocationsFromExcel(HttpSession session){
-		String redirectLocation = (String) session.getAttribute("redirectLocation");
-		return "redirect:" + redirectLocation;
+	public ResponseEntity<Resource> downloadLocationsFromExcel(HttpSession session){
+		User user = userService.getLoggedInUser();
+		Carriers carrier = user.getCarrier();
+		int rowIndex;
+		XSSFWorkbook workbook = new XSSFWorkbook();
+		XSSFSheet locationsWorksheet = workbook.createSheet("Locations");
+		
+		List<Locations> locations = carrier.getLocations();
+		XSSFRow locationHeaderRow = locationsWorksheet.createRow(0);
+		locationHeaderRow.createCell(0).setCellValue("Name");
+		locationHeaderRow.createCell(1).setCellValue("Street Address 1");
+		locationHeaderRow.createCell(2).setCellValue("Street Address 2");
+		locationHeaderRow.createCell(3).setCellValue("City");
+		locationHeaderRow.createCell(4).setCellValue("State");
+		locationHeaderRow.createCell(5).setCellValue("Zip Code");
+		locationHeaderRow.createCell(6).setCellValue("Location Type");
+
+		rowIndex = 1;
+		for(Locations location : locations) {
+			XSSFRow curRow = locationsWorksheet.createRow(rowIndex++);
+			curRow.createCell(0).setCellValue(location.getName());
+			curRow.createCell(1).setCellValue(location.getStreetAddress1());
+			curRow.createCell(2).setCellValue(location.getStreetAddress2());
+			curRow.createCell(3).setCellValue(location.getCity());
+			curRow.createCell(4).setCellValue(location.getState());
+			curRow.createCell(5).setCellValue(location.getZip());
+			curRow.createCell(6).setCellValue(location.getLocationType());
+		}
+		
+		for (int i = 0; i < locationHeaderRow.getLastCellNum(); i++) {
+			locationsWorksheet.autoSizeColumn(i);
+		}
+		
+		byte[] workbookBytes;
+		try (ByteArrayOutputStream outputStream = new ByteArrayOutputStream()) {
+			workbook.write(outputStream);
+			workbookBytes = outputStream.toByteArray();
+		} catch (IOException e) {
+			e.printStackTrace();
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+		} finally {
+			try {
+				workbook.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+
+		// Create a Resource object from the byte array
+		ByteArrayResource resource = new ByteArrayResource(workbookBytes);
+
+		// Set the headers for the response
+		HttpHeaders headers = new HttpHeaders();
+		headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=locations.xlsx");
+		headers.add(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_OCTET_STREAM_VALUE);
+
+		// Return a ResponseEntity with the resource and headers
+		return ResponseEntity.ok()
+				.headers(headers)
+				.contentLength(workbookBytes.length)
+				.body(resource);
 	}
 
 	@GetMapping("/excel-download-contacts")
-	public String downloadContactsFromExcel(HttpSession session){
-		String redirectLocation = (String) session.getAttribute("redirectLocation");
-		return "redirect:" + redirectLocation;
+	public ResponseEntity<Resource> downloadContactsFromExcel(HttpSession session){
+		User user = userService.getLoggedInUser();
+		Carriers carrier = user.getCarrier();
+		XSSFWorkbook workbook = new XSSFWorkbook();
+		XSSFSheet contactsWorksheet = workbook.createSheet("contacts");
+		
+		List<Contacts> contacts = carrier.getContacts();
+		XSSFRow contactsHeaderRow = contactsWorksheet.createRow(0);
+		contactsHeaderRow.createCell(0).setCellValue("First Name");
+		contactsHeaderRow.createCell(1).setCellValue("Last Name");
+		contactsHeaderRow.createCell(2).setCellValue("Middle Initial");
+		contactsHeaderRow.createCell(3).setCellValue("Email");
+		contactsHeaderRow.createCell(4).setCellValue("Street Address 1");
+		contactsHeaderRow.createCell(5).setCellValue("Street Address 2");
+		contactsHeaderRow.createCell(6).setCellValue("City");
+		contactsHeaderRow.createCell(7).setCellValue("State");
+		contactsHeaderRow.createCell(8).setCellValue("Zip Code");
+		contactsHeaderRow.createCell(9).setCellValue("Primary Phone");
+		contactsHeaderRow.createCell(10).setCellValue("Work Phone");
+
+		int rowIndex = 1;
+		for(Contacts contact : contacts) {
+			XSSFRow curRow = contactsWorksheet.createRow(rowIndex++);
+			curRow.createCell(0).setCellValue(contact.getFirstName());
+			curRow.createCell(1).setCellValue(contact.getLastName());
+			curRow.createCell(2).setCellValue(contact.getMiddleInitial());
+			curRow.createCell(3).setCellValue(contact.getEmailAddress());
+			curRow.createCell(4).setCellValue(contact.getStreetAddress1());
+			curRow.createCell(5).setCellValue(contact.getStreetAddress2());
+			curRow.createCell(6).setCellValue(contact.getCity());
+			curRow.createCell(7).setCellValue(contact.getState());
+			curRow.createCell(8).setCellValue(contact.getZip());
+			curRow.createCell(9).setCellValue(contact.getPrimaryPhone());
+			curRow.createCell(10).setCellValue(contact.getWorkPhone());
+		}
+		
+		for (int i = 0; i < contactsHeaderRow.getLastCellNum(); i++) {
+			contactsWorksheet.autoSizeColumn(i);
+		}
+		
+		byte[] workbookBytes;
+		try (ByteArrayOutputStream outputStream = new ByteArrayOutputStream()) {
+			workbook.write(outputStream);
+			workbookBytes = outputStream.toByteArray();
+		} catch (IOException e) {
+			e.printStackTrace();
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+		} finally {
+			try {
+				workbook.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+
+		// Create a Resource object from the byte array
+		ByteArrayResource resource = new ByteArrayResource(workbookBytes);
+
+		// Set the headers for the response
+		HttpHeaders headers = new HttpHeaders();
+		headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=contacts.xlsx");
+		headers.add(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_OCTET_STREAM_VALUE);
+
+		// Return a ResponseEntity with the resource and headers
+		return ResponseEntity.ok()
+				.headers(headers)
+				.contentLength(workbookBytes.length)
+				.body(resource);
 	}
 
 	@GetMapping("/excel-download-vehicles")
-	public String downloadVehiclesFromExcel(HttpSession session){
-		String redirectLocation = (String) session.getAttribute("redirectLocation");
-		return "redirect:" + redirectLocation;
+	public ResponseEntity<Resource> downloadVehiclesFromExcel(HttpSession session){
+		User user = userService.getLoggedInUser();
+		Carriers carrier = user.getCarrier();
+		XSSFWorkbook workbook = new XSSFWorkbook();
+		XSSFSheet vehicleWorksheet = workbook.createSheet("Vehicles");
+		int rowIndex;
+
+		List<Vehicles> vehicles = carrier.getVehicles();
+		XSSFRow vehicleHeaderRow = vehicleWorksheet.createRow(0);
+		vehicleHeaderRow.createCell(0).setCellValue("Plate Number");
+		vehicleHeaderRow.createCell(1).setCellValue("VIN Number");
+		vehicleHeaderRow.createCell(2).setCellValue("Manufactured Year");
+		vehicleHeaderRow.createCell(3).setCellValue("Vehicle Type Make + Model");
+		vehicleHeaderRow.createCell(4).setCellValue("Location + Address");
+
+		rowIndex = 1;
+		for(Vehicles vehicle : vehicles) {
+			XSSFRow curRow = vehicleWorksheet.createRow(rowIndex++);
+			curRow.createCell(0).setCellValue(vehicle.getPlateNumber());
+			curRow.createCell(1).setCellValue(vehicle.getVinNumber());
+			curRow.createCell(2).setCellValue(vehicle.getManufacturedYear());
+			curRow.createCell(3).setCellValue(vehicle.getVehicleType().getMake() + " " + vehicle.getVehicleType().getModel());
+			curRow.createCell(4).setCellValue(vehicle.getLocation().getName() + " " + vehicle.getLocation().getStreetAddress1());
+		}
+		
+		for (int i = 0; i < vehicleHeaderRow.getLastCellNum(); i++) {
+			vehicleWorksheet.autoSizeColumn(i);
+		}
+		
+		byte[] workbookBytes;
+		try (ByteArrayOutputStream outputStream = new ByteArrayOutputStream()) {
+			workbook.write(outputStream);
+			workbookBytes = outputStream.toByteArray();
+		} catch (IOException e) {
+			e.printStackTrace();
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+		} finally {
+			try {
+				workbook.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+
+		// Create a Resource object from the byte array
+		ByteArrayResource resource = new ByteArrayResource(workbookBytes);
+
+		// Set the headers for the response
+		HttpHeaders headers = new HttpHeaders();
+		headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=contacts.xlsx");
+		headers.add(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_OCTET_STREAM_VALUE);
+
+		// Return a ResponseEntity with the resource and headers
+		return ResponseEntity.ok()
+				.headers(headers)
+				.contentLength(workbookBytes.length)
+				.body(resource);
 	}
 
 	@GetMapping("/excel-download-drivers")
-	public String downloadDriverFromExcel(HttpSession session){
-		String redirectLocation = (String) session.getAttribute("redirectLocation");
-		return "redirect:" + redirectLocation;
+	public ResponseEntity<Resource> downloadDriverFromExcel(HttpSession session){
+		User user = userService.getLoggedInUser();
+		Carriers carrier = user.getCarrier();
+		XSSFWorkbook workbook = new XSSFWorkbook();
+		XSSFSheet driversWorksheet = workbook.createSheet("Drivers");
+		int rowIndex;
+
+		
+		List<Driver> drivers = carrier.getDrivers();
+		XSSFRow driversHeaderRow = driversWorksheet.createRow(0);
+		driversHeaderRow.createCell(0).setCellValue("Contact First + Last Name");
+		driversHeaderRow.createCell(1).setCellValue("Vehicle Plate Number + VIN");
+		driversHeaderRow.createCell(2).setCellValue("License Number");
+		driversHeaderRow.createCell(3).setCellValue("License Expiration");
+		driversHeaderRow.createCell(4).setCellValue("License Class");
+
+		rowIndex = 1;
+		for (Driver driver : drivers) {
+			XSSFRow curRow = driversWorksheet.createRow(rowIndex++);
+			curRow.createCell(0).setCellValue(driver.getContact().getFirstName() + " " + driver.getContact().getLastName());
+			curRow.createCell(1).setCellValue(driver.getVehicle().getPlateNumber() + " " + driver.getVehicle().getVinNumber());
+			curRow.createCell(2).setCellValue(driver.getLisence_number());
+			curRow.createCell(3).setCellValue(driver.getLisence_expiration());
+			curRow.createCell(4).setCellValue(driver.getLisence_class());
+		}
+		
+		for (int i = 0; i < driversHeaderRow.getLastCellNum(); i++) {
+			driversWorksheet.autoSizeColumn(i);
+		}
+		
+		byte[] workbookBytes;
+		try (ByteArrayOutputStream outputStream = new ByteArrayOutputStream()) {
+			workbook.write(outputStream);
+			workbookBytes = outputStream.toByteArray();
+		} catch (IOException e) {
+			e.printStackTrace();
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+		} finally {
+			try {
+				workbook.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+
+		// Create a Resource object from the byte array
+		ByteArrayResource resource = new ByteArrayResource(workbookBytes);
+
+		// Set the headers for the response
+		HttpHeaders headers = new HttpHeaders();
+		headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=drivers.xlsx");
+		headers.add(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_OCTET_STREAM_VALUE);
+
+		// Return a ResponseEntity with the resource and headers
+		return ResponseEntity.ok()
+				.headers(headers)
+				.contentLength(workbookBytes.length)
+				.body(resource);
 	}
 
+
 	@GetMapping("/excel-download-technicians")
-	public String downloadTechnicianFromExcel(HttpSession session){
-		String redirectLocation = (String) session.getAttribute("redirectLocation");
-		return "redirect:" + redirectLocation;
+	public ResponseEntity<Resource> downloadTechnicianFromExcel(HttpSession session){
+		User user = userService.getLoggedInUser();
+		Carriers carrier = user.getCarrier();
+		XSSFWorkbook workbook = new XSSFWorkbook();
+		XSSFSheet technicansWorksheet = workbook.createSheet("Technicans");
+		int rowIndex;
+
+		
+		List<Technicians> technicians = carrier.getTechnicians();
+		XSSFRow technicansHeaderRow = technicansWorksheet.createRow(0);
+		technicansHeaderRow.createCell(0).setCellValue("Contact First + Last Name");
+		technicansHeaderRow.createCell(1).setCellValue("Skill Grade");
+
+		rowIndex = 1;
+		for(Technicians tech : technicians) {
+			XSSFRow curRow = technicansWorksheet.createRow(rowIndex++);
+			curRow.createCell(0).setCellValue(tech.getContact().getFirstName() + " " + tech.getContact().getLastName());
+			curRow.createCell(1).setCellValue(tech.getSkill_grade());
+		}
+		
+		for (int i = 0; i < technicansHeaderRow.getLastCellNum(); i++) {
+			technicansWorksheet.autoSizeColumn(i);
+		}
+		
+		byte[] workbookBytes;
+		try (ByteArrayOutputStream outputStream = new ByteArrayOutputStream()) {
+			workbook.write(outputStream);
+			workbookBytes = outputStream.toByteArray();
+		} catch (IOException e) {
+			e.printStackTrace();
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+		} finally {
+			try {
+				workbook.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+
+		// Create a Resource object from the byte array
+		ByteArrayResource resource = new ByteArrayResource(workbookBytes);
+
+		// Set the headers for the response
+		HttpHeaders headers = new HttpHeaders();
+		headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=techncians.xlsx");
+		headers.add(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_OCTET_STREAM_VALUE);
+
+		// Return a ResponseEntity with the resource and headers
+		return ResponseEntity.ok()
+				.headers(headers)
+				.contentLength(workbookBytes.length)
+				.body(resource);
 	}
 
 	@GetMapping("/excel-download-maintenanceorders")
-	public String downloadMaintenanceOrdersFromExcel(HttpSession session){
-		String redirectLocation = (String) session.getAttribute("redirectLocation");
-		return "redirect:" + redirectLocation;
+	public ResponseEntity<Resource> downloadMaintenanceOrdersFromExcel(HttpSession session){
+		User user = userService.getLoggedInUser();
+		Carriers carrier = user.getCarrier();
+		XSSFWorkbook workbook = new XSSFWorkbook();
+		XSSFSheet maintenanceOrdersWorksheet = workbook.createSheet("Maintence Orders");
+		int rowIndex;
+		
+		List<MaintenanceOrders> maintenaneOrders = carrier.getOrders();
+		XSSFRow maintenaneOrdersHeaderRow = maintenanceOrdersWorksheet.createRow(0);
+		maintenaneOrdersHeaderRow.createCell(0).setCellValue("Technican First + Last Name");
+		maintenaneOrdersHeaderRow.createCell(1).setCellValue("Scheduled Date");
+		maintenaneOrdersHeaderRow.createCell(2).setCellValue("Details");
+		maintenaneOrdersHeaderRow.createCell(3).setCellValue("Service Type");
+		maintenaneOrdersHeaderRow.createCell(4).setCellValue("Cost");
+		maintenaneOrdersHeaderRow.createCell(5).setCellValue("Status");
+		maintenaneOrdersHeaderRow.createCell(6).setCellValue("Vehicle Plate Number + Vin");
+		maintenaneOrdersHeaderRow.createCell(7).setCellValue("Maintence Type");
+
+		rowIndex = 1;
+		for (MaintenanceOrders order : maintenaneOrders) {
+			XSSFRow curRow = maintenanceOrdersWorksheet.createRow(rowIndex++);
+			curRow.createCell(0).setCellValue(order.getTechnician().getContact().getFirstName() + " " + order.getTechnician().getContact().getLastName());
+			curRow.createCell(1).setCellValue(order.getScheduled_date());
+			curRow.createCell(2).setCellValue(order.getDetails());
+			curRow.createCell(3).setCellValue(order.getService_type_key());
+			curRow.createCell(4).setCellValue(order.getCost());
+			curRow.createCell(5).setCellValue(order.getStatus_key());
+			curRow.createCell(6).setCellValue(order.getVehicle().getPlateNumber() + " " + order.getVehicle().getVinNumber());
+			curRow.createCell(7).setCellValue(order.getMaintenance_type());
+		}
+		
+		for (int i = 0; i < maintenaneOrdersHeaderRow.getLastCellNum(); i++) {
+			maintenanceOrdersWorksheet.autoSizeColumn(i);
+		}
+		
+		byte[] workbookBytes;
+		try (ByteArrayOutputStream outputStream = new ByteArrayOutputStream()) {
+			workbook.write(outputStream);
+			workbookBytes = outputStream.toByteArray();
+		} catch (IOException e) {
+			e.printStackTrace();
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+		} finally {
+			try {
+				workbook.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+
+		// Create a Resource object from the byte array
+		ByteArrayResource resource = new ByteArrayResource(workbookBytes);
+
+		// Set the headers for the response
+		HttpHeaders headers = new HttpHeaders();
+		headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=maintenceorders.xlsx");
+		headers.add(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_OCTET_STREAM_VALUE);
+
+		// Return a ResponseEntity with the resource and headers
+		return ResponseEntity.ok()
+				.headers(headers)
+				.contentLength(workbookBytes.length)
+				.body(resource);
+		
 	}
 	
 	/**
