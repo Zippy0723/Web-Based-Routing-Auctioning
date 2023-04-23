@@ -81,9 +81,6 @@
                         <li sec:authorize="hasAuthority('CARRIER')" class="navitem">
                             <a th:class="${currentPage == '/vehicletypes' ? 'selected' : 'navlink'}" id="nav_vehicletypes" href="/vehicletypes">Vehicle Types</a>
                         </li>
-                        <li sec:authorize="hasAuthority('CARRIER')" class="navitem">
-                            <a th:class="${currentPage == '/tests' ? 'selected' : 'navlink'}" id="nav_tests" href="/tests">Tests</a>
-                        </li>
                         <li sec:authorize="hasAuthority('ADMIN')" class="navitem">
               				<button onclick="showDropdown()" th:class="${currentPage == '/users' ? 'dropbtn_selected' : 'dropbtn'}">Users</button>
   							<div id="shipmentsDropdown" class="dropdown-content">
