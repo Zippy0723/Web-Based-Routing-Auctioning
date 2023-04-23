@@ -184,6 +184,13 @@ public class MaintenanceOrderController {
 		model.addAttribute("vehicles", user.getCarrier().getVehicles());
 		model.addAttribute("redirectLocation", (String) session.getAttribute("redirectLocation"));
 		model = NotificationController.loadNotificationsIntoModel(user, model);
+		
+		try {
+			model.addAttribute("message", session.getAttribute("message"));
+		}
+		catch(Exception e){
+			//do nothing
+		}
 
 		session.removeAttribute("message");
 		
@@ -203,6 +210,7 @@ public class MaintenanceOrderController {
 		}
 		}
 		
+		
 		model.addAttribute("maintenanceOrders", maintenanceOrder);
 
 		return "/edit/edit-orders";
@@ -221,16 +229,9 @@ public class MaintenanceOrderController {
 	@PostMapping("/editorders/{id}")
 	public String updateOrder(@PathVariable("id") long id, MaintenanceOrders maintenanceOrder, 
 			Model model, HttpSession session) {
-
-
 		User loggedInUser = userService.getLoggedInUser();
-		model = NotificationController.loadNotificationsIntoModel(loggedInUser, model);
 		String redirectLocation = (String) session.getAttribute("redirectLocation");
 		model.addAttribute("redirectLocation", session.getAttribute("redirectLocation"));
-
-		model.addAttribute("technicians", loggedInUser.getCarrier().getTechnicians());
-		model.addAttribute("vehicles", loggedInUser.getCarrier().getVehicles());
-		model.addAttribute("maintenanceOrders", maintenanceOrder);
 
 		Hashtable<String, String> hashtable = new Hashtable<>();
 
@@ -252,8 +253,7 @@ public class MaintenanceOrderController {
 
 
 		if (result == null) {
-			model.addAttribute("message", session.getAttribute("message"));
-			return "/edit/edit-orders";
+			return "redirect:/editorder/"+id;
 		}
 
 		result.setVehicle(maintenanceOrder.getVehicle());
@@ -310,12 +310,15 @@ public class MaintenanceOrderController {
 
 		Hashtable<String, String> hashtable = new Hashtable<>();
 
+		String date = "";
+		
 		if (!maintenanceOrder.getScheduled_date().equals(""))
 		{
-			maintenanceOrder.setScheduled_date(dateConverter(maintenanceOrder.getScheduled_date()));	
+			 date = (dateConverter(maintenanceOrder.getScheduled_date()));	
 		}
 		
-		hashtable.put("date", maintenanceOrder.getScheduled_date().strip());
+		
+		hashtable.put("date", date);
 		hashtable.put("details", maintenanceOrder.getDetails().strip());
 		hashtable.put("serviceType", maintenanceOrder.getService_type_key().strip());
 		hashtable.put("cost", maintenanceOrder.getCost().strip());

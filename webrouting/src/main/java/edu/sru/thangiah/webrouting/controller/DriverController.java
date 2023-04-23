@@ -1,6 +1,11 @@
 package edu.sru.thangiah.webrouting.controller;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Hashtable;
 import java.util.List;
 
@@ -253,11 +258,33 @@ public class DriverController {
 		model = NotificationController.loadNotificationsIntoModel(user, model);
 		model.addAttribute("redirectLocation", (String) session.getAttribute("redirectLocation"));
 		model.addAttribute("currentPage","/drivers");
+		
+		if(!driver.getLisence_expiration().equals("")) {
+		//This converts the date to a format that the page is expecting to load it into the date object form
+		try {
+			SimpleDateFormat inputFormat = new SimpleDateFormat("dd-MMM-yyyy");
+	        Date date;
+			date = inputFormat.parse(driver.getLisence_expiration());
+	        SimpleDateFormat outputFormat = new SimpleDateFormat("yyyy-MM-dd");
+	        String formattedDate = outputFormat.format(date);
+	        driver.setLisence_expiration(formattedDate);
+	        
+		} catch (ParseException e) {
+			
+			System.out.println("Failed to convert date for the forms expected date");
+		}
+		}
 
 		model.addAttribute("driver", driver); 
 
 		model.addAttribute("vehicles", user.getCarrier().getVehicles());
 
+		try {
+			model.addAttribute("message",session.getAttribute("message"));
+		}
+		catch(Exception e){
+
+		}
 		session.removeAttribute("message");
 
 		return "/edit/edit-drivers";
@@ -284,13 +311,12 @@ public class DriverController {
 		Driver temp = driverRepository.findById(id)
 				.orElseThrow(() -> new IllegalArgumentException("Invalid Driver Id:" + id));
 
-		model = NotificationController.loadNotificationsIntoModel(user, model);
-
-		model.addAttribute("vehicles", user.getCarrier().getVehicles());
-		model.addAttribute("driver", driver);
-
-
 		Hashtable<String, String> hashtable = new Hashtable<>();
+		
+		if (!driver.getLisence_expiration().equals(""))
+		{
+			driver.setLisence_expiration(dateConverter(driver.getLisence_expiration()));	
+		}
 
 		hashtable.put("licenseNumber", driver.getLisence_number().strip());
 		hashtable.put("licenseExpiration", driver.getLisence_expiration().strip());
@@ -304,8 +330,7 @@ public class DriverController {
 
 
 		if (result == null) {
-			model.addAttribute("message", session.getAttribute("message"));
-			return "/edit/edit-drivers";
+			return "redirect:/editdriver/"+id;
 		}
 
 		result.setId(id);
@@ -317,6 +342,23 @@ public class DriverController {
 		Logger.info("{} || successfully updated driver with ID {}.", user.getUsername(), result.getId());
 
 		return "redirect:" + redirectLocation;
+	}
+	
+	/**
+	 * Converts date from date picker into the expect format for saving to the repositories
+	 * @param originalDateString holds the original date
+	 * @return newDateString
+	 */
+	
+	String dateConverter(String originalDateString) {
+		
+		DateTimeFormatter originalDateFormatter = DateTimeFormatter.ISO_LOCAL_DATE;
+		LocalDate originalDate = LocalDate.parse(originalDateString, originalDateFormatter);
+
+		DateTimeFormatter newDateFormatter = DateTimeFormatter.ofPattern("dd-MMM-yyyy");
+		String newDateString = originalDate.format(newDateFormatter);
+		
+		return newDateString;
 	}
 
 }
