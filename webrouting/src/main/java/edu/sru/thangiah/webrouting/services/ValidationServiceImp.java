@@ -1405,7 +1405,7 @@ public class ValidationServiceImp {
 		}
 
 		if(!(licenseClass.length() <= 12 && licenseClass.length() > 0) || !(licenseClass.matches("^[a-zA-Z-/]+$"))) { 
-			session.setAttribute("message", "License class must be between 1 and 12 characters.");
+			session.setAttribute("message", "License class must be between 1 and 12 alphabetic characters.");
 			return null;
 		}
 
@@ -2029,20 +2029,17 @@ public class ValidationServiceImp {
 
 
 		if(!(licenseNumber.length() <= 32 && licenseNumber.length() > 0)){
-			Logger.error("{} || attempted to edit a Driver but the license number must be between 1 and 32 characters.",user.getUsername());
 			session.setAttribute("message", "License number must be between 1 and 32 characters.");
 			return null;
 		}
 
 		if(!(licenseExpiration.length() <= 12 && licenseExpiration.length() > 0) || !(licenseExpiration.matches("^\\d{2}-(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)-\\d{4}$"))){ 
-			Logger.error("{} || attempted to edit a Driver but the Date must be between 1 and 12 characters and formated DD-MMM-YYYY.", user.getUsername());
 			session.setAttribute("message", "Date must be between 1 and 12 characters and formated DD-MMM-YYYY.");
 			return null;
 		}
 
 		if(!(licenseClass.length() <= 12 && licenseClass.length() > 0) || !(licenseClass.matches("^[a-zA-Z-/]+$"))) { 
-			Logger.error("{} || attempted to edit a Driver but the license class must be between 1 and 12 characters.",user.getUsername());
-			session.setAttribute("message", "License class must be between 1 and 12 characters.");
+			session.setAttribute("message", "License class must be between 1 and 12 alphabetic characters.");
 			return null;
 		}
 
