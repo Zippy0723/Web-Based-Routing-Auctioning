@@ -466,7 +466,7 @@ public class ExcelController {
 
 		// Set the headers for the response
 		HttpHeaders headers = new HttpHeaders();
-		headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=contacts.xlsx");
+		headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=vehicles.xlsx");
 		headers.add(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_OCTET_STREAM_VALUE);
 
 		// Return a ResponseEntity with the resource and headers
@@ -603,26 +603,25 @@ public class ExcelController {
 		
 		List<MaintenanceOrders> maintenaneOrders = carrier.getOrders();
 		XSSFRow maintenaneOrdersHeaderRow = maintenanceOrdersWorksheet.createRow(0);
-		maintenaneOrdersHeaderRow.createCell(0).setCellValue("Technican First + Last Name");
-		maintenaneOrdersHeaderRow.createCell(1).setCellValue("Scheduled Date");
-		maintenaneOrdersHeaderRow.createCell(2).setCellValue("Details");
-		maintenaneOrdersHeaderRow.createCell(3).setCellValue("Service Type");
-		maintenaneOrdersHeaderRow.createCell(4).setCellValue("Cost");
-		maintenaneOrdersHeaderRow.createCell(5).setCellValue("Status");
+		maintenaneOrdersHeaderRow.createCell(0).setCellValue("Scheduled Date");
+		maintenaneOrdersHeaderRow.createCell(1).setCellValue("Details");
+		maintenaneOrdersHeaderRow.createCell(2).setCellValue("Service Type");
+		maintenaneOrdersHeaderRow.createCell(3).setCellValue("Cost");
+		maintenaneOrdersHeaderRow.createCell(4).setCellValue("Status");
+		maintenaneOrdersHeaderRow.createCell(5).setCellValue("Maintence Type");
 		maintenaneOrdersHeaderRow.createCell(6).setCellValue("Vehicle Plate Number + Vin");
-		maintenaneOrdersHeaderRow.createCell(7).setCellValue("Maintence Type");
-
+		maintenaneOrdersHeaderRow.createCell(7).setCellValue("Technican First + Last Name");
 		rowIndex = 1;
 		for (MaintenanceOrders order : maintenaneOrders) {
 			XSSFRow curRow = maintenanceOrdersWorksheet.createRow(rowIndex++);
-			curRow.createCell(0).setCellValue(order.getTechnician().getContact().getFirstName() + " " + order.getTechnician().getContact().getLastName());
-			curRow.createCell(1).setCellValue(order.getScheduled_date());
-			curRow.createCell(2).setCellValue(order.getDetails());
-			curRow.createCell(3).setCellValue(order.getService_type_key());
-			curRow.createCell(4).setCellValue(order.getCost());
-			curRow.createCell(5).setCellValue(order.getStatus_key());
+			curRow.createCell(0).setCellValue(order.getScheduled_date());
+			curRow.createCell(1).setCellValue(order.getDetails());
+			curRow.createCell(2).setCellValue(order.getService_type_key());
+			curRow.createCell(3).setCellValue(order.getCost());
+			curRow.createCell(4).setCellValue(order.getStatus_key());
+			curRow.createCell(5).setCellValue(order.getMaintenance_type());
 			curRow.createCell(6).setCellValue(order.getVehicle().getPlateNumber() + " " + order.getVehicle().getVinNumber());
-			curRow.createCell(7).setCellValue(order.getMaintenance_type());
+			curRow.createCell(7).setCellValue(order.getTechnician().getContact().getFirstName() + " " + order.getTechnician().getContact().getLastName());
 		}
 		
 		for (int i = 0; i < maintenaneOrdersHeaderRow.getLastCellNum(); i++) {

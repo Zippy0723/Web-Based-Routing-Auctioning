@@ -104,73 +104,6 @@ public class DriverController {
 	}
 
 	/**
-	 * Adds all of the attributes to the model to render the add driver page
-	 * @param model used to load attributes into the Thymeleaf model
-	 * @param session used to load attributes into the current users HTTP session
-	 * @param drivers Stores the information for the driver that is being added
-	 * @param result Ensures the input from the user are valid
-	 * @return /add/add-driver
-	 */
-	@GetMapping({"/add-driver"})
-	public String showLists(Model model, Driver drivers, BindingResult result, HttpSession session) {
-		User user = userService.getLoggedInUser();
-		model = NotificationController.loadNotificationsIntoModel(user, model);
-		model.addAttribute("redirectLocation", (String) session.getAttribute("redirectLocation"));
-		model.addAttribute("carriers", user.getCarrier());
-		model.addAttribute("contacts", user.getCarrier().getContacts());
-		model.addAttribute("vehicles", user.getCarrier().getVehicles());
-		model.addAttribute("currentPage","/drivers");
-
-		return "/add/add-driver";
-	}
-
-	/**
-	 * Adds a driver to the database. Checks if there are errors in the form.
-	 * If there are no errors, the driver is saved in the driverRepository. and the user is redirect to /drivers 
-	 * If there are errors, the user is redirected to the /add/add-driver page.
-	 * @param drivers Stores the information of the driver that is to be added
-	 * @param result Ensures the inputs from the user are valid
-	 * @param model used to load attributes into the Thymeleaf model
-	 * @param session used to load attributes into the current users HTTP session
-	 * @return redirects to /drivers or /add/add-driver
-	 */
-	@RequestMapping({"/adddriver"})
-	public String addDriver(@Validated Driver drivers, BindingResult result, Model model, HttpSession session) {
-		User user = userService.getLoggedInUser();
-		model = NotificationController.loadNotificationsIntoModel(user, model);
-		String redirectLocation = (String) session.getAttribute("redirectLocation");
-		model.addAttribute("redirectLocation", redirectLocation);
-		model.addAttribute("currentPage","/drivers");
-		if (result.hasErrors()) {
-			return "/add/add-driver";
-		}
-
-		Boolean deny = false;
-		List<Driver> checkDrivers = new ArrayList<>();
-		checkDrivers = (List<Driver>) driverRepository.findAll();
-
-		for(Driver check: checkDrivers) {
-			if(drivers.getContact().toString().equals(check.getContact().toString()) ) {
-				deny = true;
-				break;
-			}
-		}
-
-		if(deny == true) {
-			model.addAttribute("error", "Unable to add Driver. Lisence number already exists or Contact already in use");
-			Logger.error("{} || was unable to add a driver because lisence number already exists or contact already in use for driver with ID {}.", user.getUsername(), drivers.getId());
-			model.addAttribute("drivers", user.getCarrier().getDrivers());
-
-			return "drivers";
-		}
-
-		driverRepository.save(drivers);
-		Logger.info("{} || sucessfully added new driver with ID {}.", user.getUsername(), drivers.getId());
-
-		return "redirect:" + redirectLocation;
-	}
-
-	/**
 	 * Redirects user to the upload drivers page when clicking "Upload an excel file" button in the Drivers section of Carrier login
 	 * @param model used to add data to the model
 	 * @return /uploaddrivers
@@ -330,6 +263,7 @@ public class DriverController {
 
 
 		if (result == null) {
+			Logger.error("{} || attempted to edit a Driver but "+ session.getAttribute("message"),user.getUsername());
 			return "redirect:/editdriver/"+id;
 		}
 
