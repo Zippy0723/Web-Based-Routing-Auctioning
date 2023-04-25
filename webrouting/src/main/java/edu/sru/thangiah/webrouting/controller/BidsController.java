@@ -349,6 +349,7 @@ public class BidsController {
 		session.removeAttribute("message");
 		
 		model.addAttribute("bids", bids);
+		model.addAttribute("currentPage","/shipments");
 		
 
 
@@ -407,7 +408,6 @@ public class BidsController {
 		
 		bid.setPrice(price);
 
-		System.out.print("THIS:"+bid.getTime());
 		bidsRepository.save(bid);
 		Logger.info("{} || successfully created a new bid with ID {}", user.getUsername(), bid.getId());
 		notificationService.addNotification(bid.getShipment().getUser(), 
