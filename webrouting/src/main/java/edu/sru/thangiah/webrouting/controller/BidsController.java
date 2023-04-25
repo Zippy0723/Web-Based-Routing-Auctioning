@@ -17,6 +17,7 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -74,94 +75,6 @@ public class BidsController {
 		this.bidsRepository = bidsRepository;
 		this.shipmentsRepository = shipmentsRepository;
 		this.carriersRepository = carriersRepository;
-	}
-
-	/**
-	 * Sets up the add bid page with required model attributes
-	 * @param id ID of the shipment being found
-	 * @param model Used to add data the model
-	 * @param bid Holds information for the new bid
-	 * @param result Checks entered data to ensure it is valid
-	 * @param session stores the current logged in users HTTP session. Attribute "redirectLocation" can store a string containing the last page the user visited.
-	 * @return /add/add-bid
-	 */
-	@GetMapping({"/add-bid/{id}"})
-	public String showBidList(@PathVariable("id") long id, Model model, Bids bid, BindingResult result, HttpSession session) {
-		String redirectLocation = (String) session.getAttribute("redirectLocation");
-		model.addAttribute("redirectLocation", redirectLocation);
-		Shipments shipment = shipmentsRepository.findById(id)
-				.orElseThrow(() -> new IllegalArgumentException("Invalid shipment Id: " + id));
-		model.addAttribute("shipments", shipment);
-		model.addAttribute("carriers", carriersRepository.findAll());
-		User loggedInUser = userService.getLoggedInUser();
-		model = NotificationController.loadNotificationsIntoModel(loggedInUser, model);
-
-		if (!shipment.getFullFreightTerms().toString().equals("AVAILABLE SHIPMENT")) {
-			System.out.println("Error: User attempeted to place a bid on a shipment that was not in auction");
-			Logger.error("{} || attempted to place a bid on a shipment that was not in auction", loggedInUser.getUsername());
-			return (String) session.getAttribute("redirectLocation");
-		}
-
-		return "/add/add-bid";
-	}
-
-	/**
-	 * Adds a bid to the database. Checks if there are errors in the form
-	 * Adds the date, time, and logged in user to the bid
-	 * If there are no errors, the bid is saved in the bidsRepository. and the user is redirect to /bids 
-	 * If there are errors, the user is redirected to the /add/add-technician page.
-	 * @param bid Holds information for the new bid
-	 * @param result Checks entered data to ensure it is valid
-	 * @param model used to load attributes into the Thymeleaf model
-	 * @param session used to load attributes into the current users HTTP session
-	 * @return redirects to /createdshipments or /add/add-bid
-	 */
-	@RequestMapping({"/addbid"})
-	public String addBid(@Validated Bids bid, BindingResult result, Model model, HttpSession session) {
-		String redirectLocation = (String) session.getAttribute("redirectLocation");
-		model.addAttribute("redirectLocation", redirectLocation);
-		userValidator.addition(bid, result);
-		User user = userService.getLoggedInUser();
-		model = NotificationController.loadNotificationsIntoModel(user, model);
-		if (result.hasErrors()) {
-			return "/add/add-bid";
-		}
-
-		DateTimeFormatter date = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-		DateTimeFormatter time = DateTimeFormatter.ofPattern("HH:mm:ss");
-
-
-		LocalDateTime now = LocalDateTime.now();
-
-		bid.setCarrier(user.getCarrier());
-		bid.setDate(date.format(now));
-		bid.setTime(time.format(now));
-
-		boolean deny = false;
-		Shipments shipment = bid.getShipment();
-		List<Bids> bidsInShipment = shipment.getBids();
-
-		for (Bids b: bidsInShipment) {
-			if (b.getCarrier().getCarrierName().equals(bid.getCarrier().getCarrierName())
-					&& b.getPrice().equals(bid.getPrice())) {
-				deny = true;
-			}
-		}
-
-		if (deny == true) {
-			model.addAttribute("error", "Error: Bid with the same carrier and price has already been placed.");
-			Logger.error("{} || failed to add bid due to a bid with the same carrier and price already being place.", user.getUsername());
-			model.addAttribute("shipments", bid.getShipment());
-			model.addAttribute("carriers", carriersRepository.findAll());
-			return "/add/add-bid";
-		}
-
-		bidsRepository.save(bid);
-		Logger.info("{} || successfully created a new bid with ID {}", user.getUsername(), bid.getId());
-		notificationService.addNotification(bid.getShipment().getUser(), 
-				"ALERT: A new bid as been added on your shipment with ID " + bid.getShipment().getId() + " and Client " + bid.getShipment().getClient(), false);
-
-		return "redirect:" + redirectLocation;
 	}
 
 	/**
@@ -379,7 +292,7 @@ public class BidsController {
 		
 		String price = bid.getPrice().strip();
 		
-		if (!(price.length() <= 12 && price.length() > 0) || !(price.matches("^[0-9.]+$"))) {
+		if (!(price.length() <= 16 && price.length() > 0) || !(price.matches("^[0-9.]+$"))) {
 			Logger.error("{} || attempted to edit a bid but the price was not between 1 and 16 numeric characters long.",user.getUsername());
 			session.setAttribute("message", "Price was not between 1 and 16 numeric characters.");
 			return "redirect:/editbids/"+id.toString() ;	
@@ -399,6 +312,108 @@ public class BidsController {
 		Logger.info("{} || successfully updated the bid with ID {}",user.getUsername(), result.getId());
 		return "redirect:" + redirectLocation;
 
+	}
+	
+	/**
+	 * Sets up the add bid page with required model attributes
+	 * @param id ID of the shipment being found
+	 * @param model Used to add data the model
+	 * @param bid Holds information for the new bid
+	 * @param result Checks entered data to ensure it is valid
+	 * @param session stores the current logged in users HTTP session. Attribute "redirectLocation" can store a string containing the last page the user visited.
+	 * @return /add/add-bid
+	 */
+	@GetMapping({"/add-bid/{id}"})
+	public String showBidList(@PathVariable("id") long id, Model model, Bids bids, BindingResult result, HttpSession session) {
+		String redirectLocation = (String) session.getAttribute("redirectLocation");
+		model.addAttribute("redirectLocation", redirectLocation);
+		Shipments shipment = shipmentsRepository.findById(id)
+				.orElseThrow(() -> new IllegalArgumentException("Invalid shipment Id: " + id));
+		model.addAttribute("shipments", shipment);
+		model.addAttribute("carriers", carriersRepository.findAll());
+		User loggedInUser = userService.getLoggedInUser();
+		model = NotificationController.loadNotificationsIntoModel(loggedInUser, model);
+
+		if (!shipment.getFullFreightTerms().toString().equals("AVAILABLE SHIPMENT")) {
+			System.out.println("Error: User attempeted to place a bid on a shipment that was not in auction");
+			Logger.error("{} || attempted to place a bid on a shipment that was not in auction", loggedInUser.getUsername());
+			return (String) session.getAttribute("redirectLocation");
+		}
+		
+		try {
+			model.addAttribute("message",session.getAttribute("message"));
+		}
+		catch(Exception e){
+
+		}
+		session.removeAttribute("message");
+		
+		model.addAttribute("bids", bids);
+		
+
+
+		return "/add/add-bid";
+	}
+
+	/**
+	 * Adds a bid to the database. Checks if there are errors in the form
+	 * Adds the date, time, and logged in user to the bid
+	 * If there are no errors, the bid is saved in the bidsRepository. and the user is redirect to /bids 
+	 * If there are errors, the user is redirected to the /add/add-technician page.
+	 * @param bid Holds information for the new bid
+	 * @param result Checks entered data to ensure it is valid
+	 * @param model used to load attributes into the Thymeleaf model
+	 * @param session used to load attributes into the current users HTTP session
+	 * @return redirects to /createdshipments or /add/add-bid
+	 */
+	@RequestMapping({"/addbid"})
+	public String addBid(@ModelAttribute("bids") Bids bid, Model model, HttpSession session) {
+		String redirectLocation = (String) session.getAttribute("redirectLocation");
+		User user = userService.getLoggedInUser();
+		model = NotificationController.loadNotificationsIntoModel(user, model);
+		Shipments shipment = bid.getShipment();
+		List<Bids> bidsInShipment = shipment.getBids();
+		
+		DateTimeFormatter date = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+		DateTimeFormatter time = DateTimeFormatter.ofPattern("HH:mm:ss");
+		LocalDateTime now = LocalDateTime.now();
+
+		bid.setCarrier(user.getCarrier());
+		bid.setDate(date.format(now));
+		bid.setTime(time.format(now));
+		bid.setShipment(shipment);
+		
+		String price = bid.getPrice();
+		
+		if (price.contains(".")) {
+		    // Trim off any trailing "0"
+		    price = price.replaceAll("0*$", "");
+		}
+
+		for (Bids b: bidsInShipment) {
+			if (b.getCarrier().getCarrierName().equals(bid.getCarrier().getCarrierName())
+					&& b.getPrice().equals(price)) {
+				Logger.error("{} || attempted to add a but but they already placed a bid on that shipment for that price.",user.getUsername());
+				session.setAttribute("message", "You already placed a bid on this shipment for this price.");
+				return "redirect:/add-bid/"+shipment.getId();
+			}
+		}
+		
+		if (!(price.length() <= 16 && price.length() > 0) || !(price.matches("^[0-9.]+$"))) {
+			Logger.error("{} || attempted to add a bid but the price was not between 1 and 16 numeric characters long.",user.getUsername());
+			session.setAttribute("message", "Price was not between 1 and 16 numeric characters.");
+			return "redirect:/add-bid/"+shipment.getId();	
+		}
+		
+		bid.setPrice(price);
+
+		System.out.print("THIS:"+bid.getTime());
+		bidsRepository.save(bid);
+		Logger.info("{} || successfully created a new bid with ID {}", user.getUsername(), bid.getId());
+		notificationService.addNotification(bid.getShipment().getUser(), 
+				"ALERT: A new bid as been added on your shipment with ID " + bid.getShipment().getId() + " and Client " + bid.getShipment().getClient(), false);
+
+		return "redirect:" + redirectLocation;
 	}
 
 }

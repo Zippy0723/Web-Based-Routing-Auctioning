@@ -10,7 +10,7 @@ import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.annotation.EnableScheduling;
 
 /*
- * Fleet Management Software
+ * Web Routing and Auctioning Application
  * 
  * Originally Created By
  * Patrick Blair
@@ -29,13 +29,21 @@ import org.springframework.scheduling.annotation.EnableScheduling;
  * Update Starting 9/6/2022
  * Joshua Gearhart	jjg1018@sru.edu                                      
  * Nick Bushee		nab1017@sru.edu
+ * 
+ * Update Started 1/20/2023
+ * Thomas Haley		tjh1019@sru.edu 
+ * Dakota Myers		drm1022@sru.edu
+ * Beth Orgovan		bro0700@sru.edu 
+ * Sinchana Kori	ssk1022@sru.edu 
  */
 
 /**
  * Used to start the Spring Application
  * 
- * @author Joshua Gearhart	jjg1018@sru.edu 
- * @author Nick Bushee		nab1017@sru.edu
+ * @author Thomas Haley		tjh1019@sru.edu 
+ * @author Dakota Myers		drm1022@sru.edu
+ * @author Beth Orgovan		bro0700@sru.edu 
+ * @author Sinchana Kori	ssk1022@sru.edu 
  *
  */
 

@@ -24,6 +24,7 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -448,4 +449,70 @@ public class VehiclesController {
 		
 		return (Long)minKey;
 	}
+	
+	/**
+	 * Adds all of the required attributes to the model to render the add vehicle page
+	 * @param vehicle holds the new vehicle being added to the model
+	 * @param model used to load attributes into the Thymeleaf model
+	 * @param session used to load attributes into the current users HTTP session
+	 * @return /add/add-vehicle
+	 */
+	
+	@GetMapping("/add-vehicle")
+	public String showVehicleAddForm(Vehicles vehicle, Model model, HttpSession session) {
+		model.addAttribute("redirectLocation", (String) session.getAttribute("redirectLocation"));
+		model.addAttribute("currentPage","/vehicles");
+		User user = userService.getLoggedInUser();
+		model = NotificationController.loadNotificationsIntoModel(user, model);
+		model.addAttribute("vehicleTypes", user.getCarrier().getVehicleTypes()); 
+		model.addAttribute("locations", user.getCarrier().getLocations());
+
+		session.removeAttribute("message");
+		model.addAttribute("vehicleForm", new Vehicles());
+
+		return "/add/add-vehicle";
+	}
+
+	/**
+	 * Receives a vehicle object by the user and passes it off for validation
+	 * Once valid it is saved to the vehicles repository
+	 * @param vehicle holds the new vehicle created by the user
+	 * @param model used to load attributes into the Thymeleaf model
+	 * @param session used to load attributes into the current users HTTP session
+	 * @return /add/add-vehicle
+	 */
+
+	@PostMapping("submit-add-vehicle")
+	public String vehicleAddForm(@ModelAttribute("vehicleForm") Vehicles vehicle, Model model, HttpSession session) {
+		model.addAttribute("redirectLocation", (String) session.getAttribute("redirectLocation"));
+		model.addAttribute("currentPage","/vehicles");
+		User user = userService.getLoggedInUser();
+		model = NotificationController.loadNotificationsIntoModel(user, model);
+		model.addAttribute("vehicleTypes", user.getCarrier().getVehicleTypes()); 
+		model.addAttribute("locations", user.getCarrier().getLocations());
+
+		Hashtable<String, String> hashtable = new Hashtable<>();
+
+		hashtable.put("plate", vehicle.getPlateNumber().strip());
+		hashtable.put("vin", vehicle.getVinNumber().strip());
+		hashtable.put("manufacturedYear", vehicle.getManufacturedYear().strip());
+		hashtable.put("vehicleTypeMakeModel", vehicle.getVehicleType().getMake() + " " + vehicle.getVehicleType().getModel());
+		hashtable.put("locationName", vehicle.getLocation().getName());
+		
+		Vehicles result;
+
+		result = validationServiceImp.validateVehicles(hashtable, session);
+
+		if (result == null) {
+			Logger.error("{} || attempted to add a new Vehicle but "+ session.getAttribute("message") ,user.getUsername());
+			model.addAttribute("message", session.getAttribute("message"));
+			return "/add/add-vehicle";
+		}
+		
+		vehiclesRepository.save(result);
+		Logger.info("{} || successfully added a new Vehicle with ID {}.", user.getUsername(), result.getId());
+
+		return "redirect:" + (String) session.getAttribute("redirectLocation");
+	}
+	
 }

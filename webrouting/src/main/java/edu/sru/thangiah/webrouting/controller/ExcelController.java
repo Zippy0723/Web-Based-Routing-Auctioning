@@ -198,6 +198,11 @@ public class ExcelController {
 		return "redirect:" + redirectLocation;	
 	}
 
+	/**
+	 * Creates an excel sheet based on the current vehicle types that the carrier has
+	 * @param session used to load attributes into the current users HTTP session
+	 * @return Excel sheet
+	 */
 
 	@GetMapping("/excel-download-vehicletypes")
 	public ResponseEntity<Resource> downloadVehicleTypesFromExcel(HttpSession session){
@@ -281,6 +286,12 @@ public class ExcelController {
 		
 	}
 
+	/**
+	 * Creates an excel sheet based on the current locations that the carrier has
+	 * @param session used to load attributes into the current users HTTP session
+	 * @return Excel sheet
+	 */
+	
 	@GetMapping("/excel-download-locations")
 	public ResponseEntity<Resource> downloadLocationsFromExcel(HttpSession session){
 		User user = userService.getLoggedInUser();
@@ -345,6 +356,12 @@ public class ExcelController {
 				.body(resource);
 	}
 
+	/**
+	 * Creates an excel sheet based on the current contacts that the carrier has
+	 * @param session used to load attributes into the current users HTTP session
+	 * @return Excel sheet
+	 */
+	
 	@GetMapping("/excel-download-contacts")
 	public ResponseEntity<Resource> downloadContactsFromExcel(HttpSession session){
 		User user = userService.getLoggedInUser();
@@ -416,6 +433,12 @@ public class ExcelController {
 				.body(resource);
 	}
 
+	/**
+	 * Creates an excel sheet based on the current vehicles that the carrier has
+	 * @param session used to load attributes into the current users HTTP session
+	 * @return Excel sheet
+	 */
+	
 	@GetMapping("/excel-download-vehicles")
 	public ResponseEntity<Resource> downloadVehiclesFromExcel(HttpSession session){
 		User user = userService.getLoggedInUser();
@@ -476,6 +499,12 @@ public class ExcelController {
 				.body(resource);
 	}
 
+	/**
+	 * Creates an excel sheet based on the current drivers that the carrier has
+	 * @param session used to load attributes into the current users HTTP session
+	 * @return Excel sheet
+	 */
+	
 	@GetMapping("/excel-download-drivers")
 	public ResponseEntity<Resource> downloadDriverFromExcel(HttpSession session){
 		User user = userService.getLoggedInUser();
@@ -538,6 +567,12 @@ public class ExcelController {
 	}
 
 
+	/**
+	 * Creates an excel sheet based on the current technicians that the carrier has
+	 * @param session used to load attributes into the current users HTTP session
+	 * @return Excel sheet
+	 */
+	
 	@GetMapping("/excel-download-technicians")
 	public ResponseEntity<Resource> downloadTechnicianFromExcel(HttpSession session){
 		User user = userService.getLoggedInUser();
@@ -593,6 +628,12 @@ public class ExcelController {
 				.body(resource);
 	}
 
+	/**
+	 * Creates an excel sheet based on the current maintenance orders that the carrier has
+	 * @param session used to load attributes into the current users HTTP session
+	 * @return Excel sheet
+	 */
+	
 	@GetMapping("/excel-download-maintenanceorders")
 	public ResponseEntity<Resource> downloadMaintenanceOrdersFromExcel(HttpSession session){
 		User user = userService.getLoggedInUser();

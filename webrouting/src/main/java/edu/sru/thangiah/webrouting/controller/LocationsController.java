@@ -15,6 +15,7 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -273,5 +274,71 @@ public class LocationsController {
 
 		return "redirect:" + redirectLocation;
 	}
+	
+	/**
+	 * Adds all of the required attributes to the model to render the add location page
+	 * @param location holds the new location being added to the model
+	 * @param model used to load attributes into the Thymeleaf model
+	 * @param session used to load attributes into the current users HTTP session
+	 * @return /add/add-location
+	 */
+	
+	@GetMapping("/add-location")
+	public String showLocationAddForm(Locations location, Model model, HttpSession session) {
+		model.addAttribute("redirectLocation", (String) session.getAttribute("redirectLocation"));
+		model.addAttribute("currentPage","/locations");
+		User user = userService.getLoggedInUser();
+		model = NotificationController.loadNotificationsIntoModel(user, model);
+
+		session.removeAttribute("message");
+		model.addAttribute("locationForm", new Locations());
+
+		return "/add/add-location";
+	}
+	
+	/**
+	 * Receives a location object by the user and passes it off for validation
+	 * Once valid it is saved to the location repository
+	 * @param location holds the new location created by the user
+	 * @param model used to load attributes into the Thymeleaf model
+	 * @param session used to load attributes into the current users HTTP session
+	 * @return /add/add-location
+	 */
+
+	@PostMapping("submit-add-location")
+	public String locationAddForm(@ModelAttribute("locationForm") Locations location, Model model, HttpSession session) {
+		model.addAttribute("redirectLocation", (String) session.getAttribute("redirectLocation"));
+		model.addAttribute("currentPage","/locations");
+		User user = userService.getLoggedInUser();
+		model = NotificationController.loadNotificationsIntoModel(user, model);
+
+		Hashtable<String, String> hashtable = new Hashtable<>();
+
+		hashtable.put("locationName", location.getName().strip());
+		hashtable.put("streetAddress1", location.getStreetAddress1().strip());
+		hashtable.put("streetAddress2", location.getStreetAddress2().strip());
+		hashtable.put("locationCity", location.getCity().strip()); 
+		hashtable.put("locationState", location.getState().strip());
+		hashtable.put("locationZip", location.getZip().strip());
+		hashtable.put("locationLatitude", "");
+		hashtable.put("locationLongitude", "");
+		hashtable.put("locationType", location.getLocationType().strip());
+
+		Locations result;
+
+		result = validationServiceImp.validateLocations(hashtable, session);
+
+		if (result == null) {
+			Logger.error("{} || attempted to add a new Location but "+ session.getAttribute("message") ,user.getUsername());
+			model.addAttribute("message", session.getAttribute("message"));
+			return "/add/add-location";
+		}
+
+		locationsRepository.save(result);
+		Logger.info("{} || successfully added a new Location with ID {}.", user.getUsername(), result.getId());
+
+		return "redirect:" + (String) session.getAttribute("redirectLocation");
+	}
+	
 
 }
