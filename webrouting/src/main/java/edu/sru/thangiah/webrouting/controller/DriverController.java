@@ -20,10 +20,12 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import edu.sru.thangiah.webrouting.domain.Contacts;
 import edu.sru.thangiah.webrouting.domain.Driver;
 import edu.sru.thangiah.webrouting.domain.Notification;
 import edu.sru.thangiah.webrouting.domain.User;
@@ -276,6 +278,88 @@ public class DriverController {
 		Logger.info("{} || successfully updated driver with ID {}.", user.getUsername(), result.getId());
 
 		return "redirect:" + redirectLocation;
+	}
+	
+	/**
+	 * Adds all of the required attributes to the model to render the add driver page
+	 * @param driver holds the new driver being added to the model
+	 * @param model used to load attributes into the Thymeleaf model
+	 * @param session used to load attributes into the current users HTTP session
+	 * @return /add/add-driver
+	 */
+	
+	@GetMapping("/add-driver")
+	public String showDriverAddForm(Driver driver, Model model, HttpSession session) {
+		model.addAttribute("redirectLocation", (String) session.getAttribute("redirectLocation"));
+		model.addAttribute("currentPage","/drivers");
+		User user = userService.getLoggedInUser();
+		model = NotificationController.loadNotificationsIntoModel(user, model);
+
+		List <Contacts> contacts = user.getCarrier().getContacts();
+		List <Driver> drivers = user.getCarrier().getDrivers();
+		
+		for (int i = 0; i < drivers.size(); i++) {
+		    String name = drivers.get(i).getContact().getFirstName() + " " + drivers.get(i).getContact().getLastName(); // assuming the name property is a string
+		    for (int j = 0; j < contacts.size(); j++) {
+		        if (name.equals(contacts.get(j).getFirstName() + " " + contacts.get(j).getLastName())) {
+		        	contacts.remove(j);
+		            break; // break out of the inner loop once a match is found and removed
+		        }
+		    }
+		}
+
+		model.addAttribute("driver", new Driver()); 
+		model.addAttribute("vehicles", user.getCarrier().getVehicles());
+		model.addAttribute("contacts", contacts);
+
+		try {
+			model.addAttribute("message",session.getAttribute("message"));
+		}
+		catch(Exception e){
+
+		}
+		session.removeAttribute("message");
+		return "/add/add-driver";
+	}
+
+	/**
+	 * Receives a driver object by the user and passes it off for validation
+	 * Once valid it is saved to the drivers repository
+	 * @param driver holds the new driver created by the user
+	 * @param model used to load attributes into the Thymeleaf model
+	 * @param session used to load attributes into the current users HTTP session
+	 * @return redirect:/add-driver
+	 */
+
+	@PostMapping("submit-add-driver")
+	public String driversAddForm(@ModelAttribute("driver") Driver driver, Model model, HttpSession session) {
+		model.addAttribute("redirectLocation", (String) session.getAttribute("redirectLocation"));
+		User user = userService.getLoggedInUser();
+		model = NotificationController.loadNotificationsIntoModel(user, model);
+
+		driver.setLisence_expiration(dateConverter(driver.getLisence_expiration()));	
+		
+		Hashtable<String, String> hashtable = new Hashtable<>();
+		
+		hashtable.put("licenseNumber", driver.getLisence_number().strip());
+		hashtable.put("licenseExpiration", driver.getLisence_expiration().strip());
+		hashtable.put("licenseClass", driver.getLisence_class().strip());
+
+		Driver result;
+		
+		result = validationServiceImp.validateDriverForm(hashtable, session);
+
+		if (result == null) {
+			Logger.error("{} || attempted to add a new Driver but " + session.getAttribute("message") ,user.getUsername());
+			return "redirect:/add-driver";
+		}
+		
+		result.setContact(driver.getContact());
+		result.setVehicle(driver.getVehicle());
+		
+		driverRepository.save(result);
+		Logger.info("{} || successfully added a new Driver with ID {}.", user.getUsername(), result.getId());
+		return "redirect:" + (String) session.getAttribute("redirectLocation");
 	}
 	
 	/**

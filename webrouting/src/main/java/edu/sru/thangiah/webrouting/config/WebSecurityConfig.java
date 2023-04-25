@@ -20,8 +20,8 @@ import edu.sru.thangiah.webrouting.web.CustomLogoutSuccessHandler;
 import edu.sru.thangiah.webrouting.web.UserValidator;
 
 /**
- * Sets up the Spring Security with Thymeleaf. <br>
- * Redirects user to login unless page is allowed to a user. <br>
+ * Sets up the Spring Security with Thymeleaf
+ * Redirects user to login unless page is allowed to a user
  * Handles user authentication.
  * @author Logan Kirkwood	llk1005@sru.edu
  * @since 2/7/2022

@@ -5,6 +5,7 @@ import java.sql.Date;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -58,6 +59,7 @@ import edu.sru.thangiah.webrouting.repository.TechniciansRepository;
 import edu.sru.thangiah.webrouting.repository.UserRepository;
 import edu.sru.thangiah.webrouting.repository.VehicleTypesRepository;
 import edu.sru.thangiah.webrouting.repository.VehiclesRepository;
+import edu.sru.thangiah.webrouting.services.NotificationService;
 import edu.sru.thangiah.webrouting.services.SecurityService;
 import edu.sru.thangiah.webrouting.services.UserService;
 import edu.sru.thangiah.webrouting.services.ValidationServiceImp;
@@ -82,6 +84,9 @@ public class EditAndAddController {
 
 	@Autowired
 	private UserValidator userValidator;
+	
+	@Autowired
+	private NotificationService notificationService;
 
 	private CarriersRepository carriersRepository;
 
@@ -149,306 +154,31 @@ public class EditAndAddController {
 	}
 	
 	/**
-	 * Adds all of the required attributes to the model to render the add contact page
-	 * @param contact holds the new contact being added to the model
-	 * @param model used to load attributes into the Thymeleaf model
-	 * @param session used to load attributes into the current users HTTP session
-	 * @return /add/add-contact
+	 * Sets up the add bid page with required model attributes
+	 * @param id ID of the shipment being found
+	 * @param model Used to add data the model
+	 * @param bid Holds information for the new bid
+	 * @param result Checks entered data to ensure it is valid
+	 * @param session stores the current logged in users HTTP session. Attribute "redirectLocation" can store a string containing the last page the user visited.
+	 * @return /add/add-bid
 	 */
-	@GetMapping("/add-contact")
-	public String showContactAddForm(Contacts contact,Model model, HttpSession session) {
-		model.addAttribute("redirectLocation", (String) session.getAttribute("redirectLocation"));
-		model.addAttribute("currentPage","/contacts");
-		User user = userService.getLoggedInUser();
-		model = NotificationController.loadNotificationsIntoModel(user, model);
+	@GetMapping({"/add-bid/{id}"})
+	public String showBidList(@PathVariable("id") long id, Model model, Bids bids, BindingResult result, HttpSession session) {
+		String redirectLocation = (String) session.getAttribute("redirectLocation");
+		model.addAttribute("redirectLocation", redirectLocation);
+		Shipments shipment = shipmentsRepository.findById(id)
+				.orElseThrow(() -> new IllegalArgumentException("Invalid shipment Id: " + id));
+		model.addAttribute("shipments", shipment);
+		model.addAttribute("carriers", carriersRepository.findAll());
+		User loggedInUser = userService.getLoggedInUser();
+		model = NotificationController.loadNotificationsIntoModel(loggedInUser, model);
 
-		session.removeAttribute("message");
-		model.addAttribute("contactForm", new Contacts());
-
-		return "/add/add-contact";
-	}
-
-	/**
-	 * Receives a contact object by the user and passes it off for validation
-	 * Once valid it is saved to the contact repository
-	 * @param contact holds the new contact being created by the user
-	 * @param model used to load attributes into the Thymeleaf model
-	 * @param session used to load attributes into the current users HTTP session
-	 * @return /add/add-contact
-	 */
-
-	@PostMapping("submit-add-contact")
-	public String contactAddForm(@ModelAttribute("contactForm") Contacts contact, Model model, HttpSession session) {
-		model.addAttribute("redirectLocation", (String) session.getAttribute("redirectLocation"));
-		model.addAttribute("currentPage","/contacts");
-		User user = userService.getLoggedInUser();
-		model = NotificationController.loadNotificationsIntoModel(user, model);
-
-		Hashtable<String, String> hashtable = new Hashtable<>();
-
-		hashtable.put("firstName", contact.getFirstName().strip());
-		hashtable.put("lastName", contact.getLastName().strip());
-		hashtable.put("middleInitial", contact.getMiddleInitial().strip());
-		hashtable.put("emailAddress", contact.getEmailAddress().strip());
-		hashtable.put("streetAddress1", contact.getStreetAddress1().strip());
-		hashtable.put("streetAddress2", contact.getStreetAddress2().strip());
-		hashtable.put("contactCity", contact.getCity().strip()); 
-		hashtable.put("contactState", contact.getState().strip());
-		hashtable.put("contactZip", contact.getZip().strip());
-		hashtable.put("primaryPhone", contact.getPrimaryPhone().strip());
-		hashtable.put("workPhone", contact.getWorkPhone().strip());
-
-		Contacts result;
-
-		result = validationServiceImp.validateContact(hashtable, session);
-		
-		
-		if (result == null) {
-			Logger.error("{} || attempted to add a new Contact but "+ session.getAttribute("message") ,user.getUsername());
-			model.addAttribute("message", session.getAttribute("message"));
-			return "/add/add-contact";
-		}
-
-		contactsRepository.save(result);
-		Logger.info("{} || successfully added a new Contact with ID {}.", user.getUsername(), result.getId());
-
-		return "redirect:" + (String) session.getAttribute("redirectLocation");
-	}
-
-	/**
-	 * Adds all of the required attributes to the model to render the add vehicle types page
-	 * @param vehicletype holds the new vehicle type being added to the model
-	 * @param model used to load attributes into the Thymeleaf model
-	 * @param session used to load attributes into the current users HTTP session
-	 * @return /add/add-vehicletype
-	 */
-	
-	@GetMapping("/add-vehicletype")
-	public String showVehicleTypeAddForm(VehicleTypes vehicletype,Model model, HttpSession session) {
-		model.addAttribute("redirectLocation", (String) session.getAttribute("redirectLocation"));
-		model.addAttribute("currentPage","/vehicletypes");
-		User user = userService.getLoggedInUser();
-		model = NotificationController.loadNotificationsIntoModel(user, model);
-
-		session.removeAttribute("message");
-		model.addAttribute("vehicleTypeForm", new VehicleTypes());
-
-		return "/add/add-vehicletype";
-	}
-
-	/**
-	 * Receives a vehicle type object by the user and passes it off for validation
-	 * Once valid it is saved to the vehicle type repository
-	 * @param vehicleType holds the new vehicle type created by the user
-	 * @param model used to load attributes into the Thymeleaf model
-	 * @param session used to load attributes into the current users HTTP session
-	 * @return /add/add-vehicletype
-	 */
-
-	@PostMapping("submit-add-vehicletype")
-	public String vehicleTypeAddForm(@ModelAttribute("vehicleTypeForm") VehicleTypes vehicleType, Model model, HttpSession session) {
-		model.addAttribute("redirectLocation", (String) session.getAttribute("redirectLocation"));
-		model.addAttribute("currentPage","/vehicletypes");
-		User user = userService.getLoggedInUser();
-		model = NotificationController.loadNotificationsIntoModel(user, model);
-
-		Hashtable<String, String> hashtable = new Hashtable<>();
-
-		hashtable.put("type", vehicleType.getType().strip());
-		hashtable.put("subType", vehicleType.getSubType());
-		hashtable.put("description", vehicleType.getDescription().strip());
-		hashtable.put("make", vehicleType.getMake().strip());
-		hashtable.put("model", vehicleType.getModel().strip());
-		hashtable.put("minimumWeight", vehicleType.getMinimumWeight());
-		hashtable.put("maximumWeight", vehicleType.getMaximumWeight());
-		hashtable.put("capacity", vehicleType.getCapacity());
-		hashtable.put("maximumRange", vehicleType.getMaximumRange());
-		hashtable.put("restrictions", vehicleType.getRestrictions().strip());
-		hashtable.put("height", vehicleType.getHeight());
-		hashtable.put("emptyWeight", vehicleType.getEmptyWeight());
-		hashtable.put("length", vehicleType.getLength());
-		hashtable.put("minimumCubicWeight", vehicleType.getMinimumCubicWeight());
-		hashtable.put("maximumCubicWeight", vehicleType.getMaximumCubicWeight());
-
-		VehicleTypes result;
-
-		result = validationServiceImp.validateVehicleTypes(hashtable, session);
-		
-		
-		if (result == null) {
-			Logger.error("{} || attempted to add a new Vehicle Type but "+ session.getAttribute("message") ,user.getUsername());
-			model.addAttribute("message", session.getAttribute("message"));
-			return "/add/add-vehicletype";
-		}
-
-		vehicleTypesRepository.save(result);
-		Logger.info("{} || successfully added a new Vehicle Type with ID {}.", user.getUsername(), result.getId());
-
-		return "redirect:" + (String) session.getAttribute("redirectLocation");
-	}
-	
-	/**
-	 * Adds all of the required attributes to the model to render the add location page
-	 * @param location holds the new location being added to the model
-	 * @param model used to load attributes into the Thymeleaf model
-	 * @param session used to load attributes into the current users HTTP session
-	 * @return /add/add-location
-	 */
-	
-	@GetMapping("/add-location")
-	public String showLocationAddForm(Locations location, Model model, HttpSession session) {
-		model.addAttribute("redirectLocation", (String) session.getAttribute("redirectLocation"));
-		model.addAttribute("currentPage","/locations");
-		User user = userService.getLoggedInUser();
-		model = NotificationController.loadNotificationsIntoModel(user, model);
-
-		session.removeAttribute("message");
-		model.addAttribute("locationForm", new Locations());
-
-		return "/add/add-location";
-	}
-	
-	/**
-	 * Receives a location object by the user and passes it off for validation
-	 * Once valid it is saved to the location repository
-	 * @param location holds the new location created by the user
-	 * @param model used to load attributes into the Thymeleaf model
-	 * @param session used to load attributes into the current users HTTP session
-	 * @return /add/add-location
-	 */
-
-	@PostMapping("submit-add-location")
-	public String locationAddForm(@ModelAttribute("locationForm") Locations location, Model model, HttpSession session) {
-		model.addAttribute("redirectLocation", (String) session.getAttribute("redirectLocation"));
-		model.addAttribute("currentPage","/locations");
-		User user = userService.getLoggedInUser();
-		model = NotificationController.loadNotificationsIntoModel(user, model);
-
-		Hashtable<String, String> hashtable = new Hashtable<>();
-
-		hashtable.put("locationName", location.getName().strip());
-		hashtable.put("streetAddress1", location.getStreetAddress1().strip());
-		hashtable.put("streetAddress2", location.getStreetAddress2().strip());
-		hashtable.put("locationCity", location.getCity().strip()); 
-		hashtable.put("locationState", location.getState().strip());
-		hashtable.put("locationZip", location.getZip().strip());
-		hashtable.put("locationLatitude", "");
-		hashtable.put("locationLongitude", "");
-		hashtable.put("locationType", location.getLocationType().strip());
-
-		Locations result;
-
-		result = validationServiceImp.validateLocations(hashtable, session);
-
-		if (result == null) {
-			Logger.error("{} || attempted to add a new Location but "+ session.getAttribute("message") ,user.getUsername());
-			model.addAttribute("message", session.getAttribute("message"));
-			return "/add/add-location";
-		}
-
-		locationsRepository.save(result);
-		Logger.info("{} || successfully added a new Location with ID {}.", user.getUsername(), result.getId());
-
-		return "redirect:" + (String) session.getAttribute("redirectLocation");
-	}
-	
-	/**
-	 * Adds all of the required attributes to the model to render the add vehicle page
-	 * @param vehicle holds the new vehicle being added to the model
-	 * @param model used to load attributes into the Thymeleaf model
-	 * @param session used to load attributes into the current users HTTP session
-	 * @return /add/add-vehicle
-	 */
-	
-	@GetMapping("/add-vehicle")
-	public String showVehicleAddForm(Vehicles vehicle, Model model, HttpSession session) {
-		model.addAttribute("redirectLocation", (String) session.getAttribute("redirectLocation"));
-		model.addAttribute("currentPage","/vehicles");
-		User user = userService.getLoggedInUser();
-		model = NotificationController.loadNotificationsIntoModel(user, model);
-		model.addAttribute("vehicleTypes", user.getCarrier().getVehicleTypes()); 
-		model.addAttribute("locations", user.getCarrier().getLocations());
-
-		session.removeAttribute("message");
-		model.addAttribute("vehicleForm", new Vehicles());
-
-		return "/add/add-vehicle";
-	}
-
-	/**
-	 * Receives a vehicle object by the user and passes it off for validation
-	 * Once valid it is saved to the vehicles repository
-	 * @param vehicle holds the new vehicle created by the user
-	 * @param model used to load attributes into the Thymeleaf model
-	 * @param session used to load attributes into the current users HTTP session
-	 * @return /add/add-vehicle
-	 */
-
-	@PostMapping("submit-add-vehicle")
-	public String vehicleAddForm(@ModelAttribute("vehicleForm") Vehicles vehicle, Model model, HttpSession session) {
-		model.addAttribute("redirectLocation", (String) session.getAttribute("redirectLocation"));
-		model.addAttribute("currentPage","/vehicles");
-		User user = userService.getLoggedInUser();
-		model = NotificationController.loadNotificationsIntoModel(user, model);
-		model.addAttribute("vehicleTypes", user.getCarrier().getVehicleTypes()); 
-		model.addAttribute("locations", user.getCarrier().getLocations());
-
-		Hashtable<String, String> hashtable = new Hashtable<>();
-
-		hashtable.put("plate", vehicle.getPlateNumber().strip());
-		hashtable.put("vin", vehicle.getVinNumber().strip());
-		hashtable.put("manufacturedYear", vehicle.getManufacturedYear().strip());
-		hashtable.put("vehicleTypeMakeModel", vehicle.getVehicleType().getMake() + " " + vehicle.getVehicleType().getModel());
-		hashtable.put("locationName", vehicle.getLocation().getName());
-		
-		Vehicles result;
-
-		result = validationServiceImp.validateVehicles(hashtable, session);
-
-		if (result == null) {
-			Logger.error("{} || attempted to add a new Vehicle but "+ session.getAttribute("message") ,user.getUsername());
-			model.addAttribute("message", session.getAttribute("message"));
-			return "/add/add-vehicle";
+		if (!shipment.getFullFreightTerms().toString().equals("AVAILABLE SHIPMENT")) {
+			System.out.println("Error: User attempeted to place a bid on a shipment that was not in auction");
+			Logger.error("{} || attempted to place a bid on a shipment that was not in auction", loggedInUser.getUsername());
+			return (String) session.getAttribute("redirectLocation");
 		}
 		
-		vehiclesRepository.save(result);
-		Logger.info("{} || successfully added a new Vehicle with ID {}.", user.getUsername(), result.getId());
-
-		return "redirect:" + (String) session.getAttribute("redirectLocation");
-	}
-	
-	/**
-	 * Adds all of the required attributes to the model to render the add driver page
-	 * @param driver holds the new driver being added to the model
-	 * @param model used to load attributes into the Thymeleaf model
-	 * @param session used to load attributes into the current users HTTP session
-	 * @return /add/add-driver
-	 */
-	
-	@GetMapping("/add-driver")
-	public String showDriverAddForm(Driver driver, Model model, HttpSession session) {
-		model.addAttribute("redirectLocation", (String) session.getAttribute("redirectLocation"));
-		model.addAttribute("currentPage","/drivers");
-		User user = userService.getLoggedInUser();
-		model = NotificationController.loadNotificationsIntoModel(user, model);
-
-		List <Contacts> contacts = user.getCarrier().getContacts();
-		List <Driver> drivers = user.getCarrier().getDrivers();
-		
-		for (int i = 0; i < drivers.size(); i++) {
-		    String name = drivers.get(i).getContact().getFirstName() + " " + drivers.get(i).getContact().getLastName(); // assuming the name property is a string
-		    for (int j = 0; j < contacts.size(); j++) {
-		        if (name.equals(contacts.get(j).getFirstName() + " " + contacts.get(j).getLastName())) {
-		        	contacts.remove(j);
-		            break; // break out of the inner loop once a match is found and removed
-		        }
-		    }
-		}
-
-		model.addAttribute("driver", new Driver()); 
-		model.addAttribute("vehicles", user.getCarrier().getVehicles());
-		model.addAttribute("contacts", contacts);
-
 		try {
 			model.addAttribute("message",session.getAttribute("message"));
 		}
@@ -456,64 +186,73 @@ public class EditAndAddController {
 
 		}
 		session.removeAttribute("message");
-		return "/add/add-driver";
+		
+		model.addAttribute("bids", bids);
+		
+
+
+		return "/add/add-bid";
 	}
 
 	/**
-	 * Receives a driver object by the user and passes it off for validation
-	 * Once valid it is saved to the drivers repository
-	 * @param driver holds the new driver created by the user
+	 * Adds a bid to the database. Checks if there are errors in the form
+	 * Adds the date, time, and logged in user to the bid
+	 * If there are no errors, the bid is saved in the bidsRepository. and the user is redirect to /bids 
+	 * If there are errors, the user is redirected to the /add/add-technician page.
+	 * @param bid Holds information for the new bid
+	 * @param result Checks entered data to ensure it is valid
 	 * @param model used to load attributes into the Thymeleaf model
 	 * @param session used to load attributes into the current users HTTP session
-	 * @return redirect:/add-driver
+	 * @return redirects to /createdshipments or /add/add-bid
 	 */
-
-	@PostMapping("submit-add-driver")
-	public String driversAddForm(@ModelAttribute("driver") Driver driver, Model model, HttpSession session) {
-		model.addAttribute("redirectLocation", (String) session.getAttribute("redirectLocation"));
+	@RequestMapping({"/addbid"})
+	public String addBid(@ModelAttribute("bids") Bids bid, Model model, HttpSession session) {
+		String redirectLocation = (String) session.getAttribute("redirectLocation");
 		User user = userService.getLoggedInUser();
 		model = NotificationController.loadNotificationsIntoModel(user, model);
-
-		driver.setLisence_expiration(dateConverter(driver.getLisence_expiration()));	
+		Shipments shipment = bid.getShipment();
+		List<Bids> bidsInShipment = shipment.getBids();
 		
-		Hashtable<String, String> hashtable = new Hashtable<>();
-		
-		hashtable.put("licenseNumber", driver.getLisence_number().strip());
-		hashtable.put("licenseExpiration", driver.getLisence_expiration().strip());
-		hashtable.put("licenseClass", driver.getLisence_class().strip());
+		DateTimeFormatter date = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+		DateTimeFormatter time = DateTimeFormatter.ofPattern("HH:mm:ss");
+		LocalDateTime now = LocalDateTime.now();
 
-		Driver result;
+		bid.setCarrier(user.getCarrier());
+		bid.setDate(date.format(now));
+		bid.setTime(time.format(now));
+		bid.setShipment(shipment);
 		
-		result = validationServiceImp.validateDriverForm(hashtable, session);
+		String price = bid.getPrice();
+		
+		if (price.contains(".")) {
+		    // Trim off any trailing "0"
+		    price = price.replaceAll("0*$", "");
+		}
 
-		if (result == null) {
-			Logger.error("{} || attempted to add a new Driver but " + session.getAttribute("message") ,user.getUsername());
-			return "redirect:/add-driver";
+		for (Bids b: bidsInShipment) {
+			if (b.getCarrier().getCarrierName().equals(bid.getCarrier().getCarrierName())
+					&& b.getPrice().equals(price)) {
+				Logger.error("{} || attempted to add a but but they already placed a bid on that shipment for that price.",user.getUsername());
+				session.setAttribute("message", "You already placed a bid on this shipment for this price.");
+				return "redirect:/add-bid/"+shipment.getId();
+			}
 		}
 		
-		result.setContact(driver.getContact());
-		result.setVehicle(driver.getVehicle());
+		if (!(price.length() <= 16 && price.length() > 0) || !(price.matches("^[0-9.]+$"))) {
+			Logger.error("{} || attempted to add a bid but the price was not between 1 and 16 numeric characters long.",user.getUsername());
+			session.setAttribute("message", "Price was not between 1 and 16 numeric characters.");
+			return "redirect:/add-bid/"+shipment.getId();	
+		}
 		
-		driverRepository.save(result);
-		Logger.info("{} || successfully added a new Driver with ID {}.", user.getUsername(), result.getId());
-		return "redirect:" + (String) session.getAttribute("redirectLocation");
-	}
-	
-	/**
-	 * Converts date from date picker into the expect format for saving to the repositories
-	 * @param originalDateString holds the original date
-	 * @return newDateString
-	 */
-	
-	String dateConverter(String originalDateString) {
-		
-		DateTimeFormatter originalDateFormatter = DateTimeFormatter.ISO_LOCAL_DATE;
-		LocalDate originalDate = LocalDate.parse(originalDateString, originalDateFormatter);
+		bid.setPrice(price);
 
-		DateTimeFormatter newDateFormatter = DateTimeFormatter.ofPattern("dd-MMM-yyyy");
-		String newDateString = originalDate.format(newDateFormatter);
-		
-		return newDateString;
+		System.out.print("THIS:"+bid.getTime());
+		bidsRepository.save(bid);
+		Logger.info("{} || successfully created a new bid with ID {}", user.getUsername(), bid.getId());
+		notificationService.addNotification(bid.getShipment().getUser(), 
+				"ALERT: A new bid as been added on your shipment with ID " + bid.getShipment().getId() + " and Client " + bid.getShipment().getClient(), false);
+
+		return "redirect:" + redirectLocation;
 	}
-	
+
 }

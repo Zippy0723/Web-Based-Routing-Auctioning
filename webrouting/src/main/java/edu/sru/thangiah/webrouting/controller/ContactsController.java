@@ -15,6 +15,7 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -275,5 +276,73 @@ public class ContactsController {
 
 		return "redirect:" + redirectLocation;
 	}
+	
+	/**
+	 * Adds all of the required attributes to the model to render the add contact page
+	 * @param contact holds the new contact being added to the model
+	 * @param model used to load attributes into the Thymeleaf model
+	 * @param session used to load attributes into the current users HTTP session
+	 * @return /add/add-contact
+	 */
+	@GetMapping("/add-contact")
+	public String showContactAddForm(Contacts contact,Model model, HttpSession session) {
+		model.addAttribute("redirectLocation", (String) session.getAttribute("redirectLocation"));
+		model.addAttribute("currentPage","/contacts");
+		User user = userService.getLoggedInUser();
+		model = NotificationController.loadNotificationsIntoModel(user, model);
+
+		session.removeAttribute("message");
+		model.addAttribute("contactForm", new Contacts());
+
+		return "/add/add-contact";
+	}
+
+	/**
+	 * Receives a contact object by the user and passes it off for validation
+	 * Once valid it is saved to the contact repository
+	 * @param contact holds the new contact being created by the user
+	 * @param model used to load attributes into the Thymeleaf model
+	 * @param session used to load attributes into the current users HTTP session
+	 * @return /add/add-contact
+	 */
+
+	@PostMapping("submit-add-contact")
+	public String contactAddForm(@ModelAttribute("contactForm") Contacts contact, Model model, HttpSession session) {
+		model.addAttribute("redirectLocation", (String) session.getAttribute("redirectLocation"));
+		model.addAttribute("currentPage","/contacts");
+		User user = userService.getLoggedInUser();
+		model = NotificationController.loadNotificationsIntoModel(user, model);
+
+		Hashtable<String, String> hashtable = new Hashtable<>();
+
+		hashtable.put("firstName", contact.getFirstName().strip());
+		hashtable.put("lastName", contact.getLastName().strip());
+		hashtable.put("middleInitial", contact.getMiddleInitial().strip());
+		hashtable.put("emailAddress", contact.getEmailAddress().strip());
+		hashtable.put("streetAddress1", contact.getStreetAddress1().strip());
+		hashtable.put("streetAddress2", contact.getStreetAddress2().strip());
+		hashtable.put("contactCity", contact.getCity().strip()); 
+		hashtable.put("contactState", contact.getState().strip());
+		hashtable.put("contactZip", contact.getZip().strip());
+		hashtable.put("primaryPhone", contact.getPrimaryPhone().strip());
+		hashtable.put("workPhone", contact.getWorkPhone().strip());
+
+		Contacts result;
+
+		result = validationServiceImp.validateContact(hashtable, session);
+		
+		
+		if (result == null) {
+			Logger.error("{} || attempted to add a new Contact but "+ session.getAttribute("message") ,user.getUsername());
+			model.addAttribute("message", session.getAttribute("message"));
+			return "/add/add-contact";
+		}
+
+		contactsRepository.save(result);
+		Logger.info("{} || successfully added a new Contact with ID {}.", user.getUsername(), result.getId());
+
+		return "redirect:" + (String) session.getAttribute("redirectLocation");
+	}
+
 
 }

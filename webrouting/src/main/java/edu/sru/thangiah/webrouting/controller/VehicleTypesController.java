@@ -15,6 +15,7 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -275,5 +276,78 @@ public class VehicleTypesController {
 
 		return "redirect:" + redirectLocation;
 	}
+	
+	/**
+	 * Adds all of the required attributes to the model to render the add vehicle types page
+	 * @param vehicletype holds the new vehicle type being added to the model
+	 * @param model used to load attributes into the Thymeleaf model
+	 * @param session used to load attributes into the current users HTTP session
+	 * @return /add/add-vehicletype
+	 */
+	
+	@GetMapping("/add-vehicletype")
+	public String showVehicleTypeAddForm(VehicleTypes vehicletype,Model model, HttpSession session) {
+		model.addAttribute("redirectLocation", (String) session.getAttribute("redirectLocation"));
+		model.addAttribute("currentPage","/vehicletypes");
+		User user = userService.getLoggedInUser();
+		model = NotificationController.loadNotificationsIntoModel(user, model);
+
+		session.removeAttribute("message");
+		model.addAttribute("vehicleTypeForm", new VehicleTypes());
+
+		return "/add/add-vehicletype";
+	}
+
+	/**
+	 * Receives a vehicle type object by the user and passes it off for validation
+	 * Once valid it is saved to the vehicle type repository
+	 * @param vehicleType holds the new vehicle type created by the user
+	 * @param model used to load attributes into the Thymeleaf model
+	 * @param session used to load attributes into the current users HTTP session
+	 * @return /add/add-vehicletype
+	 */
+
+	@PostMapping("submit-add-vehicletype")
+	public String vehicleTypeAddForm(@ModelAttribute("vehicleTypeForm") VehicleTypes vehicleType, Model model, HttpSession session) {
+		model.addAttribute("redirectLocation", (String) session.getAttribute("redirectLocation"));
+		model.addAttribute("currentPage","/vehicletypes");
+		User user = userService.getLoggedInUser();
+		model = NotificationController.loadNotificationsIntoModel(user, model);
+
+		Hashtable<String, String> hashtable = new Hashtable<>();
+
+		hashtable.put("type", vehicleType.getType().strip());
+		hashtable.put("subType", vehicleType.getSubType());
+		hashtable.put("description", vehicleType.getDescription().strip());
+		hashtable.put("make", vehicleType.getMake().strip());
+		hashtable.put("model", vehicleType.getModel().strip());
+		hashtable.put("minimumWeight", vehicleType.getMinimumWeight());
+		hashtable.put("maximumWeight", vehicleType.getMaximumWeight());
+		hashtable.put("capacity", vehicleType.getCapacity());
+		hashtable.put("maximumRange", vehicleType.getMaximumRange());
+		hashtable.put("restrictions", vehicleType.getRestrictions().strip());
+		hashtable.put("height", vehicleType.getHeight());
+		hashtable.put("emptyWeight", vehicleType.getEmptyWeight());
+		hashtable.put("length", vehicleType.getLength());
+		hashtable.put("minimumCubicWeight", vehicleType.getMinimumCubicWeight());
+		hashtable.put("maximumCubicWeight", vehicleType.getMaximumCubicWeight());
+
+		VehicleTypes result;
+
+		result = validationServiceImp.validateVehicleTypes(hashtable, session);
+		
+		
+		if (result == null) {
+			Logger.error("{} || attempted to add a new Vehicle Type but "+ session.getAttribute("message") ,user.getUsername());
+			model.addAttribute("message", session.getAttribute("message"));
+			return "/add/add-vehicletype";
+		}
+
+		vehicleTypesRepository.save(result);
+		Logger.info("{} || successfully added a new Vehicle Type with ID {}.", user.getUsername(), result.getId());
+
+		return "redirect:" + (String) session.getAttribute("redirectLocation");
+	}
+	
 
 }
