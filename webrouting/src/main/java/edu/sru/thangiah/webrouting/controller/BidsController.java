@@ -349,6 +349,7 @@ public class BidsController {
 		session.removeAttribute("message");
 		
 		model.addAttribute("bids", bids);
+		model.addAttribute("currentPage","/shipments");
 		
 
 

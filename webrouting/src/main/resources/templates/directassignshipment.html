@@ -34,7 +34,7 @@
 				<div th:switch="${carriers.size()}">
 					<h2 th:case="0">No Carriers Currently in System</h2>
 					<div th:case="*">
-						<a th:href="${redirectLocation}">Back</a>
+						<p><button class="buttons6" th:attr="onclick=|window.location.href='${redirectLocation}'|">Back</button></p>
 						<br><br>
 						<h2>Select a carrier to assign your shipment to: </h2>
 						<br>
@@ -56,9 +56,9 @@
     			        <label for="inputPrice" style="text-align: left;">Enter the price of the shipment:</label>
 						<input type="text" id="inputPrice" name="inputPrice" style="font-size: 16px" size="10">
 						<br><br>
-						<button type="button" onclick="fetchPrice()">Fetch Price from Freight Rate Table</button>
+						<button class="buttons6" type="button" onclick="fetchPrice()">Fetch Price from Freight Rate Table</button>
     			        <br></br>
-    				    <button type="submit">Select this Carrier</button><br><br>
+    				    <button class="buttons6" type="submit">Select this Carrier</button><br><br>
     				    </div>
 				      </form>
 					</div>
