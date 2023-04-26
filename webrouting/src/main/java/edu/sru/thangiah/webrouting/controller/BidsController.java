@@ -198,7 +198,7 @@ public class BidsController {
 	 * @return redirectLocation
 	 */
 	@GetMapping("/acceptbid/{id}")
-	public String acceptBid(@PathVariable("id") long id, Model model, HttpSession session) {
+	public String acceptBid(@PathVariable("id") long id, Model model, HttpSession session) {	
 		Bids bid = bidsRepository.findById(id)
 				.orElseThrow(() -> new IllegalArgumentException("Invalid bid Id: " + id));
 
@@ -208,6 +208,10 @@ public class BidsController {
 		User user = userService.getLoggedInUser();
 		model = NotificationController.loadNotificationsIntoModel(user, model);
 		User bidUser;
+		
+		if (user.getAuctioningAllowed() == false) {
+			return "redirect:/";
+		}
 
 		if (bid.getShipment().getFullFreightTerms().toString().equals("FROZEN") && !user.getRole().toString().equals("MASTERLIST")) {
 			System.out.println("User attempted to accept a bid on a frozen shipment");
@@ -247,6 +251,9 @@ public class BidsController {
 				.orElseThrow(() -> new IllegalArgumentException("Invalid bid Id:" + id));
 		User user = userService.getLoggedInUser();
 
+		if (user.getAuctioningAllowed() == false) {
+			return "redirect:/";
+		}
 
 		model = NotificationController.loadNotificationsIntoModel(user, model);
 
@@ -288,6 +295,10 @@ public class BidsController {
 				.orElseThrow(() -> new IllegalArgumentException("Invalid Bid Id:" + id));
 
 		User user = userService.getLoggedInUser();
+		
+		if (user.getAuctioningAllowed() == false) {
+			return "redirect:/";
+		}
 		
 		
 		String price = bid.getPrice().strip();
@@ -333,6 +344,10 @@ public class BidsController {
 		model.addAttribute("carriers", carriersRepository.findAll());
 		User loggedInUser = userService.getLoggedInUser();
 		model = NotificationController.loadNotificationsIntoModel(loggedInUser, model);
+		
+		if (loggedInUser.getAuctioningAllowed() == false) {
+			return "redirect:/";
+		}
 
 		if (!shipment.getFullFreightTerms().toString().equals("AVAILABLE SHIPMENT")) {
 			System.out.println("Error: User attempeted to place a bid on a shipment that was not in auction");
@@ -374,6 +389,10 @@ public class BidsController {
 		model = NotificationController.loadNotificationsIntoModel(user, model);
 		Shipments shipment = bid.getShipment();
 		List<Bids> bidsInShipment = shipment.getBids();
+		
+		if (user.getAuctioningAllowed() == false) {
+			return "redirect:/";
+		}
 		
 		DateTimeFormatter date = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 		DateTimeFormatter time = DateTimeFormatter.ofPattern("HH:mm:ss");
