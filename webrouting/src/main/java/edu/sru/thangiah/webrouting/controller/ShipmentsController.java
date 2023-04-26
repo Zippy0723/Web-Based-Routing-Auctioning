@@ -699,10 +699,12 @@ public class ShipmentsController {
 		model.addAttribute("redirectLocation", session.getAttribute("redirectLocation"));
 		model.addAttribute("bids", shipment.getBids());
 		model.addAttribute("currentPage","/shipments");
+		User users = userService.getLoggedInUser();
+		model.addAttribute("user",users);
 
 		if (shipment.getCarrier() != null) {
 
-			User users = userService.getLoggedInUser();
+			
 			List<Notification> notifications = new ArrayList<>();
 
 			if(!(users == null)) {
