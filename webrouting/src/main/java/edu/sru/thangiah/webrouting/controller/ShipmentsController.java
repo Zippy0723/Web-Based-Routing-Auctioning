@@ -3,6 +3,7 @@ package edu.sru.thangiah.webrouting.controller;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.math.BigDecimal;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -880,12 +881,12 @@ public class ShipmentsController {
 		Shipments shipment = shipmentsRepository.findById(shipmentId)
 				.orElseThrow(() -> new IllegalArgumentException("Invalid Shipment Id:" + shipmentId));
 
-		Double paidAmount;
+		BigDecimal paidAmount;
 
 		model.addAttribute("selectedCarrierId",selectedCarrierId);
 
 		try {
-			paidAmount = Double.parseDouble(inputPrice);
+			paidAmount = new BigDecimal(inputPrice);
 		} catch (NumberFormatException e) {
 			session.setAttribute("message","Error: Please input a valid price for this shipment");
 			return "redirect:/directassignshipment/" + shipment.getId();
@@ -902,7 +903,7 @@ public class ShipmentsController {
 	 * @param paidAmount holds the paid amount
 	 * @param carrier holds the carrier being assigned
 	 */
-	public void assignShipment(Shipments shipment, Double paidAmount, Carriers carrier) {
+	public void assignShipment(Shipments shipment, BigDecimal paidAmount, Carriers carrier) {
 
 		User user = CarriersController.getUserFromCarrier(carrier);
 		notificationService.addNotification(user, "Shipper " + shipment.getUser().getUsername() + " has requested that you pick up a shipment with a value of " + paidAmount +
