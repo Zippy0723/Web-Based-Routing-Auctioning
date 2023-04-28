@@ -64,10 +64,10 @@
                                     <td th:text="${user.username}"></td>
                                     <td th:text="${user.email}"></td>
                                     <td th:text="${user.role}"></td>
-                                    <td th:text= "${user.enabled}"></td>
-                                    <td th:text="${user.auctioningAllowed}"></td>
-                                    <td><a th:href="@{/editshippers/{id}(id=${user.id})}"><button style='font-size:11px'><i class='far fa-edit'></i></button></a></td>
-                                    <td><a href="#" th:data-object-type="${user}" th:data-object-id="${user.id}" th:data-object-name="delete" th:attr="onclick=${'deleteObjectConfirm(this,''/deleteuserfirmation/'')'}"><button class="fa fa-times" style="color: red;"></button></a></td>
+                                    <td class="compact" th:text= "${user.enabled}"></td>
+                                    <td class="compact" th:text="${user.auctioningAllowed}"></td>
+                                    <td class="compact"><a th:href="@{/editshippers/{id}(id=${user.id})}"><button style='font-size:11px'><i class='far fa-edit'></i></button></a></td>
+                                    <td class="compact"><a href="#" th:data-object-type="${user}" th:data-object-id="${user.id}" th:data-object-name="delete" th:attr="onclick=${'deleteObjectConfirm(this,''/deleteuserfirmation/'')'}"><button class="fa fa-times" style="color: red;"></button></a></td>
                                 </tr>
                             </tbody>
                         </table>

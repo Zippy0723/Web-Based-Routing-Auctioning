@@ -90,7 +90,7 @@
                                     <li th:each="carrier : ${user.carrier}" th:text="${carrier.ftl}"></li>
                                     </ul>
                                     </td>
-                                    <td>
+                                    <td class="compact">
                                     <ul>
                                     <li th:each="carrier : ${user.carrier}" th:text="${carrier.pallets}"></li>
                                     </ul>
@@ -100,10 +100,10 @@
                                     <li th:each="carrier : ${user.carrier}" th:text="${carrier.weight}"></li>
                                     </ul>
                                     </td>
-                                    <td th:text= "${user.enabled}"></td>
-                                    <td th:text="${user.auctioningAllowed}"></td>
-                                    <td><a th:href="@{/editcarriers/{id}(id=${user.id})}"><button style='font-size:11px'><i class='far fa-edit'></i></button></a></td>
-                                    <td><a href="#" th:data-object-type="${user}" th:data-object-id="${user.id}" th:data-object-name="delete" th:attr="onclick=${'deleteObjectConfirm(this,''/deleteuserfirmation/'')'}"><button class="fa fa-times" style="color: red;"></button></a></td>
+                                    <td class="compact" th:text= "${user.enabled}"></td>
+                                    <td class="compact" th:text="${user.auctioningAllowed}"></td>
+                                    <td class="compact"><a th:href="@{/editcarriers/{id}(id=${user.id})}"><button style='font-size:11px'><i class='far fa-edit'></i></button></a></td>
+                                    <td class="compact"><a href="#" th:data-object-type="${user}" th:data-object-id="${user.id}" th:data-object-name="delete" th:attr="onclick=${'deleteObjectConfirm(this,''/deleteuserfirmation/'')'}"><button class="fa fa-times" style="color: red;"></button></a></td>
                                 </tr>
                             </tbody>
                         </table>

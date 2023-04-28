@@ -44,6 +44,7 @@
                         <hr>
                         <span type="hidden" th:text="${error}" class="loginError"></span>
                         <br>
+                        <div class="longDTableWrapper">
                         <table class="dataTable">
                             <thead>
                                 <tr>
@@ -69,12 +70,13 @@
                                     <td th:text="${location.state}"></td>
                                     <td th:text="${location.zip}"></td>
                                     <td th:text="${location.locationType}"></td>
-                                    <td><a th:href="@{/editlocations/{id}(id=${location.id})}"><button style='font-size:11px'><i class='far fa-edit'></i></button></a></td>
-                                    <td><a href="#" th:data-object-type="${location}" th:data-object-id="${location.id}" th:data-object-name="delete" th:attr="onclick=${'deleteObjectConfirm(this,''/deletelocationconfirmation/'')'}"><button class="fa fa-times" style="color: red;"></button></a></td> 
+                                    <td class="compact"><a th:href="@{/editlocations/{id}(id=${location.id})}"><button style='font-size:11px'><i class='far fa-edit'></i></button></a></td>
+                                    <td class="compact"><a href="#" th:data-object-type="${location}" th:data-object-id="${location.id}" th:data-object-name="delete" th:attr="onclick=${'deleteObjectConfirm(this,''/deletelocationconfirmation/'')'}"><button class="fa fa-times" style="color: red;"></button></a></td> 
             
                                 </tr>
                             </tbody>
                         </table>
+                        </div>
                     </div>
                     <br>      
                     <p><button class="buttons7" onclick="window.location.href='/add-location';">Add Location</button>
