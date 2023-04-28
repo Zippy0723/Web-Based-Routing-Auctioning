@@ -92,7 +92,7 @@ public class CarriersController {
 	}
 
 	/**
-	 * Redirects user to the /uploadcarrier page when clicking "Upload an excel file" button in the carriers section of AdminTry
+	 * Redirects user to the /uploadcarrier page when clicking "Upload an excel file" button in the carriers section of Admin
 	 * @param model used to add data to the model
 	 * @return /uploadcarrier
 	 */

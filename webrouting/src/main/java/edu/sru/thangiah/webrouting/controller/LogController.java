@@ -448,7 +448,7 @@ public class LogController {
 				numArray[i-1] = Integer.toString(i);
 			}
 
-			String [] people = {"Carrier", "ShadowAdmin", "AdminTry", "Ship4U", "Shipper", "WillyWonka","Auctioneer" };
+			String [] people = {"Carrier", "ShadowAdmin", "Admin", "Ship4U", "Shipper", "WillyWonka","Auctioneer" };
 
 			String [] entity = {"Bid", "Contact", "Driver", "Location", "Shipment", "Technician", "Vehicle", "VehicleType", "Maintenance Order"};
 
