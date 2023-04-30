@@ -63,9 +63,9 @@
                                     <td th:text="${bid.date}"></td>
                                     <td th:text="${bid.time}"></td>
                                     <td><a th:text= "${bid.carrier.carrierName}" th:href="@{/viewcarrier/{id}(id=${bid.carrier.id})}">View Bidder</a></td>
-                                    <td sec:authorize="hasAuthority('SHIPPER')"><a th:classappend="${!user.auctioningAllowed || bid.shipment.fullFreightTerms == 'FROZEN' ? 'disabled-btn' : ''}" th:href="@{/acceptbid/{id}(id=${bid.id})}">Accept Bid</a></td>
-                                    <td sec:authorize="hasAnyAuthority('CARRIER','MASTERLIST')"><a th:classappend="${user.auctioningAllowed} ? '' : 'disabled-btn'" th:href="@{/editbids/{id}(id=${bid.id})}"><button style='font-size:11px'><i class='far fa-edit'></i></button></a></td>
-                                    <td sec:authorize="hasAnyAuthority('CARRIER','MASTERLIST')"><a href="#" th:data-object-type="${bid.id}" th:data-object-id="${bid.id}" th:data-object-name="delete"  th:attr="onclick=${'deleteObjectConfirm(this,''/deletebidconfirmation/'')'}"><button class="fa fa-times" style="color: red;"></button></a></td>
+                                    <td class="compact" sec:authorize="hasAuthority('SHIPPER')"><a th:classappend="${!user.auctioningAllowed || bid.shipment.fullFreightTerms == 'FROZEN' ? 'disabled-btn' : ''}" th:href="@{/acceptbid/{id}(id=${bid.id})}">Accept Bid</a></td>
+                                    <td class="compact" sec:authorize="hasAnyAuthority('CARRIER','MASTERLIST')"><a th:classappend="${user.auctioningAllowed} ? '' : 'disabled-btn'" th:href="@{/editbids/{id}(id=${bid.id})}"><button style='font-size:11px'><i class='far fa-edit'></i></button></a></td>
+                                    <td class="compact" sec:authorize="hasAnyAuthority('CARRIER','MASTERLIST')"><a href="#" th:data-object-type="${bid.id}" th:data-object-id="${bid.id}" th:data-object-name="delete"  th:attr="onclick=${'deleteObjectConfirm(this,''/deletebidconfirmation/'')'}"><button class="fa fa-times" style="color: red;"></button></a></td>
                                 </tr>
                             </tbody>
                         </table>

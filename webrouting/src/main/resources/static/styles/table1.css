@@ -4,6 +4,8 @@ table {
   border-radius: 10px;
   table-layout: auto;
   width: 180px;
+  box-sizing: border-box;
+  overflow-x: auto;
 }
 
 table td {
@@ -36,3 +38,19 @@ table td:not(:first-child) {
   width: 1%;
   white-space: nowrap;
 }
+
+
+table td:not(:first-child):not(.compact) {
+  width: calc((100% - 25px) / (var(--colcount) - 4)); /* calculate the width of the other columns */
+}
+
+.compact {
+  width: 25px; /* set the width you want */
+}
+
+
+
+
+
+
+

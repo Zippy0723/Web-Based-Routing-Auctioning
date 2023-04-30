@@ -39,7 +39,7 @@
 				<br>
 				<h2> Edit Your User Info</h2>
 				<br>
-				<input type="hidden" th:field="*{username}" id="username" placeholder="AdminTry" required> 
+				<input type="hidden" th:field="*{username}" id="username" placeholder="Admin" required> 
 				<span th:if="${#fields.hasErrors('username')}" th:errors="*{username}"></span>
 				<br>
 				<label for="password">Password: </label>
@@ -51,7 +51,7 @@
                 <p th:if="${#fields.hasErrors('confirmPassword')}" th:errorclass="confirmPassword" th:errors="*{confirmPassword}"></p>  
                 <br>
 				<label for="email">Email: </label></td>
-				<input type="text" th:field="*{email}" id="email" placeholder="AdminTry@Gmail.com" required> 
+				<input type="text" th:field="*{email}" id="email" placeholder="Admin@Gmail.com" required> 
 				<p th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></p>
 				<input type="hidden" th:field="*{updateEmail}" id="updateEmail" placeholder="updateEmail" required>
 				<br><br>

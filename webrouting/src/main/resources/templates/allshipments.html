@@ -44,6 +44,7 @@
                         <h2>Pending Shipments</h2>
                         <br>
                         <br>
+                        <div class="longDTableWrapper">
                         <table class="dataTable">
                             <thead>
                                 <tr>
@@ -83,15 +84,16 @@
                                     <td th:text="${shipment.consigneeCity}"></td>
                                     <td th:text="${shipment.consigneeState}"></td>
                                     <td th:text="${shipment.consigneeZip}"></td>
-                                    <td><a th:href="@{/viewshipment/{id}(id=${shipment.id})}"><button style='font-size:11px'><i class='fas fa-clipboard-list'></i></button></a></td>
-                                    <td sec:authorize="hasAuthority('MASTERLIST')"><a href="#" th:data-object-type="${shipment}" th:data-object-id="${shipment.id}" th:data-object-name="freeze" th:attr="onclick=${'freezeShipmentConfirm(this,''/freezeshipmentconfirmation/'')'}"><button><i class='far fa-snowflake' style='font-size:11px;color:#2070b9'></i></button></a></td>
-                                    <td sec:authorize="hasAnyAuthority('SHIPPER','MASTERLIST')"><a href="#" th:data-object-type="${shipment}" th:data-object-id="${shipment.id}" th:data-object-name="push" th:classappend="${user.auctioningAllowed} ? '' : 'disabled-btn'" th:attr="onclick=${'pushShipmentConfirm(this,''/pushshipmentconfirmation/'')'}"><button class="fas fa-gavel" style="color: #5C4033;"></button></a></td>           
-                                    <td sec:authorize="hasAnyAuthority('SHIPPER','MASTERLIST')"><a th:href="@{/directassignshipment/{id}(id=${shipment.id})}"><button style='font-size:11px'><i class='fas fa-truck'></i></button></a></td>
-                                    <td sec:authorize="hasAnyAuthority('SHIPPER','MASTERLIST')"><a th:href="@{/editshipment/{id}(id=${shipment.id})}"><button style='font-size:11px'><i class='far fa-edit'></i></button></a></td>
-                                    <td sec:authorize="hasAnyAuthority('SHIPPER','MASTERLIST')"><a href="#" th:data-object-type="${shipment.client}" th:data-object-id="${shipment.id}" th:data-object-name="delete" th:attr="onclick=${'deleteObjectConfirm(this,''/deleteshipmentconfirmation/'')'}"><button class="fa fa-times" style="color: red;"></button></a></td> 
+                                    <td class="compact"><a th:href="@{/viewshipment/{id}(id=${shipment.id})}"><button style='font-size:11px'><i class='fas fa-clipboard-list'></i></button></a></td>
+                                    <td class="compact" sec:authorize="hasAuthority('MASTERLIST')"><a href="#" th:data-object-type="${shipment}" th:data-object-id="${shipment.id}" th:data-object-name="freeze" th:attr="onclick=${'freezeShipmentConfirm(this,''/freezeshipmentconfirmation/'')'}"><button><i class='far fa-snowflake' style='font-size:11px;color:#2070b9'></i></button></a></td>
+                                    <td class="compact" sec:authorize="hasAnyAuthority('SHIPPER','MASTERLIST')"><a href="#" th:data-object-type="${shipment}" th:data-object-id="${shipment.id}" th:data-object-name="push" th:classappend="${user.auctioningAllowed} ? '' : 'disabled-btn'" th:attr="onclick=${'pushShipmentConfirm(this,''/pushshipmentconfirmation/'')'}"><button class="fas fa-gavel" style="color: #5C4033;"></button></a></td>           
+                                    <td class="compact" sec:authorize="hasAnyAuthority('SHIPPER','MASTERLIST')"><a th:href="@{/directassignshipment/{id}(id=${shipment.id})}"><button style='font-size:11px'><i class='fas fa-truck'></i></button></a></td>
+                                    <td class="compact" sec:authorize="hasAnyAuthority('SHIPPER','MASTERLIST')"><a th:href="@{/editshipment/{id}(id=${shipment.id})}"><button style='font-size:11px'><i class='far fa-edit'></i></button></a></td>
+                                    <td class="compact" sec:authorize="hasAnyAuthority('SHIPPER','MASTERLIST')"><a href="#" th:data-object-type="${shipment.client}" th:data-object-id="${shipment.id}" th:data-object-name="delete" th:attr="onclick=${'deleteObjectConfirm(this,''/deleteshipmentconfirmation/'')'}"><button class="fa fa-times" style="color: red;"></button></a></td> 
                                 </tr>
                             </tbody>
                         </table>
+                        </div>
                     </div>
                     <br>
                 </div>
@@ -103,6 +105,7 @@
                         <br>
                         <br>
                         <span type="hidden" th:text="${error}" class="loginError"></span>
+                        <div class="longDTableWrapper">
                         <table class="dataTable">
                             <thead>
                                 <tr>
@@ -147,25 +150,26 @@
                                     <td th:text="${shipment.consigneeCity}"></td>
                                     <td th:text="${shipment.consigneeState}"></td>
                                     <td th:text="${shipment.consigneeZip}"></td>
-                                    <td><a th:href="@{/viewshipment/{id}(id=${shipment.id})}"><button style='font-size:11px'><i class='fas fa-clipboard-list'></i></button></a></td>
-                                    <td><a th:href="@{/viewshipmentbids/{id}(id=${shipment.id})}"><button class="buttons11" role="button">([[${shipment.getBids().size()}]])</button></a></td>
-                                    <td><p th:inline="text">[[${shipment.getLowestBidValue()}]]</p></td>
-                                    <td sec:authorize="hasAuthority('CARRIER')"><a th:classappend="${user.auctioningAllowed ? '' : 'disabled-btn'}" th:href="@{/add-bid/{id}(id=${shipment.id})}"><button style='font-size:11px'><i class='fas fa-money-bill-wave' style="color: #118C4F;"></i></button></a></td>
-                                    <td sec:authorize="hasAuthority('MASTERLIST')"><a href="#" th:data-object-type="${shipment}" th:data-object-id="${shipment.id}" th:data-object-name="freeze" th:attr="onclick=${'freezeShipmentConfirm(this,''/freezeshipmentconfirmation/'')'}"><button><i class='far fa-snowflake' style='font-size:11px;color:#2070b9'></i></button></a></td>
-                                    <td sec:authorize="hasAuthority('MASTERLIST')"><a href="#" th:data-object-type="${shipment}" th:data-object-id="${shipment.id}"  th:data-object-name="reset" th:attr="onclick=${'resetBidConfirm(this,''/resetshipmentbidsconfirmation/'')'}"><button style='font-size:11px'><i class="fa fa-refresh"></i></button></a></td>
-                                    <td sec:authorize="hasAuthority('MASTERLIST')">
+                                    <td class="compact"><a th:href="@{/viewshipment/{id}(id=${shipment.id})}"><button style='font-size:11px'><i class='fas fa-clipboard-list'></i></button></a></td>
+                                    <td class="compact"><a th:href="@{/viewshipmentbids/{id}(id=${shipment.id})}"><button class="buttons11" role="button">([[${shipment.getBids().size()}]])</button></a></td>
+                                    <td class="compact"><p th:inline="text">[[${shipment.getLowestBidValue()}]]</p></td>
+                                    <td class="compact" sec:authorize="hasAuthority('CARRIER')"><a th:classappend="${user.auctioningAllowed ? '' : 'disabled-btn'}" th:href="@{/add-bid/{id}(id=${shipment.id})}"><button style='font-size:11px'><i class='fas fa-money-bill-wave' style="color: #118C4F;"></i></button></a></td>
+                                    <td class="compact" sec:authorize="hasAuthority('MASTERLIST')"><a href="#" th:data-object-type="${shipment}" th:data-object-id="${shipment.id}" th:data-object-name="freeze" th:attr="onclick=${'freezeShipmentConfirm(this,''/freezeshipmentconfirmation/'')'}"><button><i class='far fa-snowflake' style='font-size:11px;color:#2070b9'></i></button></a></td>
+                                    <td class="compact" sec:authorize="hasAuthority('MASTERLIST')"><a href="#" th:data-object-type="${shipment}" th:data-object-id="${shipment.id}"  th:data-object-name="reset" th:attr="onclick=${'resetBidConfirm(this,''/resetshipmentbidsconfirmation/'')'}"><button style='font-size:11px'><i class="fa fa-refresh"></i></button></a></td>
+                                    <td class="compact" sec:authorize="hasAuthority('MASTERLIST')">
 	    								<span th:if="${shipment.bids.size() > 0}">
 										<a href="#" th:data-object-type="${shipment}" th:data-object-id="${shipment.id}" th:data-object-name="force" 
            								th:attr="onclick=${'endAuctionConfirm(this,''/forceendauctionconfirmation/'')'}">
             							<button class= "fas fa-gavel" style="color:red;"></button></a></span>
             							<span th:if="${shipment.bids.size() == 0}"><button class= "fas fa-gavel" style="color:red; opacity: 0.5" disabled></button></span></td>
-                                    <td sec:authorize="hasAnyAuthority('SHIPPER','MASTERLIST')"><a href="#" th:data-object-type="${shipment.client}" th:data-object-id="${shipment.id}" th:data-object-name="remove" th:attr="onclick=${'auctionRemoveConfirm(this,''/removefromauctionconfirmation/'')'}"><span class='fa-stack fa-2x'style='font-size:11px'><i class='fas fa-gavel fa-stack-1x'></i><i class='fas fa-ban fa-stack-2x'style='color:tomato'></i></span></a></td>
-                                    <td sec:authorize="hasAnyAuthority('SHIPPER','MASTERLIST')"><a th:href="@{/editshipment/{id}(id=${shipment.id})}"><button style='font-size:11px'><i class='far fa-edit'></i></button></a></td>
-                                    <td sec:authorize="hasAnyAuthority('SHIPPER','MASTERLIST')"><a href="#" th:data-object-type="${shipment.client}" th:data-object-id="${shipment.id}" th:data-object-name="delete" th:attr="onclick=${'deleteObjectConfirm(this,''/deleteshipmentconfirmation/'')'}"><button class="fa fa-times" style="color: red;"></button></a></td> 
+                                    <td class="compact" sec:authorize="hasAnyAuthority('SHIPPER','MASTERLIST')"><a href="#" th:data-object-type="${shipment.client}" th:data-object-id="${shipment.id}" th:data-object-name="remove" th:attr="onclick=${'auctionRemoveConfirm(this,''/removefromauctionconfirmation/'')'}"><span class='fa-stack fa-2x'style='font-size:11px'><i class='fas fa-gavel fa-stack-1x'></i><i class='fas fa-ban fa-stack-2x'style='color:tomato'></i></span></a></td>
+                                    <td class="compact" sec:authorize="hasAnyAuthority('SHIPPER','MASTERLIST')"><a th:href="@{/editshipment/{id}(id=${shipment.id})}"><button style='font-size:11px'><i class='far fa-edit'></i></button></a></td>
+                                    <td class="compact" sec:authorize="hasAnyAuthority('SHIPPER','MASTERLIST')"><a href="#" th:data-object-type="${shipment.client}" th:data-object-id="${shipment.id}" th:data-object-name="delete" th:attr="onclick=${'deleteObjectConfirm(this,''/deleteshipmentconfirmation/'')'}"><button class="fa fa-times" style="color: red;"></button></a></td> 
                                 </tr>                                   
                                 
                             </tbody>
                         </table>
+                        </div>
                     </div>
                     <br>
                 </div>
@@ -176,6 +180,7 @@
                         <h2>Frozen Shipments</h2>
                         <br>
                         <br>
+                        <div class="longDTableWrapper">
                         <table class="dataTable">
                             <thead>
                                 <tr>
@@ -217,22 +222,23 @@
                                     <td th:text="${shipment.consigneeCity}"></td>
                                     <td th:text="${shipment.consigneeState}"></td>
                                     <td th:text="${shipment.consigneeZip}"></td>
-                                    <td><a th:href="@{/viewshipment/{id}(id=${shipment.id})}"><button style='font-size:11px'><i class='fas fa-clipboard-list'></i></button></a></td>
-                                    <td><a th:href="@{/viewshipmentbids/{id}(id=${shipment.id})}" th:inline="text"><button class="buttons11" role="button">([[${shipment.getBids().size()}]])</button></a></td>
-                                    <td><p th:inline="text">[[${shipment.getLowestBidValue()}]]</p></td>
-                                    <td sec:authorize="hasAuthority('MASTERLIST')"><a href="#" th:data-object-type="${shipment}" th:data-object-id="${shipment.id}" th:data-object-name="unfreeze" th:attr="onclick=${'unfreezeShipmentConfirm(this,''/unfreezeshipmentconfirmation/'')'}"><button style='font-size:11px'><i class="fas fa-fire" style="color: #e25822;"></i></button></a></td>
-                                    <td sec:authorize="hasAuthority('MASTERLIST')"><a href="#" th:data-object-type="${shipment}" th:data-object-id="${shipment.id}"  th:data-object-name="reset" th:attr="onclick=${'resetBidConfirm(this,''/resetshipmentbidsconfirmation/'')'}"><button style='font-size:11px'><i class="fa fa-refresh"></i></button></a></td>
-                                      <td sec:authorize="hasAuthority('MASTERLIST')">
+                                    <td class="compact"><a th:href="@{/viewshipment/{id}(id=${shipment.id})}"><button style='font-size:11px'><i class='fas fa-clipboard-list'></i></button></a></td>
+                                    <td class="compact"><a th:href="@{/viewshipmentbids/{id}(id=${shipment.id})}" th:inline="text"><button class="buttons11" role="button">([[${shipment.getBids().size()}]])</button></a></td>
+                                    <td class="compact"><p th:inline="text">[[${shipment.getLowestBidValue()}]]</p></td>
+                                    <td class="compact" sec:authorize="hasAuthority('MASTERLIST')"><a href="#" th:data-object-type="${shipment}" th:data-object-id="${shipment.id}" th:data-object-name="unfreeze" th:attr="onclick=${'unfreezeShipmentConfirm(this,''/unfreezeshipmentconfirmation/'')'}"><button style='font-size:11px'><i class="fas fa-fire" style="color: #e25822;"></i></button></a></td>
+                                    <td class="compact" sec:authorize="hasAuthority('MASTERLIST')"><a href="#" th:data-object-type="${shipment}" th:data-object-id="${shipment.id}"  th:data-object-name="reset" th:attr="onclick=${'resetBidConfirm(this,''/resetshipmentbidsconfirmation/'')'}"><button style='font-size:11px'><i class="fa fa-refresh"></i></button></a></td>
+                                      <td class="compact" sec:authorize="hasAuthority('MASTERLIST')">
 	    								<span th:if="${shipment.bids.size() > 0}">
 										<a href="#" th:data-object-type="${shipment}" th:data-object-id="${shipment.id}" th:data-object-name="force" 
            								th:attr="onclick=${'endAuctionConfirm(this,''/forceendauctionconfirmation/'')'}">
             							<button class= "fas fa-gavel" style="color:red;"></button></a></span>
             							<span th:if="${shipment.bids.size() == 0}"><button class= "fas fa-gavel" style="color:red; opacity: 0.5" disabled></button></span></td>
-                                    <td sec:authorize="hasAnyAuthority('MASTERLIST')"><a th:href="@{/editshipment/{id}(id=${shipment.id})}"><button style='font-size:11px'><i class='far fa-edit'></i></button></a></td>
-                                    <td sec:authorize="hasAnyAuthority('MASTERLIST')"><a href="#" th:data-object-type="${shipment.client}" th:data-object-id="${shipment.id}" th:data-object-name="delete" th:attr="onclick=${'deleteObjectConfirm(this,''/deleteshipmentconfirmation/'')'}"><button class="fa fa-times" style="color: red;"></button></a></td> 
+                                    <td class="compact" sec:authorize="hasAnyAuthority('MASTERLIST')"><a th:href="@{/editshipment/{id}(id=${shipment.id})}"><button style='font-size:11px'><i class='far fa-edit'></i></button></a></td>
+                                    <td class="compact" sec:authorize="hasAnyAuthority('MASTERLIST')"><a href="#" th:data-object-type="${shipment.client}" th:data-object-id="${shipment.id}" th:data-object-name="delete" th:attr="onclick=${'deleteObjectConfirm(this,''/deleteshipmentconfirmation/'')'}"><button class="fa fa-times" style="color: red;"></button></a></td> 
                                 </tr>
                             </tbody>
                         </table>
+                        </div>
                     </div>
                     </div>
                     <br>
@@ -287,11 +293,11 @@
 	                                    <td th:text="${shipment.consigneeCity}"></td>
 	                                    <td th:text="${shipment.consigneeState}"></td>
 	                                    <td th:text="${shipment.consigneeZip}"></td>
-	                                    <td><a th:href="@{/viewshipment/{id}(id=${shipment.id})}"><button style='font-size:11px'><i class='fas fa-clipboard-list'></i></button></a></td>
-                                        <td sec:authorize="hasAuthority('CARRIER')"><a th:href="@{/acceptawaitingshipment/{id}(id=${shipment.id})}"><button style='font-size:11px'><i class="far fa-check-circle" style="color: green;"></i></button></a></td>   
-                                        <td sec:authorize="hasAuthority('CARRIER')"><a th:href="@{/denyawaitingshipment/{id}(id=${shipment.id})}"><button style='font-size:11px'><i class="far fa-times-circle" style="color: red;"></i></button></a></td>   
-                                        <td sec:authorize="hasAuthority('MASTERLIST')"><a th:href="@{/editshipment/{id}(id=${shipment.id})}"><button style='font-size:11px'><i class='far fa-edit'></i></button></a></td>
-                                        <td sec:authorize="hasAuthority('MASTERLIST')"><a href="#" th:data-object-type="${shipment.client}" th:data-object-id="${shipment.id}" th:data-object-name="delete"  th:attr="onclick=${'deleteObjectConfirm(this,''/deleteshipmentconfirmation/'')'}"><button class="fa fa-times" style="color: red;"></button></a></td>                              
+	                                    <td class="compact"><a th:href="@{/viewshipment/{id}(id=${shipment.id})}"><button style='font-size:11px'><i class='fas fa-clipboard-list'></i></button></a></td>
+                                        <td class="compact" sec:authorize="hasAuthority('CARRIER')"><a th:href="@{/acceptawaitingshipment/{id}(id=${shipment.id})}"><button style='font-size:11px'><i class="far fa-check-circle" style="color: green;"></i></button></a></td>   
+                                        <td class="compact" sec:authorize="hasAuthority('CARRIER')"><a th:href="@{/denyawaitingshipment/{id}(id=${shipment.id})}"><button style='font-size:11px'><i class="far fa-times-circle" style="color: red;"></i></button></a></td>   
+                                        <td class="compact" sec:authorize="hasAuthority('MASTERLIST')"><a th:href="@{/editshipment/{id}(id=${shipment.id})}"><button style='font-size:11px'><i class='far fa-edit'></i></button></a></td>
+                                        <td class="compact" sec:authorize="hasAuthority('MASTERLIST')"><a href="#" th:data-object-type="${shipment.client}" th:data-object-id="${shipment.id}" th:data-object-name="delete"  th:attr="onclick=${'deleteObjectConfirm(this,''/deleteshipmentconfirmation/'')'}"><button class="fa fa-times" style="color: red;"></button></a></td>                              
 	                                </tr>
 	                            </tbody>
 	                        </table>
@@ -346,12 +352,12 @@
 	                                    <td th:text="${shipment.consigneeCity}"></td>
 	                                    <td th:text="${shipment.consigneeState}"></td>
 	                                    <td th:text="${shipment.consigneeZip}"></td>
-	             	                    <td><a th:href="@{/viewshipment/{id}(id=${shipment.id})}"><button style='font-size:11px'><i class='fas fa-clipboard-list'></i></button></a></td>
-	                                    <td><a th:href="@{/viewshipmentbids/{id}(id=${shipment.id})}"><button class="buttons11" role="button">([[${shipment.getBids().size()}]])</button></a></td>
-	                                    <td><p th:inline="text">[[${shipment.getLowestBidValue()}]]</p></td>
-	                                    <td sec:authorize="hasAuthority('CARRIER')"><a th:href="@{/assignvehicle/{id}(id=${shipment.id})}"><button style='font-size:11px'><i class='fas fa-truck'></i></button></a></td>
-                                        <td sec:authorize="hasAuthority('MASTERLIST')"><a th:href="@{/editshipment/{id}(id=${shipment.id})}"><button style='font-size:11px'><i class='far fa-edit'></i></button></a></td>
-                                        <td sec:authorize="hasAuthority('MASTERLIST')"><a href="#" th:data-object-type="${shipment.client}" th:data-object-id="${shipment.id}" th:data-object-name="delete" th:attr="onclick=${'deleteObjectConfirm(this,''/deleteshipmentconfirmation/'')'}"><button class="fa fa-times" style="color: red;"></button></a></td>                             
+	             	                    <td class="compact"><a th:href="@{/viewshipment/{id}(id=${shipment.id})}"><button style='font-size:11px'><i class='fas fa-clipboard-list'></i></button></a></td>
+	                                    <td class="compact"><a th:href="@{/viewshipmentbids/{id}(id=${shipment.id})}"><button class="buttons11" role="button">([[${shipment.getBids().size()}]])</button></a></td>
+	                                    <td class="compact"><p th:inline="text">[[${shipment.getLowestBidValue()}]]</p></td>
+	                                    <td class="compact" sec:authorize="hasAuthority('CARRIER')"><a th:href="@{/assignvehicle/{id}(id=${shipment.id})}"><button style='font-size:11px'><i class='fas fa-truck'></i></button></a></td>
+                                        <td class="compact" sec:authorize="hasAuthority('MASTERLIST')"><a th:href="@{/editshipment/{id}(id=${shipment.id})}"><button style='font-size:11px'><i class='far fa-edit'></i></button></a></td>
+                                        <td class="compact" sec:authorize="hasAuthority('MASTERLIST')"><a href="#" th:data-object-type="${shipment.client}" th:data-object-id="${shipment.id}" th:data-object-name="delete" th:attr="onclick=${'deleteObjectConfirm(this,''/deleteshipmentconfirmation/'')'}"><button class="fa fa-times" style="color: red;"></button></a></td>                             
 	                                </tr>
 	                            </tbody>
 	                        </table>

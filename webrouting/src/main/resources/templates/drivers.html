@@ -44,6 +44,7 @@
                         <hr>
                         <span type="hidden" th:text="${error}" class="loginError"></span>
                         <br>
+                        <div class="longDTableWrapper">
                         <table class="dataTable">
                             <thead>
                                 <tr>
@@ -65,11 +66,12 @@
                                		<td th:text="${driver.lisence_number}"></td>
                                     <td th:text="${driver.lisence_expiration}"></td>
                                     <td th:text="${driver.lisence_class}"></td>
-                                    <td><a th:href="@{/editdriver/{id}(id=${driver.id})}"><button style='font-size:11px'><i class='far fa-edit'></i></button></a></td>
-                                    <td><a href="#" th:data-object-type="${driver}" th:data-object-id="${driver.id}"  th:data-object-name="delete" th:attr="onclick=${'deleteObjectConfirm(this,''/deletedriverconfirmation/'')'}"><button class="fa fa-times" style="color: red;"></button></a></td> 
+                                    <td class="compact"><a th:href="@{/editdriver/{id}(id=${driver.id})}"><button style='font-size:11px'><i class='far fa-edit'></i></button></a></td>
+                                    <td class="compact"><a href="#" th:data-object-type="${driver}" th:data-object-id="${driver.id}"  th:data-object-name="delete" th:attr="onclick=${'deleteObjectConfirm(this,''/deletedriverconfirmation/'')'}"><button class="fa fa-times" style="color: red;"></button></a></td> 
                                 </tr>
                             </tbody>
                         </table>
+                        </div>
                     </div>
                     <br>
                     <p><button class="buttons7" onclick="window.location.href='/add-driver';">Add Driver</button>

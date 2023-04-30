@@ -114,9 +114,9 @@
         	<p class="usernameBox" th:if="${#authentication.principal != null}">
     			<span th:text="${#authentication.principal.username}"></span>
 			</p>	
-			<a id= "nav_notifications" href="/unreadnotifications" th:inline="text"><i style="padding:5px" class="fa-solid fa-bell fa-xl"></i>([[${notifications.size()}]])</a>
-			<a id="nav_update_user_details" href="/update-user-details"><i style="padding:5px" class="fa-solid fa-user fa-xl"></i></a>
-			<a onclick="document.forms['logoutForm'].submit()"><i style="padding:5px" class="fa-solid fa-right-from-bracket fa-xl"></i></a>
+			<a id= "nav_notifications" href="/unreadnotifications" th:inline="text"><i style="padding:5px"  class="fa-solid fa-bell fa-sm"></i>([[${notifications.size()}]])</a>
+			<a id="nav_update_user_details" href="/update-user-details"><i style="padding:5px" class="fa-solid fa-user fa-sm"></i></a>
+			<a onclick="document.forms['logoutForm'].submit()"><i style="padding:5px" class="fa-solid fa-right-from-bracket fa-sm"></i></a>
 						<form id="logoutForm" method="POST" th:action="@{/logout}">
            	<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
             </form>

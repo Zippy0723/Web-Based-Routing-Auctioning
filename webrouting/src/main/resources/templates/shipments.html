@@ -42,6 +42,7 @@
                         <hr>
                         <span type="hidden" th:text="${error}" class="loginError"></span>
                         <br>
+                        <div class="longDTableWrapper">
                         <table class="dataTable">
                             <thead>
                                 <tr>
@@ -88,13 +89,14 @@
                                     <td th:text="${shipment.consigneeCity}"></td>
                                     <td th:text="${shipment.consigneeState}"></td>
                                     <td th:text="${shipment.consigneeZip}"></td>
-                                    <td><a th:href="@{/viewshipmentbids/{id}(id=${shipment.id})}"><button style='font-size:11px'><i class='fas fa-money-bill-wave' style="color: #118C4F;"></i></button></a></td>
-                                    <td sec:authorize="hasAuthority('SHIPPER')"><a th:href="@{/editshipment/{id}(id=${shipment.id})}"><button style='font-size:11px'><i class='far fa-edit'></i></button></a></td>
-                                    <td sec:authorize="hasAuthority('SHIPPER')"><a th:href="#" th:data-object-type="${shipment.client}" th:data-object-id="${shipment.id}" th:data-object-name="delete" th:attr="onclick=${'deleteObjectConfirm(this,''/deleteshipmentconfirmation/'')'}"><button class="fa fa-times" style="color: red;"></button></a></td> 
+                                    <td class="compact"><a th:href="@{/viewshipmentbids/{id}(id=${shipment.id})}"><button style='font-size:11px'><i class='fas fa-money-bill-wave' style="color: #118C4F;"></i></button></a></td>
+                                    <td class="compact" sec:authorize="hasAuthority('SHIPPER')"><a th:href="@{/editshipment/{id}(id=${shipment.id})}"><button style='font-size:11px'><i class='far fa-edit'></i></button></a></td>
+                                    <td class="compact" sec:authorize="hasAuthority('SHIPPER')"><a th:href="#" th:data-object-type="${shipment.client}" th:data-object-id="${shipment.id}" th:data-object-name="delete" th:attr="onclick=${'deleteObjectConfirm(this,''/deleteshipmentconfirmation/'')'}"><button class="fa fa-times" style="color: red;"></button></a></td> 
                                     
                                 </tr>
                             </tbody>
                         </table>
+                        </div>
                     </div>
                     <p sec:authorize="hasAuthority('SHIPPER')"><a href="/add-shipments">Add a Shipment</a></p>
                     <br><br>

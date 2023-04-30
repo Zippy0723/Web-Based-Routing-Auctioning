@@ -45,6 +45,7 @@
                         <hr>
                         <span type="hidden" th:text="${error}" class="loginError"></span>
                         <br>
+                        <div class="longDTableWrapper">
                         <table class="dataTable">
                             <thead>
                                 <tr>
@@ -72,11 +73,12 @@
                                   	<td th:text="${order.status_key}"></td>
                                   	<td><a th:text="${order.vehicle}" th:href="@{/viewvehicle/{id}(id=${order.vehicle.id})}"></a></td>
                                   	<td th:text="${order.maintenance_type}"></td>
-                                    <td><a th:href="@{/editorder/{id}(id=${order.id})}"><button style='font-size:11px'><i class='far fa-edit'></i></button></a></td>
-                                    <td><a href="#" th:data-object-type="${order}" th:data-object-id="${order.id}" th:data-object-name="delete" th:attr="onclick=${'deleteObjectConfirm(this,''/deleteorderconfirmation/'')'}"><button class="fa fa-times" style="color: red;"></button></a></td> 
+                                    <td class="compact"><a th:href="@{/editorder/{id}(id=${order.id})}"><button style='font-size:11px'><i class='far fa-edit'></i></button></a></td>
+                                    <td class="compact"><a href="#" th:data-object-type="${order}" th:data-object-id="${order.id}" th:data-object-name="delete" th:attr="onclick=${'deleteObjectConfirm(this,''/deleteorderconfirmation/'')'}"><button class="fa fa-times" style="color: red;"></button></a></td> 
                                 </tr>
                             </tbody>
                         </table>
+                       </div>
                     </div>      
                     <br>
                     <p><button class="buttons7" onclick="window.location.href='/add-order';">Add New Order</button>

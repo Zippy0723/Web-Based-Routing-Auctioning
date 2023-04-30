@@ -264,7 +264,7 @@ public class UserController {
 	}
 
 	/**
-	 * Redirects user to the /upload users page when clicking "Upload an excel file" button in the users section of AdminTry
+	 * Redirects user to the /upload users page when clicking "Upload an excel file" button in the users section of Admin
 	 * @param model used to load attributes into the Thymeleaf model
 	 * @return /uploadusers
 	 */
